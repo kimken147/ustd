@@ -1,0 +1,22 @@
+
+   TypeError 
+
+  Cannot assign null to property App\Services\Maya\PayMayaApiService::$domain of type string
+
+  at app/Services/Maya/PayMayaApiService.php:27
+    23|         $apiList = config("pay.maya.api");
+    24|         $this->client = $apiList["client"];
+    25|         $this->chd = $apiList["chd"];
+    26|         $this->auth = $apiList["auth"];
+  > 27|         $this->domain = env("PAY_MAYA_URL");
+    28|     }
+    29| 
+    30|     public function executeBankTransfer(
+    31|         string $bearer,
+
+  1   [internal]:0
+      App\Services\Maya\PayMayaApiService::__construct(Object(App\Services\Maya\HeaderDataService))
+
+      [2m+26 vendor frames [22m
+  28  [internal]:0
+      Illuminate\Foundation\Console\RouteListCommand::Illuminate\Foundation\Console\{closure}(Object(Illuminate\Routing\Route))

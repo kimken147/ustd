@@ -1,0 +1,59 @@
+Legend:
+! patch or minor release available - update recommended
+~ major release available - update possible
+barryvdh/laravel-ide-helper                 v2.8.2             ! v2.15.1           
+carbonphp/carbon-doctrine-types             1.0.0              ~ 2.1.0             
+doctrine/cache                              2.2.0              = 2.2.0             
+Package doctrine/cache is abandoned, you should avoid using it. No replacement was suggested.
+doctrine/dbal                               2.13.9             ~ 3.10.4            
+doctrine/lexer                              1.2.3              ~ 2.1.1             
+dragonmantank/cron-expression               v2.3.1             ~ v3.5.0            
+egulias/email-validator                     2.1.25             ~ 3.2.6             
+endroid/qr-code                             4.3.5              ! 4.8.2             
+fruitcake/laravel-cors                      v2.2.0             ~ v3.0.0            
+Package fruitcake/laravel-cors is abandoned, you should avoid using it. No replacement was suggested.
+fzaninotto/faker                            dev-master 5ffe7db = dev-master 5ffe7db
+Package fzaninotto/faker is abandoned, you should avoid using it. No replacement was suggested.
+geoip2/geoip2                               v2.8.0             ! v2.13.0           
+guidocella/eloquent-insert-on-duplicate-key v2.2.5             = v2.2.5            
+Package guidocella/eloquent-insert-on-duplicate-key is abandoned, you should avoid using it. Use laravel/framework instead.
+irazasyed/telegram-bot-sdk                  v3.9               ! v3.15.0           
+kalnoy/nestedset                            v5.0.5             ~ v6.0.6            
+khanamiryan/qrcode-detector-decoder         1.0.5.2            ! 1.0.6             
+laravel-notification-channels/telegram      0.4.1              ~ 3.0.0             
+laravel/framework                           v7.30.7            ~ v9.52.21          
+laravel/tinker                              v2.10.2            ! v2.11.0           
+league/commonmark                           1.6.7              ~ 2.8.0             
+league/event                                2.3.0              ~ 3.0.3             
+league/flysystem                            1.1.10             ~ 3.30.2            
+league/flysystem-aws-s3-v3                  1.0.30             ~ 3.30.1            
+nunomaduro/collision                        v4.3.0             ~ v6.4.0            
+opis/closure                                3.7.0              ~ 4.4.0             
+phpdocumentor/type-resolver                 1.12.0             ~ 2.0.0             
+phpstan/phpdoc-parser                       2.3.0              ! 2.3.1             
+pragmarx/google2fa-laravel                  v1.4.1             ~ v2.3.0            
+pragmarx/google2fa-qrcode                   v1.0.3             ~ v3.0.1            
+predis/predis                               v1.1.10            ~ v3.3.0            
+psr/container                               1.1.2              ~ 2.0.2             
+psr/log                                     2.0.0              ~ 3.0.2             
+psr/simple-cache                            1.0.1              ~ 3.0.0             
+spatie/laravel-short-schedule               1.4.3              ! 1.5.2             
+Package spatie/laravel-short-schedule is abandoned, you should avoid using it. Use Laravel's Scheduler now supports sub-minute scheduled tasks instead.
+spatie/temporary-directory                  2.3.0              ! 2.3.1             
+stevebauman/location                        v5.2.0             ~ v6.6.2            
+swiftmailer/swiftmailer                     v6.3.0             = v6.3.0            
+Package swiftmailer/swiftmailer is abandoned, you should avoid using it. Use symfony/mailer instead.
+symfony/console                             v5.4.47            ~ v6.0.19           
+symfony/error-handler                       v5.4.46            ~ v6.0.19           
+symfony/filesystem                          v5.4.45            ~ v6.0.19           
+symfony/finder                              v5.4.45            ~ v6.0.19           
+symfony/http-foundation                     v5.4.50            ~ v6.0.20           
+symfony/http-kernel                         v5.4.50            ~ v6.0.20           
+symfony/mime                                v5.4.45            ~ v6.0.19           
+symfony/process                             v5.4.47            ~ v6.0.19           
+symfony/routing                             v5.4.48            ~ v6.0.19           
+symfony/service-contracts                   v2.5.4             ~ v3.0.2            
+symfony/var-dumper                          v5.4.48            ~ v6.0.19           
+tttran/viet_qr_generator                    v0.6               ~ v0.7              
+vlucas/phpdotenv                            v4.3.0             ~ v5.6.3            
+voku/portable-ascii                         1.6.1              ~ 2.0.3             
