@@ -1,0 +1,498 @@
+{
+  "home": {
+    "title": "หน้าแรก",
+    "subTitle": {
+      "userInfo": "ข้อมูลผู้ใช้",
+      "balance": "ข้อมูลยอดเงิน",
+      "channel": "ข้อมูลช่องทาง"
+    },
+    "fields": {
+      "username": "ชื่อผู้ใช้",
+      "password": "รหัสผ่าน",
+      "secretKey": "คีย์ลับ",
+      "apiDocument": "เอกสาร API",
+      "accountStatus": "สถานะการเปิดใช้งานบัญชี",
+      "agentFunctionStatus": "สถานะตัวแทน",
+      "verificationKey": "Google Authenticator",
+      "googleVerificationStatus": "เข้าสู่ระบบด้วยรหัส Google Authenticator",
+      "withdrawVerificationStatus": "Money-Out ด้วยรหัส Google Authenticator",
+      "perTrans": " / ธุรกรรม",
+      "channelName": "ชื่อช่องทาง",
+      "ratePer": "ค่าธรรมเนียม (%)",
+      "balance": "ยอดเงินคงเหลือทั้งหมด",
+      "frozenBalance": "ยอดเงินที่ถูกอายัด",
+      "availableBalance": "ยอดเงินที่ใช้ได้",
+      "withdrawFee": "ค่าธรรมเนียม Withdrawal",
+      "payoutFee": "ค่าธรรมเนียม Payout",
+      "oldPassword": "รหัสผ่านเดิม",
+      "newPassword": "รหัสผ่านใหม่",
+      "confirmPassword": "ยืนยันรหัสผ่านใหม่",
+      "oneTimePassword": "รหัส Google Authenticator",
+      "google2faQRCode": "QR Code Google Authenticator"
+    },
+    "values": {
+      "download": "ดาวน์โหลด",
+      "displaySecretKey": "ดูคีย์ลับ",
+      "changePassword": "เปลี่ยนรหัสผ่าน",
+      "resetVerificationKey": "รีเซ็ต Google Authenticator"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "ยืนยันการเปลี่ยนแปลง Google Authenticator?",
+      "confirmChangeWithdrawVerification": "ยืนยันการเปลี่ยนแปลงการยืนยัน Google Authenticator สำหรับ Money-Out?",
+      "confirmChangeGoogleSecretKey": "ยืนยันการรีเซ็ตคีย์ลับ Google Authenticator?",
+      "pleaseEnterOldPassword": "กรอกรหัสผ่านเดิม",
+      "pleaseEnterNewPassword": "กรอกรหัสผ่านใหม่"
+    },
+    "error": {
+      "passwordNotMatch": "รหัสผ่านไม่ตรงกัน",
+      "enterGoogleAuth": "กรุณากรอกรหัสยืนยัน Google"
+    }
+  },
+  "tagsPage": {
+    "title": "การจัดการแท็ก",
+    "fields": {
+      "name": "ชื่อ",
+      "label": "แท็ก"
+    },
+    "buttons": {
+      "create": "สร้างแท็ก"
+    },
+    "updateSuccess": "แก้ไขแท็กสำเร็จ"
+  },
+  "collection": {
+    "titles": {
+      "main": "Money-In",
+      "list": "รายการ Money-In",
+      "info": "รายละเอียดออเดอร์ Money-In"
+    },
+    "fields": {
+      "transactionNo": "หมายเลขออเดอร์ของพ่อค้า / หมายเลขออเดอร์ของระบบ",
+      "merchantNo": "รหัสพ่อค้า",
+      "channels": "ช่องทาง",
+      "amount": "จำนวนเงินออเดอร์",
+      "transactionStatus": "สถานะออเดอร์",
+      "callbackStatus": "สถานะ Callback",
+      "category": "หมวดหมู่",
+      "queryOrderWithCreateAt": "กรองตามเวลาสร้างออเดอร์",
+      "queryOrderWithSucceedAt": "กรองตามเวลาออเดอร์เสร็จสิ้น",
+      "totalNumberOfTransation": "จำนวน Money-In ทั้งหมด",
+      "successRate": "อัตราความสำเร็จ",
+      "totalAmountOfTransaction": "จำนวนเงิน Money-In ทั้งหมด",
+      "totalFeeOfTranaction": "ค่าธรรมเนียม Money-In ทั้งหมด",
+      "systemTransactionNo": "หมายเลขออเดอร์ของระบบ",
+      "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า",
+      "fee": "ค่าธรรมเนียม",
+      "amountPaid": "จำนวนเงินจริง",
+      "floatingAmount": "จำนวนเงินลอยตัว",
+      "merchantAndAgentFeeProfitList": "รายละเอียดออเดอร์",
+      "merchantName": "ชื่อพ่อค้า",
+      "realName": "ชื่อ"
+    },
+    "status": {
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "ไม่แจ้งเตือน",
+      "notifying": "กำลังแจ้งเตือน",
+      "notified": "แจ้งเตือนแล้ว",
+      "success": "สำเร็จ",
+      "failed": "ล้มเหลว",
+      "thirdPartyProcessing": "กำลังดำเนินการโดยบุคคลที่สาม"
+    }
+  },
+  "datePicker": {
+    "today": "วันนี้",
+    "yesterday": "เมื่อวาน",
+    "thisWeek": "สัปดาห์นี้",
+    "lastWeek": "สัปดาห์ที่แล้ว",
+    "thisMonth": "เดือนนี้",
+    "lastMonth": "เดือนที่แล้ว",
+    "startDate": "วันที่เริ่มต้น",
+    "endDate": "วันที่สิ้นสุด"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "Money Out"
+    },
+    "fields": {
+      "bankCardKeyword": "คำค้นหาบัตรธนาคาร",
+      "withdrawStatus": "สถานะออเดอร์",
+      "totalNumberOfWithdraw": "จำนวน Money-Out ทั้งหมด",
+      "totalAmountOfWithdraw": "จำนวนเงิน Money-Out ทั้งหมด",
+      "totalFeeOfWithdraw": "ค่าธรรมเนียม Money-Out ทั้งหมด",
+      "balanceOfWithdraw": "ยอดเงินคงเหลือทั้งหมด",
+      "accountOwner": "ชื่อผู้รับ",
+      "bankName": "ชื่อธนาคาร",
+      "bankAccount": "หมายเลขบัญชี",
+      "bankCard": "บัตรธนาคาร",
+      "province": "สาขาธนาคาร",
+      "city": "เมืองสาขาธนาคาร",
+      "callbackTime": "ได้รับ Callback เมื่อ",
+      "type": "ประเภทออเดอร์ Money-Out"
+    },
+    "values": {
+      "withdraw": "Withdrawal",
+      "payout": "Payout"
+    },
+    "buttons": {
+      "createPayment": "ส่ง Payout",
+      "createWithdraw": "ส่ง Withdrawal",
+      "banks": "บัตรธนาคารสำหรับ Withdrawal"
+    },
+    "create": {
+      "errors": {},
+      "messages": {
+        "success": "สร้างสำเร็จ"
+      },
+      "fields": {
+        "code": "รหัส Google Authenticator",
+        "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า"
+      },
+      "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า",
+      "titles": {
+        "withdraw": "ส่ง Withdrawal"
+      }
+    },
+    "status": {
+      "review": "Reviewing",
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "รายการบัตรธนาคาร",
+      "merchantList": "รายการบัตรธนาคาร Withdrawal",
+      "merchantProviderList": "รายการบัตรธนาคาร Withdrawal ของพ่อค้า / ผู้ให้บริการรับเงิน"
+    },
+    "fields": {
+      "bankCardKeyword": "คำค้นหาบัตรธนาคาร",
+      "bankAccount": "หมายเลขบัญชี",
+      "accountOwner": "ชื่อผู้รับ",
+      "bankName": "ชื่อธนาคาร",
+      "cardNumber": "หมายเลขบัญชี",
+      "userName": "ชื่อผู้ใช้",
+      "status": "สถานะ",
+      "nameOrUsername": "ชื่อบัญชี / Login ID",
+      "edit": "แก้ไขรายละเอียดธนาคาร"
+    },
+    "buttons": {
+      "create": "สร้างบัญชี Withdrawal"
+    },
+    "review": {
+      "wait": "Reviewing",
+      "success": "Approved",
+      "fail": "Failed"
+    },
+    "confirmChangeStatus": "ยืนยันการแก้ไขสถานะ?",
+    "confirmDelete": "ยืนยันการลบบัตรธนาคารนี้: {{cardNumber}} ?"
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "ประวัติยอดเงิน"
+    },
+    "fields": {
+      "alterationCategories": "ประเภทการเปลี่ยนแปลง",
+      "totalAmount": "จำนวนเงินทั้งหมด",
+      "totalBalanceAlteration": "การเปลี่ยนแปลงยอดเงินทั้งหมด",
+      "frozenBalanceAlteration": "การเปลี่ยนแปลงยอดเงินที่ถูกอายัด",
+      "totalBalanceAfterAlteration": "ยอดเงินทั้งหมดหลังการเปลี่ยนแปลง",
+      "frozenBalanceAfterAlteration": "ยอดเงินที่ถูกอายัดหลังการเปลี่ยนแปลง",
+      "alterationTime": "เวลาเปลี่ยนแปลง"
+    },
+    "status": {
+      "1": "System Adjustment - Total Balance",
+      "2": "Internal Transfer - Available Balance",
+      "3": "Money In",
+      "4": "Money In - Withholding Fund",
+      "5": "Money In - Withholding Refund",
+      "6": "รางวัลฝากเงิน",
+      "7": "Money In Reward",
+      "8": "Failed",
+      "11": "System Adjustment - Frozen Balance",
+      "12": "Money Out",
+      "13": "Money-Out Refund",
+      "14": "Money-In Refund",
+      "systemAdjustment": "System Adjustment - Total Balance",
+      "balanceTransfer": "Internal Transfer - Available Balance",
+      "deposit": "Money In",
+      "preDeduct": "Money In - Withholding Fund",
+      "preDeductRefund": "Money In - Withholding Refund",
+      "fastChargeRewardProfit": "Deposit Reward - Profits",
+      "transactionRewardProfit": "Money In Reward - Profits",
+      "depositDeductFrozen": "Deposit - Deduct Frozen Balance",
+      "depositProfit": "Money In - Profits",
+      "systemAdjustmentProfit": "System Adjustment - Profits",
+      "systemAdjustmentFrozen": "System Adjustment - Frozen Balance",
+      "withdraw": "Money Out",
+      "withdrawRefund": "Money-Out Refund",
+      "depositRefund": "Money-In Refund"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "การจัดการบัญชีอ่านอย่างเดียว"
+    },
+    "query": {
+      "nameOrAccount": "ชื่อบัญชี / Login ID"
+    },
+    "fields": {
+      "name": "ชื่อบัญชี",
+      "status": "สถานะการเปิดใช้งานบัญชี",
+      "theLastLoginTimeOrIp": "เวลา / IP เข้าสู่ระบบล่าสุด",
+      "id": "Login ID",
+      "info": "รายละเอียดบัญชี",
+      "resetPassoword": "รีเซ็ตรหัสผ่าน",
+      "resetGoogle2faSecret": "รีเซ็ต Google Authenticator"
+    },
+    "tips": {
+      "changeStatus": "ยืนยันการเปลี่ยนสถานะการเปิดใช้งานบัญชี?",
+      "changeGoogle2faStatus": "ยืนยันการเปลี่ยนแปลง Google Authenticator?",
+      "resetPassword": "ยืนยันการรีเซ็ตรหัสผ่าน?",
+      "resetGoogle2faSecret": "ยืนยันการรีเซ็ตคีย์ลับ Google Authenticator?"
+    },
+    "buttons": {
+      "create": "สร้างบัญชีอ่านอย่างเดียว"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "โอนผ่านบัตรธนาคาร",
+    "QR_ALIPAY": "โอน Alipay บัญชีต่อบัญชี",
+    "ZH_ALIPAY": "Alipay Aggregated QR Code",
+    "UNION_QUICK_PASS": "UnionPay QuickPass"
+  },
+  "enable": "เปิดใช้งาน",
+  "disable": "ปิดการใช้งาน",
+  "cancel": "ยกเลิก",
+  "submit": "ส่ง",
+  "edit": "แก้ไข",
+  "delete": "ลบ",
+  "success": "Success",
+  "createAt": "สร้างเมื่อ",
+  "confirmAt": "เสร็จสิ้นเมื่อ",
+  "lastLoginAt": "เวลาเข้าสู่ระบบล่าสุด",
+  "password": "รหัสผ่าน",
+  "clear": "ล้าง",
+  "google2faSecret": "Google Authenticator",
+  "google2faStatus": "เข้าสู่ระบบด้วยรหัส Google Authenticator",
+  "fee": "ค่าธรรมเนียม",
+  "profit": "กำไร",
+  "export": "ส่งออก",
+  "optional": "ไม่บังคับ",
+  "amount": "จำนวนเงิน",
+  "note": "หมายเหตุ",
+  "logout": "ออกจากระบบ",
+  "operation": "ดำเนินการ",
+  "type": "โหมดธุรกรรม",
+  "add": "เพิ่ม",
+  "minus": "ลด",
+  "create": "เพิ่ม",
+  "resetPassword": "รีเซ็ตรหัสผ่าน",
+  "wallet": {
+    "withdrawFee": "ค่าธรรมเนียม Money-Out"
+  },
+  "tips": {
+    "confirmDelete": "ยืนยันการลบ?"
+  },
+  "verificationCode": "รหัส Google Authenticator",
+  "updateSuccess": "แก้ไขสำเร็จ",
+  "createSuccess": "เพิ่มสำเร็จ",
+  "deleteSuccess": "ลบสำเร็จ",
+  "confirmModify": "ยืนยันการแก้ไข?",
+  "ok": "ยืนยัน",
+  "errors": {
+    "tryLater": "เกิดข้อผิดพลาด กรุณาลองใหม่ภายหลัง"
+  },
+  "buttons": {
+    "create": "สร้าง",
+    "save": "บันทึก",
+    "logout": "ออกจากระบบ",
+    "delete": "ลบ",
+    "edit": "แก้ไข",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "filter": "กรอง",
+    "clear": "ล้าง",
+    "refresh": "รีเฟรช",
+    "show": "แสดง",
+    "undo": "ยกเลิก",
+    "import": "นำเข้า",
+    "export": "ส่งออก",
+    "clone": "ทำซ้ำ",
+    "notAccessTitle": "ปฏิเสธการเข้าถึง",
+    "accept": "ยอมรับ",
+    "reject": "ยอมรับ"
+  },
+  "warnWhenUnsavedChanges": "คุณมีการเปลี่ยนแปลงที่ยังไม่ได้บันทึก คุณแน่ใจว่าต้องการออก?",
+  "notifications": {
+    "success": "Success",
+    "error": "ข้อผิดพลาด",
+    "undoable": "คุณมี {{seconds}} วินาทีในการยกเลิก",
+    "createSuccess": "สร้าง {{resource}} สำเร็จ",
+    "createError": "เกิดข้อผิดพลาดในการสร้าง {{resource}} (รหัสสถานะ: {{statusCode}})",
+    "deleteSuccess": "ลบ {{resource}} สำเร็จ",
+    "deleteError": "เกิดข้อผิดพลาดในการลบ {{resource}} (รหัสสถานะ: {{statusCode}})",
+    "editSuccess": "อัปเดต {{resource}} สำเร็จ",
+    "editError": "เกิดข้อผิดพลาดในการอัปเดต {{resource}} (รหัสสถานะ: {{statusCode}})",
+    "importProgress": "กำลังนำเข้า: ดำเนินการแล้ว {{processed}} / {{total}}"
+  },
+  "loading": "กำลังนำเข้า: ดำเนินการแล้ว {{processed}} / {{total}}",
+  "tags": {
+    "clone": "ทำซ้ำ"
+  },
+  "dashboard": {
+    "title": "ทำซ้ำ"
+  },
+  "table": {
+    "actions": "ดำเนินการ"
+  },
+  "search": {
+    "placeholder": "ค้นหา...",
+    "more": "เพิ่มเติม"
+  },
+  "status": {
+    "enable": "เปิดใช้งาน",
+    "disable": "ปิดใช้งาน"
+  },
+  "pages": {
+    "login": {
+      "title": "เข้าสู่ระบบบัญชีของคุณ",
+      "signin": "เข้าสู่ระบบ",
+      "signup": "สมัครสมาชิก",
+      "divider": "หรือ",
+      "fields": {
+        "email": "อีเมล",
+        "password": "รหัสผ่าน"
+      },
+      "errors": {
+        "validEmail": "ที่อยู่อีเมลไม่ถูกต้อง"
+      },
+      "buttons": {
+        "submit": "เข้าสู่ระบบ",
+        "forgotPassword": "ลืมรหัสผ่าน?",
+        "noAccount": "ยังไม่มีบัญชี?",
+        "rememberMe": "จำฉันไว้"
+      }
+    },
+    "forgotPassword": {
+      "title": "ลืมรหัสผ่าน?",
+      "fields": {
+        "email": "อีเมล"
+      },
+      "errors": {
+        "validEmail": "ที่อยู่อีเมลไม่ถูกต้อง"
+      },
+      "buttons": {
+        "submit": "ส่งคำแนะนำการรีเซ็ต"
+      }
+    },
+    "register": {
+      "title": "สมัครสมาชิกบัญชีของคุณ",
+      "fields": {
+        "email": "อีเมล",
+        "password": "รหัสผ่าน"
+      },
+      "errors": {
+        "validEmail": "ที่อยู่อีเมลไม่ถูกต้อง"
+      },
+      "buttons": {
+        "submit": "สมัครสมาชิก",
+        "haveAccount": "มีบัญชีอยู่แล้ว?"
+      }
+    },
+    "updatePassword": {
+      "title": "อัปเดตรหัสผ่าน",
+      "fields": {
+        "password": "รหัสผ่านใหม่",
+        "confirmPassword": "ยืนยันรหัสผ่านใหม่"
+      },
+      "errors": {
+        "confirmPasswordNotMatch": "รหัสผ่านไม่ตรงกัน"
+      },
+      "buttons": {
+        "submit": "อัปเดต"
+      }
+    },
+    "error": {
+      "info": "คุณอาจลืมเพิ่มคอมโพเนนต์ {{action}} ในทรัพยากร {{resource}}",
+      "404": "ขออภัย หน้าที่คุณเข้าถึงไม่มีอยู่",
+      "resource404": "คุณแน่ใจหรือว่าได้สร้างทรัพยากร {{resource}}?",
+      "backHome": "กลับไปหน้าแรก"
+    }
+  },
+  "actions": {
+    "list": "รายการ",
+    "create": "สร้าง",
+    "edit": "แก้ไข",
+    "show": "รายละเอียด"
+  },
+  "documentTitle": {
+    "default": "ปรับแต่ง",
+    "suffix": " | ปรับแต่ง",
+    "posts": {
+      "list": "โพสต์",
+      "show": "#{{id}} รายละเอียดโพสต์",
+      "edit": "#{{id}} แก้ไขโพสต์",
+      "create": "สร้างโพสต์ใหม่",
+      "clone": "ทำซ้ำโพสต์"
+    }
+  },
+  "navigation": {
+    "home": "หน้าแรก",
+    "tags": "การจัดการแท็ก",
+    "providerManagement": "การจัดการผู้ให้บริการรับเงิน",
+    "whiteList": "รายการที่อนุญาต",
+    "providerBalanceAdjustment": "ประวัติการปรับยอดเงินของผู้ให้บริการรับเงิน",
+    "providerWalletHistory": "ประวัติยอดเงิน",
+    "merchantManagement": "การจัดการพ่อค้า",
+    "apiWhiteList": "รายการ IP ที่อนุญาต API",
+    "bannedList": "บัญชีดำ",
+    "merchantWalletHistory": "ประวัติยอดเงิน",
+    "merchantBalanceAdjustment": "ประวัติการปรับยอดเงินของพ่อค้า",
+    "paymentAccountManagement": "การจัดการบัญชีธุรกรรม",
+    "transactionManagement": "การจัดการธุรกรรม",
+    "collection": "Money In",
+    "payment": "Money Out",
+    "providerDeposit": "การจัดการฝากเงินของผู้ให้บริการรับเงิน",
+    "systemBankCard": "บัตรธนาคารระบบสำหรับฝากเงินของผู้ให้บริการรับเงิน",
+    "quickDepositReward": "รางวัลฝากเงิน",
+    "sms": "SMS",
+    "fundManagement": "การจัดการโอนเงินภายใน",
+    "childWithdrawSplit": "แยกออเดอร์ Money-Out",
+    "merchantBankCardList": "รายการบัตรธนาคาร Withdrawal",
+    "liveStatus": "สถานะธุรกรรมสด",
+    "financeReport": "รายงานทางการเงิน",
+    "groupManagement": "การจัดการกลุ่ม",
+    "collectionLine": "สาย Money-In โดยตรง",
+    "channelManagement": "การจัดการช่องทาง Money-In",
+    "thirdPartyManagement": "การจัดการช่องทางภายนอก",
+    "systemSettings": "การตั้งค่าระบบ",
+    "supportedBanks": "ธนาคารที่รองรับ",
+    "permissionManagement": "การจัดการสิทธิ์",
+    "adminLoginWhiteList": "รายการ IP ที่อนุญาตให้เข้าสู่ระบบสำหรับผู้ดูแลระบบ"
+  },
+  "validation": {
+    "required": "จำเป็น"
+  },
+  "autoRefresh": "รีเฟรช"
+}

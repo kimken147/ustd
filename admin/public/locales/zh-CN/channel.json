@@ -1,0 +1,38 @@
+{
+  "title": "通道管理",
+  "fields": {
+    "channelName": "通道名称",
+    "channelCode": "通道代码",
+    "amountLimit": "金额限制",
+    "amount": "金额",
+    "amountPlaceholder": "(请以半形波浪符号~表示金额范围)",
+    "status": "状态",
+    "matchExpirySwitch": "匹配过期开关",
+    "matchTimeout": "匹配时限",
+    "paymentExpirySwitch": "支付过期开关",
+    "paymentTimeout": "支付时限",
+    "realNameSwitch": "实名制开关",
+    "noteSwitch": "附言开关",
+    "floatingAmountSwitch": "金额浮动开关",
+    "floatingAmountRange": "金额浮动范围",
+    "seconds": "秒"
+  },
+  "actions": {
+    "editAmount": "修改金额",
+    "addAmount": "新增金额",
+    "addOne": "新增一笔",
+    "delete": "删除",
+    "editMatchTimeout": "修改匹配时限",
+    "editPaymentTimeout": "修改支付时限",
+    "editFloatingRange": "修改金额浮动范围"
+  },
+  "messages": {
+    "confirmDeleteAmount": "确定要刪除此金額？",
+    "confirmModifyStatus": "是否确定修改状态？",
+    "confirmMatchExpirySwitch": "是否匹配过期开关？",
+    "confirmPaymentExpirySwitch": "是否修改支付过期开关？",
+    "confirmRealNameSwitch": "是否修改实名制开关？",
+    "confirmNoteSwitch": "是否修改附言开关？",
+    "confirmFloatingSwitch": "是否金额浮动开关？"
+  }
+}

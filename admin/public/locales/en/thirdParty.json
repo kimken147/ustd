@@ -1,0 +1,64 @@
+{
+  "title": "Third-Party Management",
+  "buttons": {
+    "thirdChannelSettings": "Third-Party Service Setting"
+  },
+  "filters": {
+    "thirdPartyName": "Third-Party Name",
+    "channelType": "Channel",
+    "status": "Status",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "user": "User"
+  },
+  "fields": {
+    "thirdPartyName": "Third-Party Name",
+    "thirdPartyAccount": "Third-Party Merchant ID",
+    "channel": "Channel",
+    "status": "Status",
+    "type": "Transaction Mode",
+    "collectionAndPayout": "Money-In / Money-Out",
+    "collection": "Money-In",
+    "payout": "Money-Out",
+    "autoPushThresholdMin": "Automatic Money-Out Push Threshold(Min)",
+    "autoPushThresholdMax": "Automatic Money-Out Push Threshold(Max)",
+    "customUrlGateway": "Third-Party Host",
+    "callbackIp": "Callback IP",
+    "thirdPartyMerchantId": "Third-Party Merchant ID",
+    "key": "Secret Key",
+    "key2": "Secret Key2",
+    "key3": "Secret Key3",
+    "thirdChannel": "Third-Party",
+    "collectionMinLimit": "Minimum Money-In Amount",
+    "collectionMaxLimit": "Maximum Money-In Amount",
+    "feePercent": "Fee (%)",
+    "payoutMinLimit": "Minimum Money-Out Amount",
+    "payoutMaxLimit": "Maximum Money-Out Amount",
+    "feeAmount": "Fee Amount",
+    "isBatch": "Batch",
+    "dailyLimit": "Daily Limit",
+    "monthlyLimit": "Monthly Limit",
+    "merchantName": "Merchant Name",
+    "loginAccount": "Login ID",
+    "sharedThirdPartyLine": "Enable Random Assignment of Money-In Orders (Provider or Third-Party)"
+  },
+  "actions": {
+    "edit": "Edit",
+    "batchFeeModification": "Batch Edit Fee",
+    "editStatus": "Status",
+    "editType": "Transaction Mode",
+    "editCustomUrl": "Third-Party Host",
+    "editCallbackIp": "Callback IP",
+    "editKey": "Secret Key",
+    "editKey2": "Secret Key2",
+    "editKey3": "Secret Key3",
+    "add": "Add",
+    "editChannel": "Edit Channel",
+    "addThirdChannel": "Add Third-Party Channel",
+    "operation": "Execute"
+  },
+  "messages": {
+    "confirmModifyChannel": "Confirm Modification of This Third-Party Channel?",
+    "confirmDeleteThirdChannel": "Confirm Deletion of This Third-Party Channel?"
+  }
+}

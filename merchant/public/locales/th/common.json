@@ -1,0 +1,282 @@
+{
+  "home": {
+    "title": "หน้าแรก",
+    "subTitle": {
+      "userInfo": "ข้อมูลผู้ใช้",
+      "balance": "ยอดเงินในกระเป๋า",
+      "channel": "ข้อมูลช่องทาง"
+    },
+    "fields": {
+      "username": "ชื่อผู้ใช้",
+      "password": "รหัสผ่าน",
+      "secretKey": "คีย์ลับ",
+      "apiDocument": "เอกสาร API",
+      "accountStatus": "สถานะการเปิดใช้งานบัญชี",
+      "agentFunctionStatus": "สถานะตัวแทน",
+      "verificationKey": "Google Authenticator",
+      "googleVerificationStatus": "เข้าสู่ระบบด้วยรหัส Google Authenticator",
+      "withrawVerificationStatus": "Money-Out ด้วยรหัส Google Authenticator",
+      "perTrans": " / ต่อรายการ",
+      "channelName": "ชื่อช่องทาง",
+      "ratePer": "ค่าธรรมเนียมฝากเงิน (%)",
+      "balance": "ยอดเงินในกระเป๋า",
+      "frozenBalance": "ยอดเงินที่ถูกอายัด",
+      "availableBalance": "ยอดเงินที่ใช้ได้",
+      "withdrawFee": "ค่าธรรมเนียม Withdrawal",
+      "payoutFee": "ค่าธรรมเนียม Payout",
+      "oldPassword": "รหัสผ่านเดิม",
+      "newPassword": "รหัสผ่านใหม่",
+      "confirmPassword": "ยืนยันรหัสผ่านใหม่",
+      "oneTimePassword": "รหัส Google Authenticator",
+      "google2faQRCode": "QR Code Google Authenticator"
+    },
+    "values": {
+      "download": "ดาวน์โหลด",
+      "displaySecretKey": "ดูคีย์ลับ",
+      "changePassword": "เปลี่ยนรหัสผ่าน",
+      "resetVerificationKey": "รีเซ็ต Google Authenticator"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "ยืนยันการเปลี่ยนแปลง Google Authenticator?",
+      "confirmChangeWithdrawVerification": "ยืนยันการเปลี่ยนแปลงการยืนยัน Google Authenticator สำหรับ Money-Out?",
+      "confirmChangeGoogleSecertKey": "ยืนยันการรีเซ็ตคีย์ลับ Google Authenticator?"
+    },
+    "error": {
+      "passwordNotMatch": "รหัสผ่านไม่ตรงกัน"
+    }
+  },
+  "collection": {
+    "titles": {
+      "main": "Money In",
+      "list": "รายการฝากเงิน",
+      "info": "รายละเอียดออเดอร์ Money-In"
+    },
+    "fields": {
+      "transactionNo": "หมายเลขออเดอร์ของพ่อค้า / หมายเลขออเดอร์ของระบบ",
+      "merchantNo": "รหัสพ่อค้า",
+      "channels": "ช่องทาง",
+      "amount": "จำนวนเงินออเดอร์",
+      "transactionStatus": "สถานะออเดอร์",
+      "callbackStatus": "สถานะ Callback",
+      "category": "หมวดหมู่",
+      "queryOrderWithCreateAt": "กรองตามเวลาสร้างออเดอร์",
+      "queryOrderWithSucceedAt": "กรองตามเวลาออเดอร์เสร็จสิ้น",
+      "totalNumberOfTransation": "จำนวน Money-In ทั้งหมด",
+      "successRate": "อัตราความสำเร็จ",
+      "totalAmountOfTransaction": "จำนวนเงิน Money-In ทั้งหมด",
+      "totalFeeOfTranaction": "ค่าธรรมเนียม Money-In ทั้งหมด",
+      "systemTransactionNo": "หมายเลขออเดอร์ระบบ",
+      "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า",
+      "fee": "ค่าธรรมเนียม",
+      "amountPaid": "จำนวนเงินจริง",
+      "floatingAmount": "จำนวนเงินลอย",
+      "merchantAndAgentFeeProfitList": "รายละเอียดออเดอร์",
+      "merchantName": "ชื่อพ่อค้า",
+      "realName": "ชื่อสมาชิก"
+    },
+    "status": {
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "datePicker": {
+    "today": "วันนี้",
+    "yesterday": "เมื่อวาน",
+    "thisWeek": "สัปดาห์นี้",
+    "lastWeek": "สัปดาห์ที่แล้ว",
+    "startDate": "วันที่เริ่มต้น",
+    "endDate": "วันที่สิ้นสุด"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "Money Out"
+    },
+    "fields": {
+      "bankCardKeyword": "คำค้นหาบัตรธนาคาร",
+      "withdrawStatus": "สถานะออเดอร์",
+      "totalNumberOfWithdraw": "จำนวน Money-Out ทั้งหมด",
+      "totalAmountOfWithdraw": "จำนวนเงิน Money-Out ทั้งหมด",
+      "totalFeeOfWithdraw": "ค่าธรรมเนียม Money-Out ทั้งหมด",
+      "balanceOfWithdraw": "ยอดเงินรวม",
+      "accountOwner": "ชื่อผู้รับ",
+      "bankName": "ชื่อธนาคาร",
+      "bankAccount": "หมายเลขบัญชี",
+      "bankCard": "บัตรธนาคาร",
+      "province": "สาขาธนาคาร",
+      "city": "เมืองสาขาธนาคาร",
+      "callbackTime": "ได้รับ Callback เมื่อ",
+      "type": "ประเภทออเดอร์ Money-Out",
+      "gcashAccount": "บัญชี GCash",
+      "mayaAccount": "บัญชี Paymaya",
+      "alipayAccount": "Alipay Account",
+      "walletAddress": "ที่อยู่กระเป๋าเงิน"
+    },
+    "values": {
+      "withdraw": "Withdrawal",
+      "payout": "Payout"
+    },
+    "buttons": {
+      "createPayment": "ส่ง Payout",
+      "createWithdraw": "ส่ง Withdrawal",
+      "banks": "บัตรธนาคารสำหรับ Withdrawal"
+    },
+    "create": {
+      "errors": {
+        "totalAmountExceedsBalance": "จำนวนเงิน Money-Out เกินยอดเงินที่ใช้ได้"
+      },
+      "messages": {
+        "success": "สร้างสำเร็จ"
+      },
+      "fields": {
+        "code": "รหัส Google Authenticator",
+        "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า"
+      },
+      "merchantTransactionNo": "หมายเลขออเดอร์ของพ่อค้า",
+      "titles": {
+        "withdraw": "ส่ง Withdrawal"
+      }
+    },
+    "status": {
+      "review": "Reviewing",
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "รายการบัตรธนาคาร"
+    },
+    "fields": {
+      "bankCardKeyword": "คำค้นหาบัตรธนาคาร",
+      "bankAccount": "หมายเลขบัญชี",
+      "accountOwner": "ชื่อผู้รับ",
+      "bankName": "ชื่อธนาคาร",
+      "edit": "แก้ไขรายละเอียดธนาคาร"
+    },
+    "buttons": {
+      "create": "สร้างบัญชี Withdrawal"
+    },
+    "review": {
+      "wait": "Reviewing",
+      "success": "Approved",
+      "fail": "Failed"
+    }
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "ประวัติยอดเงิน"
+    },
+    "fields": {
+      "alterationCategories": "ประเภทการเปลี่ยนแปลง",
+      "totalAmount": "จำนวนเงินทั้งหมด",
+      "totalBalanceAlteration": "การเปลี่ยนแปลงยอดเงินรวม",
+      "frozenBalanceAlteration": "การเปลี่ยนแปลงยอดเงินที่ถูกอายัด",
+      "totalBalanceAfterAlteration": "ยอดเงินรวมหลังการเปลี่ยนแปลง",
+      "frozenBalanceAfterAlteration": "ยอดเงินที่ถูกอายัดหลังการเปลี่ยนแปลง",
+      "alterationTime": "เปลี่ยนแปลงเมื่อ"
+    },
+    "status": {
+      "1": "System Adjustment - Total Balance",
+      "2": "Internal Transfer - Available Balance",
+      "3": "Money In",
+      "4": "Money In - Withholding Fund",
+      "5": "Money In - Withholding Refund",
+      "6": "Deposit Reward - Profits",
+      "7": "Money In Reward - Profits",
+      "8": "Failed",
+      "11": "System Adjustment - Frozen Balance",
+      "12": "Money Out",
+      "13": "คืนเงิน Money-Out",
+      "14": "Deposit Refund"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "การจัดการบัญชีอ่านอย่างเดียว"
+    },
+    "query": {
+      "nameOrAccount": "ชื่อบัญชี / Login ID"
+    },
+    "fields": {
+      "name": "ชื่อบัญชี",
+      "status": "สถานะการเปิดใช้งานบัญชี",
+      "theLastLoginTimeOrIp": "เวลาเข้าสู่ระบบล่าสุด / IP",
+      "id": "Login ID",
+      "info": "รายละเอียดบัญชี",
+      "resetPassoword": "รีเซ็ตรหัสผ่าน",
+      "resetGoogle2faSecret": "รีเซ็ต Google Authenticator"
+    },
+    "tips": {
+      "changeStatus": "แก้ไขสถานะบัญชี?",
+      "changeGoogle2faStatus": "ยืนยันการเปิด/ปิดใช้งาน Google Authenticator?",
+      "resetPassword": "ยืนยันการรีเซ็ตรหัสผ่าน?",
+      "resetGoogle2faSecret": "ยืนยันการรีเซ็ตคีย์ลับ Google Authenticator?"
+    },
+    "buttons": {
+      "create": "สร้างบัญชีอ่านอย่างเดียว"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "โอนผ่านบัตรธนาคาร",
+    "QR_ALIPAY": "โอน Alipay บัญชีต่อบัญชี",
+    "ZH_ALIPAY": "Alipay Aggregated QR Code",
+    "UNION_QUICK_PASS": "UnionPay QuickPass"
+  },
+  "enable": "เปิดใช้งาน",
+  "disable": "ปิดการใช้งาน",
+  "cancel": "ยกเลิก",
+  "submit": "ส่ง",
+  "status": "สถานะ",
+  "edit": "แก้ไข",
+  "delete": "ลบ",
+  "success": "Success",
+  "createAt": "สร้างเมื่อ",
+  "confirmAt": "เสร็จสิ้นเมื่อ",
+  "lastLoginAt": "เวลาเข้าสู่ระบบล่าสุด",
+  "password": "รหัสผ่าน",
+  "clear": "ล้าง",
+  "google2faSecret": "Google Authenticator",
+  "google2faStatus": "เข้าสู่ระบบด้วยรหัส Google Authenticator",
+  "fee": "ค่าธรรมเนียม",
+  "profit": "กำไร",
+  "export": "ส่งออก",
+  "optional": "ไม่บังคับ",
+  "amount": "จำนวนเงิน",
+  "note": "หมายเหตุ",
+  "logout": "ออกจากระบบ",
+  "create": {
+    "add": "เพิ่ม"
+  },
+  "verificationCode": "รหัส Google Authenticator",
+  "confirmModify": "ยืนยันการแก้ไข?",
+  "ok": "ยืนยัน",
+  "errors": {
+    "tryLater": "เกิดข้อผิดพลาด กรุณาลองอีกครั้งในภายหลัง"
+  }
+}

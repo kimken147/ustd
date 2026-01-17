@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+    install:
+        runtime-versions:
+            nodejs: 16
+        commands:
+            - echo node -v
+            - node -v
+            - echo install yarn
+            - npm install -g yarn
+            - echo yarn -v
+            - yarn -v
+    pre_build:
+        commands:
+            - echo Installing source NPM dependencies...
+            - yarn
+    build:
+        commands:
+            - echo Build started on `date`
+            - echo Compiling the Node.js code
+            - yarn build:${BRANCH}
+    post_build:
+        commands:
+            - echo Build completed on `date`
+            - |
+                if [[ "$BRANCH" == "ark" ]]; then
+                  aws cloudfront create-invalidation --distribution-id E3T7SP09M0WHG --paths '/*';
+                fi
+artifacts:
+    files:
+        - "**/*"
+    base-directory: "build"

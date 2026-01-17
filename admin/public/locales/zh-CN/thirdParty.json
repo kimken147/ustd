@@ -1,0 +1,64 @@
+{
+  "title": "三方管理",
+  "buttons": {
+    "thirdChannelSettings": "三方通道设置"
+  },
+  "filters": {
+    "thirdPartyName": "三方名称",
+    "channelType": "通道类型",
+    "status": "状态",
+    "enabled": "启用",
+    "disabled": "停用",
+    "user": "使用者"
+  },
+  "fields": {
+    "thirdPartyName": "三方名称",
+    "thirdPartyAccount": "三方可用余额",
+    "channel": "通道",
+    "status": "状态",
+    "type": "类型",
+    "collectionAndPayout": "代收付",
+    "collection": "代收",
+    "payout": "代付",
+    "autoPushThresholdMin": "代付自动推送门槛(最小值)",
+    "autoPushThresholdMax": "代付自动推送门槛(最大值)",
+    "customUrlGateway": "自定URL网关",
+    "callbackIp": "回调IP",
+    "thirdPartyMerchantId": "三方商户号",
+    "key": "密钥",
+    "key2": "密钥2",
+    "key3": "密钥3",
+    "thirdChannel": "三方通道",
+    "collectionMinLimit": "收款最小限额",
+    "collectionMaxLimit": "收款最大限额",
+    "feePercent": "费率(%)",
+    "payoutMinLimit": "出款最小限额",
+    "payoutMaxLimit": "出款最大限额",
+    "feeAmount": "费率(元)",
+    "isBatch": "批量",
+    "dailyLimit": "每日限额",
+    "monthlyLimit": "每月限额",
+    "merchantName": "商户名称",
+    "loginAccount": "登录帐号",
+    "sharedThirdPartyLine": "共用三方专线(代收)"
+  },
+  "actions": {
+    "edit": "修改",
+    "batchFeeModification": "批量费率修改",
+    "editStatus": "状态",
+    "editType": "类型",
+    "editCustomUrl": "自定URL网关",
+    "editCallbackIp": "回调IP",
+    "editKey": "密钥",
+    "editKey2": "密钥2",
+    "editKey3": "密钥3",
+    "add": "新增",
+    "editChannel": "修改通道",
+    "addThirdChannel": "新增三方通道",
+    "operation": "操作"
+  },
+  "messages": {
+    "confirmModifyChannel": "确定要修改三方通道？",
+    "confirmDeleteThirdChannel": "确定要删除三方通道？"
+  }
+}

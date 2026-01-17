@@ -1,0 +1,30 @@
+{
+  "title": "Live Status",
+  "fields": {
+    "providerAccount": "Provider Account",
+    "groupAccount": "Group Account",
+    "account": "Account Number",
+    "accountNumber": "ID",
+    "balance": "Account Number Balance",
+    "availableBalance": "Provider Available Balance",
+    "collectionInProgress": "Money-In",
+    "payoutInProgress": "Money-Out",
+    "dailyCollectionLimit": "Daily Money-In Amount Used",
+    "dailyPayoutLimit": "Daily Money-Out Amount Used",
+    "monthlyCollectionLimit": "Monthly Money-In Amount Used",
+    "monthlyPayoutLimit": "Monthly Money-Out Amount Used",
+    "operation": "Execute"
+  },
+  "statistics": {
+    "payoutOrders": "Money-Out Orders"
+  },
+  "queue": {
+    "title": "Queue List",
+    "selectAll": "Select All",
+    "autoRefresh": "Refresh"
+  },
+  "actions": {
+    "offline": "Off",
+    "confirmOffline": "Confirm Connection Status Change to Off?"
+  }
+}

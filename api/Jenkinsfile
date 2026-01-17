@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    triggers {
+        GenericTrigger(
+            genericVariables: [
+              [key: 'ref', value: '$.ref']
+            ],
+            token: 'paufen-api' ,
+            causeString: 'Triggered on $ref' ,
+            printContributedVariables: true,
+            printPostContent: true,
+
+            silentResponse: false,
+
+            regexpFilterText: '$ref',
+            regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
+        )
+    }
+
+    stages {
+        stage('Setting') {
+            steps {
+                sh 'cp .env.example .env'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'composer install'
+            }
+        }
+
+        stage('Zip and upload') {
+            // when {
+            //     expression {
+            //         ref == ''
+            //     }
+            // }
+            steps {
+                sh "echo ${BRANCH_NAME}"
+
+                zip zipFile: "${BRANCH_NAME}.zip"
+
+                dir("${WORKSPACE}"){
+                    withAWS(region: 'ap-northeast-1') {
+                        s3Upload(bucket: 'paufen-deployment/artifacts/api', workingDir: '.', includePathPattern: "${BRANCH_NAME}.zip")
+                    }
+                }
+                sh "rm ${BRANCH_NAME}.zip"
+            }
+        }
+
+        stage('Trigger to deploy') {
+            steps {
+                build job: 'deploy-test-host', parameters: [[$class: 'StringParameterValue', name: 'branch_name', value: "${BRANCH_NAME}"]]
+            }
+        }
+    }
+}

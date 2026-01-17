@@ -1,0 +1,1 @@
+rm -rf application.zip && zip application.zip -r * .[^.]* -x "node_modules/*" -x ".git/*" -x ".idea/*" -x ".DS_Store" -x ".env*" -x ".git*" -x ".editorconfig" -x ".vscode/*" -x "vendor/*" -x "storage/logs/*" -x "tests/*"

@@ -1,0 +1,9 @@
+{
+  "title": "Tag Management",
+  "fields": {
+    "name": "Tag Name"
+  },
+  "buttons": {
+    "create": "Create Tag"
+  }
+}

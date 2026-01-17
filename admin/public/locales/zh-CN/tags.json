@@ -1,0 +1,9 @@
+{
+  "title": "标签管理",
+  "fields": {
+    "name": "名称"
+  },
+  "buttons": {
+    "create": "建立标签"
+  }
+}

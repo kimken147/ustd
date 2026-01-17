@@ -1,0 +1,53 @@
+{
+  "title": "系统设置",
+  "systemSetting": {
+    "title": "系统设置",
+    "listTitle": "设置列表",
+    "fields": {
+      "name": "名称",
+      "note": "备注",
+      "switch": "开关",
+      "settingValue": "设置值",
+      "unit": "单位",
+      "updateTime": "更新时间"
+    },
+    "categories": {
+      "collection": "代收相关",
+      "payout": "代付相关",
+      "accounts": "收付款账号相关",
+      "thirdParty": "三方相关",
+      "admin": "管端相关",
+      "channel": "通道相关"
+    },
+    "actions": {
+      "editSettingValue": "修改设置值"
+    },
+    "messages": {
+      "confirmModify": "确定要修改吗"
+    },
+    "buttons": {
+      "systemSupportBanks": "系统支持银行"
+    }
+  },
+  "bank": {
+    "title": "系统支持银行",
+    "fields": {
+      "bankName": "银行名称"
+    },
+    "actions": {
+      "edit": "修改",
+      "delete": "删除",
+      "create": "建立支持银行",
+      "export": "汇出",
+      "cancel": "取消",
+      "confirm": "确定"
+    },
+    "messages": {
+      "confirmDelete": "确定删除吗？",
+      "deleteSuccess": "删除成功",
+      "editSuccess": "修改成功",
+      "createSuccess": "新增成功",
+      "bankNameWarning": "修改银行名称将影响商户对接，银行名称即为银行代码，请务必通知商户同步更改！"
+    }
+  }
+}

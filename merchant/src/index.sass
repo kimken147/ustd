@@ -1,0 +1,44 @@
+@tailwind base
+@tailwind components
+@tailwind utilities
+
+.ant-btn-default
+    background-color: #fff
+
+.ant-btn-primary
+    background-color: #1677ff
+
+.ant-switch
+    background-color: rgba(0, 0, 0, 0.25)
+
+.anticon
+    @apply inline-flex cursor-pointer
+
+.ant-btn
+    > span
+        @apply inline-flex
+
+.ant-table-thead
+    > tr
+        > th
+            white-space: nowrap
+
+.ant-table-tbody
+    @apply bg-white
+    > tr
+        > td
+            white-space: nowrap
+.ant-modal-root
+    .ant-modal-wrap
+        z-index: 1050
+
+@layer components
+    .popover-edit-list
+        li
+            @apply px-10 py-2 cursor-pointer
+
+            &:hover
+                @apply bg-blue-800 text-slate-50
+    .form-item
+        label
+            color: #fff !important

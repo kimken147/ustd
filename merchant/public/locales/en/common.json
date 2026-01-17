@@ -1,0 +1,282 @@
+{
+  "home": {
+    "title": "Home",
+    "subTitle": {
+      "userInfo": "User Information",
+      "balance": "Wallet Balance",
+      "channel": "Channel Information"
+    },
+    "fields": {
+      "username": "User Name",
+      "password": "Password",
+      "secretKey": "Secret Key",
+      "apiDocument": "API Document",
+      "accountStatus": "Account Activation Status",
+      "agentFunctionStatus": "Agent Status",
+      "verificationKey": "Google Authenticator",
+      "googleVerificationStatus": "Login with Google Authenticator Code",
+      "withrawVerificationStatus": "Money-Out with Google Authenticator Code",
+      "perTrans": " / transaction",
+      "channelName": "Channel Name",
+      "ratePer": "Deposit Fee (%)",
+      "balance": "Wallet Balance",
+      "frozenBalance": "Frozen Balance",
+      "availableBalance": "Available Balance",
+      "withdrawFee": "Withdrawal Fee",
+      "payoutFee": "Payout Fee",
+      "oldPassword": "Old Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "oneTimePassword": "Google Authenticator Code",
+      "google2faQRCode": "Google Authenticator QR Code"
+    },
+    "values": {
+      "download": "Download",
+      "displaySecretKey": "View Secret Key",
+      "changePassword": "Change Password",
+      "resetVerificationKey": "Reset Google Authenticator"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "Confirm Change of Google Authenticator?",
+      "confirmChangeWithdrawVerification": "Confirm Change of Money-Out Google Authenticator Verification?",
+      "confirmChangeGoogleSecertKey": "Confirm Reset of Google Authenticator Secret Key?"
+    },
+    "error": {
+      "passwordNotMatch": "Passwords do not match"
+    }
+  },
+  "collection": {
+    "titles": {
+      "main": "Money In",
+      "list": "Deposit List",
+      "info": "Money-In Order Details"
+    },
+    "fields": {
+      "transactionNo": "Merchant Order Number / System Order Number",
+      "merchantNo": "Merchant ID",
+      "channels": "Channel",
+      "amount": "Order Amount",
+      "transactionStatus": "Order Status",
+      "callbackStatus": "Callback Status",
+      "category": "Category",
+      "queryOrderWithCreateAt": "Filter by Order Created At",
+      "queryOrderWithSucceedAt": "Filter by Order Completed At",
+      "totalNumberOfTransation": "Total Money-In Count",
+      "successRate": "Success Rate",
+      "totalAmountOfTransaction": "Total Money-In Amount",
+      "totalFeeOfTranaction": "Total Money-In Fee",
+      "systemTransactionNo": "System Order Number",
+      "merchantTransactionNo": "Merchant Order Number",
+      "fee": "Fee",
+      "amountPaid": "Actual Amount",
+      "floatingAmount": "Floating Amount",
+      "merchantAndAgentFeeProfitList": "Order Breakdown",
+      "merchantName": "Merchant Name",
+      "realName": "Member Name"
+    },
+    "status": {
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "datePicker": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "lastWeek": "Last week",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "Money Out"
+    },
+    "fields": {
+      "bankCardKeyword": "Bank Card Keyword",
+      "withdrawStatus": "Order Status",
+      "totalNumberOfWithdraw": "Total Money-Out Count",
+      "totalAmountOfWithdraw": "Total Money-Out Amount",
+      "totalFeeOfWithdraw": "Total Money-Out Fee",
+      "balanceOfWithdraw": "Total Balance",
+      "accountOwner": "Recipient Name",
+      "bankName": "Bank Name",
+      "bankAccount": "Account Number",
+      "bankCard": "Bank Card",
+      "province": "Bank Branch",
+      "city": "Bank Branch City",
+      "callbackTime": "Callback Received At",
+      "type": "Money-Out Order Type",
+      "gcashAccount": "GCash Account",
+      "mayaAccount": "Paymaya Account",
+      "alipayAccount": "Alipay Account",
+      "walletAddress": "Wallet Address"
+    },
+    "values": {
+      "withdraw": "Withdrawal",
+      "payout": "Payout"
+    },
+    "buttons": {
+      "createPayment": "Submit Payout",
+      "createWithdraw": "Submit Withdrawal",
+      "banks": "Withdrawal Bank Cards"
+    },
+    "create": {
+      "errors": {
+        "totalAmountExceedsBalance": "Money-Out Amount Exceeds the Available Balance"
+      },
+      "messages": {
+        "success": "Creation Successful"
+      },
+      "fields": {
+        "code": "Google Authenticator Code",
+        "merchantTransactionNo": "Merchant Order Number"
+      },
+      "merchantTransactionNo": "Merchant Order Number",
+      "titles": {
+        "withdraw": "Submit Withdrawal"
+      }
+    },
+    "status": {
+      "review": "Reviewing",
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "Bank Card List"
+    },
+    "fields": {
+      "bankCardKeyword": "Bank Card Keyword",
+      "bankAccount": "Account Number",
+      "accountOwner": "Recipient Name",
+      "bankName": "Bank Name",
+      "edit": "Edit Bank Details"
+    },
+    "buttons": {
+      "create": "Create Withdrawal Account"
+    },
+    "review": {
+      "wait": "Reviewing",
+      "success": "Approved",
+      "fail": "Failed"
+    }
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "Balance History"
+    },
+    "fields": {
+      "alterationCategories": "Type of Change",
+      "totalAmount": "Total Amount",
+      "totalBalanceAlteration": "Total Balance Change",
+      "frozenBalanceAlteration": "Frozen Balance Change",
+      "totalBalanceAfterAlteration": "Total Balance After Change",
+      "frozenBalanceAfterAlteration": "Frozen Balance After Change",
+      "alterationTime": "Changed At"
+    },
+    "status": {
+      "1": "System Adjustment - Total Balance",
+      "2": "Internal Transfer - Available Balance",
+      "3": "Money In",
+      "4": "Money In - Withholding Fund",
+      "5": "Money In - Withholding Refund",
+      "6": "Deposit Reward - Profits",
+      "7": "Money In Reward - Profits",
+      "8": "Failed",
+      "11": "System Adjustment - Frozen Balance",
+      "12": "Money Out",
+      "13": "Money Out Refund",
+      "14": "Deposit Refund"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "Read-Only Account Management"
+    },
+    "query": {
+      "nameOrAccount": "Account Name / Login ID"
+    },
+    "fields": {
+      "name": "Account Name",
+      "status": "Account Activation Status",
+      "theLastLoginTimeOrIp": "Last Login Time / IP",
+      "id": "Login ID",
+      "info": "Account Details",
+      "resetPassoword": "Reset Password",
+      "resetGoogle2faSecret": "Reset Google Authenticator"
+    },
+    "tips": {
+      "changeStatus": "Modify Account Status?",
+      "changeGoogle2faStatus": "Confirm Enable/Disable of Google Authenticator?",
+      "resetPassword": "Confirm Reset of Password?",
+      "resetGoogle2faSecret": "Confirm Reset of Google Authenticator Secret Key?"
+    },
+    "buttons": {
+      "create": "Create Read-Only Account"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "Bank Card Transfer",
+    "QR_ALIPAY": "Alipay Account-to-Account Transfer",
+    "ZH_ALIPAY": "Alipay Aggregated QR Code",
+    "UNION_QUICK_PASS": "UnionPay QuickPass"
+  },
+  "enable": "Enable",
+  "disable": "Disable",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "status": "Status",
+  "edit": "Edit",
+  "delete": "Delete",
+  "success": "Success",
+  "createAt": "Created At",
+  "confirmAt": "Completed At",
+  "lastLoginAt": "Last Login Time",
+  "password": "Password",
+  "clear": "Clear",
+  "google2faSecret": "Google Authenticator",
+  "google2faStatus": "Login with Google Authenticator Code",
+  "fee": "Fee",
+  "profit": "Profit",
+  "export": "Export",
+  "optional": "Optional",
+  "amount": "Amount",
+  "note": "Remarks",
+  "logout": "Log Out",
+  "create": {
+    "add": "Add"
+  },
+  "verificationCode": "Google Authenticator Code",
+  "confirmModify": "Confirm Modification?",
+  "ok": "Confirm",
+  "errors": {
+    "tryLater": "An error occurred. Please try again later"
+  }
+}

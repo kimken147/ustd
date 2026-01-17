@@ -1,0 +1,11 @@
+node_modules
+.git
+.idea
+.vscode
+vendor
+storage/logs/*
+tests
+.env.*
+.git*
+.editorconfig
+.DS_Store

@@ -1,0 +1,103 @@
+{
+  "title": "权限管理",
+  "create": {
+    "title": "建立子帐号",
+    "fields": {
+      "subAccountName": "子帐号名称",
+      "loginAccount": "登录帐号",
+      "accountValidation": "帐号需在4~10字元长度，且为英文开头",
+      "permissionSettings": "权限设置"
+    },
+    "actions": {
+      "submit": "提交"
+    },
+    "messages": {
+      "createSuccess": "建立子帐号成功"
+    }
+  },
+  "list": {
+    "title": "权限管理",
+    "filters": {
+      "subAccountNameOrLogin": "子帐号名称或登录帐号",
+      "permissions": "权限"
+    },
+    "fields": {
+      "subAccountName": "子帐号名称",
+      "accountStatus": "帐号启用状态",
+      "enabled": "启用",
+      "disabled": "停用",
+      "permissionSettings": "权限设置",
+      "lastLoginTime": "最后登录时间/IP",
+      "none": "无"
+    },
+    "buttons": {
+      "loginWhitelist": "登录白名单",
+      "createSubAccount": "建立子帐号"
+    },
+    "subAccountList": "子帐号列表",
+    "messages": {
+      "confirmModifyPermission": "确定要修改权限？"
+    },
+    "modal": {
+      "title": "权限设置",
+      "submit": "提交",
+      "cancel": "取消"
+    }
+  },
+  "show": {
+    "title": "子帐号资讯",
+    "fields": {
+      "subAccountName": "子帐号名称",
+      "loginAccount": "登录帐号",
+      "accountStatus": "帐号启用状态",
+      "googleAuthStatus": "谷歌验证码启用状态",
+      "lastLoginTime": "最后登录时间",
+      "ip": "IP",
+      "permissionSettings": "权限设置",
+      "password": "密码",
+      "googleAuthSecret": "谷歌验证码密钥",
+      "googleAuthQRCode": "谷歌验证码 QR Code",
+      "none": "无"
+    },
+    "actions": {
+      "resetPassword": "重置密码",
+      "resetAuthCode": "重置验证码",
+      "editPermissions": "编辑权限"
+    },
+    "messages": {
+      "confirmModifyAccountStatus": "是否确定修改帐号启用状态？",
+      "confirmModifyGoogleAuthStatus": "是否确定修改谷歌验证码启用状态？",
+      "confirmResetPassword": "是否确定重置密码？",
+      "confirmResetSecret": "是否确定重置谷歌验证码密钥？",
+      "confirmModifyPermission": "确定要修改权限吗？"
+    },
+    "modal": {
+      "title": "编辑权限",
+      "submit": "提交",
+      "cancel": "取消"
+    }
+  },
+  "whitelist": {
+    "title": "管理端登录白名单",
+    "filters": {
+      "nameOrLoginAccount": "名称或登录帐号",
+      "loginWhitelist": "可登录白名单"
+    },
+    "fields": {
+      "name": "名称",
+      "loginAccount": "登录帐号",
+      "loginWhitelist": "可登录白名单",
+      "operation": "操作"
+    },
+    "actions": {
+      "add": "新增",
+      "edit": "修改",
+      "delete": "删除",
+      "editWhitelist": "修改白名单",
+      "addWhitelist": "新增白名单"
+    },
+    "messages": {
+      "confirmDelete": "确定要删除吗？"
+    }
+  }
+}

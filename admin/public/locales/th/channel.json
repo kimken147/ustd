@@ -1,0 +1,38 @@
+{
+  "title": "การจัดการช่องทาง Money-In",
+  "fields": {
+    "channelName": "ชื่อช่องทาง",
+    "channelCode": "รหัสช่องทาง",
+    "amountLimit": "วงเงิน",
+    "amount": "จำนวนเงิน",
+    "amountPlaceholder": "กรุณาใช้เครื่องหมาย (~) เพื่อระบุช่วงจำนวนเงิน",
+    "status": "สถานะ",
+    "matchExpirySwitch": "เปิดใช้งานหมดเวลาจับคู่ออเดอร์ Money-In",
+    "matchTimeout": "ระยะเวลาจำกัดจับคู่ออเดอร์ Money-In",
+    "paymentExpirySwitch": "เปิดใช้งานหมดเวลาชำระเงิน Money-In",
+    "paymentTimeout": "ระยะเวลาจำกัดชำระเงิน Money-In",
+    "realNameSwitch": "ต้องการชื่อจริงของสมาชิก",
+    "noteSwitch": "ข้อความโอนเงิน Money-In",
+    "floatingAmountSwitch": "เปิดใช้งานจำนวนเงินลอยตัว",
+    "floatingAmountRange": "ช่วงจำนวนเงินลอยตัว",
+    "seconds": "วินาที"
+  },
+  "actions": {
+    "editAmount": "แก้ไขจำนวนเงิน",
+    "addAmount": "เพิ่มจำนวนเงิน",
+    "addOne": "เพิ่ม",
+    "delete": "ลบ",
+    "editMatchTimeout": "แก้ไขระยะเวลาจำกัดจับคู่ออเดอร์ Money-In",
+    "editPaymentTimeout": "แก้ไขระยะเวลาจำกัดชำระเงิน Money-In",
+    "editFloatingRange": "แก้ไขช่วงจำนวนเงินลอยตัว"
+  },
+  "messages": {
+    "confirmDeleteAmount": "ยืนยันการลบช่วงจำนวนเงิน Money-In ของช่องทางนี้?",
+    "confirmModifyStatus": "ยืนยันการแก้ไขสถานะ?",
+    "confirmMatchExpirySwitch": "ยืนยันการเปลี่ยนแปลงหมดเวลาจับคู่ออเดอร์ Money-In?",
+    "confirmPaymentExpirySwitch": "ยืนยันการเปลี่ยนแปลงหมดเวลาชำระเงิน Money-In?",
+    "confirmRealNameSwitch": "ยืนยันการเปลี่ยนแปลงความต้องการชื่อจริงของสมาชิก?",
+    "confirmNoteSwitch": "ยืนยันการเปลี่ยนแปลงการตั้งค่าข้อความโอนเงิน Money-In?",
+    "confirmFloatingSwitch": "ยืนยันการเปลี่ยนแปลงการตั้งค่าจำนวนเงินลอยตัว?"
+  }
+}

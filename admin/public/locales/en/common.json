@@ -1,0 +1,498 @@
+{
+  "home": {
+    "title": "Home",
+    "subTitle": {
+      "userInfo": "User Information",
+      "balance": "Balance Information",
+      "channel": "Channel Information"
+    },
+    "fields": {
+      "username": "User Name",
+      "password": "Password",
+      "secretKey": "Secret Key",
+      "apiDocument": "API Document",
+      "accountStatus": "Account Activation Status",
+      "agentFunctionStatus": "Agent Status",
+      "verificationKey": "Google Authenticator",
+      "googleVerificationStatus": "Login with Google Authenticator Code",
+      "withdrawVerificationStatus": "Money-Out with Google Authenticator Code",
+      "perTrans": " / transaction",
+      "channelName": "Channel Name",
+      "ratePer": "Fee (%)",
+      "balance": "Total Balance",
+      "frozenBalance": "Frozen Balance",
+      "availableBalance": "Available Balance",
+      "withdrawFee": "Withdrawal Fee",
+      "payoutFee": "Payout Fee",
+      "oldPassword": "Old Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "oneTimePassword": "Google Authenticator Code",
+      "google2faQRCode": "Google Authenticator QR Code"
+    },
+    "values": {
+      "download": "Download",
+      "displaySecretKey": "View Secret Key",
+      "changePassword": "Change Password",
+      "resetVerificationKey": "Reset Google Authenticator"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "Confirm Change of Google Authenticator?",
+      "confirmChangeWithdrawVerification": "Confirm Change of Money-Out Google Authenticator Verification?",
+      "confirmChangeGoogleSecretKey": "Confirm Reset of Google Authenticator Secret Key?",
+      "pleaseEnterOldPassword": "Enter Old Password",
+      "pleaseEnterNewPassword": "Enter New Password"
+    },
+    "error": {
+      "passwordNotMatch": "Passwords do not match",
+      "enterGoogleAuth": "Please enter Google verification code"
+    }
+  },
+  "tagsPage": {
+    "title": "Tag Management",
+    "fields": {
+      "name": "Name",
+      "label": "Tag"
+    },
+    "buttons": {
+      "create": "Create Tag"
+    },
+    "updateSuccess": "Tag Modification Successful"
+  },
+  "collection": {
+    "titles": {
+      "main": "Money-In",
+      "list": "Money-In List",
+      "info": "Money-In Order Details"
+    },
+    "fields": {
+      "transactionNo": "Merchant Order Number / System Order Number",
+      "merchantNo": "Merchant ID",
+      "channels": "Channel",
+      "amount": "Order Amount",
+      "transactionStatus": "Order Status",
+      "callbackStatus": "Callback Status",
+      "category": "Category",
+      "queryOrderWithCreateAt": "Filter by Order Created At",
+      "queryOrderWithSucceedAt": "Filter by Order Completed At",
+      "totalNumberOfTransation": "Total Money-In Count",
+      "successRate": "Success Rate",
+      "totalAmountOfTransaction": "Total Money-In Amount",
+      "totalFeeOfTranaction": "Total Money-In Fee",
+      "systemTransactionNo": "System Order Number",
+      "merchantTransactionNo": "Merchant Order Number",
+      "fee": "Fee",
+      "amountPaid": "Actual Amount",
+      "floatingAmount": "Floating Amount",
+      "merchantAndAgentFeeProfitList": "Order Breakdown",
+      "merchantName": "Merchant Name",
+      "realName": "Name"
+    },
+    "status": {
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "notifying": "Notifying",
+      "notified": "Notified",
+      "success": "Success",
+      "failed": "Failed",
+      "thirdPartyProcessing": "Third-Party Processing"
+    }
+  },
+  "datePicker": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This Week",
+    "lastWeek": "Last week",
+    "thisMonth": "This Month",
+    "lastMonth": "Last month",
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "Money Out"
+    },
+    "fields": {
+      "bankCardKeyword": "Bank Card Keyword",
+      "withdrawStatus": "Order Status",
+      "totalNumberOfWithdraw": "Total Money-Out Count",
+      "totalAmountOfWithdraw": "Total Money-Out Amount",
+      "totalFeeOfWithdraw": "Total Money-Out Fee",
+      "balanceOfWithdraw": "Total Balance",
+      "accountOwner": "Recipient Name",
+      "bankName": "Bank Name",
+      "bankAccount": "Account Number",
+      "bankCard": "Bank Card",
+      "province": "Bank Branch",
+      "city": "Bank Branch City",
+      "callbackTime": "Callback Received At",
+      "type": "Money-Out Order Type"
+    },
+    "values": {
+      "withdraw": "Withdrawal",
+      "payout": "Payout"
+    },
+    "buttons": {
+      "createPayment": "Submit Payout",
+      "createWithdraw": "Submit Withdrawal",
+      "banks": "Withdrawal Bank Cards"
+    },
+    "create": {
+      "errors": {},
+      "messages": {
+        "success": "Creation Successful"
+      },
+      "fields": {
+        "code": "Google Authenticator Code",
+        "merchantTransactionNo": "Merchant Order Number"
+      },
+      "merchantTransactionNo": "Merchant Order Number",
+      "titles": {
+        "withdraw": "Submit Withdrawal"
+      }
+    },
+    "status": {
+      "review": "Reviewing",
+      "established": "Created",
+      "matching": "Matching",
+      "paying": "Processing",
+      "success": "Success",
+      "manualSuccess": "Success(Manual)",
+      "matchedTimeout": "Matching Timeout",
+      "paidTimeout": "Timeout",
+      "fail": "Failed"
+    },
+    "callbackStatus": {
+      "notNotified": "Not Sent",
+      "wait": "Pending",
+      "sending": "Sending",
+      "fail": "Failed",
+      "success": "Success"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "Bank Card List",
+      "merchantList": "Withdrawal Bank Card List",
+      "merchantProviderList": "Merchant / Provider Withdrawal Bank Card List"
+    },
+    "fields": {
+      "bankCardKeyword": "Bank Card Keyword",
+      "bankAccount": "Account Number",
+      "accountOwner": "Recipient Name",
+      "bankName": "Bank Name",
+      "cardNumber": "Account Number",
+      "userName": "User Name",
+      "status": "Status",
+      "nameOrUsername": "Account Name / Login ID",
+      "edit": "Edit Bank Details"
+    },
+    "buttons": {
+      "create": "Create Withdrawal Account"
+    },
+    "review": {
+      "wait": "Reviewing",
+      "success": "Approved",
+      "fail": "Failed"
+    },
+    "confirmChangeStatus": "Confirm Modification of Status?",
+    "confirmDelete": "Confirm Deletion of This Bank Card: {{cardNumber}} ?"
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "Balance History"
+    },
+    "fields": {
+      "alterationCategories": "Type of Change",
+      "totalAmount": "Total Amount",
+      "totalBalanceAlteration": "Total Balance Change",
+      "frozenBalanceAlteration": "Frozen Balance Change",
+      "totalBalanceAfterAlteration": "Total Balance After Change",
+      "frozenBalanceAfterAlteration": "Frozen Balance After Change",
+      "alterationTime": "Change Time"
+    },
+    "status": {
+      "1": "System Adjustment - Total Balance",
+      "2": "Internal Transfer - Available Balance",
+      "3": "Money In",
+      "4": "Money In - Withholding Fund",
+      "5": "Money In - Withholding Refund",
+      "6": "Deposit Reward",
+      "7": "Money In Reward",
+      "8": "Failed",
+      "11": "System Adjustment - Frozen Balance",
+      "12": "Money Out",
+      "13": "Money-Out Refund",
+      "14": "Money-In Refund",
+      "systemAdjustment": "System Adjustment - Total Balance",
+      "balanceTransfer": "Internal Transfer - Available Balance",
+      "deposit": "Money In",
+      "preDeduct": "Money In - Withholding Fund",
+      "preDeductRefund": "Money In - Withholding Refund",
+      "fastChargeRewardProfit": "Deposit Reward - Profits",
+      "transactionRewardProfit": "Money In Reward - Profits",
+      "depositDeductFrozen": "Deposit - Deduct Frozen Balance",
+      "depositProfit": "Money In - Profits",
+      "systemAdjustmentProfit": "System Adjustment - Profits",
+      "systemAdjustmentFrozen": "System Adjustment - Frozen Balance",
+      "withdraw": "Money Out",
+      "withdrawRefund": "Money-Out Refund",
+      "depositRefund": "Money-In Refund"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "Read-Only Account Management"
+    },
+    "query": {
+      "nameOrAccount": "Account Name / Login ID"
+    },
+    "fields": {
+      "name": "Account Name",
+      "status": "Account Activation Status",
+      "theLastLoginTimeOrIp": "Last Login Time / IP",
+      "id": "Login ID",
+      "info": "Account Details",
+      "resetPassoword": "Reset Password",
+      "resetGoogle2faSecret": "Reset Google Authenticator"
+    },
+    "tips": {
+      "changeStatus": "Confirm Change of Account Activation Status?",
+      "changeGoogle2faStatus": "Confirm Change of Google Authenticator?",
+      "resetPassword": "Confirm Reset of Password?",
+      "resetGoogle2faSecret": "Confirm Reset of Google Authenticator Secret Key?"
+    },
+    "buttons": {
+      "create": "Create Read-Only Account"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "Bank Card Transfer",
+    "QR_ALIPAY": "Alipay Account-to-Account Transfer",
+    "ZH_ALIPAY": "Alipay Aggregated QR Code",
+    "UNION_QUICK_PASS": "UnionPay QuickPass"
+  },
+  "enable": "Enable",
+  "disable": "Disable",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "edit": "Edit",
+  "delete": "Delete",
+  "success": "Success",
+  "createAt": "Created At",
+  "confirmAt": "Completed At",
+  "lastLoginAt": "Last Login Time",
+  "password": "Password",
+  "clear": "Clear",
+  "google2faSecret": "Google Authenticator",
+  "google2faStatus": "Login with Google Authenticator Code",
+  "fee": "Fee",
+  "profit": "Profit",
+  "export": "Export",
+  "optional": "Optional",
+  "amount": "Amount",
+  "note": "Remarks",
+  "logout": "Log Out",
+  "operation": "Execute",
+  "type": "Transaction Mode",
+  "add": "Increase",
+  "minus": "Decrease",
+  "create": "Add",
+  "resetPassword": "Reset Password",
+  "wallet": {
+    "withdrawFee": "Money-Out Fee"
+  },
+  "tips": {
+    "confirmDelete": "Confirm Deletion?"
+  },
+  "verificationCode": "Google Authenticator Code",
+  "updateSuccess": "Modification Successful",
+  "createSuccess": "Add Successful",
+  "deleteSuccess": "Deletion Successful",
+  "confirmModify": "Confirm Modification?",
+  "ok": "Confirm",
+  "errors": {
+    "tryLater": "An error occurred. Please try again later"
+  },
+  "buttons": {
+    "create": "Create",
+    "save": "Save",
+    "logout": "Log Out",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "filter": "Filter",
+    "clear": "Clear",
+    "refresh": "Refresh",
+    "show": "Show",
+    "undo": "Undo",
+    "import": "Import",
+    "export": "Export",
+    "clone": "Duplicate",
+    "notAccessTitle": "Access Denied",
+    "accept": "Accept",
+    "reject": "Accept"
+  },
+  "warnWhenUnsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "undoable": "You have {{seconds}} seconds to undo",
+    "createSuccess": "{{resource}} created successfully",
+    "createError": "Error creating {{resource}} (Status Code: {{statusCode}})",
+    "deleteSuccess": "{{resource}} deleted successfully",
+    "deleteError": "Error deleting {{resource}} (Status Code: {{statusCode}})",
+    "editSuccess": "{{resource}} updated successfully",
+    "editError": "Error updating {{resource}} (Status Code: {{statusCode}})",
+    "importProgress": "Importing: {{processed}} / {{total}} processed"
+  },
+  "loading": "Importing: {{processed}} / {{total}} processed",
+  "tags": {
+    "clone": "Duplicate"
+  },
+  "dashboard": {
+    "title": "Duplicate"
+  },
+  "table": {
+    "actions": "Execute"
+  },
+  "search": {
+    "placeholder": "Search...",
+    "more": "More"
+  },
+  "status": {
+    "enable": "Enabled",
+    "disable": "Disabled"
+  },
+  "pages": {
+    "login": {
+      "title": "Log In to Your Account",
+      "signin": "Log In",
+      "signup": "Sign Up",
+      "divider": "OR",
+      "fields": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "errors": {
+        "validEmail": "Invalid email address"
+      },
+      "buttons": {
+        "submit": "Log In",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "rememberMe": "Remember me"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password?",
+      "fields": {
+        "email": "Email"
+      },
+      "errors": {
+        "validEmail": "Invalid email address"
+      },
+      "buttons": {
+        "submit": "Send Reset Instructions"
+      }
+    },
+    "register": {
+      "title": "Sign up for your account",
+      "fields": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "errors": {
+        "validEmail": "Invalid email address"
+      },
+      "buttons": {
+        "submit": "Sign up",
+        "haveAccount": "Already have an account?"
+      }
+    },
+    "updatePassword": {
+      "title": "Update password",
+      "fields": {
+        "password": "New password",
+        "confirmPassword": "Confirm new password"
+      },
+      "errors": {
+        "confirmPasswordNotMatch": "Passwords don't match"
+      },
+      "buttons": {
+        "submit": "Update"
+      }
+    },
+    "error": {
+      "info": "You may have forgotten to add {{action}} component to {{resource}} resource.",
+      "404": "Sorry, the page you visited does not exist.",
+      "resource404": "Are you sure you created the {{resource}} resource?",
+      "backHome": "Back to Home"
+    }
+  },
+  "actions": {
+    "list": "List",
+    "create": "Create",
+    "edit": "Edit",
+    "show": "Details"
+  },
+  "documentTitle": {
+    "default": "Refine",
+    "suffix": " | Refine",
+    "posts": {
+      "list": "Posts",
+      "show": "#{{id}} Post Details",
+      "edit": "#{{id}} Edit Post",
+      "create": "Create New Post",
+      "clone": "Duplicate Post"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "tags": "Tag Management",
+    "providerManagement": "Provider Management",
+    "whiteList": "Allowlist",
+    "providerBalanceAdjustment": "Provider Balance Adjusting History",
+    "providerWalletHistory": "Balance History",
+    "merchantManagement": "Merchant Management",
+    "apiWhiteList": "API IP Allowlist",
+    "bannedList": "Blacklist",
+    "merchantWalletHistory": "Balance History",
+    "merchantBalanceAdjustment": "Merchant Balance Adjusting History",
+    "paymentAccountManagement": "Transaction Account Management",
+    "transactionManagement": "Transaction Management",
+    "collection": "Money In",
+    "payment": "Money Out",
+    "providerDeposit": "Provider Deposit Management",
+    "systemBankCard": "System Bank Card for Provider Deposits",
+    "quickDepositReward": "Deposit Reward",
+    "sms": "SMS",
+    "fundManagement": "Internal Transfer Management",
+    "childWithdrawSplit": "Money-Out Order Split",
+    "merchantBankCardList": "Withdrawal Bank Card List",
+    "liveStatus": "Live Transaction Status",
+    "financeReport": "Financial Statements",
+    "groupManagement": "Group Management",
+    "collectionLine": "Money-In Direct Line",
+    "channelManagement": "Money-In Channel Management",
+    "thirdPartyManagement": "Third-Party Management",
+    "systemSettings": "System Settings",
+    "supportedBanks": "Supported Banks",
+    "permissionManagement": "Permission Management",
+    "adminLoginWhiteList": "Administrator Login IP Allowlist"
+  },
+  "validation": {
+    "required": "Required"
+  },
+  "autoRefresh": "Refresh"
+}

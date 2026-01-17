@@ -1,0 +1,17 @@
+{
+    "AWSEBDockerrunVersion": "1",
+    "Volumes": [
+        {
+            "HostDirectory": "/var/log/containers/laravel",
+            "ContainerDirectory": "/var/www/storage/logs",
+            "Permissions": "775"
+        }
+    ],
+    "Logging": "/var/log/containers/laravel",
+    "Ports": [
+        {
+            "ContainerPort": "9001",
+            "HostPort": "80"
+        }
+    ]
+}

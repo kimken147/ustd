@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      php: 7.4
+    commands:
+      - curl -sS https://getcomposer.org/installer -o composer-setup.php
+      - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  pre_build:
+    on-failure: CONTINUE
+    commands:
+      - composer install
+
+artifacts:
+  files:
+    - "**/*"
+  exclude-paths:
+    - node_modules/*
+    - .git/*
+    - .idea/*
+    - .DS_Store
+    - .env*
+    - .git*
+    - .editorconfig
+    - .vscode/*
+    - storage/logs/*
+    - tests/*
+  name: $(date +%Y-%m-%dT%H:%M:%S).zip

@@ -1,0 +1,64 @@
+{
+  "title": "การจัดการช่องทางภายนอก",
+  "buttons": {
+    "thirdChannelSettings": "การตั้งค่าบริการช่องทางภายนอก"
+  },
+  "filters": {
+    "thirdPartyName": "ชื่อช่องทางภายนอก",
+    "channelType": "ช่องทาง",
+    "status": "สถานะ",
+    "enabled": "เปิดใช้งาน",
+    "disabled": "ปิดใช้งาน",
+    "user": "ผู้ใช้"
+  },
+  "fields": {
+    "thirdPartyName": "ชื่อช่องทางภายนอก",
+    "thirdPartyAccount": "รหัสพ่อค้าช่องทางภายนอก",
+    "channel": "ช่องทาง",
+    "status": "สถานะ",
+    "type": "โหมดธุรกรรม",
+    "collectionAndPayout": "Money-In / Money-Out",
+    "collection": "Money-In",
+    "payout": "Money-Out",
+    "autoPushThresholdMin": "เกณฑ์การส่ง Money-Out อัตโนมัติ(ขั้นต่ำ)",
+    "autoPushThresholdMax": "เกณฑ์การส่ง Money-Out อัตโนมัติ(สูงสุด)",
+    "customUrlGateway": "โฮสต์ช่องทางภายนอก",
+    "callbackIp": "IP Callback",
+    "thirdPartyMerchantId": "รหัสพ่อค้าช่องทางภายนอก",
+    "key": "คีย์ลับ",
+    "key2": "คีย์ลับ2",
+    "key3": "คีย์ลับ3",
+    "thirdChannel": "ช่องทางภายนอก",
+    "collectionMinLimit": "จำนวนเงิน Money-In ขั้นต่ำ",
+    "collectionMaxLimit": "จำนวนเงิน Money-In สูงสุด",
+    "feePercent": "ค่าธรรมเนียม (%)",
+    "payoutMinLimit": "จำนวนเงิน Money-Out ขั้นต่ำ",
+    "payoutMaxLimit": "จำนวนเงิน Money-Out สูงสุด",
+    "feeAmount": "จำนวนค่าธรรมเนียม",
+    "isBatch": "แบทช์",
+    "dailyLimit": "วงเงินรายวัน",
+    "monthlyLimit": "วงเงินรายเดือน",
+    "merchantName": "ชื่อพ่อค้า",
+    "loginAccount": "Login ID",
+    "sharedThirdPartyLine": "เปิดใช้งานการสุ่มกำหนดออเดอร์ Money-In (ผู้ให้บริการรับเงินหรือช่องทางภายนอก)"
+  },
+  "actions": {
+    "edit": "แก้ไข",
+    "batchFeeModification": "แก้ไขค่าธรรมเนียมแบบกลุ่ม",
+    "editStatus": "สถานะ",
+    "editType": "โหมดธุรกรรม",
+    "editCustomUrl": "โฮสต์ช่องทางภายนอก",
+    "editCallbackIp": "IP Callback",
+    "editKey": "คีย์ลับ",
+    "editKey2": "คีย์ลับ2",
+    "editKey3": "คีย์ลับ3",
+    "add": "เพิ่ม",
+    "editChannel": "แก้ไขช่องทาง",
+    "addThirdChannel": "เพิ่มช่องทางภายนอก",
+    "operation": "ดำเนินการ"
+  },
+  "messages": {
+    "confirmModifyChannel": "ยืนยันการแก้ไขช่องทางภายนอกนี้?",
+    "confirmDeleteThirdChannel": "ยืนยันการลบช่องทางภายนอกนี้?"
+  }
+}

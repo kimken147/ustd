@@ -1,0 +1,30 @@
+{
+  "title": "即时现况",
+  "fields": {
+    "providerAccount": "码商账号",
+    "groupAccount": "群组账号",
+    "account": "账号",
+    "accountNumber": "账号编号",
+    "balance": "余额",
+    "availableBalance": "可用余额",
+    "collectionInProgress": "收款中(单)",
+    "payoutInProgress": "出款中(单)",
+    "dailyCollectionLimit": "每日收款额度/已收额度",
+    "dailyPayoutLimit": "每日出款额度/已出额度",
+    "monthlyCollectionLimit": "每月收款额度/已收额度",
+    "monthlyPayoutLimit": "每月出款额度/已出额度",
+    "operation": "操作"
+  },
+  "statistics": {
+    "payoutOrders": "出款单"
+  },
+  "queue": {
+    "title": "排队列表",
+    "selectAll": "全选",
+    "autoRefresh": "自动刷新"
+  },
+  "actions": {
+    "offline": "下线",
+    "confirmOffline": "确定要让此账号下线?"
+  }
+}

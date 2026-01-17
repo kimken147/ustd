@@ -1,0 +1,498 @@
+{
+  "home": {
+    "title": "首页",
+    "subTitle": {
+      "userInfo": "使用者资讯",
+      "balance": "钱包余额",
+      "channel": "通道资讯"
+    },
+    "fields": {
+      "username": "使用者名称",
+      "password": "密码",
+      "secretKey": "密钥",
+      "apiDocument": "API对接文档",
+      "accountStatus": "帐号启用状态",
+      "agentFunctionStatus": "代理功能启用状态",
+      "verificationKey": "谷歌验证码密钥",
+      "googleVerificationStatus": "谷歌验证码启用状态",
+      "withdrawVerificationStatus": "提现验证码启用开关",
+      "perTrans": "元/笔",
+      "channelName": "通道名称",
+      "ratePer": "费率(%)",
+      "balance": "钱包余额",
+      "frozenBalance": "冻结余额",
+      "availableBalance": "可用余额",
+      "withdrawFee": "下发手续费",
+      "payoutFee": "代付手续费",
+      "oldPassword": "旧密码",
+      "newPassword": "新密码",
+      "confirmPassword": "再次输入新密码",
+      "oneTimePassword": "验证码",
+      "google2faQRCode": "谷歌验证码 QR Code"
+    },
+    "values": {
+      "download": "下载",
+      "displaySecretKey": "显示密钥",
+      "changePassword": "更改密码",
+      "resetVerificationKey": "重置验证码密钥"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "确定要修改谷歌验证码启用状态？",
+      "confirmChangeWithdrawVerification": "确定要修改提现验证码启用开关？",
+      "confirmChangeGoogleSecretKey": "确定要重置验证码密钥？",
+      "pleaseEnterOldPassword": "请输入旧密码",
+      "pleaseEnterNewPassword": "请输入新密码"
+    },
+    "error": {
+      "passwordNotMatch": "两次密码输入不一致",
+      "enterGoogleAuth": "请输入google验证码"
+    }
+  },
+  "tagsPage": {
+    "title": "标签管理",
+    "fields": {
+      "name": "名称",
+      "label": "标签"
+    },
+    "buttons": {
+      "create": "建立标签"
+    },
+    "updateSuccess": "標籤更新成功"
+  },
+  "collection": {
+    "titles": {
+      "main": "代收",
+      "list": "代收列表",
+      "info": "代收资讯"
+    },
+    "fields": {
+      "transactionNo": "商户订单号或系统订单号",
+      "merchantNo": "商户号",
+      "channels": "通道",
+      "amount": "订单金额",
+      "transactionStatus": "订单状态",
+      "callbackStatus": "回调状态",
+      "category": "分类",
+      "queryOrderWithCreateAt": "以订单建立时间",
+      "queryOrderWithSucceedAt": "以订单成功时间",
+      "totalNumberOfTransation": "交易总笔数",
+      "successRate": "成功率",
+      "totalAmountOfTransaction": "交易总金额",
+      "totalFeeOfTranaction": "交易总手续费",
+      "systemTransactionNo": "系统订单号",
+      "merchantTransactionNo": "商户订单号",
+      "fee": "手续费",
+      "amountPaid": "实付金额",
+      "floatingAmount": "浮动金额",
+      "merchantAndAgentFeeProfitList": "商户及商户代理手续费、利润列表",
+      "merchantName": "商户名称",
+      "realName": "姓名"
+    },
+    "status": {
+      "established": "已建立",
+      "matching": "匹配中",
+      "paying": "等待付款",
+      "success": "成功",
+      "manualSuccess": "手动成功",
+      "matchedTimeout": "匹配超时",
+      "paidTimeout": "付款超时",
+      "fail": "失败"
+    },
+    "callbackStatus": {
+      "notNotified": "未通知",
+      "notifying": "通知中",
+      "notified": "已通知",
+      "success": "成功",
+      "failed": "失败",
+      "thirdPartyProcessing": "三方处理中"
+    }
+  },
+  "datePicker": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "thisWeek": "本週",
+    "lastWeek": "上週",
+    "thisMonth": "本月",
+    "lastMonth": "上月",
+    "startDate": "开始日期",
+    "endDate": "结束日期"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "代付/下发"
+    },
+    "fields": {
+      "bankCardKeyword": "银行卡关键字",
+      "withdrawStatus": "订单状态",
+      "totalNumberOfWithdraw": "代付总笔数",
+      "totalAmountOfWithdraw": "代付总金额",
+      "totalFeeOfWithdraw": "代付总手续费",
+      "balanceOfWithdraw": "商户总余额",
+      "accountOwner": "持卡人名称",
+      "bankName": "银行名称",
+      "bankAccount": "银行卡号",
+      "bankCard": "银行卡",
+      "province": "开户省",
+      "city": "开户市",
+      "callbackTime": "回调时间",
+      "type": "代付类型"
+    },
+    "values": {
+      "withdraw": "下发",
+      "payout": "代付"
+    },
+    "buttons": {
+      "createPayment": "建立代付",
+      "createWithdraw": "建立下发",
+      "banks": "下发银行卡"
+    },
+    "create": {
+      "errors": {},
+      "messages": {
+        "success": "建立成功"
+      },
+      "fields": {
+        "code": "验证码",
+        "merchantTransactionNo": "商户订单号"
+      },
+      "merchantTransactionNo": "商户订单号",
+      "titles": {
+        "withdraw": "建立下发"
+      }
+    },
+    "status": {
+      "review": "审核中",
+      "established": "已建立",
+      "matching": "匹配中",
+      "paying": "等待付款",
+      "success": "成功",
+      "manualSuccess": "手动成功",
+      "matchedTimeout": "匹配超时",
+      "paidTimeout": "付款超时",
+      "fail": "失败"
+    },
+    "callbackStatus": {
+      "notNotified": "未通知",
+      "wait": "等待发送",
+      "sending": "发送中",
+      "fail": "失败",
+      "success": "成功"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "银行卡列表",
+      "merchantList": "商户银行卡列表",
+      "merchantProviderList": "商户 / 码商银行卡列表"
+    },
+    "fields": {
+      "bankCardKeyword": "银行卡关键字",
+      "bankAccount": "银行卡号",
+      "accountOwner": "持卡人名称",
+      "bankName": "银行名称",
+      "cardNumber": "卡号",
+      "userName": "使用者名称",
+      "status": "状态",
+      "nameOrUsername": "名称或登录帐号",
+      "edit": "修改银行卡"
+    },
+    "buttons": {
+      "create": "建立银行卡"
+    },
+    "review": {
+      "wait": "审核中",
+      "success": "审核成功",
+      "fail": "审核失败"
+    },
+    "confirmChangeStatus": "确定要更改状态？",
+    "confirmDelete": "是否确定删除卡号:{{cardNumber}}"
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "流水纪录"
+    },
+    "fields": {
+      "alterationCategories": "变动类型",
+      "totalAmount": "总计金额",
+      "totalBalanceAlteration": "总余额变动",
+      "frozenBalanceAlteration": "冻结余额变动",
+      "totalBalanceAfterAlteration": "变动后总余额",
+      "frozenBalanceAfterAlteration": "变动后冻结余额",
+      "alterationTime": "变动时间"
+    },
+    "status": {
+      "1": "系统调整",
+      "2": "余额转赠",
+      "3": "入帐",
+      "4": "预扣",
+      "5": "预扣退款",
+      "6": "快充奖励",
+      "7": "交易奖励",
+      "8": "失败",
+      "11": "系统调整(冻结)",
+      "12": "提现",
+      "13": "提现退款",
+      "14": "入帐退款",
+      "systemAdjustment": "系统调整",
+      "balanceTransfer": "余额转赠",
+      "deposit": "入帐",
+      "preDeduct": "预扣",
+      "preDeductRefund": "预扣退款",
+      "fastChargeRewardProfit": "快充奖励(红利)",
+      "transactionRewardProfit": "交易奖励(红利)",
+      "depositDeductFrozen": "入帐(扣冻结)",
+      "depositProfit": "入帐(红利)",
+      "systemAdjustmentProfit": "系统调整(红利)",
+      "systemAdjustmentFrozen": "系统调整(冻结)",
+      "withdraw": "提现",
+      "withdrawRefund": "提现退款",
+      "depositRefund": "入帐退款"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "子帐号管理"
+    },
+    "query": {
+      "nameOrAccount": "子帐号名称或登录帐号"
+    },
+    "fields": {
+      "name": "子帐号名称",
+      "status": "帐户启用状态",
+      "theLastLoginTimeOrIp": "最后登录时间 / IP",
+      "id": "登录帐号",
+      "info": "子帐号资讯",
+      "resetPassoword": "重置密码",
+      "resetGoogle2faSecret": "重置谷歌验证码密钥"
+    },
+    "tips": {
+      "changeStatus": "修改帐户状态",
+      "changeGoogle2faStatus": "修改谷歌验证码启用状态",
+      "resetPassword": "重置密码？",
+      "resetGoogle2faSecret": "重置谷歌验证码密钥？"
+    },
+    "buttons": {
+      "create": "建立子帐号"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "卡对卡",
+    "QR_ALIPAY": "支转支",
+    "ZH_ALIPAY": "支付宝聚合码",
+    "UNION_QUICK_PASS": "银联快捷"
+  },
+  "enable": "启用",
+  "disable": "停用",
+  "cancel": "取消",
+  "submit": "提交",
+  "edit": "修改",
+  "delete": "删除",
+  "success": "成功",
+  "createAt": "建立时间",
+  "confirmAt": "成功时间",
+  "lastLoginAt": "最后登录时间",
+  "password": "密码",
+  "clear": "清空",
+  "google2faSecret": "谷歌验证码密钥",
+  "google2faStatus": "谷歌验证码启用状态",
+  "fee": "手续费",
+  "profit": "利润",
+  "export": "汇出",
+  "optional": "选填",
+  "amount": "金额",
+  "note": "备注",
+  "logout": "登出",
+  "operation": "操作",
+  "type": "类型",
+  "add": "增加",
+  "minus": "减少",
+  "create": "新增",
+  "resetPassword": "重置密码",
+  "wallet": {
+    "withdrawFee": "提现手续费"
+  },
+  "tips": {
+    "confirmDelete": "确定要删除吗"
+  },
+  "verificationCode": "验证码",
+  "updateSuccess": "更新成功",
+  "createSuccess": "新增成功",
+  "deleteSuccess": "删除成功",
+  "confirmModify": "是否确定修改",
+  "ok": "确定",
+  "errors": {
+    "tryLater": "发生错误！请稍后再试"
+  },
+  "buttons": {
+    "create": "创建",
+    "save": "保存",
+    "logout": "登出",
+    "delete": "删除",
+    "edit": "编辑",
+    "cancel": "取消",
+    "confirm": "确认",
+    "filter": "筛选",
+    "clear": "清除",
+    "refresh": "刷新",
+    "show": "显示",
+    "undo": "撤销",
+    "import": "导入",
+    "export": "导出",
+    "clone": "克隆",
+    "notAccessTitle": "无权访问",
+    "accept": "接受",
+    "reject": "拒绝"
+  },
+  "warnWhenUnsavedChanges": "您有未保存的更改，确定要离开吗？",
+  "notifications": {
+    "success": "成功",
+    "error": "错误",
+    "undoable": "您有 {{seconds}} 秒撤销",
+    "createSuccess": "成功创建 {{resource}}",
+    "createError": "创建 {{resource}} 时出错（状态码：{{statusCode}}）",
+    "deleteSuccess": "成功删除 {{resource}}",
+    "deleteError": "删除 {{resource}} 时出错（状态码：{{statusCode}}）",
+    "editSuccess": "成功编辑 {{resource}}",
+    "editError": "编辑 {{resource}} 时出错（状态码：{{statusCode}}）",
+    "importProgress": "正在导入：已处理 {{processed}}/{{total}}"
+  },
+  "loading": "加载中",
+  "tags": {
+    "clone": "克隆"
+  },
+  "dashboard": {
+    "title": "仪表盘"
+  },
+  "table": {
+    "actions": "操作"
+  },
+  "search": {
+    "placeholder": "搜索...",
+    "more": "更多"
+  },
+  "status": {
+    "enable": "启用",
+    "disable": "禁用"
+  },
+  "pages": {
+    "login": {
+      "title": "登录到您的账户",
+      "signin": "登录",
+      "signup": "注册",
+      "divider": "或",
+      "fields": {
+        "email": "邮箱",
+        "password": "密码"
+      },
+      "errors": {
+        "validEmail": "无效的邮箱地址"
+      },
+      "buttons": {
+        "submit": "登录",
+        "forgotPassword": "忘记密码？",
+        "noAccount": "还没有账户？",
+        "rememberMe": "记住我"
+      }
+    },
+    "forgotPassword": {
+      "title": "忘记密码？",
+      "fields": {
+        "email": "邮箱"
+      },
+      "errors": {
+        "validEmail": "无效的邮箱地址"
+      },
+      "buttons": {
+        "submit": "发送重置指令"
+      }
+    },
+    "register": {
+      "title": "注册您的账户",
+      "fields": {
+        "email": "邮箱",
+        "password": "密码"
+      },
+      "errors": {
+        "validEmail": "无效的邮箱地址"
+      },
+      "buttons": {
+        "submit": "注册",
+        "haveAccount": "已有账户？"
+      }
+    },
+    "updatePassword": {
+      "title": "更新密码",
+      "fields": {
+        "password": "新密码",
+        "confirmPassword": "确认新密码"
+      },
+      "errors": {
+        "confirmPasswordNotMatch": "密码不匹配"
+      },
+      "buttons": {
+        "submit": "更新"
+      }
+    },
+    "error": {
+      "info": "您可能忘记在 {{resource}} 资源中添加 {{action}} 组件。",
+      "404": "抱歉，您访问的页面不存在。",
+      "resource404": "您确定创建了 {{resource}} 资源吗？",
+      "backHome": "返回首页"
+    }
+  },
+  "actions": {
+    "list": "列表",
+    "create": "创建",
+    "edit": "编辑",
+    "show": "详情"
+  },
+  "documentTitle": {
+    "default": "Refine",
+    "suffix": " | Refine",
+    "posts": {
+      "list": "文章",
+      "show": "#{{id}} 文章详情",
+      "edit": "#{{id}} 编辑文章",
+      "create": "创建新文章",
+      "clone": "克隆文章"
+    }
+  },
+  "navigation": {
+    "home": "首页",
+    "tags": "标签管理",
+    "providerManagement": "码商管理",
+    "whiteList": "白名单",
+    "providerBalanceAdjustment": "码商余额调整纪录",
+    "providerWalletHistory": "码商钱包纪录",
+    "merchantManagement": "商户管理",
+    "apiWhiteList": "API白名单",
+    "bannedList": "黑名单",
+    "merchantWalletHistory": "商户钱包纪录",
+    "merchantBalanceAdjustment": "商户余额调整纪录",
+    "paymentAccountManagement": "收付款账号管理",
+    "transactionManagement": "交易管理",
+    "collection": "收款",
+    "payment": "付款",
+    "providerDeposit": "码商充值",
+    "systemBankCard": "一般充值银行卡",
+    "quickDepositReward": "快充奖励",
+    "sms": "短信",
+    "fundManagement": "资金管理",
+    "childWithdrawSplit": "代付订单拆单",
+    "merchantBankCardList": "商户银行卡列表",
+    "liveStatus": "即时现况",
+    "financeReport": "财务报表",
+    "groupManagement": "群组管理",
+    "collectionLine": "代收专线",
+    "channelManagement": "通道管理",
+    "thirdPartyManagement": "三方管理",
+    "systemSettings": "系统设置",
+    "supportedBanks": "系統支援銀行",
+    "permissionManagement": "权限管理",
+    "adminLoginWhiteList": "管理员登录白名单"
+  },
+  "validation": {
+    "required": "请填入必要资讯"
+  },
+  "autoRefresh": "自动刷新"
+}

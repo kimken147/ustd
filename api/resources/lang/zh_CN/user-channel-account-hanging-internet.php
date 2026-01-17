@@ -1,0 +1,23 @@
+<?php
+
+return [
+    'HANGING_CARD_INTERNET_CODE_REBOOT'                         => '程序重启',
+    'HANGING_CARD_INTERNET_CODE_COLLECTION_IS_IN_PROGRESS'      => '代收执行中',
+    'HANGING_CARD_INTERNET_CODE_VERIFYING_SECURITY_ISSUES'      => '正在验证安全问题',
+    'HANGING_CARD_INTERNET_CODE_VERIFYING_PASSWORD'             => '正在验证帐密',
+    'HANGING_CARD_INTERNET_CODE_NON_ERROR'                      => '手动停止挂卡',
+    'HANGING_CARD_INTERNET_CODE_OTHER_ERROR'                    => '其它错误',
+    'HANGING_CARD_INTERNET_CODE_ACCOUNT_PASSWORD_FORMAT_ERROR'  => '帐号或密码格式错误',
+    'HANGING_CARD_INTERNET_CODE_ACCOUNT_PASSWORD_ERROR'         => '帐号或密码错误',
+    'HANGING_CARD_INTERNET_CODE_OTP_TIME_EXPIRED'               => 'OTP验证时间到期(需重新掛卡一次)',
+    'HANGING_CARD_INTERNET_CODE_OTP_ERROR'                      => 'OTP输入错误',
+    'HANGING_CARD_INTERNET_CODE_OTP_TRIED_TOO_MANY_TIMES'       => 'OTP尝试太多次(请求太频繁)',
+    'HANGING_CARD_INTERNET_CODE_UNABLE_TRANSACTION_DETAILS'     => '无法取得交易明细',
+    'HANGING_CARD_INTERNET_CODE_ACCOUNT_ACCESS_DENIED'          => '帐号被拒绝存取(需重新挂卡)',
+    'HANGING_CARD_INTERNET_CODE_PROGRAM_EXCEPTION'              => '程序异常退出',
+    'HANGING_CARD_INTERNET_CODE_PROGRAM_REQUEST_OTP_TIMEOUT'    => '程序请求OTP逾时',
+    'HANGING_CARD_INTERNET_CODE_BANK_NAME_ERROR'                => '没有指定银行代号或银行代号错误',
+    'HANGING_CARD_INTERNET_CODE_QUESTION_ANSWER_ERROR'          => '保密问题的答案错误',
+    'HANGING_CARD_INTERNET_CODE_TEXT_RECOGNITION_ERROR'         => '文字辨识码输入错误',
+    'HANGING_CARD_INTERNET_CODE_TEXT_QUESTION_ANSWER_ERROR'     => '找不到安全问题对应的答案',
+];

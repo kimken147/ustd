@@ -1,0 +1,69 @@
+name: Prod API
+on:
+  push:
+    branches: [prod]
+    paths:
+      - "api/**"
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app:
+          - name: dogepay
+            env_name: Dogepay-env
+          - name: sinopay
+            env_name: Sinopay-env
+          - name: powerpay
+            env_name: Powerpay-env
+          - name: sinopay-old
+            env_name: sinopay-old-env
+          - name: EHPay
+            env_name: EHPay-env
+    name: Deploy ${{ matrix.app.name }}
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+
+      - name: Create necessary folder
+        run: |
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 755 storage/framework
+
+      - name: Update composer
+        run: sudo composer selfupdate
+
+      - name: Install composer packages
+        run: composer install
+
+      - name: Make platform hook scripts executable
+        run: chmod +x .platform/hooks/**/*.sh
+
+      - name: Zip
+        run: zip -r application.zip . -x@.zipignore-old
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ matrix.app.name }}
+          environment_name: ${{ matrix.app.env_name }}
+          version_label: ${{ env.GITHUB_SHA_SHORT }}
+          region: ap-southeast-1
+          deployment_package: ./api/application.zip
+          wait_for_environment_recovery: 10
+          wait_for_deployment: false
+          use_existing_version_if_available: true

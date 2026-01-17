@@ -1,0 +1,103 @@
+{
+  "title": "การจัดการสิทธิ์",
+  "create": {
+    "title": "สร้างบัญชี",
+    "fields": {
+      "subAccountName": "ชื่อบัญชี",
+      "loginAccount": "Login ID",
+      "accountValidation": "4-10 ตัวอักษร ต้องขึ้นต้นด้วยภาษาอังกฤษ",
+      "permissionSettings": "การตั้งค่าสิทธิ์"
+    },
+    "actions": {
+      "submit": "ส่ง"
+    },
+    "messages": {
+      "createSuccess": "สร้างบัญชีสำเร็จ"
+    }
+  },
+  "list": {
+    "title": "การจัดการสิทธิ์",
+    "filters": {
+      "subAccountNameOrLogin": "ชื่อบัญชี / Login ID",
+      "permissions": "สิทธิ์"
+    },
+    "fields": {
+      "subAccountName": "ชื่อบัญชี",
+      "accountStatus": "สถานะการเปิดใช้งานบัญชี",
+      "enabled": "เปิดใช้งาน",
+      "disabled": "ปิดใช้งาน",
+      "permissionSettings": "การตั้งค่าสิทธิ์",
+      "lastLoginTime": "เวลา / IP เข้าสู่ระบบล่าสุด",
+      "none": "ไม่มี"
+    },
+    "buttons": {
+      "loginWhitelist": "รายการ IP ที่อนุญาตให้เข้าสู่ระบบ",
+      "createSubAccount": "สร้างบัญชี"
+    },
+    "subAccountList": "รายการบัญชีผู้ดูแลระบบ",
+    "messages": {
+      "confirmModifyPermission": "ยืนยันการแก้ไขการตั้งค่าสิทธิ์?"
+    },
+    "modal": {
+      "title": "การตั้งค่าสิทธิ์",
+      "submit": "ส่ง",
+      "cancel": "ยกเลิก"
+    }
+  },
+  "show": {
+    "title": "รายละเอียดบัญชี",
+    "fields": {
+      "subAccountName": "ชื่อบัญชี",
+      "loginAccount": "Login ID",
+      "accountStatus": "สถานะการเปิดใช้งานบัญชี",
+      "googleAuthStatus": "สถานะรหัส Google Authenticator",
+      "lastLoginTime": "เวลาเข้าสู่ระบบล่าสุด",
+      "ip": "IP",
+      "permissionSettings": "การตั้งค่าสิทธิ์",
+      "password": "รหัสผ่าน",
+      "googleAuthSecret": "Google Authenticator",
+      "googleAuthQRCode": "QR Code Google Authenticator",
+      "none": "无"
+    },
+    "actions": {
+      "resetPassword": "รีเซ็ตรหัสผ่าน",
+      "resetAuthCode": "รีเซ็ต Google Authenticator",
+      "editPermissions": "แก้ไขสิทธิ์"
+    },
+    "messages": {
+      "confirmModifyAccountStatus": "ยืนยันการแก้ไขสถานะการเปิดใช้งานบัญชี?",
+      "confirmModifyGoogleAuthStatus": "ยืนยันการเปลี่ยนแปลง Google Authenticator?",
+      "confirmResetPassword": "ยืนยันการรีเซ็ตรหัสผ่าน?",
+      "confirmResetSecret": "ยืนยันการรีเซ็ตคีย์ลับ Google Authenticator?",
+      "confirmModifyPermission": "ยืนยันการแก้ไขการตั้งค่าสิทธิ์?"
+    },
+    "modal": {
+      "title": "แก้ไขสิทธิ์",
+      "submit": "ส่ง",
+      "cancel": "ยกเลิก"
+    }
+  },
+  "whitelist": {
+    "title": "รายการ IP ที่อนุญาตให้เข้าสู่ระบบสำหรับผู้ดูแลระบบ",
+    "filters": {
+      "nameOrLoginAccount": "ชื่อบัญชี / Login ID",
+      "loginWhitelist": "IP"
+    },
+    "fields": {
+      "name": "ชื่อ",
+      "loginAccount": "Login ID",
+      "loginWhitelist": "IP",
+      "operation": "ดำเนินการ"
+    },
+    "actions": {
+      "add": "เพิ่ม",
+      "edit": "แก้ไข",
+      "delete": "ลบ",
+      "editWhitelist": "แก้ไขรายการที่อนุญาต",
+      "addWhitelist": "เพิ่มรายการที่อนุญาต"
+    },
+    "messages": {
+      "confirmDelete": "ยืนยันการลบ?"
+    }
+  }
+}

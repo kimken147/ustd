@@ -1,0 +1,29 @@
+{
+  "title": "财务报表",
+  "filters": {
+    "startDate": "开始日期",
+    "endDate": "结束日期",
+    "merchantNameOrAccount": "商户名称或商户帐号",
+    "classification": "分类",
+    "byCreateTime": "以订单建立时间",
+    "bySuccessTime": "以订单成功时间"
+  },
+  "fields": {
+    "merchantName": "商户名称",
+    "collectionTotal": "代收总额",
+    "collectionCount": "代收笔数",
+    "collectionFee": "代收手续费",
+    "collectionProfit": "中介代收利润",
+    "payoutTotal": "代付总额",
+    "payoutCount": "代付笔数",
+    "payoutFee": "代付手续费",
+    "payoutProfit": "中介代付利润",
+    "disbursementTotal": "下发总额",
+    "disbursementCount": "下发笔数",
+    "disbursementFee": "下发手续费",
+    "disbursementProfit": "中介下发利润",
+    "platformCollectionProfit": "平台代收利润",
+    "platformPayoutProfit": "平台代付利润",
+    "platformDisbursementProfit": "平台下发利润"
+  }
+}

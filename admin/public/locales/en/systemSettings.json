@@ -1,0 +1,53 @@
+{
+  "title": "System Settings",
+  "systemSetting": {
+    "title": "System Settings",
+    "listTitle": "Setting List",
+    "fields": {
+      "name": "Name",
+      "note": "Remark",
+      "switch": "Switch",
+      "settingValue": "Value",
+      "unit": "Unit",
+      "updateTime": "Last Updated"
+    },
+    "categories": {
+      "collection": "Money-In Related",
+      "payout": "Merchant Money-Out & Provider Deposit Related",
+      "accounts": "Transaction Account Related",
+      "thirdParty": "Third-Party Channel Related",
+      "admin": "Administrator Related",
+      "channel": "Channel Related"
+    },
+    "actions": {
+      "editSettingValue": "Edit Value"
+    },
+    "messages": {
+      "confirmModify": "Confirm Modification?"
+    },
+    "buttons": {
+      "systemSupportBanks": "System-Supported Banks"
+    }
+  },
+  "bank": {
+    "title": "System-Supported Banks",
+    "fields": {
+      "bankName": "Bank Name"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "create": "Add Bank",
+      "export": "Export",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "messages": {
+      "confirmDelete": "Confirm Deletion?",
+      "deleteSuccess": "Deletion Successful",
+      "editSuccess": "Modification Successful",
+      "createSuccess": "Add Successful",
+      "bankNameWarning": "Modifying the bank name will affect the merchant's money-out order submissions. \nThe bank name is also the bank code (API parameters), so please ensure to notify the merchant to update it accordingly!"
+    }
+  }
+}

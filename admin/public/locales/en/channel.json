@@ -1,0 +1,38 @@
+{
+  "title": "Money-In Channel Management",
+  "fields": {
+    "channelName": "Channel Name",
+    "channelCode": "Channel Code",
+    "amountLimit": "Amount Limit",
+    "amount": "Amount",
+    "amountPlaceholder": "Please use the tilde (~) to indicate the amount range",
+    "status": "Status",
+    "matchExpirySwitch": "Enable Money-In Order Matching Timeout",
+    "matchTimeout": "Money-In Order Matching Time Limit",
+    "paymentExpirySwitch": "Enable Money-In Payment Timeout",
+    "paymentTimeout": "Money-In Payment Time Limit",
+    "realNameSwitch": "Require Member Real Name",
+    "noteSwitch": "Money-In Transfer Msg",
+    "floatingAmountSwitch": "Enable Floating Amount",
+    "floatingAmountRange": "Floating Amount Range",
+    "seconds": "Seconds"
+  },
+  "actions": {
+    "editAmount": "Edit Amount",
+    "addAmount": "Add Amount",
+    "addOne": "Add",
+    "delete": "Delete",
+    "editMatchTimeout": "Edit Money-In Order Matching Time Limit",
+    "editPaymentTimeout": "Edit Money-In Payment Time Limit",
+    "editFloatingRange": "Edit Floating Amount Range"
+  },
+  "messages": {
+    "confirmDeleteAmount": "Confirm Deletion of This Channel Money-In Amount Range?",
+    "confirmModifyStatus": "Confirm Modification of Status?",
+    "confirmMatchExpirySwitch": "Confirm Change of Money-In Order Matching Timeout?",
+    "confirmPaymentExpirySwitch": "Confirm Change of Money-In Payment Timeout?",
+    "confirmRealNameSwitch": "Confirm Change of Member Real Name Requirement?",
+    "confirmNoteSwitch": "Confirm Change of Money-In Transfer Msg Setting?",
+    "confirmFloatingSwitch": "Confirm Change of Floating Amount Setting?"
+  }
+}

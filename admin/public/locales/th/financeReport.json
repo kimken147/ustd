@@ -1,0 +1,29 @@
+{
+  "title": "รายงานทางการเงิน",
+  "filters": {
+    "startDate": "วันที่เริ่มต้น",
+    "endDate": "วันที่สิ้นสุด",
+    "merchantNameOrAccount": "ชื่อพ่อค้า / Login ID",
+    "classification": "หมวดหมู่",
+    "byCreateTime": "กรองตามเวลาสร้างออเดอร์",
+    "bySuccessTime": "กรองตามเวลาออเดอร์เสร็จสิ้น"
+  },
+  "fields": {
+    "merchantName": "ชื่อพ่อค้า",
+    "collectionTotal": "จำนวนเงิน Money-In",
+    "collectionCount": "จำนวน Money-In",
+    "collectionFee": "ค่าธรรมเนียม Money-In",
+    "collectionProfit": "ค่าคอมมิชชั่นตัวแทน Money-In",
+    "payoutTotal": "จำนวนเงิน Payout",
+    "payoutCount": "จำนวน Payout",
+    "payoutFee": "ค่าธรรมเนียม Payout",
+    "payoutProfit": "ค่าคอมมิชชั่นตัวแทน Payout",
+    "disbursementTotal": "จำนวนเงิน Withdrawal",
+    "disbursementCount": "จำนวน Withdrawal",
+    "disbursementFee": "ค่าธรรมเนียม Withdrawal",
+    "disbursementProfit": "ค่าคอมมิชชั่นตัวแทน Withdrawal",
+    "platformCollectionProfit": "กำไรสุทธิ Money-In ของผู้ดำเนินการ",
+    "platformPayoutProfit": "กำไรสุทธิ Payout ของผู้ดำเนินการ",
+    "platformDisbursementProfit": "กำไรสุทธิ Withdrawal ของผู้ดำเนินการ"
+  }
+}

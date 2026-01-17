@@ -1,0 +1,29 @@
+{
+  "title": "Financial Statements",
+  "filters": {
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "merchantNameOrAccount": "Merchant Name / Login ID",
+    "classification": "Category",
+    "byCreateTime": "Filter by Order Created At",
+    "bySuccessTime": "Filter by Order Completed At"
+  },
+  "fields": {
+    "merchantName": "Merchant Name",
+    "collectionTotal": "Money-In Amount",
+    "collectionCount": "Money-In Count",
+    "collectionFee": "Money-In Fee",
+    "collectionProfit": "Money-In Agent Commission",
+    "payoutTotal": "Payout Amount",
+    "payoutCount": "Payout Count",
+    "payoutFee": "Payout Fee",
+    "payoutProfit": "Payout Agent Commission",
+    "disbursementTotal": "Withdrawal Amount",
+    "disbursementCount": "Withdrawal Count",
+    "disbursementFee": "Withdrawal Fee",
+    "disbursementProfit": "Withdrawal Agent Commission",
+    "platformCollectionProfit": "Operator Money-In Net Profit",
+    "platformPayoutProfit": "Operator Payout Net Profit",
+    "platformDisbursementProfit": "Operator Withdrawal Net Profit"
+  }
+}

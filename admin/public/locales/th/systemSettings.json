@@ -1,0 +1,53 @@
+{
+  "title": "การตั้งค่าระบบ",
+  "systemSetting": {
+    "title": "การตั้งค่าระบบ",
+    "listTitle": "รายการการตั้งค่า",
+    "fields": {
+      "name": "ชื่อ",
+      "note": "หมายเหตุ",
+      "switch": "สวิตช์",
+      "settingValue": "ค่า",
+      "unit": "หน่วย",
+      "updateTime": "อัปเดตล่าสุด"
+    },
+    "categories": {
+      "collection": "เกี่ยวกับ Money-In",
+      "payout": "เกี่ยวกับ Money-Out ของพ่อค้าและการฝากเงินของผู้ให้บริการรับเงิน",
+      "accounts": "เกี่ยวกับบัญชีธุรกรรม",
+      "thirdParty": "เกี่ยวกับช่องทางภายนอก",
+      "admin": "เกี่ยวกับผู้ดูแลระบบ",
+      "channel": "เกี่ยวกับช่องทาง"
+    },
+    "actions": {
+      "editSettingValue": "แก้ไขค่า"
+    },
+    "messages": {
+      "confirmModify": "ยืนยันการแก้ไข?"
+    },
+    "buttons": {
+      "systemSupportBanks": "ธนาคารที่ระบบรองรับ"
+    }
+  },
+  "bank": {
+    "title": "ธนาคารที่ระบบรองรับ",
+    "fields": {
+      "bankName": "ชื่อธนาคาร"
+    },
+    "actions": {
+      "edit": "แก้ไข",
+      "delete": "ลบ",
+      "create": "เพิ่มธนาคาร",
+      "export": "ส่งออก",
+      "cancel": "ยกเลิก",
+      "confirm": "ยืนยัน"
+    },
+    "messages": {
+      "confirmDelete": "ยืนยันการลบ?",
+      "deleteSuccess": "ลบสำเร็จ",
+      "editSuccess": "แก้ไขสำเร็จ",
+      "createSuccess": "เพิ่มสำเร็จ",
+      "bankNameWarning": "การแก้ไขชื่อธนาคารจะส่งผลต่อการส่งออเดอร์ Money-Out ของพ่อค้า\nชื่อธนาคารยังเป็นรหัสธนาคาร (พารามิเตอร์ API) ดังนั้นโปรดแจ้งให้พ่อค้าทราบเพื่ออัปเดตตามนั้น!"
+    }
+  }
+}

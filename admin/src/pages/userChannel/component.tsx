@@ -1,0 +1,51 @@
+import { EditOutlined } from '@ant-design/icons';
+import { Badge, Popover, Space, TextField } from '@pankod/refine-antd';
+import useChannelStatus from 'hooks/useChannelStatus';
+import useUpdateModal from 'hooks/useUpdateModal';
+import { UserChannel } from 'interfaces/userChannel';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
+type Props = {
+  record: UserChannel;
+};
+export const ChannelStatusChanger: FC<Props> = ({ record: { status, id } }) => {
+  const { t } = useTranslation('userChannel');
+  const { getChannelStatusText } = useChannelStatus();
+  const text = getChannelStatusText(status);
+  const { Modal } = useUpdateModal();
+  return (
+    <Space>
+      <Badge status={status === 2 ? 'success' : 'error'} />
+      <TextField value={text} />
+      <Popover
+        trigger={'click'}
+        content={
+          <ul className="popover-edit-list">
+            {[0, 1, 2]
+              .filter(x => x !== status)
+              .map(status => (
+                <li
+                  key={status}
+                  onClick={() => {
+                    Modal.confirm({
+                      id,
+                      values: {
+                        status,
+                      },
+                      title: t('confirmation.changeStatus'),
+                      className: 'z-10',
+                    });
+                  }}
+                >
+                  {getChannelStatusText(status)}
+                </li>
+              ))}
+          </ul>
+        }
+      >
+        <EditOutlined className="text-[#6eb9ff]" />
+      </Popover>
+    </Space>
+  );
+};

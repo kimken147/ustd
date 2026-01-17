@@ -1,0 +1,282 @@
+{
+  "home": {
+    "title": "首页",
+    "subTitle": {
+      "userInfo": "使用者资讯",
+      "balance": "钱包余额",
+      "channel": "通道资讯"
+    },
+    "fields": {
+      "username": "使用者名称",
+      "password": "密码",
+      "secretKey": "密钥",
+      "apiDocument": "API对接文档",
+      "accountStatus": "帐号启用状态",
+      "agentFunctionStatus": "代理功能启用状态",
+      "verificationKey": "谷歌验证码密钥",
+      "googleVerificationStatus": "谷歌验证码启用状态",
+      "withrawVerificationStatus": "提现验证码启用开关",
+      "perTrans": "元/笔",
+      "channelName": "通道名称",
+      "ratePer": "费率(%)",
+      "balance": "钱包余额",
+      "frozenBalance": "冻结余额",
+      "availableBalance": "可用余额",
+      "withdrawFee": "下发手续费",
+      "payoutFee": "代付手续费",
+      "oldPassword": "旧密码",
+      "newPassword": "新密码",
+      "confirmPassword": "再次输入新密码",
+      "oneTimePassword": "验证码",
+      "google2faQRCode": "谷歌验证码 QR Code"
+    },
+    "values": {
+      "download": "下载",
+      "displaySecretKey": "显示密钥",
+      "changePassword": "更改密码",
+      "resetVerificationKey": "重置验证码密钥"
+    },
+    "tips": {
+      "confirmChangeGoogleVerification": "确定要修改谷歌验证码启用状态？",
+      "confirmChangeWithdrawVerification": "确定要修改提现验证码启用开关？",
+      "confirmChangeGoogleSecertKey": "确定要重置验证码密钥？"
+    },
+    "error": {
+      "passwordNotMatch": "两次密码输入不一致"
+    }
+  },
+  "collection": {
+    "titles": {
+      "main": "代收",
+      "list": "代收列表",
+      "info": "代收资讯"
+    },
+    "fields": {
+      "transactionNo": "商户订单号或系统订单号",
+      "merchantNo": "商户号",
+      "channels": "通道",
+      "amount": "订单金额",
+      "transactionStatus": "订单状态",
+      "callbackStatus": "回调状态",
+      "category": "分类",
+      "queryOrderWithCreateAt": "以订单建立时间",
+      "queryOrderWithSucceedAt": "以订单成功时间",
+      "totalNumberOfTransation": "交易总笔数",
+      "successRate": "成功率",
+      "totalAmountOfTransaction": "交易总金额",
+      "totalFeeOfTranaction": "交易总手续费",
+      "systemTransactionNo": "系统订单号",
+      "merchantTransactionNo": "商户订单号",
+      "fee": "手续费",
+      "amountPaid": "实付金额",
+      "floatingAmount": "浮动金额",
+      "merchantAndAgentFeeProfitList": "商户及商户代理手续费、利润列表",
+      "merchantName": "商户名称",
+      "realName": "姓名"
+    },
+    "status": {
+      "established": "已建立",
+      "matching": "匹配中",
+      "paying": "等待付款",
+      "success": "成功",
+      "manualSuccess": "手动成功",
+      "matchedTimeout": "匹配超时",
+      "paidTimeout": "付款超时",
+      "fail": "失败"
+    },
+    "callbackStatus": {
+      "notNotified": "未通知",
+      "wait": "等待发送",
+      "sending": "发送中",
+      "fail": "失败",
+      "success": "成功"
+    }
+  },
+  "datePicker": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "thisWeek": "本週",
+    "lastWeek": "上週",
+    "startDate": "开始时间",
+    "endDate": "结束时间"
+  },
+  "withdraw": {
+    "titles": {
+      "main": "代付/下发"
+    },
+    "fields": {
+      "bankCardKeyword": "银行卡关键字",
+      "withdrawStatus": "订单状态",
+      "totalNumberOfWithdraw": "代付总笔数",
+      "totalAmountOfWithdraw": "代付总金额",
+      "totalFeeOfWithdraw": "代付总手续费",
+      "balanceOfWithdraw": "商户总余额",
+      "accountOwner": "持卡人名称",
+      "bankName": "银行名称",
+      "bankAccount": "银行卡号",
+      "bankCard": "银行卡",
+      "province": "开户省",
+      "city": "开户市",
+      "callbackTime": "回调时间",
+      "type": "代付类型",
+      "gcashAccount": "GCash账号",
+      "mayaAccount": "MAYA账号",
+      "alipayAccount": "支付宝账号",
+      "walletAddress": "钱包地址"
+    },
+    "values": {
+      "withdraw": "下发",
+      "payout": "代付"
+    },
+    "buttons": {
+      "createPayment": "建立代付",
+      "createWithdraw": "建立下发",
+      "banks": "下发银行卡"
+    },
+    "create": {
+      "errors": {
+        "totalAmountExceedsBalance": "代付总金额大于余额"
+      },
+      "messages": {
+        "success": "建立成功"
+      },
+      "fields": {
+        "code": "验证码",
+        "merchantTransactionNo": "商户订单号"
+      },
+      "merchantTransactionNo": "商户订单号",
+      "titles": {
+        "withdraw": "建立下发"
+      }
+    },
+    "status": {
+      "review": "审核中",
+      "established": "已建立",
+      "matching": "匹配中",
+      "paying": "等待付款",
+      "success": "成功",
+      "manualSuccess": "手动成功",
+      "matchedTimeout": "匹配超时",
+      "paidTimeout": "付款超时",
+      "fail": "失败"
+    },
+    "callbackStatus": {
+      "notNotified": "未通知",
+      "wait": "等待发送",
+      "sending": "发送中",
+      "fail": "失败",
+      "success": "成功"
+    }
+  },
+  "bankCard": {
+    "titles": {
+      "list": "银行卡列表"
+    },
+    "fields": {
+      "bankCardKeyword": "银行卡关键字",
+      "bankAccount": "银行卡号",
+      "accountOwner": "持卡人名称",
+      "bankName": "银行名称",
+      "edit": "修改银行卡"
+    },
+    "buttons": {
+      "create": "建立银行卡"
+    },
+    "review": {
+      "wait": "审核中",
+      "success": "审核成功",
+      "fail": "审核失败"
+    }
+  },
+  "walletHistory": {
+    "titles": {
+      "list": "流水纪录"
+    },
+    "fields": {
+      "alterationCategories": "变动类型",
+      "totalAmount": "总计金额",
+      "totalBalanceAlteration": "总余额变动",
+      "frozenBalanceAlteration": "冻结余额变动",
+      "totalBalanceAfterAlteration": "变动后总余额",
+      "frozenBalanceAfterAlteration": "变动后冻结余额",
+      "alterationTime": "变动时间"
+    },
+    "status": {
+      "1": "系统调整",
+      "2": "余额转赠",
+      "3": "入帐",
+      "4": "预扣",
+      "5": "预扣退款",
+      "6": "快充奖励",
+      "7": "交易奖励",
+      "8": "失败",
+      "11": "系统调整(冻结)",
+      "12": "提现",
+      "13": "提现退款",
+      "14": "入帐退款"
+    }
+  },
+  "subAccount": {
+    "titles": {
+      "list": "子帐号管理"
+    },
+    "query": {
+      "nameOrAccount": "子帐号名称或登录帐号"
+    },
+    "fields": {
+      "name": "子帐号名称",
+      "status": "帐户启用状态",
+      "theLastLoginTimeOrIp": "最后登录时间 / IP",
+      "id": "登录帐号",
+      "info": "子帐号资讯",
+      "resetPassoword": "重置密码",
+      "resetGoogle2faSecret": "重置谷歌验证码密钥"
+    },
+    "tips": {
+      "changeStatus": "是否修改帐户状态？",
+      "changeGoogle2faStatus": "确定要修改谷歌验证码启用状态？",
+      "resetPassword": "是否确定重置密码？",
+      "resetGoogle2faSecret": "确定要重置验证码密钥？"
+    },
+    "buttons": {
+      "create": "建立子帐号"
+    }
+  },
+  "channels": {
+    "BANK_CARD": "卡对卡",
+    "QR_ALIPAY": "支转支",
+    "ZH_ALIPAY": "支付宝聚合码",
+    "UNION_QUICK_PASS": "银联快捷"
+  },
+  "enable": "启用",
+  "disable": "停用",
+  "cancel": "取消",
+  "submit": "提交",
+  "status": "状态",
+  "edit": "修改",
+  "delete": "删除",
+  "success": "成功",
+  "createAt": "建立时间",
+  "confirmAt": "成功时间",
+  "lastLoginAt": "最后登录时间",
+  "password": "密码",
+  "clear": "清空",
+  "google2faSecret": "谷歌验证码密钥",
+  "google2faStatus": "谷歌验证码启用状态",
+  "fee": "手续费",
+  "profit": "利润",
+  "export": "汇出",
+  "optional": "选填",
+  "amount": "金额",
+  "note": "备注",
+  "logout": "登出",
+  "create": {
+    "add": "建立一笔"
+  },
+  "verificationCode": "验证码",
+  "confirmModify": "是否确定修改",
+  "ok": "确定",
+  "errors": {
+    "tryLater": "发生错误！请稍后再试"
+  }
+}

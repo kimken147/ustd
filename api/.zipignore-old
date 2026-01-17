@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/*
+vendor/*
+
+# IDE and Editor files
+.idea/
+.vscode/
+.editorconfig
+_ide_helper*
+.phpstorm.meta.php
+.styleci.yml
+
+# Version Control
+.git/
+.git*
+
+# Environment files
+.env*
+env*
+
+# Testing
+tests/*
+.phpunit.result.cache
+
+# Logs and Cache
+*.log
+storage/logs/**
+!storage/logs/
+storage/framework/sessions/**
+!storage/framework/sessions
+storage/framework/views/**
+!storage/framework/views
+storage/framework/cache/**
+!storage/framework/cache
+storage/framework/testing/*
+
+# macOS System files
+**/.DS_Store
+.DS_Store
+
+# AWS Elastic Beanstalk
+.ebextensions/03-cloudwatch-docker.config
+
+docker-compose.yaml
+docker/*
+Dockerfile
+Dockerrun.aws.json
+
+
+# 避免重複的設定
+# .editorconfig  # 已經在上面包含了

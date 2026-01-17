@@ -1,0 +1,30 @@
+{
+  "title": "สถานะสด",
+  "fields": {
+    "providerAccount": "บัญชีผู้ให้บริการรับเงิน",
+    "groupAccount": "บัญชีกลุ่ม",
+    "account": "หมายเลขบัญชี",
+    "accountNumber": "ID",
+    "balance": "ยอดเงินคงเหลือของหมายเลขบัญชี",
+    "availableBalance": "ยอดเงินคงเหลือของผู้ให้บริการรับเงิน",
+    "collectionInProgress": "Money-In",
+    "payoutInProgress": "Money-Out",
+    "dailyCollectionLimit": "จำนวนเงิน Money-In รายวันที่ใช้แล้ว",
+    "dailyPayoutLimit": "จำนวนเงิน Money-Out รายวันที่ใช้แล้ว",
+    "monthlyCollectionLimit": "จำนวนเงิน Money-In รายเดือนที่ใช้แล้ว",
+    "monthlyPayoutLimit": "จำนวนเงิน Money-Out รายเดือนที่ใช้แล้ว",
+    "operation": "ดำเนินการ"
+  },
+  "statistics": {
+    "payoutOrders": "ออเดอร์ Money-Out"
+  },
+  "queue": {
+    "title": "รายการคิว",
+    "selectAll": "เลือกทั้งหมด",
+    "autoRefresh": "รีเฟรช"
+  },
+  "actions": {
+    "offline": "ปิด",
+    "confirmOffline": "ยืนยันการเปลี่ยนสถานะการเชื่อมต่อเป็นปิด?"
+  }
+}

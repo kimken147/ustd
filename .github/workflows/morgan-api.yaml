@@ -1,0 +1,63 @@
+name: Morgan dev API
+on:
+  push:
+    branches: [morgan]
+    paths:
+      - "api/**"
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Morgan Dev API to beanstalk
+    defaults:
+      run:
+        working-directory: ./api
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.0"
+
+      - name: Create necessary folder
+        run: |
+          mkdir -p storage/framework/{sessions,views,cache}
+          chmod -R 755 storage/framework
+
+      - name: Update composer
+        run: sudo composer selfupdate
+
+      - name: Install composer pacakges
+        run: composer install
+
+      - name: Make platform hook scripts executable
+        run: chmod +x .platform/hooks/**/*.sh
+
+      - name: Zip
+        run: zip application.zip -r * .[^.]* -x "node_modules/*" -x ".git/*" -x ".idea/*" -x ".DS_Store" -x ".env*" -x ".git*" -x ".editorconfig" -x ".vscode/*" -x "vendor/*" -x "storage/logs/*" -x "tests/*"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp application.zip s3://morgan-api-bundle-cn/dev/
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v4
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name morgan-dev \
+          --source-bundle S3Bucket=morgan-api-bundle-cn,S3Key="dev/application.zip" \
+          --version-label "morgan-api-${{ env.GITHUB_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}" \
+          --description "commit-sha-${{ env.GITHUB_SHA_SHORT }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: aws elasticbeanstalk update-environment --environment-name Morgan-dev-env --version-label "morgan-api-${{ env.GITHUB_REF_SLUG }}-${{ env.GITHUB_SHA_SHORT }}"

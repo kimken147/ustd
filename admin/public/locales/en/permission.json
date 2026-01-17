@@ -1,0 +1,103 @@
+{
+  "title": "Permission Management",
+  "create": {
+    "title": "Create Account",
+    "fields": {
+      "subAccountName": "Account Name",
+      "loginAccount": "Login ID",
+      "accountValidation": "4-10 Characters, Must Start with English",
+      "permissionSettings": "Permission Settings"
+    },
+    "actions": {
+      "submit": "Submit"
+    },
+    "messages": {
+      "createSuccess": "Account Creation successful"
+    }
+  },
+  "list": {
+    "title": "Permission Management",
+    "filters": {
+      "subAccountNameOrLogin": "Account Name / Login ID",
+      "permissions": "Permission"
+    },
+    "fields": {
+      "subAccountName": "Account Name",
+      "accountStatus": "Account Activation Status",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "permissionSettings": "Permission Settings",
+      "lastLoginTime": "Last Login Time / IP",
+      "none": "N/A"
+    },
+    "buttons": {
+      "loginWhitelist": "Login IP Allowlist",
+      "createSubAccount": "Create Account"
+    },
+    "subAccountList": "Administrator Account List",
+    "messages": {
+      "confirmModifyPermission": "Confirm Modification of Permission Settings?"
+    },
+    "modal": {
+      "title": "Permission Settings",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    }
+  },
+  "show": {
+    "title": "Account Details",
+    "fields": {
+      "subAccountName": "Account Name",
+      "loginAccount": "Login ID",
+      "accountStatus": "Account Activation Status",
+      "googleAuthStatus": "Google Authenticator Code Status",
+      "lastLoginTime": "Last Login Time",
+      "ip": "IP",
+      "permissionSettings": "Permission Settings",
+      "password": "Password",
+      "googleAuthSecret": "Google Authenticator",
+      "googleAuthQRCode": "Google Authenticator QR Code",
+      "none": "无"
+    },
+    "actions": {
+      "resetPassword": "Reset Password",
+      "resetAuthCode": "Reset Google Authenticator",
+      "editPermissions": "Edit Permission"
+    },
+    "messages": {
+      "confirmModifyAccountStatus": "Confirm Modification of Account Activation Status?",
+      "confirmModifyGoogleAuthStatus": "Confirm Change of Google Authenticator?",
+      "confirmResetPassword": "Confirm Reset of Password?",
+      "confirmResetSecret": "Confirm Reset of Google Authenticator Secret Key?",
+      "confirmModifyPermission": "Confirm Modification of Permission Settings?"
+    },
+    "modal": {
+      "title": "Edit Permission",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    }
+  },
+  "whitelist": {
+    "title": "Administrator Login IP Allowlist",
+    "filters": {
+      "nameOrLoginAccount": "Account Name / Login ID",
+      "loginWhitelist": "IP"
+    },
+    "fields": {
+      "name": "Name",
+      "loginAccount": "Login ID",
+      "loginWhitelist": "IP",
+      "operation": "Execute"
+    },
+    "actions": {
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete",
+      "editWhitelist": "Edit Allowlist",
+      "addWhitelist": "Add Allowlist"
+    },
+    "messages": {
+      "confirmDelete": "Confirm Deletion?"
+    }
+  }
+}
