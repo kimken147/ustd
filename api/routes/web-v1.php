@@ -21,5 +21,3 @@ Route::get('create-transactions', 'CreateTransactionController')->name('create-t
 Route::get('api-document-download', 'ApiDocumentDownloadController');
 Route::get('apk-download', 'ApkDownloadController');
 
-
-Route::get('/gcash/{id}/success-page', '\App\Http\Controllers\Country\PhilippineController@successPage');
