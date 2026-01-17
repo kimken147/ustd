@@ -9,13 +9,13 @@ use App\Console\Commands\UpdateTransactionSearchFields;
 use App\Console\Commands\SyncThirdchannelDaifuOrder;
 use App\Console\Commands\CheckThirdchannelBalance;
 use App\Console\Commands\SyncThirdchannelBalance;
-use App\Console\commands\ClearGcashMemberDevice;
+
 
 use App\Console\Commands\CheckDelayedProviderDeposit;
 use App\Console\Commands\CheckMatchingUserLastActivity;
 use App\Console\Commands\DisableNonLoginUser;
 use App\Console\Commands\DisableTimeLimitUserChannelAccount;
-use App\Console\Commands\ProcessGcashAutoSyncAccount;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Spatie\ShortSchedule\ShortSchedule;
@@ -69,9 +69,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(ClearUserChannelAccountMonthlyTotal::class)->monthly()->onOneServer();
 
-        if (config('app.region') == 'ph') {
-            $schedule->command(ProcessGcashAutoSyncAccount::class)->everyThreeMinutes()->onOneServer();
-        }
+
     }
 
     protected function shortSchedule(ShortSchedule $shortSchedule)
@@ -79,10 +77,6 @@ class Kernel extends ConsoleKernel
         //$shortSchedule->command("thirdchannel:sync-balance")->everySeconds(10)->onOneServer();
         // $shortSchedule->command('usdt:sync-transaction')->everySeconds(30)->withoutOverlapping()->onOneServer();
 
-        if (config('app.region') == 'ph') {
-            $shortSchedule->command('maya:auto-daifu')->everySeconds(5)->withoutOverlapping()->onOneServer();
-            // $shortSchedule->command('gcash:auto-daifu')->everySeconds(5)->withoutOverlapping()->onOneServer();
-            // $shortSchedule->command('gcash:sync-account')->everySeconds(5)->withoutOverlapping()->onOneServer();
-        }
+
     }
 }

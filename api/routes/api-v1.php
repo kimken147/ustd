@@ -751,24 +751,7 @@ $telegramToken = config("services.telegram-bot-api.token", function () {
 
 Route::post("/telegram/$telegramToken/webhook", "TelegramWebhookController");
 
-Route::prefix("ph")
-    ->namespace("Country")
-    ->group(function () {
-        Route::get(
-            "api/call_auto_Bank_card",
-            "PhilippineController@getGcashAccount"
-        ); // GCash 出款帳號資料
-        Route::post("gcash", "PhilippineController@storeGcashData")->name(
-            "api.v1.update-gcash-data"
-        );
-        Route::get(
-            "api/call_transactions_{action?}",
-            "PhilippineController@getGcashData"
-        );
-        Route::any("api/call_auto_daifu", "PhilippineController@daifuCallback");
-        Route::get("api/notify", "PhilippineController@notify");
-        Route::any("modem/sms", "PhilippineController@modemSms");
-    });
+
 
 Route::prefix("vn")
     ->namespace("Country")
@@ -785,10 +768,4 @@ Route::prefix("vn")
         );
     });
 
-Route::prefix("maya")->group(function () {
-    Route::post("/login", "MayaController@login");
-    Route::post("/otp/login", "MayaController@otpLogin");
-    Route::post("/transfer", "MayaController@transferToMaya");
-    Route::put("/change-password/{id?}", "MayaController@changePassword");
-    Route::put("/change-email/{id?}", "MayaController@changeEmail");
-});
+
