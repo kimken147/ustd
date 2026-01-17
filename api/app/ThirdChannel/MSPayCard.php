@@ -2,9 +2,9 @@
 
 namespace App\ThirdChannel;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\ThirdChannel as ThirdChannelModel;
 use Illuminate\Support\Facades\Log;
 
 class MSPayCard extends ThirdChannel

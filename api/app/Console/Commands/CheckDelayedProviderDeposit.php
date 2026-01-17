@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 use App\Jobs\SettleDelayedProviderDeposit;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;

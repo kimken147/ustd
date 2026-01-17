@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessVnTransactionNotification;
-use App\Model\Device;
-use App\Model\UserChannelAccount;
+use App\Models\Device;
+use App\Models\UserChannelAccount;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;

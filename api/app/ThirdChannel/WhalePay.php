@@ -2,7 +2,7 @@
 
 namespace App\ThirdChannel;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;

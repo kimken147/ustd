@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\UpdateUserRequest;
-use App\Model\User;
+use App\Models\User;
 use App\Utils\NotificationUtil;
 use App\Utils\WhitelistedIpManager;
 use App\Utils\UserUtil;

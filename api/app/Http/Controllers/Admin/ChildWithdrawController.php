@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\UserChannelAccount;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\TransactionFactory;

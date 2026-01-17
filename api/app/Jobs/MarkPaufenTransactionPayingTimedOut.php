@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Model\DevicePayingTransaction;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
+use App\Models\DevicePayingTransaction;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
 use App\Notifications\UserChannelAccountTooManyPayingTimeout;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;

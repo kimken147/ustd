@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\ChannelGroupCollection;
-use App\Model\Channel;
-use App\Model\ChannelAmount;
-use App\Model\ChannelGroup;
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\ChannelAmount;
+use App\Models\ChannelGroup;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
 use App\Utils\BCMathUtil;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

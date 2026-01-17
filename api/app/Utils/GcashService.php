@@ -3,7 +3,7 @@
 namespace App\Utils;
 
 use Log;
-use App\Model\MemberDevice;
+use App\Models\MemberDevice;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 

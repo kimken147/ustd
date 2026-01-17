@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListChannelRequest;
 use App\Http\Resources\ChannelCollection;
-use App\Model\Channel;
+use App\Models\Channel;
 
 class ChannelController extends Controller
 {

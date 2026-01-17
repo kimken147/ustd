@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\NotificationCollection;
-use App\Model\Notification;
-use App\Model\User;
+use App\Models\Notification;
+use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;

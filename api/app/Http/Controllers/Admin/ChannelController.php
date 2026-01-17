@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListChannelRequest;
 use App\Http\Resources\Admin\ChannelCollection;
-use App\Model\Channel;
-use App\Model\Permission;
+use App\Models\Channel;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

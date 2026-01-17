@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
-use App\Model\User;
+use App\Models\User;
 
 class SetUserWalletProfitTo0 extends Migration
 {

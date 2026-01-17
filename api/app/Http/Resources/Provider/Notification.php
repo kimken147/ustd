@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\Provider;
 
-use App\Model\UserChannelAccount;
-use App\Model\User as Users;
+use App\Models\UserChannelAccount;
+use App\Models\User as Users;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BCMathUtil;
-use App\Model\Notification as Notifications;
+use App\Models\Notification as Notifications;
 use App\Http\Resources\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\DeviceCollection;
-use App\Model\Device;
-use App\Model\FeatureToggle;
-use App\Model\UserChannelAccount;
+use App\Models\Device;
+use App\Models\FeatureToggle;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

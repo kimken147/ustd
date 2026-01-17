@@ -4,14 +4,14 @@
 namespace App\Http\Controllers\ThirdParty;
 
 
-use App\Model\Channel;
-use App\Model\ChannelAmount;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\ChannelAmount;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use Illuminate\Database\Eloquent\Builder;

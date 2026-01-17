@@ -17,8 +17,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\MemberStatisticsCollection;
 
 use App\Repository\FeatureToggleRepository;
-use App\Model\User;
-use App\Model\WalletHistory;
+use App\Models\User;
+use App\Models\WalletHistory;
 
 class StatisticReportController extends Controller
 {

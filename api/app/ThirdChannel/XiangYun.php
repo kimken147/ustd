@@ -5,8 +5,8 @@ namespace App\ThirdChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-use App\Model\ThirdChannel as ThirdChannelModel;
-use App\Model\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
+use App\Models\Transaction;
 
 class XiangYun extends ThirdChannel
 {

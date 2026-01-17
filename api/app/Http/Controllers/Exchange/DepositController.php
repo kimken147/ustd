@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Exchange;
 
 use App\Http\Controllers\Controller;
-use App\Model\Transaction;
+use App\Models\Transaction;
 use AWS;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

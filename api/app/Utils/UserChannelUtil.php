@@ -4,9 +4,9 @@
 namespace App\Utils;
 
 
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;

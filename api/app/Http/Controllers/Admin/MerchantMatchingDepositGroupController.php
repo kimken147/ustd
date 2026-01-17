@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\MerchantMatchingDepositGroupCollection;
-use App\Model\Permission;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
+use App\Models\Permission;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use Illuminate\Support\Facades\DB;
 
 class MerchantMatchingDepositGroupController extends Controller

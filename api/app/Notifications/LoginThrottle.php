@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Model\User;
+use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

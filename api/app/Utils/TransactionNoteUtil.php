@@ -6,7 +6,7 @@ namespace App\Utils;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use App\Model\Channel;
+use App\Models\Channel;
 
 /**
  * 交易附言專用

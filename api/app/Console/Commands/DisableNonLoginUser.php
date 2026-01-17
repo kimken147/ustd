@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Model\FeatureToggle;
-use App\Model\User;
+use App\Models\FeatureToggle;
+use App\Models\User;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;

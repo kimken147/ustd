@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\OnlineUserChannelAccountCollection;
-use App\Model\User;
-use App\Model\UserChannelAccount;
+use App\Models\User;
+use App\Models\UserChannelAccount;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;

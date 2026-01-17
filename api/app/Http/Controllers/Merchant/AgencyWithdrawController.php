@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionNote;
-use App\Model\Wallet;
-use App\Model\Bank;
-use App\Model\BannedRealname;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionNote;
+use App\Models\Wallet;
+use App\Models\Bank;
+use App\Models\BannedRealname;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
@@ -25,11 +25,11 @@ use PragmaRX\Google2FALaravel\Support\Authenticator;
 use App\Utils\UsdtUtil;
 
 //四方
-use App\Model\ThirdChannel;
-use App\Model\MerchantThirdChannel;
+use App\Models\ThirdChannel;
+use App\Models\MerchantThirdChannel;
 use App\Utils\TransactionUtil;
-use App\Model\Channel;
-use App\Model\User;
+use App\Models\Channel;
+use App\Models\User;
 
 class AgencyWithdrawController extends Controller
 {

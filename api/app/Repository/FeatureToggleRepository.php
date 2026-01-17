@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 

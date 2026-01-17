@@ -5,8 +5,8 @@ namespace App\ThirdChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Utils\BCMathUtil;
-use App\Model\ThirdChannel as ThirdChannelModel;
-use App\Model\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
+use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 
 class HeroPay extends ThirdChannel

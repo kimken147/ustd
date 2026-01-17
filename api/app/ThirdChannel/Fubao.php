@@ -3,10 +3,10 @@
 namespace App\ThirdChannel;
 
 use App\Http\Resources\Admin\Channel;
-use App\Model\Transaction;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\ThirdChannel as ThirdChannelModel;
 
 class Fubao extends ThirdChannel
 {

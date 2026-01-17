@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\ThirdParty;
 
-use App\Model\User;
-use App\Model\Channel;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\UserChannelAccount;
+use App\Models\User;
+use App\Models\Channel;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\ThirdPartyResponseUtil;
 use Illuminate\Support\Collection;

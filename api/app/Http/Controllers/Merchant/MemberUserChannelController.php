@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserChannelRequest;
 use App\Http\Resources\UserChannel;
-use App\Model\UserChannel as UserChannelModel;
+use App\Models\UserChannel as UserChannelModel;
 use App\Utils\BCMathUtil;
 use App\Utils\UserChannelUtil;
 use Illuminate\Http\Response;
-use App\Model\ChannelAmount;
+use App\Models\ChannelAmount;
 
 class MemberUserChannelController extends Controller
 {

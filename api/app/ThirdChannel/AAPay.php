@@ -4,7 +4,7 @@ namespace App\ThirdChannel;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Model\Transaction;
+use App\Models\Transaction;
 
 class AAPay extends ThirdChannel
 {

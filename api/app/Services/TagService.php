@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Model\Tag;
+use App\Models\Tag;
 use Illuminate\Support\Collection;
 
 class TagService

@@ -2,13 +2,13 @@
 
 namespace App\ThirdChannel;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Utils\BCMathUtil;
 use Illuminate\Support\Arr;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\ThirdChannel as ThirdChannelModel;
 
 class JZPay extends ThirdChannel
 {

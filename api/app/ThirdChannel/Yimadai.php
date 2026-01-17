@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
-use App\Model\Transaction;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
 
 class Yimadai extends ThirdChannel
 {

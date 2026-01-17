@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Model\UserChannelAccount;
-use App\Model\Device;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\Notification;
-use App\Model\Channel;
+use App\Models\UserChannelAccount;
+use App\Models\Device;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\Notification;
+use App\Models\Channel;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\TransactionUtil;
 use Illuminate\Bus\Queueable;

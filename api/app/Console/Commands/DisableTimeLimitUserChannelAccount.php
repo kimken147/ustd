@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Model\Channel;
-use App\Model\TimeLimitBank;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\TimeLimitBank;
+use App\Models\UserChannelAccount;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;

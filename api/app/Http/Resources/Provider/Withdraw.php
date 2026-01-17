@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Provider;
 
-use App\Model\TransactionFee;
-use App\Model\User;
-use App\Model\Transaction;
+use App\Models\TransactionFee;
+use App\Models\User;
+use App\Models\Transaction;
 use App\Http\Resources\User as UserResource;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;

@@ -4,8 +4,8 @@ namespace App\Http\Resources\Admin;
 
 use App\Http\Resources\UserChannelAccount;
 use App\Http\Resources\User;
-use App\Model\Transaction;
-use App\Model\TransactionFee;
+use App\Models\Transaction;
+use App\Models\TransactionFee;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Http\Resources\TransactionCertificateFileCollection;
-use App\Model\TransactionCertificateFile;
+use App\Models\TransactionCertificateFile;
 use Illuminate\Support\Facades\Storage;
 
 /**

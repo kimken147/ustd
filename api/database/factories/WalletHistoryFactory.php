@@ -2,8 +2,8 @@
 
 /** @var Factory $factory */
 
-use App\Model\User;
-use App\Model\WalletHistory;
+use App\Models\User;
+use App\Models\WalletHistory;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 

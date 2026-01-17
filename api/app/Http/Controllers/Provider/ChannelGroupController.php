@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\ChannelGroupCollection;
-use App\Model\ChannelGroup;
+use App\Models\ChannelGroup;
 use Illuminate\Http\Request;
 
 class ChannelGroupController extends Controller

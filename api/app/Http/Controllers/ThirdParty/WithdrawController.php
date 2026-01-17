@@ -5,11 +5,11 @@ namespace App\Http\Controllers\ThirdParty;
 use App\Exceptions\RaceConditionException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ThirdParty\Withdraw;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\BannedRealname;
-use App\Model\Bank;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\BannedRealname;
+use App\Models\Bank;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BankCardTransferObject;
@@ -28,10 +28,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 //四方
-use App\Model\ThirdChannel;
-use App\Model\MerchantThirdChannel;
+use App\Models\ThirdChannel;
+use App\Models\MerchantThirdChannel;
 use App\Utils\TransactionUtil;
-use App\Model\Channel;
+use App\Models\Channel;
 
 class WithdrawController extends Controller
 {

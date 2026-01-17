@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BankCollection;
-use App\Model\Bank;
+use App\Models\Bank;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 

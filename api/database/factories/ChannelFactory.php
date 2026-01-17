@@ -2,8 +2,8 @@
 
 /** @var Factory $factory */
 
-use App\Model\Channel;
-use App\Model\Channel as ChannelModel;
+use App\Models\Channel;
+use App\Models\Channel as ChannelModel;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;

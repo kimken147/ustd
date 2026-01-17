@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ThirdChannelCollection;
-use App\Model\FeatureToggle;
-use App\Model\MerchantThirdChannel;
-use App\Model\Permission;
-use App\Model\ThirdChannel;
+use App\Models\FeatureToggle;
+use App\Models\MerchantThirdChannel;
+use App\Models\Permission;
+use App\Models\ThirdChannel;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

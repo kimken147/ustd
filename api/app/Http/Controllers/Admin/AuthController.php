@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\User as UserResource;
-use App\Model\User;
+use App\Models\User;
 use App\Utils\LoginThrottle;
 use App\Utils\NotificationUtil;
 use App\Utils\WhitelistedIpManager;

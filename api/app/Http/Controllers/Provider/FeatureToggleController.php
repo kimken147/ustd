@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\FeatureToggleCollection;
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 
 class FeatureToggleController extends Controller
 {

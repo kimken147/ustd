@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Model\Permission;
-use App\Model\User;
-use App\Model\WhitelistedIp;
+use App\Models\Permission;
+use App\Models\User;
+use App\Models\WhitelistedIp;
 use App\Utils\PermissionUtil;
 use App\Utils\WhitelistedIpManager;
 use Illuminate\Database\Eloquent\Builder;

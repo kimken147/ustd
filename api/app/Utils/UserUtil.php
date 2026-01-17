@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use App\Model\User as UserModel;
+use App\Models\User as UserModel;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Google2FA;
 

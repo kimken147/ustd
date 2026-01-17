@@ -2,9 +2,9 @@
 
 namespace App\ThirdChannel;
 
-use App\Model\Channel;
-use App\Model\Transaction;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\Channel;
+use App\Models\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;

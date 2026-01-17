@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\ChannelGroupCollection;
-use App\Model\ChannelGroup;
+use App\Models\ChannelGroup;
 use Illuminate\Http\Request;
 
 class ChannelGroupController extends Controller

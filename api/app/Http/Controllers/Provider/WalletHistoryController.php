@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ListWalletHistoryRequest;
 use App\Http\Resources\WalletHistoryCollection;
 use App\Utils\AmountDisplayTransformer;
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;

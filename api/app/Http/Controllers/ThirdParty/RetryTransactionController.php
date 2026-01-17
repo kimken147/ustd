@@ -4,11 +4,11 @@ namespace App\Http\Controllers\ThirdParty;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\MarkPaufenTransactionPayingTimedOut;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use App\Utils\ThirdPartyResponseUtil;

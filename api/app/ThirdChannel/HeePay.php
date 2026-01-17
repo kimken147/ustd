@@ -5,8 +5,8 @@ namespace App\ThirdChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Model\ThirdChannel as ThirdChannelModel;
-use App\Model\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\ConnectionException;
 class HeePay extends ThirdChannel

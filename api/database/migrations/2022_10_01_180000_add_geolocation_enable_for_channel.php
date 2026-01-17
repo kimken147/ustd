@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Stevebauman\Location\Facades\Location;
 
-use App\Model\User;
+use App\Models\User;
 
 class AddGeolocationEnableForChannel extends Migration
 {

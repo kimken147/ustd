@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Model\Transaction;
-use App\Model\User;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

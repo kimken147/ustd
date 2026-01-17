@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\ThirdParty;
 
-use App\Model\Channel;
+use App\Models\Channel;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

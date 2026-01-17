@@ -4,12 +4,12 @@
 namespace App\Utils;
 
 use App\Exceptions\RaceConditionException;
-use App\Model\MatchingDepositReward;
-use App\Model\Transaction;
-use App\Model\TransactionReward;
-use App\Model\User;
-use App\Model\Wallet;
-use App\Model\WalletHistory;
+use App\Models\MatchingDepositReward;
+use App\Models\Transaction;
+use App\Models\TransactionReward;
+use App\Models\User;
+use App\Models\Wallet;
+use App\Models\WalletHistory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\TransactionRewardCollection;
-use App\Model\FeatureToggle;
-use App\Model\MatchingDepositReward;
-use App\Model\Permission;
-use App\Model\TransactionReward;
+use App\Models\FeatureToggle;
+use App\Models\MatchingDepositReward;
+use App\Models\Permission;
+use App\Models\TransactionReward;
 use App\Utils\BCMathUtil;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

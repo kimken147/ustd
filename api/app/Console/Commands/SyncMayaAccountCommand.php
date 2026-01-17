@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Model\Channel;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\UserChannelAccount;
 use App\Jobs\SyncMayaAccountJob;
 
 class SyncMayaAccountCommand extends Command

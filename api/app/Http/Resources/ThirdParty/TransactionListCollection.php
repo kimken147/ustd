@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\ThirdParty;
 
-use App\Model\Channel;
-use App\Model\UserChannel;
-use App\Model\TransactionFee;
-use App\Model\Transaction;
-use App\Model\User;
+use App\Models\Channel;
+use App\Models\UserChannel;
+use App\Models\TransactionFee;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use RuntimeException;
 

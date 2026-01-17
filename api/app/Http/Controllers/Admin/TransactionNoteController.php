@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Model\TransactionNote;
-use App\Model\Transaction;
+use App\Models\TransactionNote;
+use App\Models\Transaction;
 use App\Http\Resources\Admin\TransactionNote as TransactionNoteResource;
 use App\Http\Resources\Admin\TransactionNoteCollection;
 use Illuminate\Http\Request;

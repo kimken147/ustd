@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 use App\Utils\TransactionUtil;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

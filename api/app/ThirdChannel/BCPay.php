@@ -2,10 +2,10 @@
 
 namespace App\ThirdChannel;
 
-use App\Model\Transaction;
-use App\Model\Channel;
+use App\Models\Transaction;
+use App\Models\Channel;
 use Illuminate\Support\Facades\Log;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\ThirdChannel as ThirdChannelModel;
 use GuzzleHttp\Client;
 
 class BCPay extends ThirdChannel

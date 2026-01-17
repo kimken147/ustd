@@ -1,6 +1,6 @@
 <?php
 
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use Illuminate\Database\Seeder;
 
 class FeatureToggleSeeder extends Seeder

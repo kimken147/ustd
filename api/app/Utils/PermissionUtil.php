@@ -4,8 +4,8 @@
 namespace App\Utils;
 
 
-use App\Model\Permission;
-use App\Model\User;
+use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\Response;
 
 class PermissionUtil

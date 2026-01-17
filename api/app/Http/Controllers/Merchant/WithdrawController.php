@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\Withdraw;
 use App\Http\Resources\Merchant\WithdrawCollection;
 use App\Jobs\NotifyTransaction;
-use App\Model\BankCard;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionNote;
-use App\Model\TransactionFee;
-use App\Model\BannedRealname;
-use App\Model\Bank;
+use App\Models\BankCard;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionNote;
+use App\Models\TransactionFee;
+use App\Models\BannedRealname;
+use App\Models\Bank;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BankCardTransferObject;
@@ -35,10 +35,10 @@ use App\Utils\GuzzleHttpClientTrait;
 use App\Utils\UsdtUtil;
 
 //四方
-use App\Model\ThirdChannel;
-use App\Model\MerchantThirdChannel;
-use App\Model\Channel;
-use App\Model\User;
+use App\Models\ThirdChannel;
+use App\Models\MerchantThirdChannel;
+use App\Models\Channel;
+use App\Models\User;
 
 class WithdrawController extends Controller
 {

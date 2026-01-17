@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
-use App\Model\User;
+use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

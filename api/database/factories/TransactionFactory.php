@@ -2,11 +2,11 @@
 
 /** @var Factory $factory */
 
-use App\Model\Channel;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\UserChannelAccount;
-use App\Model\Wallet;
+use App\Models\Channel;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\UserChannelAccount;
+use App\Models\Wallet;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Carbon;

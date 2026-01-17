@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BankCollection;
-use App\Model\Bank;
-use App\Model\Permission;
+use App\Models\Bank;
+use App\Models\Permission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

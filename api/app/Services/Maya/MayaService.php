@@ -3,7 +3,7 @@
 namespace App\Services\Maya;
 
 use App\Exceptions\PaymayaResponseError;
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use App\Services\Maya\MayaLoginService;
 use App\Services\Maya\PayMayaApiService;
 use App\Services\Maya\LogService;

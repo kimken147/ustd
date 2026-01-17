@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\DeviceCollection;
-use App\Model\Device;
-use App\Model\User;
+use App\Models\Device;
+use App\Models\User;
 use Illuminate\Http\Response;
 
 class DeviceController extends Controller

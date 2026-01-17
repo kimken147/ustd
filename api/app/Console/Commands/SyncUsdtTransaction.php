@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
-use App\Model\Channel;
-use App\Model\Transaction;
+use App\Models\Channel;
+use App\Models\Transaction;
 use App\Utils\TransactionUtil;
 use App\Utils\BCMathUtil;
 use Illuminate\Support\Facades\Log;

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Model\Transaction;
-use App\Model\MerchantThirdChannel;
+use App\Models\Transaction;
+use App\Models\MerchantThirdChannel;
 use App\Utils\TransactionUtil;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;

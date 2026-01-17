@@ -4,7 +4,7 @@
 namespace App\Http\Resources\ThirdParty;
 
 
-use App\Model\User;
+use App\Models\User;
 use RuntimeException;
 use Throwable;
 
