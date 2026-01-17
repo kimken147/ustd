@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1",
         "ext-bcmath": "*",
         "ext-json": "*",
         "ext-openssl": "*",
@@ -21,8 +21,8 @@
         "irazasyed/telegram-bot-sdk": "^3.8",
         "kalnoy/nestedset": "^6.0",
         "khanamiryan/qrcode-detector-decoder": "1.0.5.2",
-        "laravel-notification-channels/telegram": "^2.1",
-        "laravel/framework": "^9.0",
+        "laravel-notification-channels/telegram": "^4.0",
+        "laravel/framework": "^10.0",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mxl/laravel-job": "^1.4",
@@ -33,7 +33,7 @@
         "stevebauman/location": "^6.5",
         "symfony/http-foundation": "^6.0",
         "tttran/viet_qr_generator": "v0.6",
-        "tymon/jwt-auth": "^1.0"
+        "php-open-source-saver/jwt-auth": "^2.0"
     },
     "require-dev": {
         "ext-bcmath": "*",
@@ -41,9 +41,9 @@
         "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.23",
         "mockery/mockery": "^1.5.0",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10",
-        "spatie/laravel-ignition": "^1.0"
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0"
     },
     "config": {
         "optimize-autoloader": true,
