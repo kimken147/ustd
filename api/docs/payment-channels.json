@@ -1,0 +1,3 @@
+
+   Illuminate\Database\QueryException  SQLSTATE[HY000] [2002] Network is unreachable (SQL: select `id`, `name`, `code`, `is_active` from `channels`).
+
