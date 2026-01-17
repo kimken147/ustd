@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Exchange;
 
-use App\Model\Device;
+use App\Models\Device;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;

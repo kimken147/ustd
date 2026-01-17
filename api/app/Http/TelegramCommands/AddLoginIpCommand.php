@@ -2,8 +2,8 @@
 
 namespace App\Http\TelegramCommands;
 
-use App\Model\User;
-use App\Model\WhitelistedIp;
+use App\Models\User;
+use App\Models\WhitelistedIp;
 use Telegram\Bot\Commands\Command;
 
 class AddLoginIpCommand extends Command

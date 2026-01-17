@@ -4,8 +4,8 @@
 namespace App\Utils;
 
 
-use App\Model\FeatureToggle;
-use App\Model\User;
+use App\Models\FeatureToggle;
+use App\Models\User;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

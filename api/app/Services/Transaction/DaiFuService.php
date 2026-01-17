@@ -2,13 +2,13 @@
 
 namespace App\Services\Transaction;
 
-use App\Model\Channel;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\TransactionFactory;
 

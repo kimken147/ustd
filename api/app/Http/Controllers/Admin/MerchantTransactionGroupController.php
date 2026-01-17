@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\MerchantTransactionGroupCollection;
-use App\Model\Permission;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
-use App\Model\UserChannelAccount;
+use App\Models\Permission;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
+use App\Models\UserChannelAccount;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

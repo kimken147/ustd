@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
-use App\Model\User;
+use App\Models\User;
 use App\Utils\BCMathUtil;
 use App\Utils\WalletUtil;
 use Illuminate\Http\Request;

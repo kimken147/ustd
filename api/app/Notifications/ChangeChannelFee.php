@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Model\User;
-use App\Model\UserChannel;
+use App\Models\User;
+use App\Models\UserChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;

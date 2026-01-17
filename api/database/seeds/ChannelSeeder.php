@@ -1,6 +1,6 @@
 <?php
 
-use App\Model\Channel;
+use App\Models\Channel;
 use Illuminate\Database\Seeder;
 
 class ChannelSeeder extends Seeder

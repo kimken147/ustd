@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\ThirdParty;
 
 use App\Http\Controllers\Controller;
-use App\Model\Transaction;
-use App\Model\User;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Utils\ThirdPartyResponseUtil;
 use App\Utils\WhitelistedIpManager;
 use Illuminate\Http\Request;

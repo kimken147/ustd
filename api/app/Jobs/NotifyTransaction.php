@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Model\Channel;
-use App\Model\Transaction;
+use App\Models\Channel;
+use App\Models\Transaction;
 use App\Utils\GuzzleHttpClientTrait;
 use Exception;
 use GuzzleHttp\RequestOptions;

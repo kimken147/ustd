@@ -1,7 +1,7 @@
 <?php
 
-use App\Model\User;
-use App\Model\Wallet;
+use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

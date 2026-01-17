@@ -6,8 +6,8 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-use App\Model\Transaction;
-use App\Model\ThirdChannel as ThirdChannelModel;
+use App\Models\Transaction;
+use App\Models\ThirdChannel as ThirdChannelModel;
 
 class Wmh extends ThirdChannel
 {

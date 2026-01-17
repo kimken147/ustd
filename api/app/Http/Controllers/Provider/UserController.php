@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
-use App\Model\User;
+use App\Models\User;
 use \App\Http\Resources\UserCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Model\Channel;
-use App\Model\Transaction;
-use App\Model\FeatureToggle;
-use App\Model\User;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\Transaction;
+use App\Models\FeatureToggle;
+use App\Models\User;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;

@@ -3,16 +3,16 @@
 namespace App\Utils;
 
 use App\Exceptions\RaceConditionException;
-use App\Model\Channel;
-use App\Model\Bank;
-use App\Model\ChannelGroup;
-use App\Model\DevicePayingTransaction;
-use App\Model\Transaction;
-use App\Model\TransactionFee;
-use App\Model\TransactionNote;
-use App\Model\User;
-use App\Model\UserChannelAccount;
-use App\Model\MerchantThirdChannel;
+use App\Models\Channel;
+use App\Models\Bank;
+use App\Models\ChannelGroup;
+use App\Models\DevicePayingTransaction;
+use App\Models\Transaction;
+use App\Models\TransactionFee;
+use App\Models\TransactionNote;
+use App\Models\User;
+use App\Models\UserChannelAccount;
+use App\Models\MerchantThirdChannel;
 use App\Services\Transaction\TransactionService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 use Illuminate\Http\Response;
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 

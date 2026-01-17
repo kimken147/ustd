@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Channel;
-use App\Model\ChannelAmount;
-use App\Model\User;
-use App\Model\UserChannel;
+use App\Models\Channel;
+use App\Models\ChannelAmount;
+use App\Models\User;
+use App\Models\UserChannel;
 use App\Http\Controllers\ThirdParty\UserChannelMatching;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;

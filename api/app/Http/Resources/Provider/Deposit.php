@@ -3,8 +3,8 @@
 namespace App\Http\Resources\Provider;
 
 use App\Http\Resources\TransactionCertificateFileCollection;
-use App\Model\Transaction;
-use App\Model\TransactionCertificateFile;
+use App\Models\Transaction;
+use App\Models\TransactionCertificateFile;
 use App\Utils\AmountDisplayTransformer;
 use App\Http\Resources\User;
 use Illuminate\Http\Request;

@@ -5,9 +5,9 @@ namespace App\Builders;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
-use App\Model\Transaction as TransactionModel;
-use App\Model\FeatureToggle;
-use App\Model\UserChannelAccount;
+use App\Models\Transaction as TransactionModel;
+use App\Models\FeatureToggle;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 
 class Transaction

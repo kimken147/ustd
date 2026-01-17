@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Model\User;
-use App\Model\FeatureToggle;
+use App\Models\User;
+use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 use Closure;
 use Illuminate\Http\Request;

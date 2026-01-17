@@ -2,11 +2,11 @@
 
 /** @var Factory $factory */
 
-use App\Model\ChannelAmount;
-use App\Model\Device;
-use App\Model\User;
-use App\Model\UserChannelAccount;
-use App\Model\Wallet;
+use App\Models\ChannelAmount;
+use App\Models\Device;
+use App\Models\User;
+use App\Models\UserChannelAccount;
+use App\Models\Wallet;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 

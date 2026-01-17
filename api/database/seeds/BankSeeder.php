@@ -1,6 +1,6 @@
 <?php
 
-use App\Model\Bank;
+use App\Models\Bank;
 
 use Illuminate\Database\Seeder;
 

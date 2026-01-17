@@ -4,7 +4,7 @@
 namespace App\Utils;
 
 
-use App\Model\User;
+use App\Models\User;
 use Closure;
 use Illuminate\Cache\Lock;
 use Illuminate\Contracts\Cache\LockTimeoutException;

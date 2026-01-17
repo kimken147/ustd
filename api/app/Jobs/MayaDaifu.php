@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Exceptions\PaymayaResponseError;
-use App\Model\Channel;
-use App\Model\Transaction;
+use App\Models\Channel;
+use App\Models\Transaction;
 use App\Services\Maya\MayaLoginService;
 use App\Services\Maya\MayaService;
 use App\Services\Maya\PayMayaApiService;

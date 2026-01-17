@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use App\Utils\GuzzleHttpClientTrait;
 use App\Repository\FeatureToggleRepository;
 use GuzzleHttp\RequestOptions;

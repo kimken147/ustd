@@ -3,8 +3,8 @@
 
 namespace App\Utils;
 
-use App\Model\User;
-use App\Model\UserChannel;
+use App\Models\User;
+use App\Models\UserChannel;
 use Illuminate\Http\Response;
 
 class ChannelCheckUtil

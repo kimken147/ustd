@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Merchant;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\SubAccount;
 use App\Http\Resources\Merchant\SubAccountCollection;
-use App\Model\User;
+use App\Models\User;
 use App\Utils\UserUtil;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

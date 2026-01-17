@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
-use App\Model\TransactionGroup;
+use App\Models\TransactionGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

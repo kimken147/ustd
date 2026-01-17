@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BankCollection;
-use App\Model\Bank;
+use App\Models\Bank;
 use Illuminate\Http\Request;
 
 class BankController extends Controller

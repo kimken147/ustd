@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\OnlineReadyForMatchingUserCollection;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\FeatureToggle;
-use App\Model\UserChannelAccount;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\FeatureToggle;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;

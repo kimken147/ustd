@@ -4,8 +4,8 @@
 namespace App\Utils;
 
 
-use App\Model\BankCard;
-use App\Model\SystemBankCard;
+use App\Models\BankCard;
+use App\Models\SystemBankCard;
 
 class BankCardTransferObject
 {

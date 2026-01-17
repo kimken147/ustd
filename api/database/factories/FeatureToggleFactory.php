@@ -2,7 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 use Faker\Generator as Faker;
 
 $factory->define(FeatureToggle::class, function (Faker $faker) {

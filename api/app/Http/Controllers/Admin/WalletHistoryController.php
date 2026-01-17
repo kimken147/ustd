@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WalletHistoryCollection;
-use App\Model\User;
-use App\Model\WalletHistory;
+use App\Models\User;
+use App\Models\WalletHistory;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BCMathUtil;
 use DateTimeInterface;

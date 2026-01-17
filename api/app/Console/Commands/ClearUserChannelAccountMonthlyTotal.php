@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 
 class ClearUserChannelAccountMonthlyTotal extends Command
 {

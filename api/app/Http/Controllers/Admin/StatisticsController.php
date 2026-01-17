@@ -7,8 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use App\Model\User;
-use App\Model\Transaction;
+use App\Models\User;
+use App\Models\Transaction;
 
 class StatisticsController extends Controller
 {

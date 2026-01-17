@@ -3,8 +3,8 @@
 namespace App\Utils;
 
 
-use App\Model\User;
-use App\Model\WhitelistedIp;
+use App\Models\User;
+use App\Models\WhitelistedIp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;

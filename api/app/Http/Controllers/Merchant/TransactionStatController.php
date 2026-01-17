@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\TransactionStatCollection;
-use App\Model\Transaction;
-use App\Model\User;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;

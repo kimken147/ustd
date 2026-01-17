@@ -4,13 +4,13 @@ namespace App\Http\Resources\Admin;
 
 use Carbon\Carbon;
 use App\Http\Resources\User;
-use App\Model\TransactionFee;
-use App\Model\UserChannelAccount;
-use App\Model\Channel;
+use App\Models\TransactionFee;
+use App\Models\UserChannelAccount;
+use App\Models\Channel;
 use App\Utils\BCMathUtil;
 use App\Utils\AmountDisplayTransformer;
 use App\Http\Resources\TransactionCertificateFileCollection;
-use App\Model\TransactionCertificateFile;
+use App\Models\TransactionCertificateFile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;

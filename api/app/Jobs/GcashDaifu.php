@@ -12,13 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 use App\Http\Controllers\Country\PhilippineController;
-use App\Model\Transaction;
-use App\Model\UserChannelAccount;
+use App\Models\Transaction;
+use App\Models\UserChannelAccount;
 use App\Utils\TransactionUtil;
 use Illuminate\Support\Facades\Redis;
 
 use App\Repository\FeatureToggleRepository;
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 
 class GcashDaifu implements ShouldQueue
 {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Model\WalletHistory;
+use App\Models\WalletHistory;
 use DateTimeInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

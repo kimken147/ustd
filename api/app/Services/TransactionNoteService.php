@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Model\TransactionNote;
+use App\Models\TransactionNote;
 
 class TransactionNoteService
 {

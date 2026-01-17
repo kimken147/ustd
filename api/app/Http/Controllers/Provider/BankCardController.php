@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\BankCard as BankCardResource;
 use App\Http\Resources\Provider\BankCardCollection;
-use App\Model\BankCard;
+use App\Models\BankCard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

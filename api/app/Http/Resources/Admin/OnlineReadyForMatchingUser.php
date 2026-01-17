@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Admin;
 
-use App\Model\Channel;
-use App\Model\UserChannelAccount;
-use App\Model\ChannelAmount;
+use App\Models\Channel;
+use App\Models\UserChannelAccount;
+use App\Models\ChannelAmount;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

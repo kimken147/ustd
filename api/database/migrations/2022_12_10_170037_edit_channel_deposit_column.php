@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Model\Channel;
+use App\Models\Channel;
 
 class EditChannelDepositColumn extends Migration
 {

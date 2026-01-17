@@ -2,9 +2,9 @@
 
 /** @var Factory $factory */
 
-use App\Model\Transaction;
-use App\Model\TransactionFee;
-use App\Model\User;
+use App\Models\Transaction;
+use App\Models\TransactionFee;
+use App\Models\User;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 

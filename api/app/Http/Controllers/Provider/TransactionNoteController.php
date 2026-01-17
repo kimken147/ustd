@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
-use App\Model\TransactionNote;
+use App\Models\TransactionNote;
 use App\Http\Resources\Provider\TransactionNote as TransactionNoteResource;
 use App\Http\Resources\Provider\TransactionNoteCollection;
 use Illuminate\Http\Request;

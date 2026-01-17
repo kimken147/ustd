@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\SystemBankCardCollection;
-use App\Model\Permission;
-use App\Model\SystemBankCard;
-use App\Model\User;
+use App\Models\Permission;
+use App\Models\SystemBankCard;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

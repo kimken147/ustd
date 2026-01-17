@@ -4,8 +4,8 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\Admin\PermissionCollection;
 use App\Http\Resources\Admin\WhitelistedIpCollection;
-use App\Model\Permission;
-use App\Model\FeatureToggle;
+use App\Models\Permission;
+use App\Models\FeatureToggle;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

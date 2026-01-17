@@ -6,15 +6,15 @@ use App\Http\Controllers\ThirdParty\UserChannelAccountMatching;
 use App\Http\Controllers\ThirdParty\UserChannelMatching;
 use App\Jobs\MarkPaufenTransactionMatchingTimedOut;
 use App\Jobs\MarkPaufenTransactionPayingTimedOut;
-use App\Model\Channel;
-use App\Model\ChannelAmount;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
-use App\Model\UserChannel;
-use App\Model\UserChannelAccount;
-use App\Model\TransactionNote;
+use App\Models\Channel;
+use App\Models\ChannelAmount;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
+use App\Models\UserChannel;
+use App\Models\UserChannelAccount;
+use App\Models\TransactionNote;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use App\Utils\NotificationUtil;
@@ -23,8 +23,8 @@ use App\Utils\TransactionNoteUtil;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
 use App\Utils\UserChannelAccountUtil;
-use App\Model\BannedIp;
-use App\Model\BannedRealname;
+use App\Models\BannedIp;
+use App\Models\BannedRealname;
 use Endroid\QrCode\Builder\Builder as QrBuilder;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
@@ -51,8 +51,8 @@ use RuntimeException;
 use App\Utils\UsdtUtil;
 
 //四方
-use App\Model\ThirdChannel;
-use App\Model\MerchantThirdChannel;
+use App\Models\ThirdChannel;
+use App\Models\MerchantThirdChannel;
 
 class CreateTransactionController extends Controller
 {

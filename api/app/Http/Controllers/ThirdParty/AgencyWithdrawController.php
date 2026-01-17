@@ -8,13 +8,13 @@ use App\Notifications\AgencyWithdrawInsufficientAvailableBalance;
 use App\Utils\InsufficientAvailableBalance;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ThirdParty\Withdraw;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\TransactionNote;
-use App\Model\User;
-use App\Model\Bank;
-use App\Model\Wallet;
-use App\Model\BannedRealname;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\TransactionNote;
+use App\Models\User;
+use App\Models\Bank;
+use App\Models\Wallet;
+use App\Models\BannedRealname;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
@@ -31,10 +31,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use App\Utils\UsdtUtil;
 
-use App\Model\ThirdChannel;
-use App\Model\MerchantThirdChannel;
+use App\Models\ThirdChannel;
+use App\Models\MerchantThirdChannel;
 use App\Utils\TransactionUtil;
-use App\Model\Channel;
+use App\Models\Channel;
 use Illuminate\Support\Facades\Notification;
 
 class AgencyWithdrawController extends Controller

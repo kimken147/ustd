@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Model\User;
-use App\Model\WalletHistory;
+use App\Models\User;
+use App\Models\WalletHistory;
 
 class CalculateMissingMoney extends Command
 {

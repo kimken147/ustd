@@ -3,8 +3,8 @@
 namespace App\Http\Resources\Exchange;
 
 use App\Http\Resources\TransactionCertificateFileCollection;
-use App\Model\TransactionCertificateFile;
-use App\Model\UserChannelAccount;
+use App\Models\TransactionCertificateFile;
+use App\Models\UserChannelAccount;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BCMathUtil;
 use App\Utils\FakeCryptoExchange;

@@ -6,9 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Hashids\Hashids;
-use App\Model\UserChannelAccount as UserChannelAccountModel;
-use App\Model\User;
-use App\Model\FeatureToggle;
+use App\Models\UserChannelAccount as UserChannelAccountModel;
+use App\Models\User;
+use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 
 class UserChannelAccount

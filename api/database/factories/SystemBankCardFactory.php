@@ -2,7 +2,7 @@
 
 /** @var Factory $factory */
 
-use App\Model\SystemBankCard;
+use App\Models\SystemBankCard;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Carbon;

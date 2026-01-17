@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
-use App\Model\Tag;
+use App\Models\Tag;
 use App\Services\TagService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;

@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Model\TransactionGroup;
+use App\Models\TransactionGroup;
 use Illuminate\Console\Command;
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use Illuminate\Support\Facades\DB;
 
 class SyncTransactionGroups extends Command

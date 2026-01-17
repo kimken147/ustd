@@ -3,15 +3,15 @@
 namespace App\Http\Resources\Provider;
 
 use Carbon\Carbon;
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BCMathUtil;
-use App\Model\TransactionFee;
-use App\Model\Notification;
-use App\Model\Channel;
+use App\Models\TransactionFee;
+use App\Models\Notification;
+use App\Models\Channel;
 use App\Http\Resources\User;
 use App\Http\Resources\TransactionCertificateFileCollection;
-use App\Model\TransactionCertificateFile;
+use App\Models\TransactionCertificateFile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;

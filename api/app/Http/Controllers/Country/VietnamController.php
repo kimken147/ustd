@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\Queue;
-use App\Model\Transaction;
-use App\Model\UserChannelAccount;
+use App\Models\Transaction;
+use App\Models\UserChannelAccount;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;

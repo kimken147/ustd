@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Merchant;
 
-use App\Model\TransactionFee;
-use App\Model\TransactionNote;
+use App\Models\TransactionFee;
+use App\Models\TransactionNote;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

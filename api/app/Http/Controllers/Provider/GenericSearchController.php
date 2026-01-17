@@ -25,13 +25,13 @@ use App\Http\Resources\Provider\BankCardCollection;
 use App\Http\Resources\Provider\DeviceCollection;
 
 use App\Repository\FeatureToggleRepository;
-use App\Model\FeatureToggle;
-use App\Model\Transaction;
-use App\Model\User;
-use App\Model\UserChannelAccount;
-use App\Model\WalletHistory;
-use App\Model\BankCard;
-use App\Model\Device;
+use App\Models\FeatureToggle;
+use App\Models\Transaction;
+use App\Models\User;
+use App\Models\UserChannelAccount;
+use App\Models\WalletHistory;
+use App\Models\BankCard;
+use App\Models\Device;
 
 class GenericSearchController extends Controller
 {

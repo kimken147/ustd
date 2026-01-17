@@ -2,7 +2,7 @@
 
 namespace App\Services\Transaction;
 
-use App\Model\Transaction;
+use App\Models\Transaction;
 
 class TransactionService
 {

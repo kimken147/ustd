@@ -4,8 +4,8 @@
 namespace App\Utils;
 
 
-use App\Model\FeatureToggle;
-use App\Model\User;
+use App\Models\FeatureToggle;
+use App\Models\User;
 use App\Notifications\AdminLogin;
 use App\Notifications\AdminResetGoogle2faSecret;
 use App\Notifications\AdminResetPassword;

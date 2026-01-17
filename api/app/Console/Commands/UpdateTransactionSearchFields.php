@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use App\Model\Transaction;
+use App\Models\Transaction;
 
 class UpdateTransactionSearchFields extends Command
 {

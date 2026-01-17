@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Exchange;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Exchange\TransactionCollection;
-use App\Model\Channel;
-use App\Model\Transaction;
+use App\Models\Channel;
+use App\Models\Transaction;
 use App\Utils\TransactionUtil;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

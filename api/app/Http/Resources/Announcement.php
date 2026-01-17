@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use \Carbon\Carbon;
-use App\Model\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Database\Eloquent\SoftDeletes;

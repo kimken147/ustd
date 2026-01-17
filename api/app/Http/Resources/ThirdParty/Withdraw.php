@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\ThirdParty;
 
-use App\Model\TransactionFee;
-use App\Model\User;
+use App\Models\TransactionFee;
+use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

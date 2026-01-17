@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use App\Services\Maya\MayaLoginService;
 use App\Services\Maya\MayaService;
 use Exception;

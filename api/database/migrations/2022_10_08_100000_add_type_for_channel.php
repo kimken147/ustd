@@ -4,8 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use App\Model\UserChannelAccount;
-use App\Model\Channel;
+use App\Models\UserChannelAccount;
+use App\Models\Channel;
 use Illuminate\Support\Str;
 class AddTypeForChannel extends Migration
 {

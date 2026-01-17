@@ -4,16 +4,16 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Model\Channel;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\UserChannelAccount;
 use App\Utils\TransactionUtil;
-use App\Model\TransactionGroup;
-use App\Model\Transaction;
-use App\Model\User;
+use App\Models\TransactionGroup;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Utils\TransactionFactory;
 use App\Jobs\GcashDaifu;
 use App\Repository\FeatureToggleRepository;
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 
 class ProcessGcashAutoDaifu extends Command
 {

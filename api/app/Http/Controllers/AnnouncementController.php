@@ -7,9 +7,9 @@ use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Model\User;
-use App\Model\Announcement;
-use App\Model\AnnouncementUser;
+use App\Models\User;
+use App\Models\Announcement;
+use App\Models\AnnouncementUser;
 use App\Http\Resources\AnnouncementCollection;
 use Illuminate\Database\Eloquent\Builder;
 

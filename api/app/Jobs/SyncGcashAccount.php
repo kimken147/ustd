@@ -14,8 +14,8 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Country\PhilippineController;
 use App\Utils\GcashService;
 use App\Utils\TransactionUtil;
-use App\Model\MemberDevice;
-use App\Model\UserChannelAccount;
+use App\Models\MemberDevice;
+use App\Models\UserChannelAccount;
 use App\Utils\BCMathUtil;
 
 class SyncGcashAccount implements ShouldQueue

@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Model\ThirdChannel;
-use App\Model\FeatureToggle;
+use App\Models\ThirdChannel;
+use App\Models\FeatureToggle;
 use App\Notifications\ThirdchannelBalance;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Support\Facades\Notification;

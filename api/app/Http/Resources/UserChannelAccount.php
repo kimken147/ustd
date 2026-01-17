@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Model\Device;
-use App\Model\UserChannelAccount as ModelUserChannelAccount;
+use App\Models\Device;
+use App\Models\UserChannelAccount as ModelUserChannelAccount;
 use App\Utils\AmountDisplayTransformer;
 use Hashids\Hashids;
 use Illuminate\Http\Request;

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\TransactionCollection;
-use App\Model\Transaction;
-use App\Model\TransactionFee;
+use App\Models\Transaction;
+use App\Models\TransactionFee;
 use App\Utils\AmountDisplayTransformer;
 use DateTimeInterface;
 use Illuminate\Http\Request;

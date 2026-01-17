@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\MatchingDepositRewardCollection;
-use App\Model\FeatureToggle;
-use App\Model\MatchingDepositReward;
-use App\Model\Permission;
+use App\Models\FeatureToggle;
+use App\Models\MatchingDepositReward;
+use App\Models\Permission;
 use App\Utils\BCMathUtil;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

@@ -3,11 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Jobs\MayaDaifu;
-use App\Model\Channel;
-use App\Model\Transaction;
-use App\Model\TransactionGroup;
-use App\Model\User;
-use App\Model\UserChannelAccount;
+use App\Models\Channel;
+use App\Models\Transaction;
+use App\Models\TransactionGroup;
+use App\Models\User;
+use App\Models\UserChannelAccount;
 use App\Services\Transaction\DaiFuService;
 use App\Utils\TransactionFactory;
 use Illuminate\Console\Command;

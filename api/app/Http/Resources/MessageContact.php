@@ -5,8 +5,8 @@ namespace App\Http\Resources;
 use \Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Model\User;
-use App\Model\Message as MessageModel;
+use App\Models\User;
+use App\Models\Message as MessageModel;
 
 class MessageContact extends JsonResource
 {

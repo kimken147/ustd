@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Model\MemberDevice;
-use App\Model\UserChannelAccount;
+use App\Models\MemberDevice;
+use App\Models\UserChannelAccount;
 use Illuminate\Console\Command;
 
 class ClearGcashMemberDevice extends Command

@@ -1,6 +1,6 @@
 <?php
 
-use App\Model\UserChannelAccount;
+use App\Models\UserChannelAccount;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
