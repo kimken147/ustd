@@ -312,12 +312,18 @@ importers:
 
   packages/shared:
     dependencies:
+      axios:
+        specifier: ^1.2.2
+        version: 1.13.2
       dayjs:
         specifier: ^1.11.7
         version: 1.11.19
       numeral:
         specifier: ^2.0.6
         version: 2.0.6
+      query-string:
+        specifier: ^8.1.0
+        version: 8.2.0
       react:
         specifier: ^18.2.0
         version: 18.3.1

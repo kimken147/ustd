@@ -1,2 +1,1 @@
-// Will export providers here
-export {};
+export * from './dataProvider';
