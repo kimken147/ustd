@@ -1,7 +1,8 @@
-import { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+import type { DataProvider, CrudFilters, LogicalFilter } from '@refinedev/core';
 import queryString from 'query-string';
 import { createAxiosInstance } from './axiosInstance';
-import { generateFilter, LogicalFilter } from './filters';
+import { generateFilter } from './filters';
 import { IRes, DataProviderConfig } from './types';
 
 const { stringify } = queryString;
@@ -9,37 +10,7 @@ const { stringify } = queryString;
 export { createAxiosInstance } from './axiosInstance';
 export { generateFilter, mapOperator } from './filters';
 export type { IRes, DataProviderConfig } from './types';
-export type { CrudOperators, LogicalFilter } from './filters';
-
-// DataProvider interface (compatible with Refine)
-export interface DataProvider {
-  getList: (params: {
-    resource: string;
-    pagination?: { current?: number; pageSize?: number; mode?: 'server' | 'client' | 'off' };
-    filters?: LogicalFilter[];
-    sorters?: any[];
-    meta?: Record<string, any>;
-  }) => Promise<{ data: any[]; total: number }>;
-
-  getOne: (params: { resource: string; id: string | number }) => Promise<{ data: any }>;
-
-  create: (params: { resource: string; variables: any; meta?: Record<string, any> }) => Promise<{ data: any }>;
-
-  update: (params: { resource: string; id: string | number; variables: any }) => Promise<{ data: any }>;
-
-  deleteOne: (params: { resource: string; id: string | number; variables?: any }) => Promise<{ data: any }>;
-
-  getApiUrl: () => string;
-
-  custom?: (params: {
-    url: string;
-    method: 'get' | 'post' | 'put' | 'patch' | 'delete';
-    filters?: LogicalFilter[];
-    payload?: any;
-    query?: Record<string, any>;
-    headers?: Record<string, string>;
-  }) => Promise<{ data: any }>;
-}
+export type { CrudOperators, LogicalFilter, CrudFilters, ConditionalFilter } from './filters';
 
 export const createDataProvider = (
   config: DataProviderConfig,
@@ -63,7 +34,9 @@ export const createDataProvider = (
             per_page: pagination?.pageSize || 20,
           };
 
-      const queryFilters = generateFilter(filters);
+      // Cast filters to LogicalFilter[] for our generateFilter function
+      const logicalFilters = filters as LogicalFilter[] | undefined;
+      const queryFilters = generateFilter(logicalFilters);
       const { data } = await client.get<IRes>(`${url}?${stringify(query)}&${stringify(queryFilters)}`);
 
       return {
@@ -106,19 +79,20 @@ export const createDataProvider = (
       let requestUrl = `${url}?`;
 
       if (filters) {
-        const filterQuery = generateFilter(filters);
+        // Cast filters to LogicalFilter[] for our generateFilter function
+        const logicalFilters = filters as LogicalFilter[];
+        const filterQuery = generateFilter(logicalFilters);
         requestUrl = `${requestUrl}&${stringify(filterQuery)}`;
       }
 
       if (query) {
-        requestUrl = `${requestUrl}&${stringify(query)}`;
+        requestUrl = `${requestUrl}&${stringify(query as Record<string, unknown>)}`;
       }
 
       if (headers) {
-        client.defaults.headers = {
-          ...client.defaults.headers,
-          ...headers,
-        };
+        Object.entries(headers).forEach(([key, value]) => {
+          client.defaults.headers.common[key] = value as string;
+        });
       }
 
       let axiosResponse;

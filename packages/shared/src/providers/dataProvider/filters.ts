@@ -1,18 +1,7 @@
-export type CrudOperators =
-  | 'eq' | 'ne' | 'lt' | 'gt' | 'lte' | 'gte'
-  | 'in' | 'nin'
-  | 'contains' | 'ncontains' | 'containss' | 'ncontainss'
-  | 'between' | 'nbetween'
-  | 'null' | 'nnull'
-  | 'startswith' | 'nstartswith' | 'startswiths' | 'nstartswiths'
-  | 'endswith' | 'nendswith' | 'endswiths' | 'nendswiths'
-  | 'or' | 'and';
+import type { CrudOperators, LogicalFilter } from '@refinedev/core';
 
-export interface LogicalFilter {
-  field: string;
-  operator: CrudOperators;
-  value: any;
-}
+// Re-export types from @refinedev/core
+export type { CrudOperators, LogicalFilter, CrudFilters, ConditionalFilter } from '@refinedev/core';
 
 export const mapOperator = (operator: CrudOperators): string => {
   switch (operator) {
