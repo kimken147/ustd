@@ -1,6 +1,6 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
 import { useTranslate } from "@pankod/refine-core";
-import { SelectOption } from "interfaces/antd";
+import { SelectOption } from "@morgan-ustd/shared";
 
 function useTransactionCallbackStatus() {
     const t = useTranslate();

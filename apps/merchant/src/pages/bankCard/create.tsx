@@ -2,7 +2,7 @@ import { SaveOutlined } from "@ant-design/icons";
 import { Button, Create, Form, Input, useForm } from "@pankod/refine-antd";
 import { useCreate, useNavigation, useTranslate } from "@pankod/refine-core";
 import useSelector from "hooks/useSelector";
-import { Bank } from "interfaces/bank";
+import { Bank } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

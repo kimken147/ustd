@@ -14,7 +14,7 @@ import { useTranslate } from "@pankod/refine-core";
 import Table from "components/table";
 import useTable from "hooks/useTable";
 import { SubAccount } from "interfaces/subAccount";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

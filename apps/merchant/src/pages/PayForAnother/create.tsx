@@ -15,8 +15,7 @@ import {
 import { useCreate, useGetIdentity, useNavigation, useNotification, useTranslate } from "@pankod/refine-core";
 import useSelector from "hooks/useSelector";
 import useUpdateModal from "hooks/useUpdateModal";
-import { SelectOptions } from "interfaces/antd";
-import { Bank } from "interfaces/bank";
+import { SelectOptions, Bank } from "@morgan-ustd/shared";
 import { sumBy } from "lodash";
 import numeral from "numeral";
 import { FC, useState } from "react";

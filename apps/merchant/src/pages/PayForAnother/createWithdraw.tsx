@@ -17,7 +17,7 @@ import { useCreate, useNavigation, useTranslate } from "@pankod/refine-core";
 import ContentHeader from "components/contentHeader";
 import useProfile from "hooks/useProfile";
 import useSelector from "hooks/useSelector";
-import { Bank } from "interfaces/bank";
+import { Bank } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

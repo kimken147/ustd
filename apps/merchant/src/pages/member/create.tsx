@@ -2,7 +2,7 @@ import { SaveOutlined } from "@ant-design/icons";
 import { Button, Col, Create, Divider, Form, Input, Row, Spin, Typography, useForm } from "@pankod/refine-antd";
 import { useCreate, useList } from "@pankod/refine-core";
 import { useNavigate } from "@pankod/refine-react-router-v6";
-import { ChannelGroup } from "interfaces/channelGroup";
+import { ChannelGroup } from "@morgan-ustd/shared";
 import { Member } from "interfaces/member";
 import { FC } from "react";
 import { Helmet } from "react-helmet";

@@ -34,7 +34,7 @@ import MemberList from "pages/member/list";
 import MemberCreate from "pages/member/create";
 import MemberShow from "pages/member/show";
 import { Helmet } from "react-helmet";
-import { initDayjs } from "lib/date";
+import { initDayjs } from "@morgan-ustd/shared";
 import accessControlProvider from "accessControlProvider";
 import SubAccountList from "pages/subAccount/list";
 import SubAccountCreate from "pages/subAccount/create";

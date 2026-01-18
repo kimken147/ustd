@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "@pankod/refine-react-router-v6";
 import EditableForm from "components/EditableFormItem";
 import useUpdateModal from "hooks/useUpdateModal";
 import { SubAccount } from "interfaces/subAccount";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

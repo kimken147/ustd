@@ -23,7 +23,7 @@ import useProfile from "hooks/useProfile";
 import useStatus from "hooks/useStatus";
 import useTable from "hooks/useTable";
 import { Meta, WalletHistory } from "interfaces/wallet-history";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import numeral from "numeral";
 import queryString from "query-string";
 import { FC } from "react";

@@ -19,7 +19,7 @@ import ContentHeader from "components/contentHeader";
 import useTable from "hooks/useTable";
 import useUpdateModal from "hooks/useUpdateModal";
 import { BankCard } from "interfaces/bankCard";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

@@ -11,7 +11,7 @@ import {
 } from "@pankod/refine-antd";
 import useTable from "hooks/useTable";
 import { Member } from "interfaces/member";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

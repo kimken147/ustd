@@ -3,7 +3,7 @@ import { IResourceComponentsProps, useShow } from "@pankod/refine-core";
 import { useLocation } from "@pankod/refine-react-router-v6";
 import useEnableStatusSelect from "hooks/useEnableStatusSwitch";
 import { Member } from "interfaces/member";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 
