@@ -1,14 +1,11 @@
-import { useList } from "@pankod/refine-core";
+import { useList } from "@refinedev/core";
 import { SystemSetting } from "interfaces/systemSetting";
 
 function useSystemSetting() {
     const { data, ...others } = useList<SystemSetting>({
         resource: "feature-toggles",
-        config: {
-            hasPagination: false,
-        },
-        queryOptions: {
-            refetchOnWindowFocus: false,
+        pagination: {
+            mode: "off",
         },
     });
     return {

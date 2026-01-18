@@ -5,7 +5,7 @@ import {
   Radio,
   Select,
   TableColumnProps,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import useTable from 'hooks/useTable';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';

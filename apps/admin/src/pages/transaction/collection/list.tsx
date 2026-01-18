@@ -25,7 +25,7 @@ import {
   DateField,
   CreateButton,
   SelectProps,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import dayjs, { Dayjs } from 'dayjs';
 import useTable from 'hooks/useTable';
 import { FC, useEffect } from 'react';
@@ -69,12 +69,12 @@ import {
   useCustomMutation,
   useGetIdentity,
   useList,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import numeral from 'numeral';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useChannelGroup from 'hooks/useChannelGroup';
 import useUserChannelAccount from 'hooks/useUserChannelAccount';
-import { axiosInstance } from '@pankod/refine-simple-rest';
+import { axiosInstance } from '@refinedev/simple-rest';
 import CustomDatePicker from 'components/customDatePicker';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import Badge from 'components/badge';

@@ -13,9 +13,9 @@ import {
   Switch,
   useForm,
   useModal,
-} from '@pankod/refine-antd';
-import { useCreate } from '@pankod/refine-core';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+} from '@refinedev/antd';
+import { useCreate } from '@refinedev/core';
+import { useNavigate } from '@refinedev/react-router-v6';
 import useSelector from 'hooks/useSelector';
 import { Bank, User } from '@morgan-ustd/shared';
 import { FC, useState } from 'react';

@@ -29,14 +29,14 @@ import {
   Form as AntdForm,
   Checkbox,
   useForm,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   useApiUrl,
   useGetIdentity,
   useList,
   useUpdate,
-} from '@pankod/refine-core';
-import { axiosInstance } from '@pankod/refine-simple-rest';
+} from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useAutoRefetch from 'hooks/useAutoRefetch';

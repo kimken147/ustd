@@ -16,14 +16,14 @@ import {
   TextField,
   Typography,
   useForm,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   useCreate,
   useList,
   useNavigation,
   useResource,
-} from '@pankod/refine-core';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+} from '@refinedev/core';
+import { useNavigate } from '@refinedev/react-router-v6';
 import useChannelGroup from 'hooks/useChannelGroup';
 import { Merchant, User } from '@morgan-ustd/shared';
 import { FC } from 'react';

@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import {
-  AntdLayout,
+  Layout as AntdLayout,
   ConfigProvider,
   Menu,
   Grid,
-  Icons,
   Drawer,
-  Sider as DefaultSider,
   Button,
-} from '@pankod/refine-antd';
+} from 'antd';
 import {
-  // useTranslate,
+  UnorderedListOutlined,
+  LogoutOutlined,
+  DashboardOutlined,
+  BarsOutlined,
+} from '@ant-design/icons';
+import {
   useLogout,
   useTitle,
   CanAccess,
@@ -19,21 +22,26 @@ import {
   useRouterContext,
   useMenu,
   useRefineContext,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 
 import { Title as DefaultTitle } from '../title';
 
 import { drawerButtonStyles } from './styles';
 import { useTranslation } from 'react-i18next';
-const {
-  UnorderedListOutlined,
-  LogoutOutlined,
-  DashboardOutlined,
-  BarsOutlined,
-} = Icons;
 const { SubMenu } = Menu;
 
-export const Sider: typeof DefaultSider = ({ render }) => {
+type SiderRenderProps = {
+  dashboard: React.ReactNode;
+  items: React.ReactNode;
+  logout: React.ReactNode;
+  collapsed: boolean;
+};
+
+type DefaultSiderProps = {
+  render?: (props: SiderRenderProps) => React.ReactNode;
+};
+
+export const Sider: React.FC<DefaultSiderProps> = ({ render }) => {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);

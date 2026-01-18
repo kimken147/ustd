@@ -4,12 +4,12 @@ import {
   Show,
   Switch,
   TextField,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   IResourceComponentsProps,
   useNavigation,
   useShow,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import dayjs from 'dayjs';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';

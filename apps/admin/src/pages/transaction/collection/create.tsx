@@ -9,8 +9,8 @@ import {
   Row,
   TextField,
   useForm,
-} from '@pankod/refine-antd';
-import { useCreate } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useCreate } from '@refinedev/core';
 import useSelector from 'hooks/useSelector';
 import { Channel, Merchant, DemoCreateRes, Blue } from '@morgan-ustd/shared';
 import { random } from 'lodash';

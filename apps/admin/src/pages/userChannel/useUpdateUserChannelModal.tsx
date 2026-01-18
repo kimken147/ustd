@@ -1,5 +1,5 @@
-import { Form, Modal, useForm, useModal } from '@pankod/refine-antd';
-import { HttpError } from '@pankod/refine-core';
+import { Form, Modal, useForm, useModal } from '@refinedev/antd';
+import { HttpError } from '@refinedev/core';
 import useUserChannelMuation from 'hooks/useChannelMutation';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
 import { FC, PropsWithChildren, useEffect } from 'react';

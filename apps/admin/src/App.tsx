@@ -1,13 +1,13 @@
 import './index.sass';
-import { Refine, ResourceProps } from '@pankod/refine-core';
+import { Refine } from '@refinedev/core';
+import type { ResourceProps } from '@refinedev/core';
 import {
-  notificationProvider,
-  ReadyPage,
+  useNotificationProvider,
   ErrorComponent,
-  ConfigProvider,
-} from '@pankod/refine-antd';
-import '@pankod/refine-antd/dist/reset.css';
-import routerProvider from '@pankod/refine-react-router-v6';
+} from '@refinedev/antd';
+import '@refinedev/antd/dist/reset.css';
+import routerProvider from '@refinedev/react-router-v6/legacy';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import {
   Title,
   Header,
@@ -39,7 +39,7 @@ import UserChannelAccountList from 'pages/userChannel/list';
 import UserChannelShow from 'pages/userChannel/show';
 import UserChannelCreate from 'pages/userChannel/create/create';
 import customDataProvider from 'dataProvider';
-import dataProvider from '@pankod/refine-simple-rest';
+import dataProvider from '@refinedev/simple-rest';
 import ProviderList from 'pages/provider/list';
 import ProviderCreate from 'pages/provider/create';
 import MerchantList from 'pages/merchant/list';
@@ -529,63 +529,61 @@ function App() {
           },
         }}
       >
-        <Refine
-          dataProvider={{
-            default: customDataProvider(apiUrl),
-            test: dataProvider('https://api.fake-rest.refine.dev'),
-          }}
-          accessControlProvider={accessControlProvider}
-          notificationProvider={notificationProvider}
-          routerProvider={{
-            ...routerProvider,
-          }}
-          ReadyPage={ReadyPage}
-          catchAll={<ErrorComponent />}
-          Title={Title}
-          Header={Header}
-          Sider={Sider}
-          Footer={Footer}
-          Layout={Layout}
-          OffLayoutArea={OffLayoutArea}
-          authProvider={authProvider}
-          i18nProvider={{
-            translate: (key, options) => {
-              const result = i18nProvider.translate(key, options);
-              // Ensure translate always returns a string (fix typing issue)
-              if (typeof result === 'string') return result;
-              if (
-                typeof result === 'object' &&
-                result !== null &&
-                'toString' in result
-              ) {
-                // fall back to object's toString, or JSON.stringify if needed
-                try {
-                  return result.toString();
-                } catch {
-                  return JSON.stringify(result);
+        <AntdApp>
+          <Refine
+            dataProvider={{
+              default: customDataProvider(apiUrl),
+              test: dataProvider('https://api.fake-rest.refine.dev'),
+            }}
+            accessControlProvider={accessControlProvider}
+            notificationProvider={useNotificationProvider}
+            legacyRouterProvider={routerProvider}
+            legacyAuthProvider={authProvider}
+            Title={Title}
+            Header={Header}
+            Sider={Sider}
+            Footer={Footer}
+            Layout={Layout}
+            OffLayoutArea={OffLayoutArea}
+            LoginPage={AuthPage}
+            catchAll={<ErrorComponent />}
+            i18nProvider={{
+              translate: (key, options) => {
+                const result = i18nProvider.translate(key, options);
+                // Ensure translate always returns a string (fix typing issue)
+                if (typeof result === 'string') return result;
+                if (
+                  typeof result === 'object' &&
+                  result !== null &&
+                  'toString' in result
+                ) {
+                  // fall back to object's toString, or JSON.stringify if needed
+                  try {
+                    return result.toString();
+                  } catch {
+                    return JSON.stringify(result);
+                  }
                 }
-              }
-              return String(result);
-            },
-            changeLocale: i18nProvider.changeLocale,
-            getLocale: i18nProvider.getLocale,
-          }}
-          LoginPage={AuthPage}
-          options={{
-            breadcrumb: false,
-            reactQuery: {
-              devtoolConfig: false,
-              clientConfig: {
-                defaultOptions: {
-                  queries: {
-                    retry: false,
+                return String(result);
+              },
+              changeLocale: i18nProvider.changeLocale,
+              getLocale: i18nProvider.getLocale,
+            }}
+            options={{
+              reactQuery: {
+                devtoolConfig: false,
+                clientConfig: {
+                  defaultOptions: {
+                    queries: {
+                      retry: false,
+                    },
                   },
                 },
               },
-            },
-          }}
-          resources={resources}
-        />
+            }}
+            resources={resources}
+          />
+        </AntdApp>
       </ConfigProvider>
     </>
   );

@@ -1,4 +1,5 @@
-import { Divider, Row, Col, Checkbox } from '@pankod/refine-antd';
+import { Divider, Row, Col, Checkbox } from 'antd';
+import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import usePermission from 'hooks/usePermission';
 import { Permission } from 'interfaces/subAccount';
 import Enviroment from 'lib/env';

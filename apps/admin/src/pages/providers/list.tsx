@@ -23,7 +23,7 @@ import {
   TableColumnProps,
   Tag,
   TextField,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import dayjs from 'dayjs';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';

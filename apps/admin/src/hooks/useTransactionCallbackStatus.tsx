@@ -1,4 +1,5 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
+import { Select as AntdSelect } from "antd";
+import type { SelectProps } from "antd";
 import { SelectOption } from "@morgan-ustd/shared";
 import { useTranslation } from "react-i18next";
 

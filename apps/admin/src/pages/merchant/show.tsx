@@ -21,19 +21,19 @@ import {
   TextField,
   Typography,
   useForm,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   IResourceComponentsProps,
   useApiUrl,
   useCan,
   useShow,
   useUpdate,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import {
   NavLink,
   useLocation,
   useNavigate,
-} from '@pankod/refine-react-router-v6';
+} from '@refinedev/react-router-v6';
 import EditableForm from 'components/EditableFormItem';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useUser from 'hooks/useUser';

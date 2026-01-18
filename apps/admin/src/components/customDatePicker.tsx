@@ -1,9 +1,5 @@
-import {
-  Button,
-  DatePicker,
-  DatePickerProps,
-  Space,
-} from '@pankod/refine-antd';
+import { Button, DatePicker, Space } from 'antd';
+import type { DatePickerProps } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { TextField } from "@pankod/refine-antd";
+import { TextField } from "@refinedev/antd";
 import numeral from "numeral";
 
 export function getSign(number: number) {

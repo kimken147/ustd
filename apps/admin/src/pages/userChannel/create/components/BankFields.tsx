@@ -1,5 +1,5 @@
 // components/BankFields.tsx
-import { Form, Input } from '@pankod/refine-antd';
+import { Form, Input } from '@refinedev/antd';
 import { FormColumn } from './FormColumn';
 import { useTranslation } from 'react-i18next';
 

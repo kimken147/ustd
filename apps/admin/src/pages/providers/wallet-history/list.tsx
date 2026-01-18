@@ -10,8 +10,8 @@ import {
   Space,
   TableColumnProps,
   TextField,
-} from '@pankod/refine-antd';
-import { useGetIdentity } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useGetIdentity } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';

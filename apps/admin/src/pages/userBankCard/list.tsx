@@ -10,8 +10,8 @@ import {
     ShowButton,
     Space,
     TableColumnProps,
-} from "@pankod/refine-antd";
-import { useCan } from "@pankod/refine-core";
+} from "@refinedev/antd";
+import { useCan } from "@refinedev/core";
 import Badge from "components/badge";
 import ContentHeader from "components/contentHeader";
 import useTable from "hooks/useTable";

@@ -1,5 +1,5 @@
-import {useGetIdentity, useGetLocale, useLogout, useSetLocale} from "@pankod/refine-core";
-import {AntdLayout, Avatar, Button, Dropdown, Menu, Space, Typography} from "@pankod/refine-antd";
+import {useGetIdentity, useGetLocale, useLogout, useSetLocale} from "@refinedev/core";
+import {Layout, Avatar, Button, Dropdown, Menu, Space, Typography} from "antd";
 import {useTranslation} from "react-i18next";
 import {DownOutlined} from "@ant-design/icons";
 import React from "react";
@@ -42,7 +42,7 @@ export const Header: React.FC = () => {
     );
 
     return (
-        <AntdLayout.Header
+        <Layout.Header
             style={{
                 display: "flex",
                 justifyContent: "flex-end",
@@ -69,6 +69,6 @@ export const Header: React.FC = () => {
                 )}
                 <Button onClick={() => logout()}>{t("logout")}</Button>
             </Space>
-        </AntdLayout.Header>
+        </Layout.Header>
     );
 };

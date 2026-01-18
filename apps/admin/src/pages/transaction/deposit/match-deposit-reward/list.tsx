@@ -9,8 +9,8 @@ import {
   Radio,
   Space,
   Table,
-} from '@pankod/refine-antd';
-import { useList, useResource } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useList, useResource } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { DepositReward } from 'interfaces/depositReward';

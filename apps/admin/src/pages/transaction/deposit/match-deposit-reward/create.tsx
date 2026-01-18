@@ -6,8 +6,8 @@ import {
   Radio,
   SaveButton,
   useForm,
-} from '@pankod/refine-antd';
-import { useCreate, useNavigation } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useCreate, useNavigation } from '@refinedev/core';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

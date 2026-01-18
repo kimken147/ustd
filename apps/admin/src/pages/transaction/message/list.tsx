@@ -1,4 +1,4 @@
-import { DateField, DatePicker, Divider, Input, List, TableColumnProps } from "@pankod/refine-antd";
+import { DateField, DatePicker, Divider, Input, List, TableColumnProps } from "@refinedev/antd";
 import CustomDatePicker from "components/customDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import useAutoRefetch from "hooks/useAutoRefetch";

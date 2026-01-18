@@ -1,4 +1,5 @@
-import { Select as AntdSelect, SelectProps } from '@pankod/refine-antd';
+import { Select as AntdSelect } from 'antd';
+import type { SelectProps } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 type Options = NonNullable<SelectProps['options']>;

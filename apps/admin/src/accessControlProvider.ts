@@ -1,4 +1,4 @@
-import { RefineProps } from "@pankod/refine-core";
+import { RefineProps } from "@refinedev/core";
 
 const hasPermission = (id: number) => {
     const profile = JSON.parse(

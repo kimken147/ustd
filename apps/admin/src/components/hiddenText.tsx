@@ -1,7 +1,8 @@
-import { useCan } from "@pankod/refine-core";
+import { useCan } from "@refinedev/core";
 import { FC, useEffect, useState } from "react";
 import hideText from "hide-text";
-import { Button, Space, TextField } from "@pankod/refine-antd";
+import { Button, Space } from "antd";
+import { TextField } from "@refinedev/antd";
 import { EyeOutlined } from "@ant-design/icons";
 import useWithdrawStatus from "hooks/useWithdrawStatus";
 

@@ -12,13 +12,13 @@ import {
   Switch,
   TableColumnProps,
   Typography,
-} from '@pankod/refine-antd';
-import { useApiUrl, useCustom } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useApiUrl, useCustom } from '@refinedev/core';
 import useChannel from 'hooks/useChannel';
 import { UserChannelStat } from 'interfaces/userChannelStat';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import type { CheckboxOptionType } from '@pankod/refine-antd';
+import type { CheckboxOptionType } from '@refinedev/antd';
 import useTable from 'hooks/useTable';
 import { OnlinMatchingUser } from 'interfaces/onlineMatchingForUser';
 import useUpdateModal from 'hooks/useUpdateModal';

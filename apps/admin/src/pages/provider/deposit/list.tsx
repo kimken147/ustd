@@ -1,5 +1,5 @@
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Divider, Input, List, Modal, Space, TableColumnProps, TextField } from "@pankod/refine-antd";
+import { Button, Checkbox, Divider, Input, List, Modal, Space, TableColumnProps, TextField } from "@refinedev/antd";
 import ContentHeader from "components/contentHeader";
 import useProvider from "hooks/useProvider";
 import useTable from "hooks/useTable";

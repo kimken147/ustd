@@ -1,4 +1,5 @@
-import { TableProps, Table as AntdTable, Grid } from "@pankod/refine-antd";
+import { Table as AntdTable, Grid } from "antd";
+import type { TableProps } from "antd";
 
 function Table<TData extends object = any>(props: TableProps<TData>) {
     const breakpoint = Grid.useBreakpoint();

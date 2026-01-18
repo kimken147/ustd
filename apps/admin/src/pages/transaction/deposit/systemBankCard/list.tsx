@@ -18,8 +18,8 @@ import {
   TextField,
   useForm,
   useModal,
-} from '@pankod/refine-antd';
-import { useUpdate } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useUpdate } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import dayjs from 'dayjs';
 import useSelector from 'hooks/useSelector';

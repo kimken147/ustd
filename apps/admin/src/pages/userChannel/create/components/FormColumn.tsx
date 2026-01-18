@@ -1,5 +1,5 @@
 // components/FormColumn.tsx
-import { Col, ColProps } from "@pankod/refine-antd";
+import { Col, ColProps } from "@refinedev/antd";
 import { ReactNode } from "react";
 
 interface FormColumnProps extends ColProps {

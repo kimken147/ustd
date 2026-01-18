@@ -25,14 +25,14 @@ import {
   Statistic,
   Card,
   ShowButton,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   useApiUrl,
   useCan,
   useDelete,
   useNotification,
   useUpdate,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import Badge from 'components/badge';
 import Table from 'components/table';
 import dayjs from 'dayjs';

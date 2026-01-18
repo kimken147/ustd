@@ -11,7 +11,7 @@ import {
   Space,
   TableColumnProps,
   TextField,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import ContentHeader from 'components/contentHeader';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';

@@ -10,7 +10,7 @@ import {
   TableColumnProps,
   TextField,
   Typography,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { SystemSetting } from 'interfaces/systemSetting';

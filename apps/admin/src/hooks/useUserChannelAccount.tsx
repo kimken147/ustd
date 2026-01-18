@@ -1,25 +1,21 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { CrudFilters, GetListResponse, useList, UseQueryOptions } from "@pankod/refine-core";
+import { Select as AntdSelect } from "antd";
+import type { SelectProps } from "antd";
+import { CrudFilters, GetListResponse, useList } from "@refinedev/core";
 import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 type Props = {
     filters: CrudFilters;
-    queryOptions: UseQueryOptions<GetListResponse<UserChannel>, any>;
+    queryOptions?: any;
 };
 
 function useUserChannelAccount(props?: Partial<Props>) {
     const queryObserverResult = useList<UserChannel>({
         resource: "user-channel-accounts",
-        config: {
-            hasPagination: false,
-            filters: props?.filters,
+        pagination: {
+            mode: "off",
         },
-        queryOptions: {
-            refetchOnWindowFocus: false,
-            refetchOnMount: false,
-            ...props?.queryOptions,
-        },
-        liveMode: "off",
+        filters: props?.filters,
+        queryOptions: props?.queryOptions,
     });
     const { data, isLoading, isError, isFetching, refetch } = queryObserverResult;
 

@@ -14,9 +14,9 @@ import {
     Switch,
     TextField,
     useForm,
-} from "@pankod/refine-antd";
-import { useCreate, useList, useNavigation } from "@pankod/refine-core";
-import { useNavigate } from "@pankod/refine-react-router-v6";
+} from "@refinedev/antd";
+import { useCreate, useList, useNavigation } from "@refinedev/core";
+import { useNavigate } from "@refinedev/react-router-v6";
 import useSelector from "hooks/useSelector";
 import { Provider } from "interfaces/provider";
 import { User, UserChannelGroup as ChannelGroup } from "@morgan-ustd/shared";

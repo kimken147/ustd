@@ -1,5 +1,5 @@
-import { Col, Form, Input, Create, Row, useForm, Button } from "@pankod/refine-antd";
-import { useCreate, useNavigation, useResource } from "@pankod/refine-core";
+import { Col, Form, Input, Create, Row, useForm, Button } from "@refinedev/antd";
+import { useCreate, useNavigation, useResource } from "@refinedev/core";
 import { generateUsername } from "friendly-username-generator";
 import useProvider from "hooks/useProvider";
 import { FC } from "react";

@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
   useModal,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import Badge from 'components/badge';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import usePermission from 'hooks/usePermission';

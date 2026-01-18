@@ -1,6 +1,7 @@
-import { Row, useForm, Form, FormItemProps, Col, Button } from "@pankod/refine-antd";
-import { CrudFilter, CrudFilters } from "@pankod/refine-core";
-import { FormProps } from "antd/lib/form/Form";
+import { Row, Form, Col, Button } from "antd";
+import type { FormItemProps, FormProps } from "antd";
+import { useForm } from "@refinedev/antd";
+import { CrudFilter, CrudFilters } from "@refinedev/core";
 
 type FormItem = FormItemProps;
 

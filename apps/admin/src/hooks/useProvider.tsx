@@ -1,5 +1,6 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { useList } from "@pankod/refine-core";
+import { Select as AntdSelect } from "antd";
+import type { SelectProps } from "antd";
+import { useList } from "@refinedev/core";
 import { MerchantProvider as Provider } from "@morgan-ustd/shared";
 
 type Props = {
@@ -10,14 +11,9 @@ const useProvider = (props?: Props) => {
     const key = props?.valueField || "id";
     const queryObserverResult = useList<Provider>({
         resource: "providers",
-        config: {
-            hasPagination: false,
+        pagination: {
+            mode: "off",
         },
-        queryOptions: {
-            refetchOnWindowFocus: false,
-            refetchOnMount: false,
-        },
-        liveMode: "off",
     });
 
     const { data, isLoading, isError, isFetching, refetch } = queryObserverResult;

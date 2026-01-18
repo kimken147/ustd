@@ -24,7 +24,7 @@ import {
   SelectProps,
   Switch,
   Table,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import useTable from 'hooks/useTable';
 import {
   WithdrawMeta as Meta,
@@ -67,13 +67,13 @@ import {
   useCan,
   useCustomMutation,
   useGetIdentity,
-} from '@pankod/refine-core';
-import { axiosInstance } from '@pankod/refine-simple-rest';
+} from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import CustomDatePicker from 'components/customDatePicker';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import HiddenText from 'components/hiddenText';
 import Badge from 'components/badge';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+import { useNavigate } from '@refinedev/react-router-v6';
 import numeral from 'numeral';
 import queryString from 'query-string';
 import { generateFilter } from 'dataProvider';

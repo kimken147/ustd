@@ -1,13 +1,14 @@
-import { LoginFormTypes, useApiUrl, useCustomMutation, useLogin } from "@pankod/refine-core";
+import { LoginFormTypes, useApiUrl, useCustomMutation, useLogin } from "@refinedev/core";
 import { Card, Form, Layout, Input, Button, Row, Col } from "antd";
 import { FC, useState } from "react";
-import { ImageField } from "@pankod/refine-antd";
+import { ImageField } from "@refinedev/antd";
 
 const LoginPage: FC = () => {
     const [form] = Form.useForm<LoginFormTypes>();
     const apiUrl = useApiUrl();
-    const { mutate: login, isLoading } = useLogin();
-    const { mutateAsync, isLoading: isPreLoginLoading } = useCustomMutation<IPreLoginRes>();
+    const { mutate: login, isLoading: isPendingLogin } = useLogin();
+    const { mutateAsync, isPending: isPreLoginLoading } = useCustomMutation<IPreLoginRes>();
+    const isLoading = isPendingLogin || isPreLoginLoading;
     const [isGoogleAuthOpen, setGoogleAuth] = useState<boolean | null>(null);
     return (
         <Layout

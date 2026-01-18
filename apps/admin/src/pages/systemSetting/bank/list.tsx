@@ -15,8 +15,8 @@ import {
   useForm,
   CreateButton,
   Button,
-} from '@pankod/refine-antd';
-import { useApiUrl, useCreate, useUpdate } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useApiUrl, useCreate, useUpdate } from '@refinedev/core';
 import { getToken } from 'authProvider';
 import ContentHeader from 'components/contentHeader';
 import { generateFilter } from 'dataProvider';

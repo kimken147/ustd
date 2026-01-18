@@ -11,12 +11,12 @@ import {
   Row,
   useForm,
   useModal,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import {
   useApiUrl,
   useCustomMutation,
   useGetIdentity,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

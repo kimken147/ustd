@@ -1,5 +1,5 @@
 // UserChannelCreate.tsx
-import { IResourceComponentsProps } from '@pankod/refine-core';
+import { IResourceComponentsProps } from '@refinedev/core';
 import {
   Create,
   Form,
@@ -10,7 +10,7 @@ import {
   TextField,
   SaveButton,
   Col,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import useSelector from 'hooks/useSelector';

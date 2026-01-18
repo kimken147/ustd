@@ -1,5 +1,5 @@
 import { EditOutlined } from '@ant-design/icons';
-import { Badge, Popover, Space, TextField } from '@pankod/refine-antd';
+import { Badge, Popover, Space, TextField } from '@refinedev/antd';
 import useChannelStatus from 'hooks/useChannelStatus';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';

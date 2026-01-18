@@ -1,14 +1,7 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Input,
-  InputNumber,
-  List,
-  Space,
-  Switch,
-  TextField,
-} from '@pankod/refine-antd';
-import { useApiUrl, useCan, useList } from '@pankod/refine-core';
+import { Button, Input, InputNumber, Space, Switch } from 'antd';
+import { List, TextField } from '@refinedev/antd';
+import { useApiUrl, useCan, useList } from '@refinedev/core';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { Channel, ChannelGroup } from '@morgan-ustd/shared';

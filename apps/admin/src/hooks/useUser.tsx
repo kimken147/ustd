@@ -1,5 +1,6 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { CrudFilters, useList } from "@pankod/refine-core";
+import { Select as AntdSelect } from "antd";
+import type { SelectProps } from "antd";
+import { CrudFilters, useList } from "@refinedev/core";
 import { User } from "@morgan-ustd/shared";
 
 type Props = {
@@ -23,10 +24,10 @@ function useUser({ role, agent_enable, valueField }: Props) {
     ];
     const { data } = useList<User>({
         resource: "users",
-        config: {
-            hasPagination: false,
-            filters,
+        pagination: {
+            mode: "off",
         },
+        filters,
     });
 
     const selectProps: SelectProps = {

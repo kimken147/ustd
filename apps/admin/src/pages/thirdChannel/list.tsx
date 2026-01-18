@@ -12,7 +12,7 @@ import {
   Table,
   TableColumnProps,
   TextField,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import Badge from 'components/badge';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';

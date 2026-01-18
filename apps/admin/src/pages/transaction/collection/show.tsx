@@ -8,8 +8,8 @@ import {
     TableColumnProps,
     TextField,
     Typography,
-} from "@pankod/refine-antd";
-import { useShow, useUpdate } from "@pankod/refine-core";
+} from "@refinedev/antd";
+import { useShow, useUpdate } from "@refinedev/core";
 import { MerchantFee, Transaction, ProviderFee } from "@morgan-ustd/shared";
 import Enviroment from "lib/env";
 import { FC } from "react";

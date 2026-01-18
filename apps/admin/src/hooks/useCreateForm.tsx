@@ -1,4 +1,6 @@
-import { Col, Form as AntdForm, FormItemProps, Row, useForm } from "@pankod/refine-antd";
+import { Col, Form as AntdForm, Row } from "antd";
+import type { FormItemProps } from "antd";
+import { useForm } from "@refinedev/antd";
 
 type Props = {
     formItems: FormItemProps[];

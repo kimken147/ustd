@@ -1,17 +1,14 @@
 import { MinusSquareOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { useForm } from '@refinedev/antd';
 import {
   Row,
-  useForm,
   Form,
-  FormItemProps,
   Col,
   Button,
-  TableColumnProps,
-  PaginationProps,
-  TableProps,
   Table,
   Grid,
-} from '@pankod/refine-antd';
+} from 'antd';
+import type { FormItemProps, TableColumnProps, PaginationProps, TableProps, FormProps } from 'antd';
 import {
   BaseRecord,
   CrudFilter,
@@ -19,12 +16,9 @@ import {
   GetListResponse,
   SuccessErrorNotification,
   useList,
-  UseQueryOptions,
   useResource,
-} from '@pankod/refine-core';
+} from '@refinedev/core';
 import { useTranslation } from 'react-i18next';
-import { UseListProps } from '@pankod/refine-core/dist/hooks/data/useList';
-import { FormProps } from 'antd/lib/form/Form';
 import dayjs, { Dayjs } from 'dayjs';
 import { CSSProperties, cloneElement } from 'react';
 import { isValidElement, useState } from 'react';
@@ -35,7 +29,7 @@ type Props<TData = any> = {
   resource?: string;
   filters?: CrudFilters;
   hasPagination?: boolean;
-  queryOptions?: UseQueryOptions<GetListResponse<TData>, any>;
+  queryOptions?: any;
   showError?: boolean;
   transferValues?: (values: any) => any;
   errorNotification?: SuccessErrorNotification | undefined;
@@ -94,19 +88,16 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
     pageSizeOptions: [20, 50, 100, 500],
     ...propsPagination,
   });
-  const listProps: UseListProps<TData, any> = {
+  const { data, isFetching, refetch, ...others } = useList<TData>({
     resource: resource || resourceName,
-    config: {
-      hasPagination,
-      filters,
-      pagination: hasPagination ? pagination : undefined,
-    },
+    pagination: hasPagination ? {
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+    } : undefined,
+    filters,
     queryOptions,
-  };
-  if (showError === false) {
-    listProps.errorNotification = false;
-  }
-  const { data, isFetching, refetch, ...others } = useList<TData>(listProps);
+    errorNotification: showError === false ? false : undefined,
+  });
 
   const AntdForm = (props: FormProps) => {
     const formItems = items

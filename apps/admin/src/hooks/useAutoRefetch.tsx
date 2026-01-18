@@ -1,4 +1,4 @@
-import { Space, Switch, Typography } from '@pankod/refine-antd';
+import { Space, Switch, Typography } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

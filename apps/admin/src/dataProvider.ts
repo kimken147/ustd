@@ -1,5 +1,5 @@
-import { CrudOperators, DataProvider, LogicalFilter } from "@pankod/refine-core";
-import { axiosInstance, generateSort, stringify } from "@pankod/refine-simple-rest";
+import { CrudOperators, DataProvider, LogicalFilter } from "@refinedev/core";
+import { axiosInstance, generateSort, stringify } from "@refinedev/simple-rest";
 import i18n from "./i18n";
 
 // 將前端語言格式轉換為後端格式 (zh-CN -> zh_CN)

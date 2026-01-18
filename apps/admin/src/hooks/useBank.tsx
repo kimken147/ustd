@@ -1,12 +1,12 @@
-import { SelectProps } from "@pankod/refine-antd";
-import { useList } from "@pankod/refine-core";
+import type { SelectProps } from "antd";
+import { useList } from "@refinedev/core";
 import { Bank } from "@morgan-ustd/shared";
 
 const useBank = () => {
     const queryObserverResult = useList<Bank>({
         resource: "banks",
-        config: {
-            hasPagination: false,
+        pagination: {
+            mode: "off",
         },
     });
 

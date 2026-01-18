@@ -1,13 +1,7 @@
-import {
-    Form as AntdForm,
-    FormItemProps,
-    FormProps,
-    Modal,
-    ModalFuncProps,
-    useForm,
-    useModal,
-} from "@pankod/refine-antd";
-import { BaseRecord, useCreate, useCustomMutation, useDelete, useResource, useUpdate } from "@pankod/refine-core";
+import { Form as AntdForm, Modal } from "antd";
+import type { FormItemProps, FormProps, ModalFuncProps } from "antd";
+import { useForm, useModal } from "@refinedev/antd";
+import { BaseRecord, useCreate, useCustomMutation, useDelete, useResource, useUpdate } from "@refinedev/core";
 import { PropsWithChildren, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -65,7 +59,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
     const { t } = useTranslation();
     const { resourceName } = useResource();
     const { mutateAsync: customMutate } = useCustomMutation();
-    const { mutate, mutateAsync, isLoading, ...others } = useUpdate<TData>();
+    const { mutate, mutateAsync, isPending: isLoading, ...others } = useUpdate<TData>();
     const { mutate: mutateDeleting } = useDelete();
     const { mutateAsync: create } = useCreate();
     const { form } = useForm();

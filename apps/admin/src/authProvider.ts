@@ -1,5 +1,5 @@
-import { AuthProvider } from "@pankod/refine-core";
-import { axiosInstance } from "@pankod/refine-simple-rest";
+import { LegacyAuthProvider } from "@refinedev/core";
+import { axiosInstance } from "@refinedev/simple-rest";
 import dayjs from "dayjs";
 import { apiUrl, cookie } from "index";
 
@@ -12,7 +12,7 @@ export const getProfile = async () => {
             },
         });
         return Promise.resolve(res.data.data);
-    } catch (error) {
+    } catch (error: any) {
         return Promise.reject(error);
     }
 };
@@ -30,8 +30,8 @@ export const getToken = () => {
     return cookie.get(TOKEN_KEY);
 };
 
-export const authProvider: AuthProvider = {
-    login: async ({ username, password, googleAuth }) => {
+export const authProvider: LegacyAuthProvider = {
+    login: async ({ username, password, googleAuth }: any) => {
         if (username && password && googleAuth) {
             try {
                 const res = await axiosInstance.post<ILoginRes>(`${apiUrl}/login`, {
@@ -41,7 +41,7 @@ export const authProvider: AuthProvider = {
                 });
                 setAuthorization(res.data.data.access_token, res.data.data.expires_in);
                 return Promise.resolve();
-            } catch (error) {
+            } catch (error: any) {
                 return Promise.reject(error);
             }
         }
@@ -52,7 +52,7 @@ export const authProvider: AuthProvider = {
         localStorage.removeItem("profile");
         return Promise.resolve();
     },
-    checkError: (error) => {
+    checkError: (error: any) => {
         if (error.status === 401 || error.status === 403) {
             return Promise.reject();
         }

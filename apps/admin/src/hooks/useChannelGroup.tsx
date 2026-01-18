@@ -1,18 +1,14 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { useList } from "@pankod/refine-core";
+import { Select as AntdSelect } from "antd";
+import type { SelectProps } from "antd";
+import { useList } from "@refinedev/core";
 import { UserChannelGroup as ChannelGroup } from "@morgan-ustd/shared";
 
 const useChannelGroup = () => {
     const queryObserverResult = useList<ChannelGroup>({
         resource: "channel-groups",
-        config: {
-            hasPagination: false,
+        pagination: {
+            mode: "off",
         },
-        queryOptions: {
-            refetchOnWindowFocus: false,
-            refetchOnMount: false,
-        },
-        liveMode: "off",
     });
 
     const { data, isLoading, isError, isFetching } = queryObserverResult;

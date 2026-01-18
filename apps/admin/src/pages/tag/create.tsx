@@ -1,5 +1,5 @@
-import { Col, Form, Input, Create, Row, useForm, Button } from "@pankod/refine-antd";
-import { useNavigation } from "@pankod/refine-core";
+import { Col, Form, Input, Create, Row, useForm, Button } from "@refinedev/antd";
+import { useNavigation } from "@refinedev/core";
 import { FC } from "react";
 import {useTranslation} from "react-i18next";
 

@@ -1,4 +1,5 @@
-import { Select, SelectProps } from "@pankod/refine-antd";
+import { Select } from "antd";
+import type { SelectProps } from "antd";
 import { useTranslation } from "react-i18next";
 import { UserChannelType } from "@morgan-ustd/shared";
 

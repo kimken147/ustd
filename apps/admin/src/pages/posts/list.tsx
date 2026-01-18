@@ -1,4 +1,4 @@
-import { IResourceComponentsProps, useMany } from "@pankod/refine-core";
+import { IResourceComponentsProps, useMany } from "@refinedev/core";
 import {
     List,
     Table,
@@ -14,7 +14,7 @@ import {
     FilterDropdown,
     Select,
     ShowButton,
-} from "@pankod/refine-antd";
+} from "@refinedev/antd";
 
 export const PostList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps, sorter } = useTable<IPost>({

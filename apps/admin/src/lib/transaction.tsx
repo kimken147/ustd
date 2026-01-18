@@ -1,4 +1,4 @@
-import { SelectProps } from "@pankod/refine-antd";
+import type { SelectProps } from "antd";
 import { singleton } from "@ood/singleton";
 import { DefaultOptionType } from "rc-select/lib/Select";
 import Badge from "components/badge";

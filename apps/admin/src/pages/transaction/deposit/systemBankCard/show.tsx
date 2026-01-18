@@ -1,5 +1,5 @@
-import { Descriptions, Input, Show } from "@pankod/refine-antd";
-import { useShow } from "@pankod/refine-core";
+import { Descriptions, Input, Show } from "@refinedev/antd";
+import { useShow } from "@refinedev/core";
 import EditableForm from "components/EditableFormItem";
 import { SystemBankCard } from "interfaces/systemBankCard";
 import { FC } from "react";

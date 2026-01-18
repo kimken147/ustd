@@ -5,9 +5,9 @@ import {
   Input,
   SaveButton,
   useForm,
-} from '@pankod/refine-antd';
-import { useCreate, useNavigation } from '@pankod/refine-core';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+} from '@refinedev/antd';
+import { useCreate, useNavigation } from '@refinedev/core';
+import { useNavigate } from '@refinedev/react-router-v6';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import { SubAccount } from 'interfaces/subAccount';
 import { FC } from 'react';

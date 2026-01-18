@@ -1,9 +1,9 @@
-import { useApiUrl, useCustomMutation } from "@pankod/refine-core";
+import { useApiUrl, useCustomMutation } from "@refinedev/core";
 import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 const useUserChannelMuation = () => {
     const apiUrl = useApiUrl();
-    const { mutate, isLoading, isSuccess, isError } = useCustomMutation<UserChannel>();
+    const { mutate, isPending: isLoading, isSuccess, isError } = useCustomMutation<UserChannel>();
 
     const mutateChannel = ({
         query,

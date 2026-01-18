@@ -1,4 +1,5 @@
-import { Space, TextField } from "@pankod/refine-antd";
+import { Space, Typography } from "antd";
+import { TextField } from "@refinedev/antd";
 import { FC } from "react";
 
 type Props = {

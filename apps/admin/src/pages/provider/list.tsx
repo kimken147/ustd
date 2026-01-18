@@ -11,7 +11,7 @@ import {
     Space,
     Switch,
     TextField,
-} from "@pankod/refine-antd";
+} from "@refinedev/antd";
 import useProvider from "hooks/useProvider";
 import useTable from "hooks/useTable";
 import useUpdateModal from "hooks/useUpdateModal";

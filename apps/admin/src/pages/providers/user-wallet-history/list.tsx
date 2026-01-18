@@ -10,9 +10,9 @@ import {
     Space,
     TableColumnProps,
     TextField,
-} from "@pankod/refine-antd";
-import { useGetIdentity, useOne } from "@pankod/refine-core";
-import { useSearchParams } from "@pankod/refine-react-router-v6";
+} from "@refinedev/antd";
+import { useGetIdentity, useOne } from "@refinedev/core";
+import { useSearchParams } from "@refinedev/react-router-v6";
 import CustomDatePicker from "components/customDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import useUserWalletStatus from "hooks/userUserWalletStatus";

@@ -25,8 +25,8 @@ import {
   Table,
   Tag,
   TextField,
-} from '@pankod/refine-antd';
-import { useApiUrl, useCan } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useApiUrl, useCan } from '@refinedev/core';
 import dayjs from 'dayjs';
 import useMerchant from 'hooks/useMerchant';
 import useSelector from 'hooks/useSelector';

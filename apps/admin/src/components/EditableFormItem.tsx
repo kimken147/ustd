@@ -1,12 +1,8 @@
 import { CheckOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons';
-import {
-  Form,
-  FormItemProps,
-  Modal,
-  Space,
-  useForm,
-} from '@pankod/refine-antd';
-import { useResource, useUpdate } from '@pankod/refine-core';
+import { Form, Modal, Space } from 'antd';
+import type { FormItemProps } from 'antd';
+import { useForm } from '@refinedev/antd';
+import { useResource, useUpdate } from '@refinedev/core';
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

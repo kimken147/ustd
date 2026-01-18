@@ -11,9 +11,9 @@ import {
   Switch,
   TextField,
   useModal,
-} from '@pankod/refine-antd';
-import { useApiUrl, useShow } from '@pankod/refine-core';
-import { useLocation, useNavigate } from '@pankod/refine-react-router-v6';
+} from '@refinedev/antd';
+import { useApiUrl, useShow } from '@refinedev/core';
+import { useLocation, useNavigate } from '@refinedev/react-router-v6';
 import EditableForm from 'components/EditableFormItem';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import useUpdateModal from 'hooks/useUpdateModal';

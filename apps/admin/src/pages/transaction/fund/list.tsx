@@ -22,9 +22,9 @@ import {
   Space,
   TableColumnProps,
   TextField,
-} from '@pankod/refine-antd';
-import { useGetIdentity } from '@pankod/refine-core';
-import { axiosInstance } from '@pankod/refine-simple-rest';
+} from '@refinedev/antd';
+import { useGetIdentity } from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import Badge from 'components/badge';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';

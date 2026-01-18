@@ -1,7 +1,7 @@
 // hooks/useUserChannelForm.ts
-import { useForm } from '@pankod/refine-antd';
-import { useCreate } from '@pankod/refine-core';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+import { useForm } from '@refinedev/antd';
+import { useCreate } from '@refinedev/core';
+import { useNavigate } from '@refinedev/react-router-v6';
 import { FormValues } from '../types';
 import { useTranslation } from 'react-i18next';
 

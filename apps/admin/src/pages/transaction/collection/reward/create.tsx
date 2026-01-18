@@ -1,5 +1,5 @@
-import { Create, Form, Input, InputNumber, Radio, SaveButton, TimePicker, useForm } from "@pankod/refine-antd";
-import { useCreate, useNavigation } from "@pankod/refine-core";
+import { Create, Form, Input, InputNumber, Radio, SaveButton, TimePicker, useForm } from "@refinedev/antd";
+import { useCreate, useNavigation } from "@refinedev/core";
 import dayjs from "dayjs";
 import { FC } from "react";
 import { Helmet } from "react-helmet";

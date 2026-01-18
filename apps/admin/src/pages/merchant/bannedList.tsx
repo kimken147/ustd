@@ -12,8 +12,8 @@ import {
   TextField,
   useForm,
   useModal,
-} from '@pankod/refine-antd';
-import { useApiUrl, useCustomMutation } from '@pankod/refine-core';
+} from '@refinedev/antd';
+import { useApiUrl, useCustomMutation } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import dayjs from 'dayjs';
 import useTable from 'hooks/useTable';

@@ -4,7 +4,7 @@ import {
   List,
   Table,
   TableColumnProps,
-} from '@pankod/refine-antd';
+} from '@refinedev/antd';
 import dayjs from 'dayjs';
 import useTable from 'hooks/useTable';
 import { Tag, Format } from '@morgan-ustd/shared';

@@ -1,12 +1,12 @@
-import { SelectProps } from "@pankod/refine-antd";
-import { useList } from "@pankod/refine-core";
+import type { SelectProps } from "antd";
+import { useList } from "@refinedev/core";
 import { ChannelAmount } from "@morgan-ustd/shared";
 
 const useChannelAmounts = () => {
     const queryObserverResult = useList<ChannelAmount>({
         resource: "channel-amounts",
-        config: {
-            hasPagination: false,
+        pagination: {
+            mode: "off",
         },
     });
 

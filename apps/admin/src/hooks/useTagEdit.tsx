@@ -1,5 +1,6 @@
-import { BaseKey, useUpdate } from '@pankod/refine-core';
-import { useForm, useModal, Modal, Form, Select } from '@pankod/refine-antd';
+import { BaseKey, useUpdate } from '@refinedev/core';
+import { Modal, Form, Select } from 'antd';
+import { useForm, useModal } from '@refinedev/antd';
 import { useState } from 'react';
 import { Tag as TagModel } from '@morgan-ustd/shared';
 import { useTranslation } from 'react-i18next';

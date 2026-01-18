@@ -1,4 +1,4 @@
-import { Spin } from "@pankod/refine-antd";
+import { Spin } from "antd";
 import { FC, useCallback, useState } from "react";
 
 const useLoading = () => {
