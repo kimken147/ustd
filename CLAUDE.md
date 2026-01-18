@@ -11,6 +11,21 @@ This is a monorepo for a payment processing platform with three main components:
 
 ## Common Commands
 
+### PHP Version
+
+This project requires PHP 8.2+. If you encounter PHP version issues, use the `switch-php.sh` script to switch between versions:
+
+```bash
+# Switch to PHP 8.3 (recommended)
+./switch-php.sh 8.3
+
+# Switch to PHP 8.0 (if needed for compatibility)
+./switch-php.sh 8.0
+
+# Check current PHP version
+php --version
+```
+
 ### API (Laravel)
 
 ```bash
