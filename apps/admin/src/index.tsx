@@ -1,9 +1,14 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import { Cookies } from "react-cookie";
+
+// Initialize dayjs plugins
+dayjs.extend(relativeTime);
 
 export const apiUrl = process.env.REACT_APP_API_URL ?? "";
 export const cookie = new Cookies();

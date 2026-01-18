@@ -38,6 +38,7 @@ import {
 import Badge from 'components/badge';
 import Table from 'components/table';
 import dayjs from 'dayjs';
+import 'dayjs/plugin/relativeTime';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import useBank from 'hooks/useBank';
 import useChannelAmounts from 'hooks/useChannelAmounts';
