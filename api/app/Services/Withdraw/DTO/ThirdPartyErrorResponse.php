@@ -144,4 +144,102 @@ class ThirdPartyErrorResponse
             __('common.Conflict! Please try again later')
         );
     }
+
+    // ─── Transaction 專用方法 ───
+
+    public static function channelNotFound(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_INVALID_CHANNEL_CODE,
+            __('common.No matching channel')
+        );
+    }
+
+    public static function channelMaintenance(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_CHANNEL_TEMPORARY_UNAVAILABLE,
+            __('common.Channel under maintenance')
+        );
+    }
+
+    public static function channelUnavailable(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_CHANNEL_TEMPORARY_UNAVAILABLE,
+            __('common.Channel not found')
+        );
+    }
+
+    public static function userDisabled(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_USER_NOT_FOUND,
+            __('common.Account deactivated')
+        );
+    }
+
+    public static function transactionDisabled(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_TRANSACTION_DISABLED,
+            __('user.Transaction disabled')
+        );
+    }
+
+    public static function balanceLimitExceeded(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_INSUFFICIENT_BALANCE,
+            __('common.Balance exceeds limit, please withdraw first')
+        );
+    }
+
+    public static function ipBanned(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_BAD_REQUEST,
+            __('common.IP access forbidden')
+        );
+    }
+
+    public static function realnameBanned(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_BAD_REQUEST,
+            __('common.Real name access forbidden')
+        );
+    }
+
+    public static function rateLimitExceeded(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_BUSY_PAYING,
+            __('common.Please do not submit transactions too frequently')
+        );
+    }
+
+    public static function matchingTimeout(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_NO_AVAILABLE_USER_CHANNEL_ACCOUNT_FOR_TRANSACTION,
+            __('common.Match timeout, please change amount and retry')
+        );
+    }
+
+    public static function invalidAmount(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_INVALID_AMOUNT,
+            __('common.Wrong amount, please change and retry')
+        );
+    }
+
+    public static function realNameRequired(): self
+    {
+        return self::badRequest(
+            ThirdPartyResponseUtil::ERROR_CODE_BAD_REQUEST,
+            __('common.Missing parameter: :attribute', ['attribute' => 'real_name'])
+        );
+    }
 }

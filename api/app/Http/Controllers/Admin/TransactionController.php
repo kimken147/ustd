@@ -14,12 +14,14 @@ use App\Models\UserChannelAccount;
 use App\Models\UserChannel;
 use App\Models\BannedIp;
 use App\Models\BannedRealname;
+use App\Services\Transaction\CreateTransactionService;
+use App\Services\Transaction\DTO\DemoContext;
+use App\Services\Transaction\Exceptions\TransactionValidationException;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\TransactionUtil;
 use App\Utils\TransactionFactory;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
-use App\Http\Controllers\ThirdParty\UserChannelMatching;
 use App\Models\FeatureToggle;
 use App\Models\TransactionFee;
 use App\Repository\FeatureToggleRepository;
@@ -35,7 +37,6 @@ use Illuminate\Validation\Rule;
 
 class TransactionController extends Controller
 {
-    use UserChannelMatching;
 
     public function __construct()
     {
@@ -463,59 +464,24 @@ class TransactionController extends Controller
         ]);
     }
 
-    public function demo(Request $request, TransactionFactory $transactionFactory)
+    public function demo(Request $request, CreateTransactionService $service)
     {
         $this->validate($request, [
             'channel_code' => 'required',
             'username'     => 'required',
+            'secret_key'   => 'required',
             'amount'       => 'required|numeric|min:1',
             'notify_url'   => 'required',
             'order_number' => 'required',
         ]);
 
-        $merchant = User::where('username', $request->username)
-            ->where('role', User::ROLE_MERCHANT)
-            ->first();
+        try {
+            $context = DemoContext::fromRequest($request);
+            $result = $service->validateAndGenerateUrl($context);
 
-        abort_if(!$merchant, Response::HTTP_BAD_REQUEST, __('common.Merchant number error'));
-
-        $channel = Channel::where('code', $request->channel_code)->firstOrFail();
-
-        [$userChannel, $channelAmount] = $this->findSuitableUserChannel($merchant, $channel, $request->amount);
-
-        abort_if(!$userChannel, Response::HTTP_BAD_REQUEST, __('common.Merchant channel not configured'));
-
-        abort_if($userChannel->isDisabled(), Response::HTTP_BAD_REQUEST, __('common.Channel not enabled'));
-
-        return response()->json([
-            'url' => route(
-                'api.v1.create-transactions',
-                $this->withSign(
-                    collect($request->only([
-                        'channel_code',
-                        'username',
-                        'amount',
-                        'notify_url',
-                        'return_url',
-                        'order_number',
-                        'real_name',
-                        'client_ip',
-                        'usdt_rate',
-                        'bank_name',
-                        'match_last_account'
-                    ])),
-                    $merchant
-                )->toArray()
-            ),
-        ]);
-    }
-
-    private function withSign(Collection $postData, User $merchant)
-    {
-        $postData = $postData->sortKeys();
-
-        return $postData->merge([
-            'sign' => strtolower(md5(urldecode(http_build_query(array_filter($postData->toArray())) . '&secret_key=' . $merchant->secret_key)))
-        ])->forget('secret_key');
+            return response()->json(['url' => $result->url]);
+        } catch (TransactionValidationException $e) {
+            abort(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        }
     }
 }
