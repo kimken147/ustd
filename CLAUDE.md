@@ -4,12 +4,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a monorepo for a payment processing platform with three main components:
-- **api/** - Laravel 11 REST API backend (PHP 8.2+)
-- **admin/** - Admin portal (React 18 + Refine v4 + Ant Design)
-- **merchant/** - Merchant portal (React 18 + Refine v4 + Ant Design)
+This is a pnpm monorepo for a payment processing platform with the following structure:
+
+```
+ustd/
+├── api/                    # Laravel 11 REST API backend (PHP 8.2+)
+├── apps/
+│   ├── admin/              # Admin portal (React 18 + Refine v5 + Ant Design v5)
+│   └── merchant/           # Merchant portal (React 18 + Refine v5 + Ant Design v5)
+├── packages/
+│   └── shared/             # Shared TypeScript interfaces and utilities
+├── pnpm-workspace.yaml     # pnpm workspace configuration
+└── package.json            # Root package.json
+```
+
+**Package names:**
+- `@morgan-ustd/admin` - Admin portal
+- `@morgan-ustd/merchant` - Merchant portal
+- `@morgan-ustd/shared` - Shared package
 
 ## Common Commands
+
+### Package Manager
+
+This project uses **pnpm** for package management in the frontend monorepo.
+
+```bash
+# Install all dependencies (from root)
+pnpm install
+
+# Run command in all packages
+pnpm -r <command>
+
+# Run command in specific package
+pnpm --filter @morgan-ustd/admin <command>
+pnpm --filter @morgan-ustd/merchant <command>
+
+# TypeScript check all packages
+pnpm -r typecheck
+```
 
 ### PHP Version
 
@@ -56,35 +89,46 @@ php artisan view:cache
 ### Admin Portal
 
 ```bash
-cd admin
+cd apps/admin
 
-# Install dependencies
-yarn install
+# Install dependencies (from root recommended)
+pnpm install
 
 # Development server
-yarn local                # Local environment
-yarn dev                  # Development environment
+pnpm run local                # Local environment
+pnpm run dev                  # Development environment
 
 # Build for specific environment
-yarn build:morgan         # Morgan environment
-yarn build:dogepay        # Dogepay environment
+pnpm run build:morgan         # Morgan environment
+pnpm run build:dogepay        # Dogepay environment
 # (see package.json for all environments)
 
 # Tests
-yarn test
+pnpm run test
 ```
 
 ### Merchant Portal
 
 ```bash
-cd merchant
+cd apps/merchant
 
 # Same commands as admin
-yarn install
-yarn local
-yarn dev
-yarn build:morgan
-yarn test
+pnpm run local
+pnpm run dev
+pnpm run build:morgan
+pnpm run test
+```
+
+### Shared Package
+
+```bash
+cd packages/shared
+
+# TypeScript check
+pnpm run typecheck
+
+# Lint
+pnpm run lint
 ```
 
 ## Architecture
@@ -112,15 +156,28 @@ yarn test
 ### Frontend Layer (React)
 
 Both admin and merchant portals use:
-- **Refine v4** - Enterprise admin framework
-- **Ant Design v4** - UI component library
+- **Refine v5** - Enterprise admin framework
+- **Ant Design v5** - UI component library
 - **i18next** - Internationalization
 - **TypeScript**
 
 **Key Files:**
-- `src/App.tsx` - Main application component
-- `src/dataProvider.ts` - API data provider
-- `src/authProvider.ts` - Authentication provider
+- `apps/admin/src/App.tsx` - Main application component
+- `apps/admin/src/dataProvider.ts` - API data provider
+- `apps/admin/src/authProvider.ts` - Authentication provider
+
+### Shared Package
+
+The `@morgan-ustd/shared` package contains:
+- **interfaces/** - TypeScript interfaces for API responses and data models
+- **lib/** - Utility functions (formatting, calculations, etc.)
+- **providers/** - Shared data providers
+- **i18n/** - Internationalization utilities
+
+Import from apps:
+```typescript
+import { Transaction, formatAmount, dataProvider } from '@morgan-ustd/shared';
+```
 
 ### Internationalization (i18n)
 
@@ -145,7 +202,7 @@ See `api/I18N_SETUP.md` and `api/COMMON_PHP_REFACTOR_SUMMARY.md` for details.
 
 **PHP:** StyleCI with Laravel preset (see `.styleci.yml`)
 
-**JavaScript/TypeScript:** ESLint + Prettier (see `admin/.eslintrc.json`)
+**JavaScript/TypeScript:** ESLint + Prettier (see `apps/admin/.eslintrc.json`)
 
 ## CI/CD
 
@@ -156,13 +213,13 @@ GitHub Actions workflows in `.github/workflows/`:
 ## Environment Configuration
 
 Environment files are located in `.env/` directories:
-- Admin: `admin/.env/.env.{local,development,morgan,...}`
-- Merchant: `merchant/.env/.env.{local,development,morgan,...}`
+- Admin: `apps/admin/.env/.env.{local,development,morgan,...}`
+- Merchant: `apps/merchant/.env/.env.{local,development,morgan,...}`
 - API: `api/.env` (standard Laravel)
 
 ## Multi-tenant Deployment
 
 The system supports multiple branded deployments (Morgan, Dogepay, SinoPay, PowerPay, etc.) via environment-specific builds. Each has its own:
 - Environment configuration
-- Build script (`yarn build:{brand}`)
+- Build script (`pnpm run build:{brand}`)
 - CI/CD workflow
