@@ -6,26 +6,28 @@ import {
   WalletOutlined,
 } from '@ant-design/icons';
 import {
+  CreateButton,
+  List,
+  ListButton,
+  ShowButton,
+  TextField,
+} from '@refinedev/antd';
+import {
   Button,
   Card,
   Col,
-  CreateButton,
   Divider,
   FormItemProps,
   Input,
   InputNumber,
-  List,
-  ListButton,
   Row,
   Select,
-  ShowButton,
   Space,
   Statistic,
   Switch,
   Table,
   Tag,
-  TextField,
-} from '@refinedev/antd';
+} from 'antd';
 import { useApiUrl, useCan } from '@refinedev/core';
 import dayjs from 'dayjs';
 import useMerchant from 'hooks/useMerchant';
@@ -276,7 +278,7 @@ const MerchantList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/merchants/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },
@@ -297,7 +299,7 @@ const MerchantList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/merchants/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },
@@ -316,7 +318,7 @@ const MerchantList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/merchants/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },

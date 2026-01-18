@@ -1,20 +1,22 @@
 import { IResourceComponentsProps, useMany } from "@refinedev/core";
 import {
-    List,
-    Table,
-    TextField,
-    useTable,
-    getDefaultSortOrder,
-    DateField,
-    Space,
-    EditButton,
-    DeleteButton,
-    useSelect,
-    TagField,
-    FilterDropdown,
-    Select,
-    ShowButton,
-} from "@refinedev/antd";
+  List,
+  TextField,
+  useTable,
+  getDefaultSortOrder,
+  DateField,
+  EditButton,
+  DeleteButton,
+  useSelect,
+  TagField,
+  FilterDropdown,
+  ShowButton,
+} from '@refinedev/antd';
+import {
+  Table,
+  Space,
+  Select,
+} from 'antd';
 
 export const PostList: React.FC<IResourceComponentsProps> = () => {
     const { tableProps, sorter } = useTable<IPost>({
@@ -33,6 +35,7 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
         dataProviderName: "test",
         ids: categoryIds,
         queryOptions: {
+            queryKey: ['categories', categoryIds],
             enabled: categoryIds.length > 0,
         },
     });

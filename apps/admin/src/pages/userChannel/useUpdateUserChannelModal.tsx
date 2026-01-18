@@ -1,4 +1,11 @@
-import { Form, Modal, useForm, useModal } from '@refinedev/antd';
+import {
+  useForm,
+  useModal,
+} from '@refinedev/antd';
+import {
+  Form,
+  Modal,
+} from 'antd';
 import { HttpError } from '@refinedev/core';
 import useUserChannelMuation from 'hooks/useChannelMutation';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';

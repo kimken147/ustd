@@ -1,10 +1,12 @@
 import {
-  Button,
-  Descriptions,
   Show,
-  Switch,
   TextField,
 } from '@refinedev/antd';
+import {
+  Button,
+  Descriptions,
+  Switch,
+} from 'antd';
 import {
   IResourceComponentsProps,
   useNavigation,

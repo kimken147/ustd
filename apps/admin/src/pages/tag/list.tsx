@@ -2,9 +2,11 @@ import {
   CreateButton,
   DeleteButton,
   List,
+} from '@refinedev/antd';
+import {
   Table,
   TableColumnProps,
-} from '@refinedev/antd';
+} from 'antd';
 import dayjs from 'dayjs';
 import useTable from 'hooks/useTable';
 import { Tag, Format } from '@morgan-ustd/shared';
@@ -51,7 +53,7 @@ const TagList: FC = () => {
           </>
         }
       >
-        <Table {...tableProps} columns={columns}></Table>
+        <Table {...tableProps} columns={columns} rowKey="id"></Table>
       </List>
     </>
   );

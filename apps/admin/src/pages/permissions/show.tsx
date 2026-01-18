@@ -1,19 +1,21 @@
 import { EditOutlined } from '@ant-design/icons';
 import {
-  Button,
   DateField,
-  Descriptions,
-  Input,
-  Modal,
   Show,
-  Space,
-  Spin,
-  Switch,
   TextField,
   useModal,
 } from '@refinedev/antd';
+import {
+  Button,
+  Descriptions,
+  Input,
+  Modal,
+  Space,
+  Spin,
+  Switch,
+} from 'antd';
 import { useApiUrl, useShow } from '@refinedev/core';
-import { useLocation, useNavigate } from '@refinedev/react-router-v6';
+import { useLocation, useNavigate } from 'react-router-dom';
 import EditableForm from 'components/EditableFormItem';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import useUpdateModal from 'hooks/useUpdateModal';

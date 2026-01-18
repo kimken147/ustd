@@ -1,4 +1,10 @@
-import { Descriptions, Input, Show } from "@refinedev/antd";
+import {
+  Show,
+} from '@refinedev/antd';
+import {
+  Descriptions,
+  Input,
+} from 'antd';
 import { useShow } from "@refinedev/core";
 import EditableForm from "components/EditableFormItem";
 import { SystemBankCard } from "interfaces/systemBankCard";

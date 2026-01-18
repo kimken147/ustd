@@ -1,17 +1,19 @@
 import { EditOutlined } from "@ant-design/icons";
 import {
-    Button,
-    CreateButton,
-    Divider,
-    Input,
-    InputNumber,
-    List,
-    ListButton,
-    Select,
-    Space,
-    Switch,
-    TextField,
-} from "@refinedev/antd";
+  CreateButton,
+  List,
+  ListButton,
+  TextField,
+} from '@refinedev/antd';
+import {
+  Button,
+  Divider,
+  Input,
+  InputNumber,
+  Select,
+  Space,
+  Switch,
+} from 'antd';
 import useProvider from "hooks/useProvider";
 import useTable from "hooks/useTable";
 import useUpdateModal from "hooks/useUpdateModal";

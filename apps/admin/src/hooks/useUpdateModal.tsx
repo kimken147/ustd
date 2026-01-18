@@ -286,7 +286,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
                     mutateDeleting(
                         {
                             id,
-                            resource: resource || resourceName,
+                            resource: resource || resourceName || '',
                             successNotification: {
                                 message: t("deleteSuccess"),
                                 type: "success",

@@ -7,7 +7,7 @@ import {
   Modal,
   Space,
   FormInstance,
-} from '@refinedev/antd';
+} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { FormColumn } from './FormColumn';
 import { useTranslation } from 'react-i18next';

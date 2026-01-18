@@ -1,4 +1,13 @@
 import {
+  List,
+  ShowButton,
+  TextField,
+  useModal,
+  useForm,
+  DateField,
+  CreateButton,
+} from '@refinedev/antd';
+import {
   Button,
   Card,
   Col,
@@ -6,26 +15,19 @@ import {
   DatePicker,
   Divider,
   Input,
-  List,
   Popover,
   Radio,
   Row,
-  ShowButton,
   Space,
   Statistic,
   TableColumnProps,
-  TextField,
   Modal as AntdModal,
   Form as AntdForm,
-  useModal,
-  useForm,
   Select,
   InputNumber,
   Typography,
-  DateField,
-  CreateButton,
   SelectProps,
-} from '@refinedev/antd';
+} from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import useTable from 'hooks/useTable';
 import { FC, useEffect } from 'react';
@@ -334,6 +336,7 @@ const CollectionList: FC = () => {
       ],
     },
     queryOptions: {
+      queryKey: ['transactions-statistics', enableAuto, freq],
       refetchInterval: enableAuto ? freq * 1000 : undefined,
     },
     method: 'get',

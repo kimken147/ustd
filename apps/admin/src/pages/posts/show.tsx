@@ -1,5 +1,12 @@
 import { IResourceComponentsProps, useOne, useShow } from "@refinedev/core";
-import { Show, Typography, Tag, MarkdownField } from "@refinedev/antd";
+import {
+  Show,
+  MarkdownField,
+} from '@refinedev/antd';
+import {
+  Typography,
+  Tag,
+} from 'antd';
 
 const { Title, Text } = Typography;
 
@@ -14,6 +21,7 @@ export const PostShow: React.FC<IResourceComponentsProps> = () => {
         resource: "categories",
         id: record?.category.id ?? "",
         queryOptions: {
+            queryKey: ['category', record?.category.id],
             enabled: !!record?.category.id,
         },
         dataProviderName: "test",

@@ -1,18 +1,20 @@
 import { EditOutlined } from '@ant-design/icons';
 import {
+  List,
+  ListButton,
+  TextField,
+} from '@refinedev/antd';
+import {
   Button,
   Divider,
   Input,
   InputNumber,
-  List,
-  ListButton,
   Modal,
   Select,
   Space,
   Table,
   TableColumnProps,
-  TextField,
-} from '@refinedev/antd';
+} from 'antd';
 import Badge from 'components/badge';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';
@@ -525,7 +527,7 @@ const ThirdChannelList: FC = () => {
       <Form />
       <Divider />
       <div style={tableOutterStyle}>
-        <Table {...tableProps} columns={columns} />
+        <Table {...tableProps} columns={columns} rowKey="id" />
       </div>
       <Modal {...modalProps} />
       <Modal {...feeModalProps} />

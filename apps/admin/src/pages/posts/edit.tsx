@@ -1,5 +1,14 @@
 import { IResourceComponentsProps } from "@refinedev/core";
-import { Edit, Form, Input, Select, useForm, useSelect } from "@refinedev/antd";
+import {
+  Edit,
+  useForm,
+  useSelect,
+} from '@refinedev/antd';
+import {
+  Form,
+  Input,
+  Select,
+} from 'antd';
 
 import MDEditor from "@uiw/react-md-editor";
 

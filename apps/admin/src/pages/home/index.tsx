@@ -1,6 +1,10 @@
 import { gold, green, red } from '@ant-design/colors';
 import { UserOutlined } from '@ant-design/icons';
 import {
+  useForm,
+  useModal,
+} from '@refinedev/antd';
+import {
   Avatar,
   Button,
   Col,
@@ -9,9 +13,7 @@ import {
   Input,
   Modal,
   Row,
-  useForm,
-  useModal,
-} from '@refinedev/antd';
+} from 'antd';
 import {
   useApiUrl,
   useCustomMutation,
@@ -32,7 +34,7 @@ const HomePage: FC = () => {
   };
   const { data: user, isLoading } = useGetIdentity<Profile>();
   const apiUrl = useApiUrl();
-  const { mutateAsync, isLoading: isUpdatePassowrdLoading } =
+  const { mutateAsync, isPending: isUpdatePassowrdLoading } =
     useCustomMutation<IChangePasswordReq>();
   const { t } = useTranslation();
 

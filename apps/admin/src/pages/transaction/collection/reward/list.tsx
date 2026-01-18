@@ -1,15 +1,17 @@
 import {
-    CreateButton,
-    DeleteButton,
-    EditButton,
-    Input,
-    InputNumber,
-    List,
-    Modal,
-    Radio,
-    Space,
-    Table,
-} from "@refinedev/antd";
+  CreateButton,
+  DeleteButton,
+  EditButton,
+  List,
+} from '@refinedev/antd';
+import {
+  Input,
+  InputNumber,
+  Modal,
+  Radio,
+  Space,
+  Table,
+} from 'antd';
 import { useList } from "@refinedev/core";
 import ContentHeader from "components/contentHeader";
 import useUpdateModal from "hooks/useUpdateModal";

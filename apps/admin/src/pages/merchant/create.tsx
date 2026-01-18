@@ -1,9 +1,13 @@
 import { SaveOutlined } from '@ant-design/icons';
 import {
+  Create,
+  TextField,
+  useForm,
+} from '@refinedev/antd';
+import {
   Button,
   Col,
   ColProps,
-  Create,
   Divider,
   Form,
   Input,
@@ -13,17 +17,15 @@ import {
   Space,
   Spin,
   Switch,
-  TextField,
   Typography,
-  useForm,
-} from '@refinedev/antd';
+} from 'antd';
 import {
   useCreate,
   useList,
   useNavigation,
   useResource,
 } from '@refinedev/core';
-import { useNavigate } from '@refinedev/react-router-v6';
+import { useNavigate } from 'react-router-dom';
 import useChannelGroup from 'hooks/useChannelGroup';
 import { Merchant, User } from '@morgan-ustd/shared';
 import { FC } from 'react';

@@ -166,7 +166,7 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
             httpClient.defaults.headers = {
                 ...httpClient.defaults.headers,
                 ...headers,
-            };
+            } as typeof httpClient.defaults.headers;
         }
 
         let axiosResponse;

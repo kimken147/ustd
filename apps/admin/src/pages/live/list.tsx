@@ -1,24 +1,26 @@
 import { EditOutlined } from '@ant-design/icons';
 import {
+  List,
+} from '@refinedev/antd';
+import {
   Button,
   Card,
   Checkbox,
   Col,
   Divider,
-  List,
   Row,
   Space,
   Statistic,
   Switch,
   TableColumnProps,
   Typography,
-} from '@refinedev/antd';
+} from 'antd';
 import { useApiUrl, useCustom } from '@refinedev/core';
 import useChannel from 'hooks/useChannel';
-import { UserChannelStat } from 'interfaces/userChannelStat';
+import { UserChannelStat, Channel as ChannelStat } from 'interfaces/userChannelStat';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import type { CheckboxOptionType } from '@refinedev/antd';
+import type { CheckboxOptionType } from 'antd';
 import useTable from 'hooks/useTable';
 import { OnlinMatchingUser } from 'interfaces/onlineMatchingForUser';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -48,6 +50,7 @@ const LiveList: FC = () => {
         : undefined,
     },
     queryOptions: {
+      queryKey: ['user-channel-account-stats', channelCodes],
       refetchInterval: autoRefetch ? refetchFreq * 1000 : undefined,
     },
     method: 'get',
@@ -250,7 +253,7 @@ const LiveList: FC = () => {
       </Helmet>
       <List title={t('title')}>
         <Row gutter={16}>
-          {accountStat?.channels?.map(({ channel_name, paying }) => (
+          {accountStat?.channels?.map(({ channel_name, paying }: ChannelStat) => (
             <Col
               xs={12}
               md={6}

@@ -2,15 +2,17 @@
 import { IResourceComponentsProps } from '@refinedev/core';
 import {
   Create,
+  TextField,
+  SaveButton,
+} from '@refinedev/antd';
+import {
   Form,
   Row,
   Select,
   Input,
   InputNumber,
-  TextField,
-  SaveButton,
   Col,
-} from '@refinedev/antd';
+} from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import useSelector from 'hooks/useSelector';

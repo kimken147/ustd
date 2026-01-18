@@ -1,18 +1,20 @@
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import {
+  List,
+  TextField,
+} from '@refinedev/antd';
+import {
   Button,
   Divider,
   Input,
   InputNumber,
-  List,
   Modal,
   Select,
   Space,
   Switch,
   Table,
   TableColumnProps,
-  TextField,
-} from '@refinedev/antd';
+} from 'antd';
 import ContentHeader from 'components/contentHeader';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';
@@ -325,7 +327,7 @@ const ThirdChannelSettingList: FC = () => {
       </Helmet>
       <Form />
       <Divider />
-      <Table {...tableProps} columns={columns} />
+      <Table {...tableProps} columns={columns} rowKey="id" />
       <Modal {...modalProps} />
     </List>
   );

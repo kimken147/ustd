@@ -7,25 +7,27 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import {
-  Button,
   CreateButton,
+  List,
+  TextField,
+  ShowButton,
+} from '@refinedev/antd';
+import {
+  Button,
   Divider,
   Input,
   InputNumber,
-  List,
   Modal,
   Popover,
   Select,
   Space,
   Switch,
-  TextField,
   Modal as AntdModal,
   Row,
   Col,
   Statistic,
   Card,
-  ShowButton,
-} from '@refinedev/antd';
+} from 'antd';
 import {
   useApiUrl,
   useCan,
@@ -113,7 +115,7 @@ const UserChannelAccountList: FC = () => {
             options={providers?.map<SelectOption>(provider => ({
               label: provider.name,
               value: provider.name,
-              key: provider.id,
+              key: String(provider.id),
             }))}
             optionFilterProp="label"
             showSearch
@@ -447,7 +449,7 @@ const UserChannelAccountList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/user-channel-accounts/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },
@@ -467,7 +469,7 @@ const UserChannelAccountList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/user-channel-accounts/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },
@@ -493,7 +495,7 @@ const UserChannelAccountList: FC = () => {
                     customMutateConfig: {
                       mutiple: selectedKeys.map(key => ({
                         url: `${apiUrl}/user-channel-accounts/${key}`,
-                        id: key,
+                        id: key as string | number,
                       })),
                       method: 'put',
                     },
@@ -581,7 +583,7 @@ const UserChannelAccountList: FC = () => {
                         promises.push(
                           mutateDeleting({
                             resource: Resource.userChannelAccounts,
-                            id: key,
+                            id: key as string | number,
                             successNotification: false,
                           })
                         );

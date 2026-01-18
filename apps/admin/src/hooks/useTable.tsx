@@ -33,7 +33,7 @@ type Props<TData = any> = {
   showError?: boolean;
   transferValues?: (values: any) => any;
   errorNotification?: SuccessErrorNotification | undefined;
-  tableProps?: TableProps<TData>;
+  tableProps?: Omit<TableProps<TData>, 'rowKey'> & { rowKey?: string | ((record: TData) => string) };
   onSubmit?: () => void;
   pagination?: TableProps<TData>['pagination'];
 };
