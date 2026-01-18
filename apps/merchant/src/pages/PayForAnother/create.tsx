@@ -2,7 +2,6 @@ import { MinusCircleOutlined, SaveOutlined } from "@ant-design/icons";
 import {
     Button,
     Col,
-    Create,
     Form,
     Input,
     InputNumber,
@@ -10,9 +9,9 @@ import {
     Row,
     Select,
     message,
-    useForm,
-} from "@pankod/refine-antd";
-import { useCreate, useGetIdentity, useNavigation, useNotification, useTranslate } from "@pankod/refine-core";
+} from "antd";
+import { Create, useForm } from "@refinedev/antd";
+import { useCreate, useGetIdentity, useNavigation, useNotification, useTranslate } from "@refinedev/core";
 import useSelector from "hooks/useSelector";
 import useUpdateModal from "hooks/useUpdateModal";
 import { SelectOptions, Bank } from "@morgan-ustd/shared";
@@ -51,22 +50,6 @@ const PayForAnotherCreate: FC = () => {
             label: translate("channels.BANK_CARD"),
             value: "BANK_CARD",
         },
-        // {
-        //     label: "GCash",
-        //     value: "GCASH",
-        // },
-        // {
-        //     label: "Maya",
-        //     value: "MAYA",
-        // },
-        // {
-        //     label: "支付宝",
-        //     value: "QR_ALIPAY",
-        // },
-        // {
-        //     label: "USDT",
-        //     value: "USDT",
-        // },
     ];
     const getCardLabel = (index: number) => {
         const type = lists?.[index]?.type;

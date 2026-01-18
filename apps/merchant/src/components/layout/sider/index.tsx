@@ -1,16 +1,12 @@
 import React, { useState } from "react";
+import { Layout as AntdLayout, ConfigProvider, Menu, Grid, Drawer, Button } from "antd";
 import {
-    AntdLayout,
-    ConfigProvider,
-    Menu,
-    Grid,
-    Icons,
-    Drawer,
-    Sider as DefaultSider,
-    Button,
-} from "@pankod/refine-antd";
+    UnorderedListOutlined,
+    LogoutOutlined,
+    DashboardOutlined,
+    BarsOutlined,
+} from "@ant-design/icons";
 import {
-    // useTranslate,
     useLogout,
     useTitle,
     CanAccess,
@@ -20,15 +16,15 @@ import {
     useMenu,
     useRefineContext,
     useTranslate,
-} from "@pankod/refine-core";
+} from "@refinedev/core";
 
 import { Title as DefaultTitle } from "../title";
 
 import { drawerButtonStyles } from "./styles";
-const { UnorderedListOutlined, LogoutOutlined, DashboardOutlined, BarsOutlined } = Icons;
+
 const { SubMenu } = Menu;
 
-export const Sider: typeof DefaultSider = ({ render }) => {
+export const Sider: React.FC<{ render?: (props: any) => React.ReactNode }> = ({ render }) => {
     const [collapsed, setCollapsed] = useState<boolean>(false);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
     const isExistAuthentication = useIsExistAuthentication();
@@ -156,8 +152,10 @@ export const Sider: typeof DefaultSider = ({ render }) => {
                     placement="left"
                     closable={false}
                     width={200}
-                    bodyStyle={{
-                        padding: 0,
+                    styles={{
+                        body: {
+                            padding: 0,
+                        },
                     }}
                     maskClosable={true}
                 >

@@ -1,4 +1,4 @@
-import { SelectProps, Select as AntdSelect, SwitchProps, Switch as AntdSwitch } from "@pankod/refine-antd";
+import { SelectProps, Select as AntdSelect, SwitchProps, Switch as AntdSwitch } from "antd";
 
 function useEnableStatusSelect() {
     const statusSelectProps: SelectProps = {

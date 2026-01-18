@@ -1,12 +1,6 @@
-import {
-    Form as AntdForm,
-    FormItemProps,
-    FormProps,
-    Modal,
-    ModalFuncProps,
-    useForm,
-    useModal,
-} from "@pankod/refine-antd";
+import { Form, Modal, FormItemProps, FormProps } from "antd";
+import type { ModalFuncProps } from "antd";
+import { useForm, useModal } from "@refinedev/antd";
 import {
     BaseRecord,
     HttpError,
@@ -16,7 +10,7 @@ import {
     useResource,
     useTranslate,
     useUpdate,
-} from "@pankod/refine-core";
+} from "@refinedev/core";
 import { PropsWithChildren, useState } from "react";
 
 type Props = {
@@ -57,9 +51,10 @@ type Config = {
 
 function useUpdateModal<TData extends BaseRecord>(props?: Props) {
     const t = useTranslate();
-    const { resourceName } = useResource();
+    const { resource: resourceInfo } = useResource();
+    const resourceName = resourceInfo?.name ?? "";
     const { mutateAsync: customMutate } = useCustomMutation();
-    const { mutate, mutateAsync, isLoading, ...others } = useUpdate<TData>();
+    const { mutate, mutateAsync, isPending, ...others } = useUpdate<TData>();
     const { mutate: mutateDeleting } = useDelete();
     const { mutateAsync: create } = useCreate();
     const { form } = useForm();
@@ -130,21 +125,21 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
             okText: t("submit"),
             cancelText: t("cancel"),
             children: (
-                <AntdForm form={form} layout="vertical">
+                <Form form={form} layout="vertical">
                     {props?.formItems
                         .filter((formItem) => {
                             if (!config?.filterFormItems?.length) return true;
                             return config?.filterFormItems.includes(formItem.name as any);
                         })
                         .map((formItem, key) => (
-                            <AntdForm.Item
+                            <Form.Item
                                 key={`${formItem.name}-${key}`}
                                 {...formItem}
                                 className={`w-full ${formItem.className || ""}`}
-                            ></AntdForm.Item>
+                            ></Form.Item>
                         ))}
                     {config?.children}
-                </AntdForm>
+                </Form>
             ),
             onOk:
                 props?.onOk ??
@@ -155,7 +150,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
                         okText: t("ok"),
                         cancelText: t("cancel"),
                         okButtonProps: {
-                            loading: isLoading,
+                            loading: isPending,
                         },
                     });
                 },
@@ -163,7 +158,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
                 form.resetFields();
             },
             okButtonProps: {
-                loading: isLoading,
+                loading: isPending,
             },
         },
     });
@@ -176,30 +171,30 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
         showModal();
     };
 
-    const Form = (props: PropsWithChildren<FormProps>) => {
-        return <AntdForm form={form} initialValues={config?.initialValues} {...props}></AntdForm>;
+    const FormComponent = (props: PropsWithChildren<FormProps>) => {
+        return <Form form={form} initialValues={config?.initialValues} {...props}></Form>;
     };
 
-    Form.Item = AntdForm.Item;
+    FormComponent.Item = Form.Item;
 
     function UpdateModal({ defaultValue }: UpdateModalProps) {
         return (
             <Modal {...modalProps}>
-                <AntdForm form={form} layout="vertical" initialValues={defaultValue}>
+                <Form form={form} layout="vertical" initialValues={defaultValue}>
                     {props?.formItems
                         .filter((formItem) => {
                             if (!config?.filterFormItems?.length) return true;
                             return config?.filterFormItems.includes(formItem.name as any);
                         })
                         .map((formItem, key) => (
-                            <AntdForm.Item
+                            <Form.Item
                                 key={`${formItem.name}-${key}`}
                                 {...formItem}
                                 className={`w-full ${formItem.className || ""}`}
-                            ></AntdForm.Item>
+                            ></Form.Item>
                         ))}
                     {config?.children}
-                </AntdForm>
+                </Form>
             </Modal>
         );
     }
@@ -295,7 +290,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
                 }
             },
             okButtonProps: {
-                loading: isLoading,
+                loading: isPending,
             },
             ...modalProps,
         });
@@ -304,7 +299,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
     return {
         Modal: UpdateModal,
         show,
-        Form,
+        Form: FormComponent,
         form,
         modalProps,
         ...others,

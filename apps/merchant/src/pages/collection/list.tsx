@@ -1,21 +1,16 @@
 import {
     Badge,
-    BadgeProps,
     Card,
     Col,
-    ColProps,
     DatePicker,
     Divider,
     Input,
-    List,
     Radio,
     Row,
-    ShowButton,
     Statistic,
-    TableColumnProps,
-    DateField,
-    ExportButton,
-} from "@pankod/refine-antd";
+} from "antd";
+import type { BadgeProps, ColProps, TableColumnProps } from "antd";
+import { DateField, ExportButton, List, ShowButton } from "@refinedev/antd";
 import dayjs from "dayjs";
 import useTable from "hooks/useTable";
 import { FC } from "react";
@@ -28,7 +23,7 @@ import { Format, Channel } from "@morgan-ustd/shared";
 import useSelector from "hooks/useSelector";
 import { Descendant } from "interfaces/descendant";
 import CustomDatePicker from "components/customDatePicker";
-import { useApiUrl, useGetLocale, useTranslate } from "@pankod/refine-core";
+import { useApiUrl, useGetLocale, useTranslate } from "@refinedev/core";
 import queryString from "query-string";
 import { generateFilter } from "dataProvider";
 import { getToken } from "authProvider";
@@ -157,55 +152,11 @@ const CollectionList: FC = () => {
     });
 
     const columns: TableColumnProps<Transaction>[] = [
-        // {
-        //     title: "备注",
-        //     render(value, record, index) {
-        //         return (
-        //             <Button
-        //                 style={{
-        //                     border: `1px solid ${Blue}`,
-        //                     color: Blue,
-        //                 }}
-        //                 onClick={async () => {
-        //                     const { data: notes } = await axiosInstance.get<IRes<TransactionNote[]>>(
-        //                         `${apiUrl}/transactions/${record.id}/transaction-notes`,
-        //                     );
-        //                     Modal.info({
-        //                         title: "备注",
-        //                         content: (
-        //                             <Space direction="vertical">
-        //                                 {notes.data.map((note) => {
-        //                                     return (
-        //                                         <Space direction="vertical">
-        //                                             <TextField value={note.note} code className="text-[#1677ff]" />
-        //                                             <TextField
-        //                                                 value={`${note.user ? `${note.user.name}` : "系统"}: ${dayjs(
-        //                                                     note.created_at,
-        //                                                 ).format("YYYY-MM-DD HH:mm:ss")}`}
-        //                                             />
-        //                                         </Space>
-        //                                     );
-        //                                 })}
-        //                             </Space>
-        //                         ),
-        //                     });
-        //                 }}
-        //             >
-        //                 备注
-        //             </Button>
-        //         );
-        //     },
-        // },
         {
             title: t("collection.fields.systemTransactionNo"),
             dataIndex: "system_order_number",
             render(value, record) {
                 return value;
-                // return (
-                //     <ShowButton recordItemId={record.id} icon={null}>
-                //         {value}
-                //     </ShowButton>
-                // );
             },
         },
         {
@@ -305,23 +256,6 @@ const CollectionList: FC = () => {
                                     generateFilter(filters),
                                 )}&token=${getToken()}`;
                                 window.open(url);
-                                // const mapped = res.data.map((item) => ({
-                                //     系统订单号: item.system_order_number,
-                                //     商户订单号: item.order_number,
-                                //     商户号: item.merchant.username,
-                                //     通道: item.channel_name,
-                                //     订单金额: item.amount,
-                                //     订单状态: getTranStatusText(item.status),
-                                //     手续费: item.fee,
-                                //     回调状态: getTranCallbackStatus(item.notify_status),
-                                //     建立时间: dayjs(item.created_at).format(Format),
-                                //     成功时间: item.confirmed_at ? dayjs(item.confirmed_at).format(Format) : "",
-                                // }));
-                                // const csvExporter = new ExportToCsv({
-                                //     filename: `代收列表`,
-                                //     useKeysAsHeaders: true,
-                                // });
-                                // csvExporter.generateCsv(mapped);
                             }}
                         >
                             {t("export")}

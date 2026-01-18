@@ -1,24 +1,17 @@
-import locale from "antd/es/date-picker/locale/zh_CN";
 import {
     Badge,
-    BadgeProps,
     Card,
     Col,
-    ColProps,
-    CreateButton,
-    DateField,
     DatePicker,
     Divider,
-    ExportButton,
     Input,
-    List,
-    ListButton,
     Radio,
     Row,
     Select,
     Statistic,
-    TableColumnProps,
-} from "@pankod/refine-antd";
+} from "antd";
+import type { BadgeProps, ColProps, TableColumnProps } from "antd";
+import { CreateButton, DateField, ExportButton, List, ListButton } from "@refinedev/antd";
 import useTable from "hooks/useTable";
 import { Meta, Withdraw } from "interfaces/withdraw";
 import { FC } from "react";
@@ -35,7 +28,7 @@ import { getToken } from "authProvider";
 import { apiUrl } from "index";
 import queryString from "query-string";
 import { generateFilter } from "dataProvider";
-import { useGetLocale, useTranslate } from "@pankod/refine-core";
+import { useGetLocale, useTranslate } from "@refinedev/core";
 import { TransactionSubType } from "@morgan-ustd/shared";
 
 const PayForAnotherList: FC = () => {
@@ -128,10 +121,6 @@ const PayForAnotherList: FC = () => {
                                 label: translate("withdraw.values.payout"),
                                 value: TransactionSubType.SUB_TYPE_AGENCY_WITHDRAW,
                             },
-                            // {
-                            //     label: "红利提现",
-                            //     value: TransactionSubType.SUB_TYPE_WITHDRAW_PROFIT,
-                            // },
                         ]}
                     />
                 ),
@@ -173,44 +162,6 @@ const PayForAnotherList: FC = () => {
     });
 
     const columns: TableColumnProps<Withdraw>[] = [
-        // {
-        //     title: "备注",
-        //     dataIndex: "notes",
-        //     render(value, record, index) {
-        //         const hasNotes = !!record.notes?.length;
-        //         return (
-        //             <Button
-        //                 disabled={!hasNotes}
-        //                 type={hasNotes ? "primary" : "default"}
-        //                 ghost={hasNotes}
-        //                 onClick={() =>
-        //                     Modal.info({
-        //                         title: "备注",
-        //                         content: (
-        //                             <AntdList<Note>
-        //                                 dataSource={record.notes}
-        //                                 renderItem={(note) => {
-        //                                     return (
-        //                                         <AntdList.Item key={note.id}>
-        //                                             <Space direction="vertical">
-        //                                                 <TextField value={note.note} code className="w-full" />
-        //                                                 <TextField
-        //                                                     value={`系统: ${dayjs(note.created_at).format(Format)}`}
-        //                                                 />
-        //                                             </Space>
-        //                                         </AntdList.Item>
-        //                                     );
-        //                                 }}
-        //                             ></AntdList>
-        //                         ),
-        //                     })
-        //                 }
-        //             >
-        //                 备注
-        //             </Button>
-        //         );
-        //     },
-        // },
         {
             title: translate("collection.fields.systemTransactionNo"),
             dataIndex: "system_order_number",
@@ -330,13 +281,13 @@ const PayForAnotherList: FC = () => {
                 title={title}
                 headerButtons={() => (
                     <>
-                        <CreateButton resourceNameOrRouteName="withdraws">
+                        <CreateButton resource="withdraws">
                             {translate("withdraw.buttons.createPayment")}
                         </CreateButton>
-                        <ListButton icon={<PlusSquareOutlined />} resourceNameOrRouteName="pay-for-another">
+                        <ListButton icon={<PlusSquareOutlined />} resource="pay-for-another">
                             {translate("withdraw.buttons.createWithdraw")}
                         </ListButton>
-                        <ListButton resourceNameOrRouteName="bank-cards">
+                        <ListButton resource="bank-cards">
                             {translate("withdraw.buttons.banks")}
                         </ListButton>
                         <ExportButton

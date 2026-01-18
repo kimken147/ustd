@@ -1,5 +1,5 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { BaseRecord, CrudFilters, useList } from "@pankod/refine-core";
+import { SelectProps, Select as AntdSelect } from "antd";
+import { BaseRecord, CrudFilters, useList } from "@refinedev/core";
 
 type Props<TData> = {
     valueField?: keyof TData;
@@ -12,10 +12,8 @@ type Props<TData> = {
 function useSelector<TData extends BaseRecord>(props?: Props<TData>) {
     const queryObserverResult = useList<TData>({
         resource: props?.resource || "",
-        config: {
-            hasPagination: false,
-            filters: props?.filters,
-        },
+        hasPagination: false,
+        filters: props?.filters,
     });
 
     const { data, ...others } = queryObserverResult;

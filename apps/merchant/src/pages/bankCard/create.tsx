@@ -1,6 +1,7 @@
 import { SaveOutlined } from "@ant-design/icons";
-import { Button, Create, Form, Input, useForm } from "@pankod/refine-antd";
-import { useCreate, useNavigation, useTranslate } from "@pankod/refine-core";
+import { Button, Form, Input } from "antd";
+import { Create, useForm } from "@refinedev/antd";
+import { useCreate, useNavigation, useTranslate } from "@refinedev/core";
 import useSelector from "hooks/useSelector";
 import { Bank } from "@morgan-ustd/shared";
 import { FC } from "react";
@@ -62,12 +63,6 @@ const BankCardCreate: FC = () => {
                     <Form.Item label={t("bankCard.fields.bankName")} name={"bank_name"} rules={[{ required: true }]}>
                         <BankSelect />
                     </Form.Item>
-                    {/* <Form.Item label="开户省份" name={"bank_province"}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item label="开户市" name={"bank_city"}>
-                        <Input />
-                    </Form.Item> */}
                 </Form>
             </Create>
         </>

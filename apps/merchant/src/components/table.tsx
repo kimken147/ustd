@@ -1,4 +1,4 @@
-import { TableProps, Table as AntdTable, Grid } from "@pankod/refine-antd";
+import { TableProps, Table as AntdTable, Grid } from "antd";
 
 const Table: <TData extends object = any>(props: TableProps<TData>) => React.ReactElement<TableProps<TData>> = (
     props,

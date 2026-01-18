@@ -1,20 +1,15 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Badge, Divider, Input, Select, Space } from "antd";
+import type { BadgeProps, TableColumnProps } from "antd";
 import {
-    Badge,
-    BadgeProps,
     CreateButton,
     DateField,
     DeleteButton,
-    Divider,
     EditButton,
-    Input,
     List,
-    Select,
-    Space,
-    TableColumnProps,
     TextField,
-} from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+} from "@refinedev/antd";
+import { useTranslate } from "@refinedev/core";
 import ContentHeader from "components/contentHeader";
 import useTable from "hooks/useTable";
 import useUpdateModal from "hooks/useUpdateModal";
@@ -46,16 +41,6 @@ const BankCardList: FC = () => {
                 children: <Input />,
                 rules: [{ required: true }],
             },
-            // {
-            //     label: "开户省份",
-            //     children: <Input />,
-            //     name: "bank_province",
-            // },
-            // {
-            //     label: "开户市",
-            //     children: <Input />,
-            //     name: "bank_city",
-            // },
         ],
     });
     const { Form, Table } = useTable({
@@ -103,14 +88,6 @@ const BankCardList: FC = () => {
             title: t("bankCard.fields.bankName"),
             dataIndex: "bank_name",
         },
-        // {
-        //     title: "开户省份",
-        //     dataIndex: "bank_province",
-        // },
-        // {
-        //     title: "开户市",
-        //     dataIndex: "bank_city",
-        // },
         {
             title: t("status"),
             dataIndex: "status",
@@ -171,13 +148,6 @@ const BankCardList: FC = () => {
                                 type: "success",
                                 message: t("success"),
                             }}
-                            // onClick={() =>
-                            //     Modal.confirm({
-                            //         title: `是否确定删除卡号:${record.bank_card_number}`,
-                            //         id: record.id,
-                            //         mode: "delete",
-                            //     })
-                            // }
                         >
                             {t("delete")}
                         </DeleteButton>

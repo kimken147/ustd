@@ -1,4 +1,4 @@
-import { useApiUrl, useCustom } from "@pankod/refine-core";
+import { useApiUrl, useCustom } from "@refinedev/core";
 
 function useProfile() {
     const apiUrl = useApiUrl();

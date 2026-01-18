@@ -1,14 +1,6 @@
-import {
-    CreateButton,
-    DateField,
-    Divider,
-    Input,
-    List,
-    ShowButton,
-    Space,
-    TableColumnProps,
-    TextField,
-} from "@pankod/refine-antd";
+import { Divider, Input, Space } from "antd";
+import type { TableColumnProps } from "antd";
+import { CreateButton, DateField, List, ShowButton, TextField } from "@refinedev/antd";
 import useTable from "hooks/useTable";
 import { Member } from "interfaces/member";
 import { Format } from "@morgan-ustd/shared";
@@ -23,31 +15,6 @@ const MemberList: FC = () => {
                 name: "name_or_username",
                 children: <Input />,
             },
-            // {
-            //     label: "帐号启用状态",
-            //     name: "status",
-            //     children: <EnableStatusSelect />,
-            // },
-            // {
-            //     label: "代理功能启用状态",
-            //     name: "agent_enable",
-            //     children: <EnableStatusSelect />,
-            // },
-            // {
-            //     label: "谷歌验证码启用状态",
-            //     name: "google2fa_enable",
-            //     children: <EnableStatusSelect />,
-            // },
-            // {
-            //     label: "提现开关",
-            //     name: "withdraw_enable",
-            //     children: <EnableStatusSelect />,
-            // },
-            // {
-            //     label: "交易开关",
-            //     name: "transaction_enable",
-            //     children: <EnableStatusSelect />,
-            // },
         ],
     });
     const columns: TableColumnProps<Member>[] = [

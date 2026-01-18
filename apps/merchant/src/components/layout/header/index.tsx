@@ -1,5 +1,5 @@
-import { useGetIdentity, useLogout, useSetLocale } from "@pankod/refine-core";
-import { AntdLayout, Button, Dropdown, Menu, Space, Typography } from "@pankod/refine-antd";
+import { useGetIdentity, useLogout, useSetLocale } from "@refinedev/core";
+import { Layout as AntdLayout, Button, Dropdown, Menu, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DownOutlined } from "@ant-design/icons";
 import React from "react";
@@ -16,13 +16,13 @@ export const Header: React.FC = () => {
     const getLangText = (lang: string | undefined) => {
         switch (lang) {
             case "zh-CN":
-                return "🇨🇳 简体中文";
+                return "CN 简体中文";
             case "en":
-                return "🇺🇸 English"; // 或 🇬🇧 for 英國
+                return "US English";
             case "th":
-                return "🇹🇭 ไทย"; // 泰文
+                return "TH ไทย";
             default:
-                return "🇨🇳 简体中文";
+                return "CN 简体中文";
         }
     };
 

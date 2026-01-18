@@ -1,6 +1,7 @@
 import { CheckOutlined, CloseOutlined, EditOutlined } from "@ant-design/icons";
-import { Form, Modal, Space, useForm } from "@pankod/refine-antd";
-import { useResource, useUpdate } from "@pankod/refine-core";
+import { Form, Modal, Space } from "antd";
+import { useForm } from "@refinedev/antd";
+import { useResource, useUpdate } from "@refinedev/core";
 import React, { FC, PropsWithChildren, useState } from "react";
 
 type Props = {
@@ -15,7 +16,8 @@ const EditableForm: FC<PropsWithChildren<Props>> = ({ children, resource, id, na
     const [isEditing, setIsEditing] = useState(false);
     const { formProps, form } = useForm();
     const { mutateAsync } = useUpdate();
-    const { resourceName } = useResource();
+    const { resource: resourceInfo } = useResource();
+    const resourceName = resourceInfo?.name ?? "";
     return (
         <Form {...formProps}>
             <Space align="center">

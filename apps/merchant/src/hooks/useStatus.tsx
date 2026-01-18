@@ -1,4 +1,4 @@
-import { Select as AntdSelect, SelectProps } from "@pankod/refine-antd";
+import { Select as AntdSelect, SelectProps } from "antd";
 
 type Options = NonNullable<SelectProps["options"]>;
 type Option = Options[0];

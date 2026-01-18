@@ -1,7 +1,7 @@
-import { RefineProps } from "@pankod/refine-core";
+import { AccessControlProvider } from "@refinedev/core";
 import { PROFILE_KEY } from "authProvider";
 
-const accessControlProvider: RefineProps["accessControlProvider"] = {
+const accessControlProvider: AccessControlProvider = {
     can: async ({ resource, action, params }) => {
         let can = true;
         const profile = JSON.parse(

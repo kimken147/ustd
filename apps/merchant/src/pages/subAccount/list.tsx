@@ -1,16 +1,7 @@
-import {
-    Badge,
-    CreateButton,
-    DateField,
-    Divider,
-    Input,
-    List,
-    ShowButton,
-    Space,
-    TableColumnProps,
-    TextField,
-} from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { Badge, Divider, Input, Space } from "antd";
+import type { TableColumnProps } from "antd";
+import { CreateButton, DateField, List, ShowButton, TextField } from "@refinedev/antd";
+import { useTranslate } from "@refinedev/core";
 import Table from "components/table";
 import useTable from "hooks/useTable";
 import { SubAccount } from "interfaces/subAccount";

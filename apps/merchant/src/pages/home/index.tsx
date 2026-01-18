@@ -8,18 +8,15 @@ import {
     Grid,
     Input,
     Modal,
-    Show,
     Space,
     Switch,
     Table,
-    TextField,
     Typography,
-    useForm,
-    useModal,
-} from "@pankod/refine-antd";
-import { useApiUrl, useCustom, useGetIdentity, useLogout, useTranslate } from "@pankod/refine-core";
-import { useLocation, useNavigate } from "@pankod/refine-react-router-v6";
-import { axiosInstance } from "@pankod/refine-simple-rest";
+} from "antd";
+import { Show, TextField, useForm, useModal } from "@refinedev/antd";
+import { useApiUrl, useCustom, useGetIdentity, useLogout, useTranslate } from "@refinedev/core";
+import { useLocation, useNavigate } from "react-router-dom";
+import { axiosInstance } from "@refinedev/simple-rest";
 import useUpdateModal from "hooks/useUpdateModal";
 import { UserChannel } from "interfaces/user";
 import numeral from "numeral";

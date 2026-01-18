@@ -1,20 +1,17 @@
 import {
     Card,
     Col,
-    DateField,
     DatePicker,
     Descriptions,
     Divider,
-    ExportButton,
     Input,
-    List,
     Row,
     Select,
     Statistic,
-    TableColumnProps,
-    TextField,
-} from "@pankod/refine-antd";
-import { Option, useApiUrl, useGetLocale, useTranslate } from "@pankod/refine-core";
+} from "antd";
+import type { TableColumnProps } from "antd";
+import { DateField, ExportButton, List, TextField } from "@refinedev/antd";
+import { Option, useApiUrl, useGetLocale, useTranslate } from "@refinedev/core";
 import { getToken } from "authProvider";
 import CustomDatePicker from "components/customDatePicker";
 import { generateFilter } from "dataProvider";

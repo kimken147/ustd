@@ -1,4 +1,4 @@
-import { AuthPageProps } from "@pankod/refine-core";
+import { AuthPageProps } from "@refinedev/core";
 import { FC } from "react";
 import LoginPage from "./login";
 

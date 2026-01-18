@@ -1,8 +1,9 @@
 import "./index.sass";
-import { I18nProvider, Refine } from "@pankod/refine-core";
-import { notificationProvider, ReadyPage, ErrorComponent, ConfigProvider } from "@pankod/refine-antd";
-import "@pankod/refine-antd/dist/reset.css";
-import routerProvider from "@pankod/refine-react-router-v6";
+import { Refine } from "@refinedev/core";
+import { useNotificationProvider, ErrorComponent } from "@refinedev/antd";
+import "@refinedev/antd/dist/reset.css";
+import routerProvider from "@refinedev/react-router-v6/legacy";
+import { ConfigProvider, App as AntdApp } from "antd";
 import { Title, Header, Sider, Footer, Layout, OffLayoutArea } from "components/layout";
 import { authProvider } from "./authProvider";
 import AuthPage from "components/authPage";
@@ -18,10 +19,10 @@ import {
 import { apiUrl } from "index";
 
 import customDataProvider from "dataProvider";
-import dataProvider from "@pankod/refine-simple-rest";
-import antdCNLocale from "antd/es/locale/zh_CN";
-import antdENLocale from "antd/es/locale/en_US";
-import antdTHLocale from "antd/es/locale/th_TH";
+import dataProvider from "@refinedev/simple-rest";
+import antdCNLocale from "antd/locale/zh_CN";
+import antdENLocale from "antd/locale/en_US";
+import antdTHLocale from "antd/locale/th_TH";
 import CollectionList from "pages/collection/list";
 import CollectionShow from "pages/collection/show";
 import PayForAnotherList from "pages/PayForAnother/list";
@@ -51,8 +52,19 @@ function App() {
     const { t, i18n } = useTranslation();
     const [currentLocale, setCurrentLocale] = useState(i18n.language || "zh-CN");
 
-    const i18nProvider: I18nProvider = {
-        translate: (key: string, options?: any) => t(key, options) as string,
+    const i18nProvider = {
+        translate: (key: string, options?: any) => {
+            const result = t(key, options);
+            if (typeof result === "string") return result;
+            if (typeof result === "object" && result !== null && "toString" in result) {
+                try {
+                    return result.toString();
+                } catch {
+                    return JSON.stringify(result);
+                }
+            }
+            return String(result);
+        },
         changeLocale: (lang: string) => {
             setCurrentLocale(lang);
             const dayjsLocaleMap: Record<string, string> = {
@@ -103,114 +115,114 @@ function App() {
                     },
                 }}
             >
-                <Refine
-                    dataProvider={{
-                        default: customDataProvider(apiUrl),
-                        test: dataProvider("https://api.fake-rest.refine.dev"),
-                    }}
-                    accessControlProvider={accessControlProvider}
-                    notificationProvider={notificationProvider}
-                    routerProvider={routerProvider}
-                    ReadyPage={ReadyPage}
-                    catchAll={<ErrorComponent />}
-                    Title={Title}
-                    Header={Header}
-                    Sider={Sider}
-                    Footer={Footer}
-                    Layout={Layout}
-                    OffLayoutArea={OffLayoutArea}
-                    authProvider={authProvider}
-                    i18nProvider={i18nProvider}
-                    LoginPage={AuthPage}
-                    options={{
-                        breadcrumb: false,
-                        reactQuery: {
-                            devtoolConfig: false,
-                            clientConfig: {
-                                defaultOptions: {
-                                    queries: {
-                                        retry: false,
+                <AntdApp>
+                    <Refine
+                        dataProvider={{
+                            default: customDataProvider(apiUrl),
+                            test: dataProvider("https://api.fake-rest.refine.dev"),
+                        }}
+                        accessControlProvider={accessControlProvider}
+                        notificationProvider={useNotificationProvider}
+                        legacyRouterProvider={routerProvider}
+                        legacyAuthProvider={authProvider}
+                        Title={Title}
+                        Header={Header}
+                        Sider={Sider}
+                        Footer={Footer}
+                        Layout={Layout}
+                        OffLayoutArea={OffLayoutArea}
+                        LoginPage={AuthPage}
+                        catchAll={<ErrorComponent />}
+                        i18nProvider={i18nProvider}
+                        options={{
+                            reactQuery: {
+                                devtoolConfig: false,
+                                clientConfig: {
+                                    defaultOptions: {
+                                        queries: {
+                                            retry: false,
+                                        },
                                     },
                                 },
                             },
-                        },
-                    }}
-                    resources={[
-                        {
-                            name: "home",
-                            list: HomePage,
-                            icon: <HomeOutlined />,
-                            options: {
-                                label: t("home.title"),
+                        }}
+                        resources={[
+                            {
+                                name: "home",
+                                list: HomePage,
+                                icon: <HomeOutlined />,
+                                options: {
+                                    label: t("home.title"),
+                                },
                             },
-                        },
-                        {
-                            name: "transactions",
-                            list: CollectionList,
-                            icon: <SwapOutlined />,
-                            options: {
-                                label: t("collection.titles.main"),
+                            {
+                                name: "transactions",
+                                list: CollectionList,
+                                icon: <SwapOutlined />,
+                                options: {
+                                    label: t("collection.titles.main"),
+                                },
+                                show: CollectionShow,
                             },
-                            show: CollectionShow,
-                        },
-                        {
-                            name: "withdraws",
-                            list: PayForAnotherList,
-                            icon: <MoneyCollectOutlined />,
-                            options: {
-                                label: t("withdraw.titles.main"),
+                            {
+                                name: "withdraws",
+                                list: PayForAnotherList,
+                                icon: <MoneyCollectOutlined />,
+                                options: {
+                                    label: t("withdraw.titles.main"),
+                                },
+                                create: PayForAnotherCreate,
                             },
-                            create: PayForAnotherCreate,
-                        },
-                        {
-                            name: "pay-for-another",
-                            list: WithdrawCreate,
-                            options: {
-                                label: "建立下发",
-                                hide: true,
+                            {
+                                name: "pay-for-another",
+                                list: WithdrawCreate,
+                                options: {
+                                    label: "建立下发",
+                                    hide: true,
+                                },
+                                parentName: "withdraws",
                             },
-                            parentName: "withdraws",
-                        },
-                        {
-                            name: "bank-cards",
-                            list: BankCardList,
-                            create: BankCardCreate,
-                            options: {
-                                label: "下发银行卡",
-                                hide: true,
+                            {
+                                name: "bank-cards",
+                                list: BankCardList,
+                                create: BankCardCreate,
+                                options: {
+                                    label: "下发银行卡",
+                                    hide: true,
+                                },
+                                parentName: "withdraws",
                             },
-                            parentName: "withdraws",
-                        },
-                        {
-                            name: "wallet-histories",
-                            list: WalletHistoryList,
-                            options: {
-                                label: t("walletHistory.titles.list"),
+                            {
+                                name: "wallet-histories",
+                                list: WalletHistoryList,
+                                options: {
+                                    label: t("walletHistory.titles.list"),
+                                },
+                                icon: <WalletOutlined />,
                             },
-                            icon: <WalletOutlined />,
-                        },
-                        {
-                            name: "members",
-                            list: MemberList,
-                            options: {
-                                label: "下级管理",
+                            {
+                                name: "members",
+                                list: MemberList,
+                                options: {
+                                    label: "下级管理",
+                                },
+                                icon: <ForkOutlined className="rotate-180" />,
+                                create: MemberCreate,
+                                show: MemberShow,
                             },
-                            icon: <ForkOutlined className="rotate-180" />,
-                            create: MemberCreate,
-                            show: MemberShow,
-                        },
-                        {
-                            name: "sub-accounts",
-                            options: {
-                                label: t("subAccount.titles.list"),
+                            {
+                                name: "sub-accounts",
+                                options: {
+                                    label: t("subAccount.titles.list"),
+                                },
+                                icon: <LockOutlined />,
+                                list: SubAccountList,
+                                create: SubAccountCreate,
+                                show: SubAccountShow,
                             },
-                            icon: <LockOutlined />,
-                            list: SubAccountList,
-                            create: SubAccountCreate,
-                            show: SubAccountShow,
-                        },
-                    ]}
-                />
+                        ]}
+                    />
+                </AntdApp>
             </ConfigProvider>
         </>
     );

@@ -1,7 +1,8 @@
 import { SaveOutlined } from "@ant-design/icons";
-import { Button, Col, Create, Divider, Form, Input, Row, Spin, Typography, useForm } from "@pankod/refine-antd";
-import { useCreate, useList } from "@pankod/refine-core";
-import { useNavigate } from "@pankod/refine-react-router-v6";
+import { Button, Col, Divider, Form, Input, Row, Spin, Typography } from "antd";
+import { Create, useForm } from "@refinedev/antd";
+import { useCreate, useList } from "@refinedev/core";
+import { useNavigate } from "react-router-dom";
 import { ChannelGroup } from "@morgan-ustd/shared";
 import { Member } from "interfaces/member";
 import { FC } from "react";
@@ -13,7 +14,6 @@ const MemberCreate: FC = () => {
     const { isLoading } = useList<ChannelGroup>({
         resource: "channel-groups",
     });
-    // const channelGroups = data?.data;
     const navigate = useNavigate();
     if (isLoading) return <Spin />;
 
@@ -73,33 +73,6 @@ const MemberCreate: FC = () => {
                         </Col>
                     </Row>
                     <Divider />
-                    {/* <Typography.Title level={4}>通道</Typography.Title>
-                    <Form.List
-                        name={"user_channels"}
-                        initialValue={channelGroups?.map((channelGroup) => ({
-                            channel_group_id: channelGroup.id,
-                        }))}
-                    >
-                        {(fields) => {
-                            return fields.map(({ key, name }, index) => (
-                                <div key={key}>
-                                    <Form.Item name={[name, "channel_group_id"]} hidden></Form.Item>
-                                    <Row>
-                                        <Col xs={24} md={12}>
-                                            <Form.Item label="通道">
-                                                <TextField value={channelGroups?.[index].name} />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12}>
-                                            <Form.Item label="费率(%)" name={[name, "fee_percent"]}>
-                                                <InputNumber className="w-full" />
-                                            </Form.Item>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            ));
-                        }}
-                    </Form.List> */}
                 </Form>
             </Create>
         </>

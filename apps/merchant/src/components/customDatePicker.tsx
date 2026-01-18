@@ -1,5 +1,6 @@
-import { Button, DatePicker, DatePickerProps, Space } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { Button, DatePicker, Space } from "antd";
+import type { DatePickerProps } from "antd";
+import { useTranslate } from "@refinedev/core";
 import dayjs, { Dayjs } from "dayjs";
 import { FC } from "react";
 
@@ -36,25 +37,6 @@ const CustomDatePicker: FC<Props> = ({ onFastSelectorChange, ...rest }) => {
                                   >
                                       {translate("datePicker.yesterday")}
                                   </Button>
-                                  {/* <Button
-                              size="small"
-                              onClick={() =>
-                                  onFastSelectorChange(dayjs().startOf("months"), dayjs().endOf("months"))
-                              }
-                          >
-                              本月
-                          </Button>
-                          <Button
-                              size="small"
-                              onClick={() =>
-                                  onFastSelectorChange(
-                                      dayjs().subtract(1, "months").startOf("months"),
-                                      dayjs().subtract(1, "months").endOf("months"),
-                                  )
-                              }
-                          >
-                              上月
-                          </Button> */}
                                   <Button
                                       size="small"
                                       onClick={() =>

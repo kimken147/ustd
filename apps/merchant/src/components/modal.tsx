@@ -1,4 +1,4 @@
-import { ModalProps, Modal as AntdModal, ModalFuncProps } from "@pankod/refine-antd";
+import { ModalProps, Modal as AntdModal, ModalFuncProps } from "antd";
 
 function Modal(props: ModalProps) {
     return <AntdModal {...props} />;

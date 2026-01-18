@@ -1,6 +1,7 @@
-import { Button, DateField, Descriptions, Input, Show, Space, Spin, Switch, TextField } from "@pankod/refine-antd";
-import { useApiUrl, useShow, useTranslate } from "@pankod/refine-core";
-import { useLocation, useNavigate } from "@pankod/refine-react-router-v6";
+import { Button, Descriptions, Input, Space, Spin, Switch } from "antd";
+import { DateField, Show, TextField } from "@refinedev/antd";
+import { useApiUrl, useShow, useTranslate } from "@refinedev/core";
+import { useLocation, useNavigate } from "react-router-dom";
 import EditableForm from "components/EditableFormItem";
 import useUpdateModal from "hooks/useUpdateModal";
 import { SubAccount } from "interfaces/subAccount";

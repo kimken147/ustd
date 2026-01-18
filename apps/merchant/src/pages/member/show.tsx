@@ -1,6 +1,7 @@
-import { DateField, Descriptions, Divider, RefreshButton, Show, TextField } from "@pankod/refine-antd";
-import { IResourceComponentsProps, useShow } from "@pankod/refine-core";
-import { useLocation } from "@pankod/refine-react-router-v6";
+import { Descriptions, Divider } from "antd";
+import { DateField, RefreshButton, Show, TextField } from "@refinedev/antd";
+import { IResourceComponentsProps, useShow } from "@refinedev/core";
+import { useLocation } from "react-router-dom";
 import useEnableStatusSelect from "hooks/useEnableStatusSwitch";
 import { Member } from "interfaces/member";
 import { Format } from "@morgan-ustd/shared";
@@ -11,7 +12,6 @@ const MemberShow: FC<IResourceComponentsProps<Member>> = () => {
     const { state } = useLocation();
     const { Switch } = useEnableStatusSelect();
     const { queryResult } = useShow<Member>();
-    // const { mutateAsync: update } = useUpdate();
     const { data, isLoading } = queryResult;
     const record = { ...(state as Member), ...data?.data };
     return (
@@ -65,52 +65,14 @@ const MemberShow: FC<IResourceComponentsProps<Member>> = () => {
                     <Descriptions.Item label="代理功能启用开关">
                         <Switch checked={record?.agent_enable} disabled />
                     </Descriptions.Item>
-                    {/* <Descriptions.Item label="提现开关">
-                        <Switch checked={record?.withdraw_enable} disabled />
-                    </Descriptions.Item>
-                    <Descriptions.Item label="交易开关">
-                        <Switch checked={record?.transaction_enable} disabled />
-                    </Descriptions.Item> */}
                 </Descriptions>
                 <Divider />
                 <Descriptions column={{ xs: 1, md: 3 }} bordered title="钱包相关">
                     <Descriptions.Item label="总余额">{record?.wallet?.balance}</Descriptions.Item>
                     <Descriptions.Item label="可用余额">{record?.wallet?.available_balance}</Descriptions.Item>
                     <Descriptions.Item label="冻结余额">{record?.wallet?.frozen_balance}</Descriptions.Item>
-                    {/* <Descriptions.Item label="下发手续费">{record?.withdraw_fee}元/笔</Descriptions.Item>
-                    <Descriptions.Item label="代付手续费">
-                        {record?.agency_withdraw_fee || "0.00"}% + {record?.agency_withdraw_fee_dollar}元/笔
-                    </Descriptions.Item> */}
                 </Descriptions>
                 <Divider />
-                {/* <Descriptions title="通道相关" column={{ xs: 1, md: 3 }} bordered>
-                    {record?.user_channels?.map((userChannel) => (
-                        <>
-                            <Descriptions.Item label="通道">{userChannel.name}</Descriptions.Item>
-                            <Descriptions.Item label="费率(%)">{userChannel.fee_percent || "无设置"}</Descriptions.Item>
-                            <Descriptions.Item label="状态">
-                                <Switch
-                                    disabled
-                                    checked={!!userChannel.status}
-                                    onChange={async (value) => {
-                                        await update({
-                                            id: userChannel.id,
-                                            resource: "member-user-channels",
-                                            values: {
-                                                status: value ? 1 : 0,
-                                            },
-                                            successNotification: {
-                                                message: "修改成功",
-                                                type: "success",
-                                            },
-                                        });
-                                        refetch();
-                                    }}
-                                />
-                            </Descriptions.Item>
-                        </>
-                    ))}
-                </Descriptions> */}
             </Show>
         </>
     );

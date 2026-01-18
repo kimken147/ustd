@@ -1,6 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { Space, TextField } from "@pankod/refine-antd";
-import { useNavigation } from "@pankod/refine-core";
+import { Space, Typography } from "antd";
+import { TextField } from "@refinedev/antd";
+import { useNavigation } from "@refinedev/core";
 import { FC } from "react";
 
 type Props = {

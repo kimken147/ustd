@@ -1,5 +1,5 @@
-import { Select as AntdSelect, SelectProps } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { Select as AntdSelect, SelectProps } from "antd";
+import { useTranslate } from "@refinedev/core";
 
 type Options = NonNullable<SelectProps["options"]>;
 type Option = Options[0];

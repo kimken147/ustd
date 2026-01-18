@@ -1,5 +1,5 @@
-import { AuthProvider } from "@pankod/refine-core";
-import { axiosInstance } from "@pankod/refine-simple-rest";
+import { LegacyAuthProvider as AuthProvider } from "@refinedev/core";
+import { axiosInstance } from "@refinedev/simple-rest";
 import dayjs from "dayjs";
 import { apiUrl, cookie } from "index";
 

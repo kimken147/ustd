@@ -1,29 +1,27 @@
 import { MinusSquareOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import {
     Row,
-    useForm,
-    Form,
-    FormItemProps,
     Col,
     Button,
-    TableColumnProps,
+    Table,
+    Form,
+    Grid,
     PaginationProps,
     TableProps,
-    Table,
-    Grid,
-} from "@pankod/refine-antd";
+    TableColumnProps,
+} from "antd";
+import type { FormItemProps } from "antd";
+import { useForm } from "@refinedev/antd";
 import {
     BaseRecord,
     CrudFilter,
     CrudFilters,
     GetListResponse,
-    SuccessErrorNotification,
     useList,
-    UseQueryOptions,
     useResource,
     useTranslate,
-} from "@pankod/refine-core";
-import { UseListProps } from "@pankod/refine-core/dist/hooks/data/useList";
+} from "@refinedev/core";
+import type { UseQueryOptions } from "@tanstack/react-query";
 import { FormProps } from "antd/lib/form/Form";
 import dayjs, { Dayjs } from "dayjs";
 import { cloneElement } from "react";
@@ -38,7 +36,7 @@ type Props<TData = any> = {
     queryOptions?: UseQueryOptions<GetListResponse<TData>, any>;
     showError?: boolean;
     transferValues?: (values: any) => any;
-    errorNotification?: SuccessErrorNotification | undefined;
+    errorNotification?: any;
     tableProps?: TableProps<TData>;
 };
 
@@ -53,7 +51,8 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
     transferValues,
     tableProps,
 }: Props<TData>) {
-    const { resourceName } = useResource();
+    const { resource: resourceInfo } = useResource();
+    const resourceName = resourceInfo?.name ?? "";
     const t = useTranslate();
     const breakpoint = Grid.useBreakpoint();
     const { form } = useForm();
@@ -85,19 +84,15 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
         pageSize: 20,
         showSizeChanger: false,
     });
-    const listProps: UseListProps<TData, any> = {
+    const listConfig = {
         resource: resource || resourceName,
-        config: {
-            hasPagination,
-            filters,
-            pagination: hasPagination ? pagination : undefined,
-        },
+        hasPagination,
+        filters,
+        pagination: hasPagination ? pagination : undefined,
         queryOptions,
+        errorNotification: showError === false ? false : undefined,
     };
-    if (showError === false) {
-        listProps.errorNotification = false;
-    }
-    const { data, isFetching, refetch, ...others } = useList<TData>(listProps);
+    const { data, isFetching, refetch, ...others } = useList<TData>(listConfig);
 
     const $tableProps: TableProps<TData> = {
         dataSource: data?.data,

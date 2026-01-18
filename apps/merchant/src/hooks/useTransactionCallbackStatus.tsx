@@ -1,5 +1,5 @@
-import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { useTranslate } from "@pankod/refine-core";
+import { SelectProps, Select as AntdSelect } from "antd";
+import { useTranslate } from "@refinedev/core";
 import { SelectOption } from "@morgan-ustd/shared";
 
 function useTransactionCallbackStatus() {

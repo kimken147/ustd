@@ -1,5 +1,7 @@
-import { Descriptions, Show, Spin, Table, TableColumnProps, Typography } from "@pankod/refine-antd";
-import { useShow, useTranslate } from "@pankod/refine-core";
+import { Descriptions, Spin, Table, Typography } from "antd";
+import type { TableColumnProps } from "antd";
+import { Show } from "@refinedev/antd";
+import { useShow, useTranslate } from "@refinedev/core";
 import { MerchantFee, Transaction } from "interfaces/transaction";
 import { FC } from "react";
 import { Helmet } from "react-helmet";

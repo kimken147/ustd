@@ -1,4 +1,4 @@
-import { BaseRecord } from "@pankod/refine-core";
+import { BaseRecord } from "@refinedev/core";
 
 export interface Agent {
     id: number;
