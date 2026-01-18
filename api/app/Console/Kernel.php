@@ -75,7 +75,7 @@ class Kernel extends ConsoleKernel
     protected function shortSchedule(ShortSchedule $shortSchedule)
     {
         //$shortSchedule->command("thirdchannel:sync-balance")->everySeconds(10)->onOneServer();
-        // $shortSchedule->command('usdt:sync-transaction')->everySeconds(30)->withoutOverlapping()->onOneServer();
+
 
 
     }

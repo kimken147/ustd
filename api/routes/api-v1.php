@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 
-Route::get("app-version", "AppVersionController");
+
 Route::get("create-transactions", "CreateTransactionController")->name(
     "api.v1.create-transactions"
 );
@@ -698,23 +698,9 @@ Route::prefix("third-party")
         Route::get("rate/{coin}/{currency}", "UsdtController@rate");
     });
 
-Route::prefix("message")
-    ->middleware(["auth:api", "check.account.status", "check.whitelisted.ip"])
-    ->group(function () {
-        Route::get("history/{to}", "MessageController@history");
-        Route::get("contacts", "MessageController@contacts");
-        Route::post("send/text", "MessageController@sendText");
-        Route::post("send/file", "MessageController@sendFile");
-        Route::post("read", "MessageController@read");
-        Route::get(
-            "file/{id}/{date}/{path}",
-            "MessageController@showFile"
-        )->name("message.file");
-    });
 
-Route::middleware(["auth:api", "check.account.status", "check.whitelisted.ip"])
-    ->apiResource("announcements", "AnnouncementController")
-    ->only(["index", "store", "update", "destroy"]);
+
+
 
 Route::prefix("app")
     ->namespace("App")
