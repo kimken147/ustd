@@ -1,0 +1,18 @@
+{
+  "name": "morgan-ustd",
+  "private": true,
+  "scripts": {
+    "dev:admin": "pnpm --filter @morgan-ustd/admin local",
+    "dev:merchant": "pnpm --filter @morgan-ustd/merchant local",
+    "build:admin": "pnpm --filter @morgan-ustd/admin build",
+    "build:merchant": "pnpm --filter @morgan-ustd/merchant build",
+    "build:shared": "pnpm --filter @morgan-ustd/shared build",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  }
+}
