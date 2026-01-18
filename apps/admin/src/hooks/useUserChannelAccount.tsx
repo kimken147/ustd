@@ -1,6 +1,6 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
 import { CrudFilters, GetListResponse, useList, UseQueryOptions } from "@pankod/refine-core";
-import { UserChannel } from "interfaces/userChannel";
+import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 type Props = {
     filters: CrudFilters;

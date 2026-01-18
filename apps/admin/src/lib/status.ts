@@ -1,4 +1,4 @@
-import { SelectOption } from "interfaces/antd";
+import { SelectOption } from "@morgan-ustd/shared";
 
 export const getStatusOptions: () => SelectOption[] = () => {
     const status: Record<number, string> = {

@@ -1,6 +1,6 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
 import { useList } from "@pankod/refine-core";
-import { Provider } from "interfaces/merchant";
+import { MerchantProvider as Provider } from "@morgan-ustd/shared";
 
 type Props = {
     valueField?: keyof Provider;

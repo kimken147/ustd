@@ -26,8 +26,16 @@ import {
   Table,
 } from '@pankod/refine-antd';
 import useTable from 'hooks/useTable';
-import { Meta, TransactionNote, User, Withdraw } from 'interfaces/withdraw';
-import { TransactionSubType, TransactionType } from 'interfaces/transaction';
+import {
+  WithdrawMeta as Meta,
+  TransactionNote,
+  WithdrawUser as User,
+  Withdraw,
+  TransactionSubType,
+  TransactionType,
+  Gray,
+  Red,
+} from '@morgan-ustd/shared';
 import { FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import useMerchant from 'hooks/useMerchant';
@@ -67,7 +75,6 @@ import HiddenText from 'components/hiddenText';
 import Badge from 'components/badge';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import numeral from 'numeral';
-import { Gray, Red } from 'lib/color';
 import queryString from 'query-string';
 import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';

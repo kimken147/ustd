@@ -16,8 +16,12 @@ import ContentHeader from 'components/contentHeader';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useTable from 'hooks/useTable';
-import { MerchantWallet, Operator, User } from 'interfaces/merchantWallet';
-import { Format } from 'lib/date';
+import {
+  MerchantWalletHistory as MerchantWallet,
+  MerchantWalletOperator as Operator,
+  MerchantWalletUser as User,
+  Format,
+} from '@morgan-ustd/shared';
 import { getSign } from 'lib/number';
 import numeral from 'numeral';
 import { FC } from 'react';

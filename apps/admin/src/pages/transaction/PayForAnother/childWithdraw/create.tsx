@@ -17,7 +17,7 @@ import {
 import { useApiUrl, useNavigation, useNotification, useShow } from "@pankod/refine-core";
 import { useParams } from "@pankod/refine-react-router-v6";
 import useUpdateModal from "hooks/useUpdateModal";
-import { Withdraw } from "interfaces/withdraw";
+import { Withdraw } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

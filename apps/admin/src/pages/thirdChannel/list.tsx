@@ -17,7 +17,7 @@ import Badge from 'components/badge';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { Channel } from 'interfaces/channel';
+import { Channel } from '@morgan-ustd/shared';
 import { ThirdChannel } from 'interfaces/thirdChannel';
 import { uniqBy } from 'lodash';
 import { FC, useState } from 'react';

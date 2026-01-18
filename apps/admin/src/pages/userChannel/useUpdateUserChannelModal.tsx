@@ -1,7 +1,7 @@
 import { Form, Modal, useForm, useModal } from '@pankod/refine-antd';
 import { HttpError } from '@pankod/refine-core';
 import useUserChannelMuation from 'hooks/useChannelMutation';
-import { UserChannel } from 'interfaces/userChannel';
+import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
 import { FC, PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 

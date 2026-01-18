@@ -1,5 +1,5 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
-import { SelectOption } from "interfaces/antd";
+import { SelectOption } from "@morgan-ustd/shared";
 import { useTranslation } from "react-i18next";
 
 function useTransactionCallbackStatus() {

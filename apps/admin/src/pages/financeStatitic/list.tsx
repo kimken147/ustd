@@ -21,7 +21,7 @@ import { sumBy } from 'lodash';
 import numeral from 'numeral';
 import CustomDatePicker from 'components/customDatePicker';
 import useSelector from 'hooks/useSelector';
-import { Merchant } from 'interfaces/merchant';
+import { Merchant } from '@morgan-ustd/shared';
 import { useTranslation } from 'react-i18next';
 
 const FinanceStatisticPage: FC = () => {

@@ -12,10 +12,7 @@ import {
 } from '@pankod/refine-antd';
 import { useCreate } from '@pankod/refine-core';
 import useSelector from 'hooks/useSelector';
-import { Channel } from 'interfaces/channel';
-import { Merchant } from 'interfaces/merchant';
-import { DemoCreateRes } from 'interfaces/transaction';
-import { Blue } from 'lib/color';
+import { Channel, Merchant, DemoCreateRes, Blue } from '@morgan-ustd/shared';
 import { random } from 'lodash';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';

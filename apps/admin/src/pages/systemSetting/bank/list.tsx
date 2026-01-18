@@ -21,7 +21,7 @@ import { getToken } from 'authProvider';
 import ContentHeader from 'components/contentHeader';
 import { generateFilter } from 'dataProvider';
 import useTable from 'hooks/useTable';
-import { Bank } from 'interfaces/bank';
+import { Bank } from '@morgan-ustd/shared';
 import queryString from 'query-string';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';

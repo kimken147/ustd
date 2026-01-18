@@ -12,7 +12,7 @@ import {
 } from '@pankod/refine-core';
 import dayjs from 'dayjs';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { UserChannel } from 'interfaces/userChannel';
+import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

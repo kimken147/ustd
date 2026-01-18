@@ -1,6 +1,6 @@
 import { Select, SelectProps } from "@pankod/refine-antd";
 import { useTranslation } from "react-i18next";
-import { UserChannelType } from "interfaces/userChannel";
+import { UserChannelType } from "@morgan-ustd/shared";
 
 const useUserChannelStatus = () => {
     const { t } = useTranslation("userChannel");

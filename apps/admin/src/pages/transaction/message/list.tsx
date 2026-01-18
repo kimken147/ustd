@@ -3,7 +3,7 @@ import CustomDatePicker from "components/customDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import useAutoRefetch from "hooks/useAutoRefetch";
 import useTable from "hooks/useTable";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

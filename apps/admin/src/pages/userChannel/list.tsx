@@ -46,18 +46,23 @@ import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useUserChannelAccount from 'hooks/useUserChannelAccount';
 import useUserChannelStatus from 'hooks/useUserChannelStatus';
-import { SelectOption } from 'interfaces/antd';
 import {
+  SelectOption,
+  ProviderUserChannel as UserChannel,
   Meta,
-  UserChannel,
   UserChannelStatus,
   UserChannelType,
-} from 'interfaces/userChannel';
-import { AccountStatus, SyncStatus } from 'lib/channel';
+  AccountStatus,
+  SyncStatus,
+  Gray,
+  Green,
+  Purple,
+  Red,
+  Yellow,
+  Resource,
+} from '@morgan-ustd/shared';
 import useChannelStatus from 'hooks/useChannelStatus';
-import { Gray, Green, Purple, Red, Yellow } from 'lib/color';
 import Enviroment from 'lib/env';
-import { Resource } from 'lib/resouce';
 import { intersectionWith, sumBy } from 'lodash';
 import numeral from 'numeral';
 import { FC, ReactNode, useState } from 'react';

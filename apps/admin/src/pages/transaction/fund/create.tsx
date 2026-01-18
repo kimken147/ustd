@@ -1,8 +1,7 @@
 import { Col, Create, Form, Input, InputNumber, Row, SaveButton, useForm } from "@pankod/refine-antd";
 import { useCreate, useNavigation, useNotification } from "@pankod/refine-core";
 import useSelector from "hooks/useSelector";
-import { Bank } from "interfaces/bank";
-import { UserChannel } from "interfaces/userChannel";
+import { Bank, ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 import { FC, useState } from "react";
 import { Helmet } from "react-helmet";
 

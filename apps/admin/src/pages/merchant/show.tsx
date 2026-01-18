@@ -37,9 +37,7 @@ import {
 import EditableForm from 'components/EditableFormItem';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useUser from 'hooks/useUser';
-import { SelectOption } from 'interfaces/antd';
-import { Merchant, UserChannel } from 'interfaces/merchant';
-import { User } from 'interfaces/user';
+import { SelectOption, Merchant, MerchantUserChannel as UserChannel, User } from '@morgan-ustd/shared';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { updateMerchantFormItems } from './list';

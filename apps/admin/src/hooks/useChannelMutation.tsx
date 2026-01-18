@@ -1,5 +1,5 @@
 import { useApiUrl, useCustomMutation } from "@pankod/refine-core";
-import { UserChannel } from "interfaces/userChannel";
+import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 const useUserChannelMuation = () => {
     const apiUrl = useApiUrl();

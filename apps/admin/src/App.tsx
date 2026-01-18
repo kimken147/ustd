@@ -68,7 +68,7 @@ import ChildWithdrawCreate from 'pages/transaction/PayForAnother/childWithdraw/c
 import TransactionGroupList from 'pages/provider/transaction/list';
 import DepositGroupList from 'pages/provider/deposit/list';
 import { Helmet } from 'react-helmet';
-import { initDayjs } from 'lib/date';
+import { initDayjs } from '@morgan-ustd/shared';
 import TransactionMessageList from 'pages/transaction/message/list';
 import FundList from 'pages/transaction/fund/list';
 import FundCreate from 'pages/transaction/fund/create';

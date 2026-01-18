@@ -1,6 +1,6 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
 import { CrudFilters, useList } from "@pankod/refine-core";
-import { User } from "interfaces/user";
+import { User } from "@morgan-ustd/shared";
 
 type Props = {
     role: number;

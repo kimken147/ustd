@@ -21,7 +21,7 @@ import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { Permission } from 'interfaces/permission';
 import { SubAccount } from 'interfaces/subAccount';
-import { Format } from 'lib/date';
+import { Format } from '@morgan-ustd/shared';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

@@ -33,7 +33,7 @@ import { Provider } from 'interfaces/provider';
 import { getStatusOptions } from 'lib/status';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { Tag as TagModel } from 'interfaces/tag';
+import { Tag as TagModel } from '@morgan-ustd/shared';
 import { useTranslation } from 'react-i18next';
 
 const QueryParams = {

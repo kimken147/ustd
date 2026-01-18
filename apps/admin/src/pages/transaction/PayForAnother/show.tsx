@@ -10,8 +10,7 @@ import {
     Typography,
 } from "@pankod/refine-antd";
 import { useShow, useUpdate } from "@pankod/refine-core";
-import { MerchantFee } from "interfaces/transaction";
-import { Withdraw } from "interfaces/withdraw";
+import { MerchantFee, Withdraw } from "@morgan-ustd/shared";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 

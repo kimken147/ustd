@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { UserChannelStatus, UserChannelType } from "interfaces/userChannel";
+import { UserChannelStatus, UserChannelType } from "@morgan-ustd/shared";
 
 function useChannelStatus() {
     const { t } = useTranslation("userChannel");

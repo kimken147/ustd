@@ -23,14 +23,14 @@ import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';
-import { Merchant } from 'interfaces/merchant';
 import {
-  MerchantWallet,
-  Operator,
-  User,
-  Meta,
-} from 'interfaces/merchantWallet';
-import { Format } from 'lib/date';
+  Merchant,
+  MerchantWalletHistory as MerchantWallet,
+  MerchantWalletOperator as Operator,
+  MerchantWalletUser as User,
+  MerchantWalletMeta as Meta,
+  Format,
+} from '@morgan-ustd/shared';
 import { getSign } from 'lib/number';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';

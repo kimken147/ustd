@@ -11,7 +11,7 @@ import {
 import { useApiUrl, useCan, useList } from '@pankod/refine-core';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { Channel, ChannelGroup } from 'interfaces/channel';
+import { Channel, ChannelGroup } from '@morgan-ustd/shared';
 import numeral from 'numeral';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';

@@ -7,8 +7,7 @@ import {
 } from '@pankod/refine-antd';
 import dayjs from 'dayjs';
 import useTable from 'hooks/useTable';
-import { Tag } from 'interfaces/tag';
-import { Format } from 'lib/date';
+import { Tag, Format } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

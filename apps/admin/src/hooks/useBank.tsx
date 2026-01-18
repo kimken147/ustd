@@ -1,6 +1,6 @@
 import { SelectProps } from "@pankod/refine-antd";
 import { useList } from "@pankod/refine-core";
-import { Bank } from "interfaces/bank";
+import { Bank } from "@morgan-ustd/shared";
 
 const useBank = () => {
     const queryObserverResult = useList<Bank>({

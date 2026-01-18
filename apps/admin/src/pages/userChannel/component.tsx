@@ -2,7 +2,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { Badge, Popover, Space, TextField } from '@pankod/refine-antd';
 import useChannelStatus from 'hooks/useChannelStatus';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { UserChannel } from 'interfaces/userChannel';
+import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

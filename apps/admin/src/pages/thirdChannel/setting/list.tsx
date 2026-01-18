@@ -17,13 +17,12 @@ import ContentHeader from 'components/contentHeader';
 import useSelector from 'hooks/useSelector';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { Channel } from 'interfaces/channel';
+import { Channel, Gray } from '@morgan-ustd/shared';
 import {
   MerchantThirdChannel,
   ThirdChannelsList,
 } from 'interfaces/merchantThirdChannel';
 import { ThirdChannel } from 'interfaces/thirdChannel';
-import { Gray } from 'lib/color';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

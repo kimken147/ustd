@@ -1,4 +1,4 @@
-import { UserChannelStatus, UserChannelType } from "interfaces/userChannel";
+import { UserChannelStatus, UserChannelType } from "@morgan-ustd/shared";
 
 export const getChannelTypeText = (type: UserChannelType) => {
     if (type === UserChannelType.收出款) return "收出款";

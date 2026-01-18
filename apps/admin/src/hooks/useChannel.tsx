@@ -1,6 +1,6 @@
 import { SelectProps, Select as AntdSelect } from "@pankod/refine-antd";
 import { useList } from "@pankod/refine-core";
-import { Channel } from "interfaces/channel";
+import { Channel } from "@morgan-ustd/shared";
 
 const useChannel = () => {
     const queryObserverResult = useList<Channel>({

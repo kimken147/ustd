@@ -5,7 +5,7 @@ export * from './antd';
 export * from './bank';
 
 // Channel types - primary source for channel-related interfaces
-export {
+export type {
     Channel,
     ChannelGroup,
     DepositAccountFields,
@@ -13,7 +13,7 @@ export {
 } from './channel';
 
 // ChannelAmounts types (use ChannelAmount* prefix to avoid conflicts)
-export { ChannelAmount } from './channelAmounts';
+export type { ChannelAmount } from './channelAmounts';
 export type { DepositAccountFields as ChannelAmountDepositAccountFields } from './channelAmounts';
 export type { Fields as ChannelAmountFields } from './channelAmounts';
 
@@ -24,7 +24,7 @@ export type { Fields as ChannelAmountFields } from './channelAmounts';
 export * from './tag';
 
 // Merchant types
-export {
+export type {
     Provider as MerchantProvider,
     Merchant,
     UserChannel as MerchantUserChannel,
@@ -37,7 +37,7 @@ export {
 } from './merchant';
 
 // MerchantWallet types (wallet history)
-export {
+export type {
     MerchantWallet as MerchantWalletHistory,
     User as MerchantWalletUser,
     Operator as MerchantWalletOperator,
@@ -46,7 +46,7 @@ export {
 } from './merchantWallet';
 
 // Transaction types
-export {
+export type {
     ITransactionRes,
     Transaction,
     Merchant as TransactionMerchant,
@@ -60,12 +60,11 @@ export {
     Thirdchannel,
     FromChannelAccount,
     ToChannelAccount,
-    TransactionType,
-    TransactionSubType,
 } from './transaction';
+export { TransactionType, TransactionSubType } from './transaction';
 
 // User types
-export {
+export type {
     User,
     WhitelistedIp,
     UserChannel,
@@ -74,7 +73,7 @@ export {
 } from './user';
 
 // UserChannel types (provider user channel)
-export {
+export type {
     BaseRecord,
     Agent,
     UserOfChannel,
@@ -84,17 +83,16 @@ export {
     Links,
     Meta,
     IUserChannelRes,
-    UserChannelType,
-    UserChannelStatus,
     Channel as UserChannelChannel,
     ChannelGroup as UserChannelGroup,
     DepositAccountFields as UserChannelDepositAccountFields,
     Fields as UserChannelFields,
     IUserChannelQuery,
 } from './userChannel';
+export { UserChannelType, UserChannelStatus } from './userChannel';
 
 // Withdraw types
-export {
+export type {
     Withdraw,
     Provider as WithdrawProvider,
     User as WithdrawUser,

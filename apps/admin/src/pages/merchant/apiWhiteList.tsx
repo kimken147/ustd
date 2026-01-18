@@ -13,7 +13,7 @@ import {
 import ContentHeader from 'components/contentHeader';
 import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { User, WhitelistedIp } from 'interfaces/user';
+import { User, WhitelistedIp } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

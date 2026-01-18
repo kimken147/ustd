@@ -1,5 +1,5 @@
 import { InternalTransfer } from "interfaces/internalTransfer";
-import { Withdraw } from "interfaces/withdraw";
+import { Withdraw } from "@morgan-ustd/shared";
 
 export const getReceiptUrl = (record: Withdraw | InternalTransfer) => {
     const url =

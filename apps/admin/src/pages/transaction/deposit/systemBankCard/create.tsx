@@ -17,8 +17,7 @@ import {
 import { useCreate } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import useSelector from 'hooks/useSelector';
-import { Bank } from 'interfaces/bank';
-import { User } from 'interfaces/user';
+import { Bank, User } from '@morgan-ustd/shared';
 import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

@@ -17,7 +17,7 @@ import ContentHeader from "components/contentHeader";
 import useTable from "hooks/useTable";
 import useUpdateModal from "hooks/useUpdateModal";
 import { User, UserBankCard } from "interfaces/userBankCard";
-import { Format } from "lib/date";
+import { Format } from "@morgan-ustd/shared";
 import Enviroment from "lib/env";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
