@@ -1,3 +1,8 @@
+/**
+ * @deprecated 請使用 Refine 官方的 useTable + ListPageLayout
+ * 重構範例參考：src/pages/transaction/PayForAnother/
+ * 追蹤文件：docs/refactoring/useTable-migration.md
+ */
 import { MinusSquareOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { useForm } from '@refinedev/antd';
 import {

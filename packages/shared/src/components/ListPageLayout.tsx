@@ -1,0 +1,137 @@
+import React from 'react';
+import { Card, Form, Button, Table, Row, Col, Grid } from 'antd';
+import type { FormProps, TableProps, FormItemProps } from 'antd';
+import { useTranslate } from '@refinedev/core';
+
+export interface ListPageLayoutProps {
+  children: React.ReactNode;
+}
+
+export interface FilterProps {
+  formProps: FormProps;
+  children: React.ReactNode;
+  loading?: boolean;
+}
+
+export interface ListTableProps<T = any> extends TableProps<T> {
+  children?: React.ReactNode;
+}
+
+/**
+ * ListPageLayout - 列表頁面佈局元件
+ *
+ * 使用 Compound Components 模式，提供 Filter 和 Table 子元件
+ *
+ * @example
+ * ```tsx
+ * <ListPageLayout>
+ *   <ListPageLayout.Filter formProps={searchFormProps}>
+ *     <Col xs={24} md={6}>
+ *       <ListPageLayout.Filter.Item name="keyword" label="關鍵字">
+ *         <Input />
+ *       </ListPageLayout.Filter.Item>
+ *     </Col>
+ *   </ListPageLayout.Filter>
+ *   <ListPageLayout.Table {...tableProps} columns={columns} />
+ * </ListPageLayout>
+ * ```
+ */
+function ListPageLayout({ children }: ListPageLayoutProps) {
+  return <div className="list-page-layout">{children}</div>;
+}
+
+/**
+ * FilterItem - 篩選表單項目（封裝 Form.Item）
+ */
+function FilterItem(props: FormItemProps) {
+  return <Form.Item {...props} />;
+}
+
+/**
+ * Filter - 篩選表單區塊
+ */
+function Filter({ formProps, children, loading }: FilterProps) {
+  const t = useTranslate();
+  const [form] = Form.useForm();
+  const actualForm = formProps.form || form;
+
+  return (
+    <Card className="mb-4">
+      <Form {...formProps} form={actualForm} layout="vertical">
+        <Row gutter={[{ xs: 8, sm: 8, md: 16 }, 0]} align="middle">
+          {children}
+        </Row>
+        <Row gutter={[{ xs: 8, sm: 8, md: 16 }, 0]} align="middle">
+          <Col xs={24} md={6}>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Button
+                  type="primary"
+                  block
+                  htmlType="submit"
+                  loading={loading}
+                >
+                  {t('submit')}
+                </Button>
+              </Col>
+              <Col span={12}>
+                <Button
+                  block
+                  onClick={() => {
+                    actualForm.resetFields();
+                    actualForm.submit();
+                  }}
+                >
+                  {t('clear')}
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
+    </Card>
+  );
+}
+
+// 掛載 Item 子元件到 Filter
+Filter.Item = FilterItem;
+
+/**
+ * ListTable - 表格區塊（帶響應式滾動）
+ */
+function ListTable<T extends object = any>({
+  children,
+  ...tableProps
+}: ListTableProps<T>) {
+  const breakpoint = Grid.useBreakpoint();
+  const isSmallScreen = breakpoint.xs || breakpoint.sm || breakpoint.md;
+
+  return (
+    <div
+      style={{
+        overflowX: 'auto',
+        maxWidth: isSmallScreen ? 'calc(100vw - 24px)' : 'auto',
+      }}
+    >
+      <Table<T>
+        size="small"
+        rowKey="id"
+        scroll={{ x: 'max-content' }}
+        {...tableProps}
+      >
+        {children}
+      </Table>
+    </div>
+  );
+}
+
+// 掛載子元件
+ListPageLayout.Filter = Filter;
+ListPageLayout.Table = ListTable;
+
+// 匯出類型
+export type { FilterProps as ListPageLayoutFilterProps };
+export type { ListTableProps as ListPageLayoutTableProps };
+
+export { ListPageLayout };
+export default ListPageLayout;
