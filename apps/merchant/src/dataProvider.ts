@@ -24,7 +24,6 @@ axiosInstance.interceptors.request.use(
 axiosInstance.defaults.headers.get.accept = "application/json, text/plain, */*";
 axiosInstance.defaults.headers.get["content-type"] = "application/json;charset=UTF-8";
 axiosInstance.defaults.headers.post.accept = "application/json, text/plain, */*";
-axiosInstance.defaults.headers.post["content-type"] = "application/json;charset=UTF-8";
 axiosInstance.defaults.headers.put.accept = "application/json, text/plain, */*";
 axiosInstance.defaults.headers.put["content-type"] = "application/json;charset=UTF-8";
 axiosInstance.defaults.headers.put.accept = "application/json, text/plain, */*";
@@ -69,30 +68,44 @@ const mapOperator = (operator: CrudOperators) => {
 };
 
 const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider => ({
-    create: async ({ resource, variables }) => {
+    create: async ({ resource, variables, meta }) => {
         const url = `${apiUrl}/${resource}`;
+        const headers = meta?.headers ?? {};
+        if (!headers["Content-Type"]) {
+            headers["Content-Type"] = "application/json;charset=UTF-8";
+        }
 
-        const { data } = await httpClient.post<IRes>(url, variables);
+        const { data } = await httpClient.post<IRes>(url, variables, {
+            headers,
+        });
 
         return {
             data: data.data ?? data,
         };
     },
-    getList: async ({ resource, hasPagination, pagination, filters, sort }) => {
-        const url = `${apiUrl}/${resource}`;
-        const query =
-            hasPagination || pagination?.current
-                ? {
-                      page: pagination?.current,
-                  }
-                : {
-                      no_paginate: 1,
-                  };
+    getList: async ({ resource, pagination, filters, sorters, meta }) => {
+        if (meta?.url?.includes("undefined")) {
+            return {
+                data: [],
+                total: 0,
+            };
+        }
+        const url = meta?.url ? meta?.url : `${apiUrl}/${resource}`;
+        const hasPagination = pagination?.mode !== "off";
+        const paginationConfig = pagination as { current?: number; pageSize?: number } | undefined;
+        const query = hasPagination
+            ? {
+                  page: paginationConfig?.current,
+                  per_page: paginationConfig?.pageSize ?? 20,
+              }
+            : {
+                  no_paginate: 1,
+              };
         const queryFilters = generateFilter(filters);
         const { data } = await httpClient.get<IRes>(`${url}?${stringify(query)}&${stringify(queryFilters)}`);
 
         return {
-            data: data.data,
+            data: data.data ?? data,
             total: hasPagination ? data.meta.total : 0,
             meta: data.meta,
         };
@@ -100,7 +113,7 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
     getOne: async ({ resource, id }) => {
         const url = `${apiUrl}/${resource}/${id}`;
 
-        const { data } = await httpClient.get(url);
+        const { data } = await httpClient.get<IRes>(url);
 
         return {
             data: data.data,
@@ -109,34 +122,29 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
     deleteOne: async ({ resource, id, variables }) => {
         const url = `${apiUrl}/${resource}/${id}`;
 
-        const { data } = await httpClient.delete(url, {
+        const { data } = await httpClient.delete<IRes>(url, {
             data: variables,
         });
 
         return {
-            data,
+            data: data.data,
         };
     },
     update: async ({ resource, id, variables }) => {
         const url = `${apiUrl}/${resource}/${id}`;
 
-        const { data } = await httpClient.put(url, variables, {
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "content-type": "application/json;charset=UTF-8",
-            },
-        });
+        const { data } = await httpClient.put(url, variables);
 
         return {
             data,
         };
     },
     getApiUrl: () => apiUrl,
-    custom: async ({ url, method, filters, sort, payload, query, headers }) => {
+    custom: async ({ url, method, filters, sorters, payload, query, headers }) => {
         let requestUrl = `${url}?`;
 
-        if (sort) {
-            const generatedSort = generateSort(sort);
+        if (sorters) {
+            const generatedSort = generateSort(sorters);
             if (generatedSort) {
                 const { _sort, _order } = generatedSort;
                 const sortQuery = {
@@ -160,7 +168,7 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
             httpClient.defaults.headers = {
                 ...httpClient.defaults.headers,
                 ...headers,
-            };
+            } as typeof httpClient.defaults.headers;
         }
 
         let axiosResponse;

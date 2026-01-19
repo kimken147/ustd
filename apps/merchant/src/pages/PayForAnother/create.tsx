@@ -11,7 +11,8 @@ import {
     message,
 } from "antd";
 import { Create, useForm } from "@refinedev/antd";
-import { useCreate, useGetIdentity, useNavigation, useNotification, useTranslate } from "@refinedev/core";
+import { useCreate, useGetIdentity, useNotification, useTranslate } from "@refinedev/core";
+import { useNavigate } from "react-router";
 import useSelector from "hooks/useSelector";
 import useUpdateModal from "hooks/useUpdateModal";
 import { SelectOptions, Bank } from "@morgan-ustd/shared";
@@ -24,7 +25,8 @@ const PayForAnotherCreate: FC = () => {
     const translate = useTranslate();
     const title = translate("withdraw.buttons.createPayment");
     const { data: profile } = useGetIdentity<Profile>();
-    const { goBack } = useNavigation();
+    const navigate = useNavigate();
+    const goBack = () => navigate(-1);
     const { form } = useForm<any, any, { lists: any[] }>();
     const { Select: BankSelect } = useSelector<Bank>({
         resource: "banks",

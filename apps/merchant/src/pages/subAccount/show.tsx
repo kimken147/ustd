@@ -1,7 +1,7 @@
 import { Button, Descriptions, Input, Space, Spin, Switch } from "antd";
 import { DateField, Show, TextField } from "@refinedev/antd";
 import { useApiUrl, useShow, useTranslate } from "@refinedev/core";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import EditableForm from "components/EditableFormItem";
 import useUpdateModal from "hooks/useUpdateModal";
 import { SubAccount } from "interfaces/subAccount";
@@ -14,8 +14,8 @@ const SubAccountShow: FC = () => {
     const t = useTranslate();
     const navigate = useNavigate();
     const { state } = useLocation();
-    const { queryResult } = useShow<SubAccount>();
-    const { data, isLoading } = queryResult;
+    const { query } = useShow<SubAccount>();
+    const { data, isLoading } = query;
     const record = {
         ...(state as SubAccount),
         ...data?.data,

@@ -1,7 +1,7 @@
 import { Descriptions, Divider } from "antd";
 import { DateField, RefreshButton, Show, TextField } from "@refinedev/antd";
 import { IResourceComponentsProps, useShow } from "@refinedev/core";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import useEnableStatusSelect from "hooks/useEnableStatusSwitch";
 import { Member } from "interfaces/member";
 import { Format } from "@morgan-ustd/shared";
@@ -11,8 +11,8 @@ import { Helmet } from "react-helmet";
 const MemberShow: FC<IResourceComponentsProps<Member>> = () => {
     const { state } = useLocation();
     const { Switch } = useEnableStatusSelect();
-    const { queryResult } = useShow<Member>();
-    const { data, isLoading } = queryResult;
+    const { query } = useShow<Member>();
+    const { data, isLoading } = query;
     const record = { ...(state as Member), ...data?.data };
     return (
         <>

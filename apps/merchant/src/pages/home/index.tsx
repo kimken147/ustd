@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { Show, TextField, useForm, useModal } from "@refinedev/antd";
 import { useApiUrl, useCustom, useGetIdentity, useLogout, useTranslate } from "@refinedev/core";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { axiosInstance } from "@refinedev/simple-rest";
 import useUpdateModal from "hooks/useUpdateModal";
 import { UserChannel } from "interfaces/user";
@@ -91,17 +91,18 @@ const HomePage: FC = () => {
     });
     const [secret, setSecret] = useState("");
     const { modalProps: oneTimePasswordModalProps, show, close } = useModal();
-    const { data: secretKey, refetch: refetchSecretKey } = useCustom<{ secret_key: string }>({
+    const { result: secretKey, query: secretKeyQuery } = useCustom<{ secret_key: string }>({
         url: `${apiUrl}/secret-key?one_time_password=null`,
         method: "get",
         queryOptions: {
             enabled: false,
         },
     });
+    const refetchSecretKey = secretKeyQuery.refetch;
     const user = {
         ...(state as Profile),
         ...data,
-        secret: secretKey?.data.secret_key || secret,
+        secret: secretKey?.data?.secret_key || secret,
     };
     if (isLoading) return null;
     const isSub = user.role === 5;

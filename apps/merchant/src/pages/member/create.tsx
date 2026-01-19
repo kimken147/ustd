@@ -2,7 +2,7 @@ import { SaveOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Form, Input, Row, Spin, Typography } from "antd";
 import { Create, useForm } from "@refinedev/antd";
 import { useCreate, useList } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ChannelGroup } from "@morgan-ustd/shared";
 import { Member } from "interfaces/member";
 import { FC } from "react";
@@ -11,9 +11,10 @@ import { Helmet } from "react-helmet";
 const MemberCreate: FC = () => {
     const { form } = useForm();
     const { mutateAsync: create } = useCreate<Member>();
-    const { isLoading } = useList<ChannelGroup>({
+    const { query } = useList<ChannelGroup>({
         resource: "channel-groups",
     });
+    const isLoading = query.isLoading;
     const navigate = useNavigate();
     if (isLoading) return <Spin />;
 

@@ -1,7 +1,8 @@
 import { SaveOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import { Create, useForm } from "@refinedev/antd";
-import { useCreate, useNavigation, useTranslate } from "@refinedev/core";
+import { useCreate, useTranslate } from "@refinedev/core";
+import { useNavigate } from "react-router";
 import useSelector from "hooks/useSelector";
 import { Bank } from "@morgan-ustd/shared";
 import { FC } from "react";
@@ -10,7 +11,8 @@ import { Helmet } from "react-helmet";
 const BankCardCreate: FC = () => {
     const t = useTranslate();
     const title = t("bankCard.buttons.create");
-    const { goBack } = useNavigation();
+    const navigate = useNavigate();
+    const goBack = () => navigate(-1);
     const { form } = useForm();
     const { mutateAsync: create } = useCreate();
     const { Select: BankSelect } = useSelector<Bank>({

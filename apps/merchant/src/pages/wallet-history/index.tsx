@@ -11,7 +11,8 @@ import {
 } from "antd";
 import type { TableColumnProps } from "antd";
 import { DateField, ExportButton, List, TextField } from "@refinedev/antd";
-import { Option, useApiUrl, useGetLocale, useTranslate } from "@refinedev/core";
+import { useApiUrl, useGetLocale, useTranslate } from "@refinedev/core";
+import { SelectOption } from "@morgan-ustd/shared";
 import { getToken } from "authProvider";
 import CustomDatePicker from "components/customDatePicker";
 import { generateFilter } from "dataProvider";
@@ -85,7 +86,7 @@ const WalletHistoryList: FC = () => {
                 children: (
                     <Select
                         mode="multiple"
-                        options={Object.values(Status).map<Option>((value) => ({
+                        options={Object.values(Status).map<SelectOption>((value) => ({
                             label: t(`walletHistory.status.${value}`),
                             value: value.toString(),
                         }))}

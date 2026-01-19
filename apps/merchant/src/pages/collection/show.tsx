@@ -9,11 +9,11 @@ import { Helmet } from "react-helmet";
 const CollectionShow: FC = () => {
     const t = useTranslate();
     const title = t("collection.titles.info");
-    const { queryResult } = useShow<Transaction>();
-    if (!queryResult.data) return <Spin />;
+    const { query } = useShow<Transaction>();
+    if (!query.data) return <Spin />;
     const {
         data: { data },
-    } = queryResult;
+    } = query;
 
     const columns: TableColumnProps<MerchantFee>[] = [
         {

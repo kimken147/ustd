@@ -1,7 +1,7 @@
 import { Form, Input } from "antd";
 import { Create, SaveButton, useForm } from "@refinedev/antd";
 import { useCreate, useNavigation, useTranslate } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { SubAccount } from "interfaces/subAccount";
 import { FC } from "react";
 import { Helmet } from "react-helmet";

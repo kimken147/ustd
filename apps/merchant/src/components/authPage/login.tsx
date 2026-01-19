@@ -7,7 +7,8 @@ const LoginPage: FC = () => {
     const [form] = Form.useForm<LoginFormTypes>();
     const apiUrl = useApiUrl();
     const { mutate: login, isPending: isPendingLogin } = useLogin();
-    const { mutateAsync, isPending: isPreLoginLoading } = useCustomMutation<IPreLoginRes>();
+    const { mutateAsync, mutation: preLoginMutation } = useCustomMutation<IPreLoginRes>();
+    const isPreLoginLoading = preLoginMutation.isPending;
     const isLoading = isPendingLogin || isPreLoginLoading;
     const [isGoogleAuthOpen, setGoogleAuth] = useState<boolean | null>(null);
     return (

@@ -1,5 +1,5 @@
-import { Form, Modal, FormItemProps, FormProps } from "antd";
-import type { ModalFuncProps } from "antd";
+import { Form as AntdForm, Modal } from "antd";
+import type { FormItemProps, FormProps, ModalFuncProps } from "antd";
 import { useForm, useModal } from "@refinedev/antd";
 import {
     BaseRecord,
@@ -7,7 +7,7 @@ import {
     useCreate,
     useCustomMutation,
     useDelete,
-    useResource,
+    useResourceParams,
     useTranslate,
     useUpdate,
 } from "@refinedev/core";
@@ -51,10 +51,11 @@ type Config = {
 
 function useUpdateModal<TData extends BaseRecord>(props?: Props) {
     const t = useTranslate();
-    const { resource: resourceInfo } = useResource();
-    const resourceName = resourceInfo?.name ?? "";
+    const { resource } = useResourceParams();
+    const resourceName = resource?.name ?? "";
     const { mutateAsync: customMutate } = useCustomMutation();
-    const { mutate, mutateAsync, isPending, ...others } = useUpdate<TData>();
+    const { mutate, mutateAsync, mutation, ...others } = useUpdate<TData>();
+    const isPending = mutation.isPending;
     const { mutate: mutateDeleting } = useDelete();
     const { mutateAsync: create } = useCreate();
     const { form } = useForm();
@@ -125,21 +126,21 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
             okText: t("submit"),
             cancelText: t("cancel"),
             children: (
-                <Form form={form} layout="vertical">
+                <AntdForm form={form} layout="vertical">
                     {props?.formItems
                         .filter((formItem) => {
                             if (!config?.filterFormItems?.length) return true;
                             return config?.filterFormItems.includes(formItem.name as any);
                         })
                         .map((formItem, key) => (
-                            <Form.Item
+                            <AntdForm.Item
                                 key={`${formItem.name}-${key}`}
                                 {...formItem}
                                 className={`w-full ${formItem.className || ""}`}
-                            ></Form.Item>
+                            ></AntdForm.Item>
                         ))}
                     {config?.children}
-                </Form>
+                </AntdForm>
             ),
             onOk:
                 props?.onOk ??
@@ -172,29 +173,29 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
     };
 
     const FormComponent = (props: PropsWithChildren<FormProps>) => {
-        return <Form form={form} initialValues={config?.initialValues} {...props}></Form>;
+        return <AntdForm form={form} initialValues={config?.initialValues} {...props}></AntdForm>;
     };
 
-    FormComponent.Item = Form.Item;
+    FormComponent.Item = AntdForm.Item;
 
     function UpdateModal({ defaultValue }: UpdateModalProps) {
         return (
             <Modal {...modalProps}>
-                <Form form={form} layout="vertical" initialValues={defaultValue}>
+                <AntdForm form={form} layout="vertical" initialValues={defaultValue}>
                     {props?.formItems
                         .filter((formItem) => {
                             if (!config?.filterFormItems?.length) return true;
                             return config?.filterFormItems.includes(formItem.name as any);
                         })
                         .map((formItem, key) => (
-                            <Form.Item
+                            <AntdForm.Item
                                 key={`${formItem.name}-${key}`}
                                 {...formItem}
                                 className={`w-full ${formItem.className || ""}`}
-                            ></Form.Item>
+                            ></AntdForm.Item>
                         ))}
                     {config?.children}
-                </Form>
+                </AntdForm>
             </Modal>
         );
     }
@@ -273,7 +274,7 @@ function useUpdateModal<TData extends BaseRecord>(props?: Props) {
                                 type: "success",
                             },
                             errorNotification: {
-                                message: t("errros.tryLater"),
+                                message: t("errors.tryLater"),
                                 type: "error",
                             },
                             values: {

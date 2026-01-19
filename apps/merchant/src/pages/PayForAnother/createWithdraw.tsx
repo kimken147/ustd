@@ -12,7 +12,8 @@ import {
     Typography,
 } from "antd";
 import { Create, useForm } from "@refinedev/antd";
-import { useCreate, useNavigation, useTranslate } from "@refinedev/core";
+import { useCreate, useTranslate } from "@refinedev/core";
+import { useNavigate } from "react-router";
 import ContentHeader from "components/contentHeader";
 import useProfile from "hooks/useProfile";
 import useSelector from "hooks/useSelector";
@@ -23,7 +24,8 @@ import { Helmet } from "react-helmet";
 const WithdrawCreate: FC = () => {
     const t = useTranslate();
     const title = t("withdraw.create.titles.withdraw");
-    const { goBack } = useNavigation();
+    const navigate = useNavigate();
+    const goBack = () => navigate(-1);
     const { data: profile } = useProfile();
     const { form } = useForm();
     const { Select: BankCardSelect } = useSelector<Bank>({
@@ -36,7 +38,8 @@ const WithdrawCreate: FC = () => {
             },
         ],
     });
-    const { mutateAsync: create, isPending } = useCreate();
+    const { mutateAsync: create, mutation } = useCreate();
+    const isPending = mutation.isPending;
     if (!profile) return <Spin />;
     const colSpan = profile.withdraw_google2fa_enable ? 8 : 12;
     return (
