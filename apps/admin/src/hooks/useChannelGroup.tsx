@@ -4,20 +4,20 @@ import { useList } from "@refinedev/core";
 import { UserChannelGroup as ChannelGroup } from "@morgan-ustd/shared";
 
 const useChannelGroup = () => {
-    const queryObserverResult = useList<ChannelGroup>({
+    const { result, query } = useList<ChannelGroup>({
         resource: "channel-groups",
         pagination: {
             mode: "off",
         },
     });
 
-    const { data, isLoading, isError, isFetching } = queryObserverResult;
+    const { isLoading, isError, isFetching } = query;
 
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((record) => ({
+        options: result.data?.map((record: ChannelGroup) => ({
             value: record.id,
             label: record.name,
         })),
@@ -28,7 +28,7 @@ const useChannelGroup = () => {
     };
 
     return {
-        data: data?.data,
+        data: result.data,
         isLoading,
         isError,
         isFetching,

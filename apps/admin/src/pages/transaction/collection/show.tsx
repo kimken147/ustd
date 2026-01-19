@@ -19,13 +19,13 @@ import { Helmet } from "react-helmet";
 
 const CollectionShow: FC = () => {
     const isPaufen = Enviroment.isPaufen;
-    const { queryResult } = useShow<Transaction>();
+    const { query } = useShow<Transaction>();
     const { mutateAsync } = useUpdate();
-    if (!queryResult.data) return <Spin />;
+    if (!query.data) return <Spin />;
     const {
         data: { data },
         refetch,
-    } = queryResult;
+    } = query;
 
     const columns: TableColumnProps<MerchantFee>[] = [
         {

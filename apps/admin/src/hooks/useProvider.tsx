@@ -9,20 +9,20 @@ type Props = {
 
 const useProvider = (props?: Props) => {
     const key = props?.valueField || "id";
-    const queryObserverResult = useList<Provider>({
+    const { result, query } = useList<Provider>({
         resource: "providers",
         pagination: {
             mode: "off",
         },
     });
 
-    const { data, isLoading, isError, isFetching, refetch } = queryObserverResult;
+    const { isLoading, isError, isFetching, refetch } = query;
 
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((provider) => ({
+        options: result.data?.map((provider: Provider) => ({
             value: key === "id" ? provider.id : provider.username,
             label: provider.name,
             key: provider.id,
@@ -34,7 +34,7 @@ const useProvider = (props?: Props) => {
     };
 
     return {
-        data: data?.data,
+        data: result.data,
         isLoading,
         isError,
         isFetching,

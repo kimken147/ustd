@@ -303,7 +303,7 @@ const CollectionList: FC = () => {
     },
   });
 
-  const { data, refetch: statisticsRefetch } = useCustom<Stat>({
+  const { result: customResult, query: customQuery } = useCustom<Stat>({
     url: `${apiUrl}/transactions/statistics`,
     config: {
       filters: [
@@ -446,19 +446,19 @@ const CollectionList: FC = () => {
       },
     });
 
-  const { data: systemSettings } = useList<SystemSetting>({
+  const { result: systemSettingsResult } = useList<SystemSetting>({
     resource: 'feature-toggles',
-    config: {
-      hasPagination: false,
-    },
+    pagination: { mode: "off" },
   });
+  const systemSettings = systemSettingsResult;
 
   const canSeeReward =
     systemSettings?.data.find(item => item.id === 27)?.enabled ?? false;
 
   const { mutateAsync: customMutate } = useCustomMutation();
 
-  const stat = data?.data;
+  const stat = customResult?.data;
+  const statisticsRefetch = customQuery.refetch;
 
   const columns: TableColumnProps<Transaction>[] = [
     {
@@ -723,7 +723,7 @@ const CollectionList: FC = () => {
           <ShowButton
             recordItemId={_record.provider?.id}
             icon={null}
-            resourceNameOrRouteName="providers"
+            resource="providers"
           >
             {value}
           </ShowButton>
@@ -1042,7 +1042,7 @@ const CollectionList: FC = () => {
         return (
           <ShowButton
             recordItemId={record.merchant.id}
-            resourceNameOrRouteName="merchants"
+            resource="merchants"
             icon={false}
           >
             {record.merchant.name}
@@ -1175,7 +1175,7 @@ const CollectionList: FC = () => {
               {t('buttons.testOrder')}
             </CreateButton>
             {/* {canSeeReward && (
-                            <ListButton resourceNameOrRouteName="transaction-rewards">交易奖励</ListButton>
+                            <ListButton resource="transaction-rewards">交易奖励</ListButton>
                         )} */}
             <Button
               icon={<ExportOutlined />}

@@ -3,28 +3,26 @@ import { useList } from "@refinedev/core";
 import { Bank } from "@morgan-ustd/shared";
 
 const useBank = () => {
-    const queryObserverResult = useList<Bank>({
+    const { result, query } = useList<Bank>({
         resource: "banks",
         pagination: {
             mode: "off",
         },
     });
 
-    const { data, ...others } = queryObserverResult;
-
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((provider) => ({
+        options: result.data?.map((provider: Bank) => ({
             value: provider.id,
             label: provider.name,
         })),
     };
 
     return {
-        ...others,
-        data: data?.data,
+        ...query,
+        data: result.data,
         selectProps,
     };
 };

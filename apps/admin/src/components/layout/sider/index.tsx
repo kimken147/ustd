@@ -15,19 +15,26 @@ import {
 } from '@ant-design/icons';
 import {
   useLogout,
-  useTitle,
   CanAccess,
-  ITreeMenu,
   useIsExistAuthentication,
-  useRouterContext,
   useMenu,
-  useRefineContext,
 } from '@refinedev/core';
+import { Link } from 'react-router';
 
 import { Title as DefaultTitle } from '../title';
 
 import { drawerButtonStyles } from './styles';
 import { useTranslation } from 'react-i18next';
+
+// Define ITreeMenu type for compatibility
+type ITreeMenu = {
+  icon?: React.ReactNode;
+  label?: string;
+  route?: string;
+  name: string;
+  children: ITreeMenu[];
+  parentName?: string;
+};
 const { SubMenu } = Menu;
 
 type SiderRenderProps = {
@@ -46,18 +53,18 @@ export const Sider: React.FC<DefaultSiderProps> = ({ render }) => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const isExistAuthentication = useIsExistAuthentication();
-  const { Link } = useRouterContext();
   const { mutate: mutateLogout } = useLogout();
-  const Title = useTitle();
   // const translate = useTranslate();
   const { menuItems, selectedKey, defaultOpenKeys } = useMenu();
   const breakpoint = Grid.useBreakpoint();
-  const { hasDashboard } = useRefineContext();
+  // hasDashboard is removed in v5, set to false
+  const hasDashboard = false;
 
   const isMobile =
     typeof breakpoint.lg === 'undefined' ? false : !breakpoint.lg;
 
-  const RenderToTitle = Title ?? DefaultTitle;
+  // useTitle is removed in v5, use DefaultTitle directly
+  const RenderToTitle = DefaultTitle;
 
   const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
     return tree.map((item: ITreeMenu) => {
@@ -101,7 +108,7 @@ export const Sider: React.FC<DefaultSiderProps> = ({ render }) => {
             }}
             icon={icon ?? (isRoute && <UnorderedListOutlined />)}
           >
-            <Link to={route}>{label}</Link>
+            <Link to={route || '/'}>{label}</Link>
             {!collapsed && isSelected && (
               <div className="ant-menu-tree-arrow" />
             )}

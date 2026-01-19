@@ -11,7 +11,7 @@ type Props<TData> = {
 };
 
 function useSelector<TData extends BaseRecord>(props?: Props<TData>) {
-    const queryObserverResult = useList<TData>({
+    const { result, query } = useList<TData>({
         resource: props?.resource || "",
         pagination: {
             mode: "off",
@@ -19,25 +19,23 @@ function useSelector<TData extends BaseRecord>(props?: Props<TData>) {
         filters: props?.filters,
     });
 
-    const { data, ...others } = queryObserverResult;
-
     const selectProps: SelectProps = {
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((record) => ({
+        options: result.data?.map((record: TData) => ({
             value: record[props?.valueField || "id"],
             label: props?.labelRender?.(record) ?? record[props?.labelField || "name"],
         })),
     };
 
-    const Select = (props: SelectProps) => {
-        return <AntdSelect {...selectProps} {...props} />;
+    const Select = (selectComponentProps: SelectProps) => {
+        return <AntdSelect {...selectProps} {...selectComponentProps} />;
     };
 
     return {
-        ...others,
+        ...query,
         Select,
-        data: data?.data,
+        data: result.data,
         selectProps,
     };
 }

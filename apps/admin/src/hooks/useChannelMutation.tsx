@@ -3,7 +3,8 @@ import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 const useUserChannelMuation = () => {
     const apiUrl = useApiUrl();
-    const { mutate, isPending: isLoading, isSuccess, isError } = useCustomMutation<UserChannel>();
+    const { mutate, mutation } = useCustomMutation<UserChannel>();
+    const { isPending: isLoading, isSuccess, isError } = mutation;
 
     const mutateChannel = ({
         query,

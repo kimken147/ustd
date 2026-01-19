@@ -17,7 +17,7 @@ import {
   Typography,
 } from 'antd';
 import { useApiUrl, useNavigation, useNotification, useShow } from "@refinedev/core";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import useUpdateModal from "hooks/useUpdateModal";
 import { Withdraw } from "@morgan-ustd/shared";
 import { FC } from "react";
@@ -27,12 +27,12 @@ const ChildWithdrawCreate: FC = () => {
     const apiUrl = useApiUrl();
     const { id } = useParams();
     const { open } = useNotification();
-    const { queryResult } = useShow<Withdraw>({
+    const { query } = useShow<Withdraw>({
         resource: "withdraws",
         id,
     });
     const { list } = useNavigation();
-    const { data, isLoading } = queryResult;
+    const { data, isLoading } = query;
     const record = data?.data;
     const { form } = useForm();
     const { Modal } = useUpdateModal();

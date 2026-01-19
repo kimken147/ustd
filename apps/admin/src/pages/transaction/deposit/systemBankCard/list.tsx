@@ -384,7 +384,7 @@ const SystemBankCardList: FC = () => {
               name={'users'}
               initialValue={systemBankCards
                 ?.find(card => card.id === selectedKey)
-                ?.users.map(user => ({
+                ?.users.map((user: { id: number; name: string; share_descendants: boolean }) => ({
                   ...user,
                   agent_enable: user.share_descendants,
                 }))}

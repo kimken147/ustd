@@ -19,7 +19,7 @@ import {
   TableColumnProps,
 } from 'antd';
 import { useGetIdentity, useOne } from '@refinedev/core';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useUserWalletStatus from 'hooks/userUserWalletStatus';
@@ -46,7 +46,7 @@ const UserWalletHistoryList: FC = () => {
     lg: 4,
   };
 
-  const { data: user } = useOne<User>({
+  const { result: user } = useOne<User>({
     resource: 'users',
     id: userId || 0,
   });
@@ -203,7 +203,7 @@ const UserWalletHistoryList: FC = () => {
               <ShowButton
                 recordItemId={value?.id}
                 disabled={profile?.role !== 1}
-                resourceNameOrRouteName="sub-accounts"
+                resource="sub-accounts"
                 icon={null}
               >
                 {value?.username}
@@ -236,10 +236,10 @@ const UserWalletHistoryList: FC = () => {
             <ShowButton
               size="large"
               icon={null}
-              recordItemId={user?.data.id}
-              resourceNameOrRouteName="merchants"
+              recordItemId={user?.id}
+              resource="merchants"
             >
-              {user?.data.name}
+              {user?.name}
             </ShowButton>
             {' - '}
             <TextField

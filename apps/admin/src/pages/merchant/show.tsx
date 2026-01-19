@@ -35,7 +35,7 @@ import {
   NavLink,
   useLocation,
   useNavigate,
-} from 'react-router-dom';
+} from 'react-router';
 import EditableForm from 'components/EditableFormItem';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useUser from 'hooks/useUser';
@@ -352,8 +352,8 @@ const MerchantShow: FC<IResourceComponentsProps<Merchant>> = () => {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  const { queryResult } = useShow<Merchant>();
-  const { data, isLoading } = queryResult;
+  const { query } = useShow<Merchant>();
+  const { data, isLoading } = query;
   const record = {
     ...(state as Merchant),
     ...data?.data,

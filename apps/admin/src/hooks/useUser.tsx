@@ -22,7 +22,7 @@ function useUser({ role, agent_enable, valueField }: Props) {
             operator: "eq",
         },
     ];
-    const { data } = useList<User>({
+    const { result } = useList<User>({
         resource: "users",
         pagination: {
             mode: "off",
@@ -34,18 +34,18 @@ function useUser({ role, agent_enable, valueField }: Props) {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: data?.data.map((user) => ({
+        options: result.data?.map((user: User) => ({
             value: user[valueField || "id"],
             label: `${user.name}`,
         })),
     };
 
-    const Select = (props: SelectProps) => {
-        return <AntdSelect {...selectProps} {...props} />;
+    const Select = (selectComponentProps: SelectProps) => {
+        return <AntdSelect {...selectProps} {...selectComponentProps} />;
     };
 
     return {
-        users: data?.data,
+        users: result.data,
         Select,
     };
 }

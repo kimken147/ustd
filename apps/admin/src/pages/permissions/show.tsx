@@ -15,7 +15,7 @@ import {
   Switch,
 } from 'antd';
 import { useApiUrl, useShow } from '@refinedev/core';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import EditableForm from 'components/EditableFormItem';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -30,8 +30,8 @@ const SubAccountShow: FC = () => {
   const apiUrl = useApiUrl();
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { queryResult } = useShow<SubAccount>();
-  const { data, isLoading } = queryResult;
+  const { query } = useShow<SubAccount>();
+  const { data, isLoading } = query;
   const record = {
     ...(state as SubAccount),
     ...data?.data,

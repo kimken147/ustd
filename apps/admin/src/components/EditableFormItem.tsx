@@ -2,7 +2,7 @@ import { CheckOutlined, CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { Form, Modal, Space } from 'antd';
 import type { FormItemProps } from 'antd';
 import { useForm } from '@refinedev/antd';
-import { useResource, useUpdate } from '@refinedev/core';
+import { useResourceParams, useUpdate } from '@refinedev/core';
 import React, { FC, PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ type Props = Omit<FormItemProps, 'id'> & {
 
 const EditableForm: FC<PropsWithChildren<Props>> = ({
   children,
-  resource,
+  resource: resourceProp,
   id,
   initialValues,
   disabled = false,
@@ -25,7 +25,8 @@ const EditableForm: FC<PropsWithChildren<Props>> = ({
   const [isEditing, setIsEditing] = useState(false);
   const { formProps, form } = useForm();
   const { mutateAsync } = useUpdate();
-  const { resourceName } = useResource();
+  const { resource } = useResourceParams();
+  const resourceName = resourceProp || resource?.name;
   return (
     <Form {...formProps} initialValues={initialValues}>
       <Space align="center" className="w-full">
@@ -55,7 +56,7 @@ const EditableForm: FC<PropsWithChildren<Props>> = ({
                             ...form.getFieldsValue(),
                             id,
                           },
-                          resource: resource || resourceName,
+                          resource: resourceName,
                           successNotification: {
                             message: t('updateSuccess'),
                             type: 'success',

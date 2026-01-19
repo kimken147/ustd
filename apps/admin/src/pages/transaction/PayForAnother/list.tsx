@@ -75,7 +75,7 @@ import CustomDatePicker from 'components/customDatePicker';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import HiddenText from 'components/hiddenText';
 import Badge from 'components/badge';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import numeral from 'numeral';
 import queryString from 'query-string';
 import { generateFilter } from 'dataProvider';
@@ -1000,7 +1000,7 @@ const PayForAnotherList: FC = () => {
             <ShowButton
               icon={null}
               recordItemId={value?.id}
-              resourceNameOrRouteName={resource}
+              resource={resource}
             >
               {value?.name}
             </ShowButton>
@@ -1242,7 +1242,7 @@ const PayForAnotherList: FC = () => {
         title={t('types.payment')}
         headerButtons={() => (
           <>
-            <ListButton resourceNameOrRouteName="user-bank-cards">
+            <ListButton resource="user-bank-cards">
               {isPaufen
                 ? t('withdraw.merchantProviderBankList')
                 : t('withdraw.merchantBankList')}

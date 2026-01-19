@@ -78,12 +78,11 @@ const DepositList: FC = () => {
       return `${record.username}(${record.name})`;
     },
   });
-  const { data: systemSettings } = useList<SystemSetting>({
+  const { result: systemSettingsResult } = useList<SystemSetting>({
     resource: 'feature-toggles',
-    config: {
-      hasPagination: false,
-    },
+    pagination: { mode: "off" },
   });
+  const systemSettings = systemSettingsResult;
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
   const { form, Form, tableProps, tableOutterStyle, refetch } =
     useTable<Deposit>({
@@ -543,7 +542,7 @@ const DepositList: FC = () => {
             return (
               <ShowButton
                 icon={null}
-                resourceNameOrRouteName="providers"
+                resource="providers"
                 recordItemId={value.id}
               >
                 {value.name}
@@ -622,7 +621,7 @@ const DepositList: FC = () => {
                   <ShowButton
                     icon={null}
                     recordItemId={value?.id}
-                    resourceNameOrRouteName={
+                    resource={
                       value?.role !== 3 ? 'providers' : 'merchants'
                     }
                   >
@@ -715,11 +714,11 @@ const DepositList: FC = () => {
         headerButtons={
           <>
             {systemSettings?.data.find(item => item.id === 20)?.enabled ? (
-              <ListButton resourceNameOrRouteName="matching-deposit-rewards">
+              <ListButton resource="matching-deposit-rewards">
                 {t('buttons.quickChargeReward')}
               </ListButton>
             ) : null}
-            <ListButton resourceNameOrRouteName="system-bank-cards">
+            <ListButton resource="system-bank-cards">
               {t('buttons.generalDepositBankCards')}
             </ListButton>
           </>

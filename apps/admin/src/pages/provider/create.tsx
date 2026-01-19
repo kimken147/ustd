@@ -9,7 +9,7 @@ import {
   Row,
   Button,
 } from 'antd';
-import { useCreate, useNavigation, useResource } from "@refinedev/core";
+import { useCreate, useNavigation, useResourceParams } from "@refinedev/core";
 import { generateUsername } from "friendly-username-generator";
 import useProvider from "hooks/useProvider";
 import { FC } from "react";
@@ -29,7 +29,8 @@ const ProviderCreate: FC = (props) => {
     });
     const { refetch } = useProvider();
     const { mutateAsync } = useCreate<FormParams>();
-    const { resourceName } = useResource();
+    const { resource } = useResourceParams();
+    const resourceName = resource?.name;
     const { list } = useNavigation();
     return (
         <Create

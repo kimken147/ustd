@@ -36,8 +36,9 @@ const TransitionDemoCreate: FC = () => {
   const { form } = useForm();
   const [url, setUrl] = useState<string | null>(null);
   const [isUrlLoading] = useState(false);
-  const { mutateAsync: create, isPending: isSubmitLoading } =
+  const { mutateAsync: create, mutation: createMutation } =
     useCreate<DemoCreateRes>();
+  const isSubmitLoading = createMutation.isPending;
 
   const getRandomOrderNumber = () => {
     return `test${random(1000000000000, 1999999999999)}`;

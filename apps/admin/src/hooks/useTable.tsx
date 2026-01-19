@@ -16,7 +16,7 @@ import {
   GetListResponse,
   SuccessErrorNotification,
   useList,
-  useResource,
+  useResourceParams,
 } from '@refinedev/core';
 import { useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
@@ -41,7 +41,7 @@ type Props<TData = any> = {
 function useTable<TData extends BaseRecord = any, Meta = any>({
   formItems: items,
   columns,
-  resource,
+  resource: resourceProp,
   filters: outterFilters,
   hasPagination = true,
   queryOptions,
@@ -52,7 +52,8 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
   pagination: propsPagination,
 }: Props<TData>) {
   const [isCollapse, setIsCollapse] = useState(true);
-  const { resourceName } = useResource();
+  const { resource } = useResourceParams();
+  const resourceName = resourceProp || resource?.name;
   const breakpoint = Grid.useBreakpoint();
   const { form } = useForm();
   const { t } = useTranslation();
@@ -88,16 +89,18 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
     pageSizeOptions: [20, 50, 100, 500],
     ...propsPagination,
   });
-  const { data, isFetching, refetch, ...others } = useList<TData>({
-    resource: resource || resourceName,
+  const { result, query: listQuery } = useList<TData>({
+    resource: resourceName,
     pagination: hasPagination ? {
       current: pagination.current,
       pageSize: pagination.pageSize,
-    } : undefined,
+    } as any : { mode: "off" },
     filters,
     queryOptions,
     errorNotification: showError === false ? false : undefined,
   });
+  const { isFetching, refetch } = listQuery;
+  const data = result;
 
   const AntdForm = (props: FormProps) => {
     const formItems = items
@@ -234,7 +237,7 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
   };
 
   const $tableProps: TableProps<TData> = {
-    dataSource: data?.data,
+    dataSource: data?.data as TData[],
     pagination: hasPagination
       ? {
           ...pagination,
@@ -303,7 +306,7 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
     tableProps: $tableProps,
     filters,
     tableOutterStyle,
-    ...others,
+    isFetching,
   };
 }
 

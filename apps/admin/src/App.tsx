@@ -1,27 +1,20 @@
 import './index.sass';
-import { Refine } from '@refinedev/core';
-import type { ResourceProps } from '@refinedev/core';
+import { Refine, Authenticated } from '@refinedev/core';
 import {
   useNotificationProvider,
   ErrorComponent,
+  ThemedLayout,
+  ThemedTitle,
 } from '@refinedev/antd';
 import '@refinedev/antd/dist/reset.css';
-import routerProvider from '@refinedev/react-router-v6/legacy';
+import routerProvider from '@refinedev/react-router';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router';
 import { ConfigProvider, App as AntdApp } from 'antd';
-import {
-  Title,
-  Header,
-  Sider,
-  Footer,
-  Layout,
-  OffLayoutArea,
-} from 'components/layout';
 import { authProvider } from './authProvider';
 import AuthPage from 'components/authPage';
 import HomePage from 'pages/home';
 import {
   BarChartOutlined,
-  CreditCardOutlined,
   DeploymentUnitOutlined,
   FieldTimeOutlined,
   HomeOutlined,
@@ -69,26 +62,10 @@ import TransactionGroupList from 'pages/provider/transaction/list';
 import DepositGroupList from 'pages/provider/deposit/list';
 import { Helmet } from 'react-helmet';
 import { initDayjs } from '@morgan-ustd/shared';
-import TransactionMessageList from 'pages/transaction/message/list';
-import FundList from 'pages/transaction/fund/list';
-import FundCreate from 'pages/transaction/fund/create';
 import TransitionDemoCreate from 'pages/transaction/collection/create';
 import ThirdChannelList from 'pages/thirdChannel/list';
 import ThirdChannelSettingList from 'pages/thirdChannel/setting/list';
-import ProvidersList from 'pages/providers/list';
-import ProvidersCreate from 'pages/providers/create';
-import ProviderShow from 'pages/providers/show';
-import ProviderWhiteList from 'pages/providers/whiteList';
-import ProviderWalletList from 'pages/providers/wallet-history/list';
-import SystemBankCardList from 'pages/transaction/deposit/systemBankCard/list';
-import SystemBankCardsCreate from 'pages/transaction/deposit/systemBankCard/create';
-import SystemBankCardShow from 'pages/transaction/deposit/systemBankCard/show';
-import DepositList from 'pages/transaction/deposit/list';
-import DepositRewardList from 'pages/transaction/deposit/match-deposit-reward/list';
-import DepositRewardCreate from 'pages/transaction/deposit/match-deposit-reward/create';
-import ProviderUserWalletHistoryList from 'pages/providers/user-wallet-history/list';
 import BankList from 'pages/systemSetting/bank/list';
-import Env from 'lib/env';
 import TagList from 'pages/tag/list';
 import TagCreate from 'pages/tag/create';
 
@@ -109,369 +86,21 @@ initDayjs();
 
 function App() {
   const { t, i18n } = useTranslation();
-  const isPaufen = process.env.REACT_APP_IS_PAUFEN;
-  const region = Env.getVariable('REGION');
-  const temps: (ResourceProps | null)[] = [
-    {
-      name: 'home',
-      list: HomePage,
-      icon: <HomeOutlined />,
-      options: {
-        label: t('navigation.home'),
-      },
-    },
-    {
-      name: 'tags',
-      list: TagList,
-      icon: <TagOutlined />,
-      options: {
-        label: t('navigation.tags'),
-      },
-      create: TagCreate,
-    },
-    isPaufen
-      ? {
-          name: 'providers',
-          list: ProvidersList,
-          create: ProvidersCreate,
-          show: ProviderShow,
-          icon: <QrcodeOutlined />,
-          options: {
-            label: t('navigation.providerManagement'),
-          },
-        }
-      : null,
-    isPaufen
-      ? {
-          name: 'white-list',
-          list: ProviderWhiteList,
-          parentName: 'providers',
-          options: {
-            label: t('navigation.whiteList'),
-            hide: true,
-          },
-        }
-      : null,
-    isPaufen
-      ? {
-          name: 'wallet-histories',
-          list: ProviderWalletList,
-          options: {
-            label: t('navigation.providerBalanceAdjustment'),
-            hide: true,
-          },
-          parentName: 'providers',
-        }
-      : null,
-    isPaufen
-      ? {
-          name: 'user-wallet-history',
-          list: ProviderUserWalletHistoryList,
-          options: {
-            label: t('navigation.providerWalletHistory'),
-            hide: true,
-          },
-          parentName: 'providers',
-        }
-      : null,
-    {
-      name: 'merchants',
-      list: MerchantList,
-      icon: <ShopOutlined />,
-      options: {
-        label: t('navigation.merchantManagement'),
-      },
-      create: MerchantCreate,
-      show: MerchantShow,
-    },
-    {
-      name: 'white-list',
-      list: MerchantWhiteList,
-      options: {
-        label: t('navigation.whiteList'),
-        hide: true,
-      },
-      parentName: 'merchants',
-    },
-    {
-      name: 'api-white-list',
-      list: MerchantApiWhiteList,
-      options: {
-        label: t('navigation.apiWhiteList'),
-        hide: true,
-      },
-      parentName: 'merchants',
-    },
-    {
-      name: 'banned-list',
-      list: MerchantBannedList,
-      options: {
-        label: t('navigation.bannedList'),
-        hide: true,
-      },
-      parentName: 'merchants',
-    },
-    {
-      name: 'user-wallet-history',
-      list: UserWalletHistoryList,
-      options: {
-        label: t('navigation.merchantWalletHistory'),
-        hide: true,
-      },
-      parentName: 'merchants',
-    },
-    {
-      name: 'wallet-histories',
-      list: MerchantWalletList,
-      options: {
-        label: t('navigation.merchantBalanceAdjustment'),
-        hide: true,
-      },
-      parentName: 'merchants',
-    },
-    {
-      name: 'user-channel-accounts',
-      list: UserChannelAccountList,
-      icon: <WalletOutlined />,
-      options: {
-        label: t('navigation.paymentAccountManagement'),
-      },
-      show: UserChannelShow,
-      create: UserChannelCreate,
-    },
-    {
-      name: 'transaction',
-      icon: <SwapOutlined />,
-      options: {
-        label: t('navigation.transactionManagement'),
-      },
-    },
-    {
-      name: 'transactions',
-      options: {
-        label: t('navigation.collection'),
-      },
-      list: CollectionList,
-      show: CollectionShow,
-      create: TransitionDemoCreate,
-      parentName: 'transaction',
-    },
-    // isPaufen
-    //     ? {
-    //           name: "transaction-rewards",
-    //           list: TransactionRewardList,
-    //           create: TransactionRewardCreate,
-    //           options: {
-    //               label: "交易奖励",
-    //               hide: true,
-    //           },
-    //           parentName: "transactions",
-    //       }
-    //     : null,
-    {
-      name: 'withdraws',
-      options: {
-        label: t('navigation.payment'),
-      },
-      list: PayForAnotherList,
-      show: PayForAnotherShow,
-      parentName: 'transaction',
-    },
-    isPaufen
-      ? {
-          name: 'deposit',
-          list: DepositList,
-          options: {
-            label: t('navigation.providerDeposit'),
-          },
-          parentName: 'transaction',
-        }
-      : null,
-    isPaufen
-      ? {
-          name: 'system-bank-cards',
-          list: SystemBankCardList,
-          create: SystemBankCardsCreate,
-          icon: <CreditCardOutlined />,
-          show: SystemBankCardShow,
-          options: {
-            label: t('navigation.systemBankCard'),
-            hide: true,
-          },
-          parentName: 'deposit',
-        }
-      : null,
-    isPaufen
-      ? {
-          name: 'matching-deposit-rewards',
-          list: DepositRewardList,
-          create: DepositRewardCreate,
-          options: {
-            label: t('navigation.quickDepositReward'),
-            hide: true,
-          },
-          parentName: 'deposit',
-        }
-      : null,
-    region !== 'CN'
-      ? {
-          name: 'notifications',
-          options: {
-            label: t('navigation.sms'),
-          },
-          list: TransactionMessageList,
-          parentName: 'transaction',
-        }
-      : null,
-    region !== 'CN'
-      ? {
-          name: 'internal-transfers',
-          options: {
-            label: t('navigation.fundManagement'),
-          },
-          list: FundList,
-          create: FundCreate,
-          parentName: 'transaction',
-        }
-      : null,
-    {
-      name: 'child-withdraws',
-      options: {
-        label: t('navigation.childWithdrawSplit'),
-        hide: true,
-      },
-      show: ChildWithdrawCreate,
-    },
-    {
-      name: 'user-bank-cards',
-      options: {
-        label: t('navigation.merchantBankCardList'),
-        hide: true,
-      },
-      list: UserBankCardList,
-    },
-    {
-      name: 'online-ready-for-matching-users',
-      list: LiveList,
-      icon: <FieldTimeOutlined />,
-      options: {
-        label: t('navigation.liveStatus'),
-      },
-    },
-    {
-      name: 'statistics/v1',
-      list: FinanceStatisticPage,
-      icon: <BarChartOutlined />,
-      options: {
-        label: t('navigation.financeReport'),
-        route: 'finance-statistics',
-      },
-    },
-    isPaufen
-      ? null
-      : {
-          name: 'providers',
-          list: ProviderList,
-          create: ProviderCreate,
-          icon: <QrcodeOutlined />,
-          options: {
-            label: t('navigation.groupManagement'),
-          },
-        },
-    {
-      name: 'merchant-transaction-groups',
-      list: TransactionGroupList,
-      options: {
-        label: t('navigation.collectionLine'),
-        hide: true,
-      },
-      parentName: 'providers',
-    },
-    {
-      name: 'merchant-matching-deposit-groups',
-      list: DepositGroupList,
-      options: {
-        label: t('navigation.collectionLine'),
-        hide: true,
-      },
-      parentName: 'providers',
-    },
-    {
-      name: 'channels',
-      list: ChannelList,
-      options: {
-        label: t('navigation.channelManagement'),
-      },
-      icon: <DeploymentUnitOutlined />,
-    },
-    {
-      name: 'thirdchannel',
-      list: ThirdChannelList,
-      options: {
-        label: t('navigation.thirdPartyManagement'),
-      },
-    },
-    {
-      name: 'merchant-third-channel',
-      list: ThirdChannelSettingList,
-      options: {
-        hide: true,
-      },
-      parentName: 'thirdchannel',
-    },
-    {
-      name: 'feature-toggles',
-      list: SystemSettingList,
-      options: {
-        label: t('navigation.systemSettings'),
-      },
-      icon: <SettingOutlined />,
-    },
-    {
-      name: 'banks',
-      list: BankList,
-      options: {
-        label: t('navigation.supportedBanks'),
-        hide: true,
-      },
-      parentName: 'feature-toggles',
-    },
-    {
-      name: 'sub-accounts',
-      icon: <LockOutlined />,
-      options: {
-        label: t('navigation.permissionManagement'),
-      },
-      list: PermissionList,
-      create: SubAccountCreate,
-      show: SubAccountShow,
-    },
-    {
-      name: 'login-white-list',
-      options: {
-        label: t('navigation.adminLoginWhiteList'),
-        hide: true,
-      },
-      list: LoginWhiteList,
-      parentName: 'sub-accounts',
-    },
-    // {
-    //     name: "posts",
-    //     list: PostList,
-    //     create: PostCreate,
-    //     edit: PostEdit,
-    //     show: PostShow,
-    // },
-  ];
-
   const [currentLocale, setCurrentLocale] = useState(i18n.language);
 
-  const resources: ResourceProps[] = temps.filter(
-    t => t !== null
-  ) as ResourceProps[];
-
   const i18nProvider = {
-    translate: (key: string, options?: any) => t(key, options),
+    translate: (key: string, options?: any) => {
+      const result = t(key, options);
+      if (typeof result === 'string') return result;
+      if (typeof result === 'object' && result !== null && 'toString' in result) {
+        try {
+          return result.toString();
+        } catch {
+          return JSON.stringify(result);
+        }
+      }
+      return String(result);
+    },
     changeLocale: (lang: string) => {
       setCurrentLocale(lang);
       const dayjsLocaleMap: Record<string, string> = {
@@ -479,7 +108,6 @@ function App() {
         en: 'en',
         th: 'th',
       };
-
       dayjs.locale(dayjsLocaleMap[lang] || 'zh-cn');
       return i18n.changeLanguage(lang);
     },
@@ -499,14 +127,153 @@ function App() {
     }
   };
 
+  const resources = [
+    {
+      name: 'home',
+      list: '/',
+      meta: { label: t('navigation.home'), icon: <HomeOutlined /> },
+    },
+    {
+      name: 'tags',
+      list: '/tags',
+      create: '/tags/create',
+      meta: { label: t('navigation.tags'), icon: <TagOutlined /> },
+    },
+    {
+      name: 'merchants',
+      list: '/merchants',
+      create: '/merchants/create',
+      show: '/merchants/:id',
+      meta: { label: t('navigation.merchantManagement'), icon: <ShopOutlined /> },
+    },
+    {
+      name: 'merchants/white-list',
+      list: '/merchants/white-list',
+      meta: { label: t('navigation.whiteList'), parent: 'merchants', hide: true },
+    },
+    {
+      name: 'merchants/api-white-list',
+      list: '/merchants/api-white-list',
+      meta: { label: t('navigation.apiWhiteList'), parent: 'merchants', hide: true },
+    },
+    {
+      name: 'merchants/banned-list',
+      list: '/merchants/banned-list',
+      meta: { label: t('navigation.bannedList'), parent: 'merchants', hide: true },
+    },
+    {
+      name: 'merchants/user-wallet-history',
+      list: '/merchants/user-wallet-history',
+      meta: { label: t('navigation.merchantWalletHistory'), parent: 'merchants', hide: true },
+    },
+    {
+      name: 'merchants/wallet-histories',
+      list: '/merchants/wallet-histories',
+      meta: { label: t('navigation.merchantBalanceAdjustment'), parent: 'merchants', hide: true },
+    },
+    {
+      name: 'user-channel-accounts',
+      list: '/user-channel-accounts',
+      show: '/user-channel-accounts/:id',
+      create: '/user-channel-accounts/create',
+      meta: { label: t('navigation.paymentAccountManagement'), icon: <WalletOutlined /> },
+    },
+    {
+      name: 'transaction',
+      meta: { label: t('navigation.transactionManagement'), icon: <SwapOutlined /> },
+    },
+    {
+      name: 'transactions',
+      list: '/transactions',
+      show: '/transactions/:id',
+      create: '/transactions/create',
+      meta: { label: t('navigation.collection'), parent: 'transaction' },
+    },
+    {
+      name: 'withdraws',
+      list: '/withdraws',
+      show: '/withdraws/:id',
+      meta: { label: t('navigation.payment'), parent: 'transaction' },
+    },
+    {
+      name: 'child-withdraws',
+      show: '/child-withdraws/:id',
+      meta: { label: t('navigation.childWithdrawSplit'), hide: true },
+    },
+    {
+      name: 'user-bank-cards',
+      list: '/user-bank-cards',
+      meta: { label: t('navigation.merchantBankCardList'), hide: true },
+    },
+    {
+      name: 'online-ready-for-matching-users',
+      list: '/online-ready-for-matching-users',
+      meta: { label: t('navigation.liveStatus'), icon: <FieldTimeOutlined /> },
+    },
+    {
+      name: 'statistics/v1',
+      list: '/finance-statistics',
+      meta: { label: t('navigation.financeReport'), icon: <BarChartOutlined /> },
+    },
+    {
+      name: 'providers',
+      list: '/providers',
+      create: '/providers/create',
+      meta: { label: t('navigation.groupManagement'), icon: <QrcodeOutlined /> },
+    },
+    {
+      name: 'providers/merchant-transaction-groups',
+      list: '/providers/merchant-transaction-groups',
+      meta: { label: t('navigation.collectionLine'), parent: 'providers', hide: true },
+    },
+    {
+      name: 'providers/merchant-matching-deposit-groups',
+      list: '/providers/merchant-matching-deposit-groups',
+      meta: { label: t('navigation.collectionLine'), parent: 'providers', hide: true },
+    },
+    {
+      name: 'channels',
+      list: '/channels',
+      meta: { label: t('navigation.channelManagement'), icon: <DeploymentUnitOutlined /> },
+    },
+    {
+      name: 'thirdchannel',
+      list: '/thirdchannel',
+      meta: { label: t('navigation.thirdPartyManagement') },
+    },
+    {
+      name: 'thirdchannel/merchant-third-channel',
+      list: '/thirdchannel/merchant-third-channel',
+      meta: { parent: 'thirdchannel', hide: true },
+    },
+    {
+      name: 'feature-toggles',
+      list: '/feature-toggles',
+      meta: { label: t('navigation.systemSettings'), icon: <SettingOutlined /> },
+    },
+    {
+      name: 'feature-toggles/banks',
+      list: '/feature-toggles/banks',
+      meta: { label: t('navigation.supportedBanks'), parent: 'feature-toggles', hide: true },
+    },
+    {
+      name: 'sub-accounts',
+      list: '/sub-accounts',
+      create: '/sub-accounts/create',
+      show: '/sub-accounts/:id',
+      meta: { label: t('navigation.permissionManagement'), icon: <LockOutlined /> },
+    },
+    {
+      name: 'sub-accounts/login-white-list',
+      list: '/sub-accounts/login-white-list',
+      meta: { label: t('navigation.adminLoginWhiteList'), parent: 'sub-accounts', hide: true },
+    },
+  ];
+
   return (
-    <>
+    <BrowserRouter>
       <Helmet>
-        <link
-          rel="icon"
-          href={process.env.REACT_APP_FAVICON_SRC}
-          sizes="16x16"
-        />
+        <link rel="icon" href={process.env.REACT_APP_FAVICON_SRC} sizes="16x16" />
       </Helmet>
       <ConfigProvider
         form={{
@@ -537,41 +304,11 @@ function App() {
             }}
             accessControlProvider={accessControlProvider}
             notificationProvider={useNotificationProvider}
-            legacyRouterProvider={routerProvider}
-            legacyAuthProvider={authProvider}
-            Title={Title}
-            Header={Header}
-            Sider={Sider}
-            Footer={Footer}
-            Layout={Layout}
-            OffLayoutArea={OffLayoutArea}
-            LoginPage={AuthPage}
-            catchAll={<ErrorComponent />}
-            i18nProvider={{
-              translate: (key, options) => {
-                const result = i18nProvider.translate(key, options);
-                // Ensure translate always returns a string (fix typing issue)
-                if (typeof result === 'string') return result;
-                if (
-                  typeof result === 'object' &&
-                  result !== null &&
-                  'toString' in result
-                ) {
-                  // fall back to object's toString, or JSON.stringify if needed
-                  try {
-                    return result.toString();
-                  } catch {
-                    return JSON.stringify(result);
-                  }
-                }
-                return String(result);
-              },
-              changeLocale: i18nProvider.changeLocale,
-              getLocale: i18nProvider.getLocale,
-            }}
+            routerProvider={routerProvider}
+            authProvider={authProvider}
+            i18nProvider={i18nProvider}
             options={{
               reactQuery: {
-                devtoolConfig: false,
                 clientConfig: {
                   defaultOptions: {
                     queries: {
@@ -580,12 +317,130 @@ function App() {
                   },
                 },
               },
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
             }}
             resources={resources}
-          />
+          >
+            <Routes>
+              {/* Authenticated routes */}
+              <Route
+                element={
+                  <Authenticated key="authenticated" fallback={<AuthPage />}>
+                    <ThemedLayout
+                      Title={({ collapsed }) => (
+                        <ThemedTitle
+                          collapsed={collapsed}
+                          text={process.env.REACT_APP_TITLE || 'Admin'}
+                          icon={
+                            collapsed ? (
+                              process.env.REACT_APP_LOGO_MINI_SRC ? (
+                                <img
+                                  src={process.env.REACT_APP_LOGO_MINI_SRC}
+                                  alt="Logo"
+                                  style={{ maxHeight: '24px' }}
+                                />
+                              ) : null
+                            ) : process.env.REACT_APP_LOGO_SRC ? (
+                              <img
+                                src={process.env.REACT_APP_LOGO_SRC}
+                                alt="Logo"
+                                style={{ maxHeight: '24px' }}
+                              />
+                            ) : null
+                          }
+                        />
+                      )}
+                    >
+                      <Outlet />
+                    </ThemedLayout>
+                  </Authenticated>
+                }
+              >
+                {/* Home */}
+                <Route index element={<HomePage />} />
+
+                {/* Tags */}
+                <Route path="/tags" element={<TagList />} />
+                <Route path="/tags/create" element={<TagCreate />} />
+
+                {/* Merchants */}
+                <Route path="/merchants" element={<MerchantList />} />
+                <Route path="/merchants/create" element={<MerchantCreate />} />
+                <Route path="/merchants/:id" element={<MerchantShow />} />
+                <Route path="/merchants/white-list" element={<MerchantWhiteList />} />
+                <Route path="/merchants/api-white-list" element={<MerchantApiWhiteList />} />
+                <Route path="/merchants/banned-list" element={<MerchantBannedList />} />
+                <Route path="/merchants/user-wallet-history" element={<UserWalletHistoryList />} />
+                <Route path="/merchants/wallet-histories" element={<MerchantWalletList />} />
+
+                {/* User Channel Accounts */}
+                <Route path="/user-channel-accounts" element={<UserChannelAccountList />} />
+                <Route path="/user-channel-accounts/create" element={<UserChannelCreate />} />
+                <Route path="/user-channel-accounts/:id" element={<UserChannelShow />} />
+
+                {/* Transactions */}
+                <Route path="/transactions" element={<CollectionList />} />
+                <Route path="/transactions/create" element={<TransitionDemoCreate />} />
+                <Route path="/transactions/:id" element={<CollectionShow />} />
+
+                {/* Withdraws */}
+                <Route path="/withdraws" element={<PayForAnotherList />} />
+                <Route path="/withdraws/:id" element={<PayForAnotherShow />} />
+                <Route path="/child-withdraws/:id" element={<ChildWithdrawCreate />} />
+
+                {/* User Bank Cards */}
+                <Route path="/user-bank-cards" element={<UserBankCardList />} />
+
+                {/* Live Status */}
+                <Route path="/online-ready-for-matching-users" element={<LiveList />} />
+
+                {/* Finance Statistics */}
+                <Route path="/finance-statistics" element={<FinanceStatisticPage />} />
+
+                {/* Providers (Group Management) */}
+                <Route path="/providers" element={<ProviderList />} />
+                <Route path="/providers/create" element={<ProviderCreate />} />
+                <Route
+                  path="/providers/merchant-transaction-groups"
+                  element={<TransactionGroupList />}
+                />
+                <Route
+                  path="/providers/merchant-matching-deposit-groups"
+                  element={<DepositGroupList />}
+                />
+
+                {/* Channels */}
+                <Route path="/channels" element={<ChannelList />} />
+
+                {/* Third Channel */}
+                <Route path="/thirdchannel" element={<ThirdChannelList />} />
+                <Route
+                  path="/thirdchannel/merchant-third-channel"
+                  element={<ThirdChannelSettingList />}
+                />
+
+                {/* System Settings */}
+                <Route path="/feature-toggles" element={<SystemSettingList />} />
+                <Route path="/feature-toggles/banks" element={<BankList />} />
+
+                {/* Sub Accounts (Permissions) */}
+                <Route path="/sub-accounts" element={<PermissionList />} />
+                <Route path="/sub-accounts/create" element={<SubAccountCreate />} />
+                <Route path="/sub-accounts/:id" element={<SubAccountShow />} />
+                <Route path="/sub-accounts/login-white-list" element={<LoginWhiteList />} />
+
+                {/* Catch all */}
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
+
+              {/* Login page */}
+              <Route path="/login" element={<AuthPage />} />
+            </Routes>
+          </Refine>
         </AntdApp>
       </ConfigProvider>
-    </>
+    </BrowserRouter>
   );
 }
 

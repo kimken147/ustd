@@ -34,7 +34,7 @@ import {
   NavLink,
   useLocation,
   useNavigate,
-} from 'react-router-dom';
+} from 'react-router';
 import EditableForm from 'components/EditableFormItem';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { Provider, UserChannel } from 'interfaces/provider';
@@ -306,8 +306,8 @@ const ProviderShow: FC<IResourceComponentsProps<Provider>> = () => {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  const { queryResult } = useShow<Provider>();
-  const { data, isLoading } = queryResult;
+  const { query } = useShow<Provider>();
+  const { data, isLoading } = query;
   const record = {
     ...(state as Provider),
     ...data?.data,
@@ -727,7 +727,7 @@ const ProviderShow: FC<IResourceComponentsProps<Provider>> = () => {
             >
               <Button>{t('wallet.walletButton')}</Button>
             </NavLink>
-            {/* <ListButton resourceNameOrRouteName="user-wallet-history">钱包</ListButton> */}
+            {/* <ListButton resource="user-wallet-history">钱包</ListButton> */}
           </Descriptions.Item>
         </Descriptions>
         <Divider />

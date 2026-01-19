@@ -221,25 +221,25 @@ const MerchantList: FC = () => {
           <>
             <ListButton
               icon={<StopOutlined />}
-              resourceNameOrRouteName="merchants/banned-list"
+              resource="merchants/banned-list"
             >
               {t('titles.bannedList')}
             </ListButton>
             <ListButton
               icon={<CheckOutlined />}
-              resourceNameOrRouteName="merchants/white-list"
+              resource="merchants/white-list"
             >
               {t('titles.loginWhiteList')}
             </ListButton>
             <ListButton
               icon={<CheckOutlined />}
-              resourceNameOrRouteName="merchants/api-white-list"
+              resource="merchants/api-white-list"
             >
               {t('titles.apiWhiteList')}
             </ListButton>
             <ListButton
               icon={<WalletOutlined />}
-              resourceNameOrRouteName="merchants/wallet-histories"
+              resource="merchants/wallet-histories"
             >
               {t('titles.walletHistory')}
             </ListButton>
@@ -383,7 +383,7 @@ const MerchantList: FC = () => {
                 <ShowButton
                   recordItemId={agent.id}
                   icon={null}
-                  resourceNameOrRouteName="merchants"
+                  resource="merchants"
                 >
                   {agent.name}
                 </ShowButton>

@@ -68,9 +68,9 @@ const mapOperator = (operator: CrudOperators) => {
 };
 
 const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider => ({
-    create: async ({ resource, variables, metaData }) => {
+    create: async ({ resource, variables, meta }) => {
         const url = `${apiUrl}/${resource}`;
-        const headers = metaData?.headers ?? {};
+        const headers = meta?.headers ?? {};
         if (!headers["Content-Type"]) {
             headers["Content-Type"] = "application/json;charset=UTF-8";
         }
@@ -83,18 +83,20 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
             data: data.data ?? data,
         };
     },
-    getList: async ({ resource, hasPagination, pagination, filters, sort, metaData }) => {
-        if (metaData?.url?.includes("undefined")) {
+    getList: async ({ resource, pagination, filters, sorters, meta }) => {
+        if (meta?.url?.includes("undefined")) {
             return {
                 data: [],
                 total: 0,
             };
         }
-        const url = metaData?.url ? metaData?.url : `${apiUrl}/${resource}`;
+        const url = meta?.url ? meta?.url : `${apiUrl}/${resource}`;
+        const hasPagination = pagination?.mode !== "off";
+        const paginationConfig = pagination as { current?: number; pageSize?: number } | undefined;
         const query = hasPagination
             ? {
-                  page: pagination?.current,
-                  per_page: pagination?.pageSize ?? 20,
+                  page: paginationConfig?.current,
+                  per_page: paginationConfig?.pageSize ?? 20,
               }
             : {
                   no_paginate: 1,
@@ -138,11 +140,11 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
         };
     },
     getApiUrl: () => apiUrl,
-    custom: async ({ url, method, filters, sort, payload, query, headers }) => {
+    custom: async ({ url, method, filters, sorters, payload, query, headers }) => {
         let requestUrl = `${url}?`;
 
-        if (sort) {
-            const generatedSort = generateSort(sort);
+        if (sorters) {
+            const generatedSort = generateSort(sorters);
             if (generatedSort) {
                 const { _sort, _order } = generatedSort;
                 const sortQuery = {

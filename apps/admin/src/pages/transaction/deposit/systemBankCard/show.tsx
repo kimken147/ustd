@@ -13,8 +13,8 @@ import { Helmet } from "react-helmet";
 
 const SystemBankCardShow: FC = () => {
     const title = "系統銀行卡詳情";
-    const { queryResult } = useShow<SystemBankCard>();
-    const { data, isLoading } = queryResult;
+    const { query } = useShow<SystemBankCard>();
+    const { data, isLoading } = query;
     const record = data?.data;
     return (
         <>

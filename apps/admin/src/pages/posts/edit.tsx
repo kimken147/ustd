@@ -13,11 +13,11 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 
 export const PostEdit: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps, queryResult } = useForm<IPost>();
+    const { formProps, saveButtonProps, query } = useForm<IPost>();
 
     const { selectProps: categorySelectProps } = useSelect<IPost>({
         resource: "categories",
-        defaultValue: queryResult?.data?.data.category.id,
+        defaultValue: query?.data?.data.category.id,
     });
 
     return (

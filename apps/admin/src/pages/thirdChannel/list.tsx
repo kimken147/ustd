@@ -515,7 +515,7 @@ const ThirdChannelList: FC = () => {
     <List
       headerButtons={() => (
         <>
-          <ListButton resourceNameOrRouteName="merchant-third-channel">
+          <ListButton resource="merchant-third-channel">
             {t('buttons.thirdChannelSettings')}
           </ListButton>
         </>

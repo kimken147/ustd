@@ -1,8 +1,11 @@
 import { Button, DatePicker, Space } from 'antd';
 import type { DatePickerProps } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+
+dayjs.extend(isoWeek);
 
 type Props = DatePickerProps & {
   onFastSelectorChange?: (startAt: Dayjs, endAt: Dayjs) => void;

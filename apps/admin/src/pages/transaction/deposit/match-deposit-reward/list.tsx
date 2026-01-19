@@ -12,7 +12,7 @@ import {
   Space,
   Table,
 } from 'antd';
-import { useList, useResource } from '@refinedev/core';
+import { useList, useResourceParams } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { DepositReward } from 'interfaces/depositReward';
@@ -24,13 +24,14 @@ const DepositRewardList: FC = () => {
   const { t } = useTranslation('transaction');
   const title = t('titles.quickChargeRewardList');
 
-  const { resourceName } = useResource();
-  const { data: rewards, isLoading } = useList<DepositReward>({
+  const { resource } = useResourceParams();
+  const resourceName = resource?.name;
+  const { result, query } = useList<DepositReward>({
     resource: resourceName,
-    config: {
-      hasPagination: false,
-    },
+    pagination: { mode: 'off' },
   });
+  const rewards = result;
+  const isLoading = query.isLoading;
 
   const { modalProps, show } = useUpdateModal({
     resource: resourceName,

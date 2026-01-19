@@ -303,7 +303,7 @@ const ProvidersList: FC = () => {
           <ShowButton
             icon={null}
             recordItemId={value.id}
-            resourceNameOrRouteName="providers"
+            resource="providers"
           >
             {value.name}
           </ShowButton>
@@ -621,21 +621,21 @@ const ProvidersList: FC = () => {
         headerButtons={() => (
           <>
             <ListButton
-              resourceNameOrRouteName="white-list"
+              resource="white-list"
               icon={<LoginOutlined />}
             >
               {t('titles.whiteList')}
             </ListButton>
             <ListButton
-              resourceNameOrRouteName="wallet-histories"
+              resource="wallet-histories"
               icon={<WalletOutlined />}
             >
               {t('titles.balanceHistory')}
             </ListButton>
-            <ListButton resourceNameOrRouteName="merchant-transaction-groups">
+            <ListButton resource="merchant-transaction-groups">
               {t('titles.moneyInDirectLine')}
             </ListButton>
-            <ListButton resourceNameOrRouteName="merchant-matching-deposit-groups">
+            <ListButton resource="merchant-matching-deposit-groups">
               {t('titles.moneyOutDirectLine')}
             </ListButton>
             {/* <Button icon={<ApartmentOutlined />}>码商树状图</Button> */}

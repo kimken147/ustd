@@ -1,14 +1,15 @@
 // hooks/useUserChannelForm.ts
 import { useForm } from '@refinedev/antd';
 import { useCreate } from '@refinedev/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { FormValues } from '../types';
 import { useTranslation } from 'react-i18next';
 
 export const useUserChannelForm = () => {
   const { t } = useTranslation('userChannel');
   const { formProps, form } = useForm<FormValues, any, FormValues>();
-  const { mutateAsync: create, isPending: isCreateLoading } = useCreate();
+  const { mutateAsync: create, mutation } = useCreate();
+  const isCreateLoading = mutation.isPending;
   const navigate = useNavigate();
 
   const handleSubmit = async (values: FormValues) => {
@@ -34,7 +35,7 @@ export const useUserChannelForm = () => {
         message: t('messages.createSuccess'),
         type: 'success',
       },
-      metaData: {
+      meta: {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

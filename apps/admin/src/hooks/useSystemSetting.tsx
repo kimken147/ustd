@@ -2,15 +2,15 @@ import { useList } from "@refinedev/core";
 import { SystemSetting } from "interfaces/systemSetting";
 
 function useSystemSetting() {
-    const { data, ...others } = useList<SystemSetting>({
+    const { result, query } = useList<SystemSetting>({
         resource: "feature-toggles",
         pagination: {
             mode: "off",
         },
     });
     return {
-        ...others,
-        data: data?.data,
+        ...query,
+        data: result.data,
     };
 }
 

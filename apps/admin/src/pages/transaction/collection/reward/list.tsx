@@ -21,13 +21,12 @@ import { Helmet } from "react-helmet";
 
 const TransactionRewardList: FC = () => {
     const title = "交易奖励";
-    const { data, isLoading } = useList({
+    const { result, query } = useList({
         resource: "transaction-rewards",
-        config: {
-            hasPagination: false,
-        },
+        pagination: { mode: "off" },
     });
-    const rewards = Object.entries((data?.data as unknown as TransactionReward) ?? []).reduce<Detail[]>((prev, cur) => {
+    const isLoading = query.isLoading;
+    const rewards = Object.entries((result.data as unknown as TransactionReward) ?? []).reduce<Detail[]>((prev, cur) => {
         cur[1].forEach((item) => (item.timeRange = cur[0]));
         return [...prev, ...cur[1]];
     }, []);

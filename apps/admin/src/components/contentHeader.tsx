@@ -2,6 +2,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Space } from "antd";
 import { TextField } from "@refinedev/antd";
 import { useNavigation } from "@refinedev/core";
+import { useNavigate } from "react-router";
 import { FC } from "react";
 
 type Props = {
@@ -10,7 +11,9 @@ type Props = {
 };
 
 const ContentHeader: FC<Props> = ({ title, resource }) => {
-    const { list, goBack } = useNavigation();
+    const { list } = useNavigation();
+    const navigate = useNavigate();
+    const goBack = () => navigate(-1);
     return (
         <Space size={"large"} align="center">
             <ArrowLeftOutlined

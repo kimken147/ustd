@@ -39,7 +39,7 @@ const SystemSettingList: FC = () => {
   const filterData = (ids: number[]) => {
     const items: SystemSetting[] = [];
     ids.forEach(id => {
-      const item = data?.find(x => x.id === id);
+      const item = (data as SystemSetting[] | undefined)?.find(x => x.id === id);
       if (item) {
         items.push(item);
       }
@@ -142,7 +142,7 @@ const SystemSettingList: FC = () => {
         title={t('systemSetting.listTitle')}
         headerButtons={
           <>
-            <ListButton resourceNameOrRouteName="banks">
+            <ListButton resource="banks">
               {t('systemSetting.buttons.systemSupportBanks')}
             </ListButton>
           </>

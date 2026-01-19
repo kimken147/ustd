@@ -40,12 +40,12 @@ const LiveList: FC = () => {
     return channels?.map(channel => channel.code) || [];
   }, [channels]);
   const apiUrl = useApiUrl();
-  const { data } = useCustom<UserChannelStat>({
+  const { result: customResult } = useCustom<UserChannelStat>({
     url: `${apiUrl}/user-channel-account-stats`,
     config: {
       query: channels?.length
         ? {
-            'channel_code[]': channels?.map(channel => channel.code),
+            'channel_code[]': channels?.map((channel: { code: string }) => channel.code),
           }
         : undefined,
     },
@@ -55,7 +55,7 @@ const LiveList: FC = () => {
     },
     method: 'get',
   });
-  const accountStat = data?.data;
+  const accountStat = customResult?.data;
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkedList, setCheckedList] = useState<CheckboxOptionType['value'][]>(
     []

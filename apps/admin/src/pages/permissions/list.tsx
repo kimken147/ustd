@@ -132,7 +132,7 @@ const PermissionList: FC = () => {
         title={t('list.title')}
         headerButtons={() => (
           <>
-            <ListButton resourceNameOrRouteName="login-white-list">
+            <ListButton resource="login-white-list">
               {t('list.buttons.loginWhitelist')}
             </ListButton>
             <CreateButton>{t('list.buttons.createSubAccount')}</CreateButton>

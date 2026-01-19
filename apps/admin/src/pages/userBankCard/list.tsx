@@ -92,7 +92,7 @@ const UserBankCardList: FC = () => {
                                 className="object-contain"
                             />
                         </div>
-                        <ShowButton recordItemId={value.id} resourceNameOrRouteName="merchants" icon={null}>
+                        <ShowButton recordItemId={value.id} resource="merchants" icon={null}>
                             {value.name}
                         </ShowButton>
                     </Space>

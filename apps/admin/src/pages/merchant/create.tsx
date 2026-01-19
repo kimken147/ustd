@@ -23,9 +23,9 @@ import {
   useCreate,
   useList,
   useNavigation,
-  useResource,
+  useResourceParams,
 } from '@refinedev/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useChannelGroup from 'hooks/useChannelGroup';
 import { Merchant, User } from '@morgan-ustd/shared';
 import { FC } from 'react';
@@ -36,19 +36,20 @@ const MerchantCreate: FC = () => {
   const { t } = useTranslation('merchant');
   const colProps: ColProps = { xs: 24, md: 12, lg: 8 };
 
-  const { data: users } = useList<User>({
+  const { result: usersResult } = useList<User>({
     resource: 'users',
-    config: {
-      filters: [
-        { operator: 'eq', value: 3, field: 'role' },
-        { operator: 'eq', value: 1, field: 'agent_enable' },
-      ],
-    },
+    filters: [
+      { operator: 'eq', value: 3, field: 'role' },
+      { operator: 'eq', value: 1, field: 'agent_enable' },
+    ],
+    pagination: { mode: 'off' },
   });
+  const users = usersResult;
 
   const { formProps } = useForm();
   const { mutateAsync: create } = useCreate<Merchant>();
-  const { resourceName } = useResource();
+  const { resource } = useResourceParams();
+  const resourceName = resource?.name;
   const { data: channelGroups, isLoading: isChannelGroupLoading } =
     useChannelGroup();
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ const MerchantCreate: FC = () => {
             <Col {...colProps}>
               <Form.Item label={t('fields.agentId')}>
                 <Select
-                  options={users?.data.map(user => ({
+                  options={users?.data?.map((user: User) => ({
                     label: user.name,
                     value: user.id,
                   }))}

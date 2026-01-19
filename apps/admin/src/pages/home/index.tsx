@@ -34,8 +34,9 @@ const HomePage: FC = () => {
   };
   const { data: user, isLoading } = useGetIdentity<Profile>();
   const apiUrl = useApiUrl();
-  const { mutateAsync, isPending: isUpdatePassowrdLoading } =
+  const { mutateAsync, mutation: passwordMutation } =
     useCustomMutation<IChangePasswordReq>();
+  const isUpdatePassowrdLoading = passwordMutation.isPending;
   const { t } = useTranslation();
 
   const { form, formProps } = useForm();

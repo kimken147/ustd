@@ -17,7 +17,7 @@ import {
   Switch,
 } from 'antd';
 import { useCreate } from '@refinedev/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import useSelector from 'hooks/useSelector';
 import { Bank, User } from '@morgan-ustd/shared';
 import { FC, useState } from 'react';

@@ -18,12 +18,12 @@
     "query-string": "^8.1.0"
   },
   "peerDependencies": {
-    "@refinedev/core": "^4.47.0",
+    "@refinedev/core": "^5.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@refinedev/core": "^4.47.0",
+    "@refinedev/core": "^5.0.8",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

@@ -9,7 +9,7 @@ import {
   Input,
 } from 'antd';
 import { useCreate, useNavigation } from '@refinedev/core';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import { SubAccount } from 'interfaces/subAccount';
 import { FC } from 'react';

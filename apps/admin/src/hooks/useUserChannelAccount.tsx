@@ -1,6 +1,6 @@
 import { Select as AntdSelect } from "antd";
 import type { SelectProps } from "antd";
-import { CrudFilters, GetListResponse, useList } from "@refinedev/core";
+import { CrudFilters, useList } from "@refinedev/core";
 import { ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 };
 
 function useUserChannelAccount(props?: Partial<Props>) {
-    const queryObserverResult = useList<UserChannel>({
+    const { result, query } = useList<UserChannel>({
         resource: "user-channel-accounts",
         pagination: {
             mode: "off",
@@ -17,24 +17,24 @@ function useUserChannelAccount(props?: Partial<Props>) {
         filters: props?.filters,
         queryOptions: props?.queryOptions,
     });
-    const { data, isLoading, isError, isFetching, refetch } = queryObserverResult;
+    const { isLoading, isError, isFetching, refetch } = query;
 
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((record) => ({
+        options: result.data?.map((record: UserChannel) => ({
             value: record.id,
             label: record.name,
         })),
     };
 
-    const Select = (props: SelectProps) => {
-        return <AntdSelect {...selectProps} {...props} />;
+    const Select = (selectComponentProps: SelectProps) => {
+        return <AntdSelect {...selectProps} {...selectComponentProps} />;
     };
 
     return {
-        data: data?.data,
+        data: result.data,
         isLoading,
         isError,
         isFetching,

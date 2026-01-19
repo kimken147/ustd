@@ -9,17 +9,19 @@ import {
   InputNumber,
   Radio,
 } from 'antd';
-import { useCreate, useNavigation } from '@refinedev/core';
+import { useCreate } from '@refinedev/core';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 const DepositRewardCreate: FC = () => {
   const { t } = useTranslation('transaction');
   const title = t('titles.quickChargeRewardCreate');
   const { form } = useForm();
   const { mutateAsync: create } = useCreate();
-  const { goBack } = useNavigation();
+  const navigate = useNavigate();
+  const goBack = () => navigate(-1);
   return (
     <>
       <Helmet>{title}</Helmet>

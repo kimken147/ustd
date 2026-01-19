@@ -104,7 +104,7 @@ const ProviderWalletList: FC = () => {
           <ShowButton
             recordItemId={value.id}
             icon={null}
-            resourceNameOrRouteName="merchants"
+            resource="merchants"
           >
             {value.name}
           </ShowButton>
@@ -173,7 +173,7 @@ const ProviderWalletList: FC = () => {
               <ShowButton
                 recordItemId={value.id}
                 disabled={profile?.role !== 1}
-                resourceNameOrRouteName="sub-accounts"
+                resource="sub-accounts"
                 icon={null}
               >
                 {value.username}

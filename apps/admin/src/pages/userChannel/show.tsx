@@ -22,8 +22,8 @@ import { ChannelStatusChanger } from './component';
 
 const UserChannelShow: FC<IResourceComponentsProps> = props => {
   const { t } = useTranslation('userChannel');
-  const { queryResult } = useShow<UserChannel>();
-  const { data, isLoading } = queryResult;
+  const { query } = useShow<UserChannel>();
+  const { data, isLoading } = query;
   const record = data?.data;
   const { list } = useNavigation();
   const goBack = () => {

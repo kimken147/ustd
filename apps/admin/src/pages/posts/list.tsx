@@ -19,18 +19,20 @@ import {
 } from 'antd';
 
 export const PostList: React.FC<IResourceComponentsProps> = () => {
-    const { tableProps, sorter } = useTable<IPost>({
+    const { tableProps, sorters } = useTable<IPost>({
         dataProviderName: "test",
-        initialSorter: [
-            {
-                field: "id",
-                order: "desc",
-            },
-        ],
+        sorters: {
+            initial: [
+                {
+                    field: "id",
+                    order: "desc",
+                },
+            ],
+        },
     });
 
-    const categoryIds = tableProps?.dataSource?.map((item) => item.category.id) ?? [];
-    const { data: categoriesData, isLoading } = useMany<ICategory>({
+    const categoryIds = tableProps?.dataSource?.map((item: IPost) => item.category.id) ?? [];
+    const { result: categoriesResult, query: categoriesQuery } = useMany<ICategory>({
         resource: "categories",
         dataProviderName: "test",
         ids: categoryIds,
@@ -39,6 +41,8 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
             enabled: categoryIds.length > 0,
         },
     });
+    const categoriesData = categoriesResult;
+    const isLoading = categoriesQuery.isLoading;
 
     const { selectProps: categorySelectProps } = useSelect<ICategory>({
         resource: "categories",
@@ -53,7 +57,7 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
                     key="id"
                     title="ID"
                     render={(value) => <TextField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("id", sorter)}
+                    defaultSortOrder={getDefaultSortOrder("id", sorters)}
                     sorter
                 />
                 <Table.Column
@@ -61,7 +65,7 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
                     key="title"
                     title="Title"
                     render={(value) => <TextField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("title", sorter)}
+                    defaultSortOrder={getDefaultSortOrder("title", sorters)}
                     sorter
                 />
                 <Table.Column
@@ -69,7 +73,7 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
                     key="status"
                     title="Status"
                     render={(value) => <TagField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("status", sorter)}
+                    defaultSortOrder={getDefaultSortOrder("status", sorters)}
                     sorter
                 />
                 <Table.Column
@@ -77,7 +81,7 @@ export const PostList: React.FC<IResourceComponentsProps> = () => {
                     key="createdAt"
                     title="Created At"
                     render={(value) => <DateField value={value} format="LLL" />}
-                    defaultSortOrder={getDefaultSortOrder("createdAt", sorter)}
+                    defaultSortOrder={getDefaultSortOrder("createdAt", sorters)}
                     sorter
                 />
                 <Table.Column

@@ -162,8 +162,8 @@ const ProviderList: FC = () => {
             <List
                 headerButtons={() => (
                     <>
-                        <ListButton resourceNameOrRouteName="merchant-transaction-groups">代收专线</ListButton>
-                        <ListButton resourceNameOrRouteName="merchant-matching-deposit-groups">代付专线</ListButton>
+                        <ListButton resource="merchant-transaction-groups">代收专线</ListButton>
+                        <ListButton resource="merchant-matching-deposit-groups">代付专线</ListButton>
                         <CreateButton>建立群组</CreateButton>
                     </>
                 )}

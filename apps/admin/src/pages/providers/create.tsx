@@ -18,7 +18,7 @@ import {
   Switch,
 } from 'antd';
 import { useCreate, useList, useNavigation } from "@refinedev/core";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import useSelector from "hooks/useSelector";
 import { Provider } from "interfaces/provider";
 import { User, UserChannelGroup as ChannelGroup } from "@morgan-ustd/shared";
@@ -45,23 +45,23 @@ const ProvidersCreate: FC = () => {
         resource: "channel-groups",
     });
     const { mutateAsync: create } = useCreate<Provider>();
-    const { data: users } = useList<User>({
+    const { result: usersResult } = useList<User>({
         resource: "users",
-        config: {
-            filters: [
-                {
-                    operator: "eq",
-                    value: 2,
-                    field: "role",
-                },
-                {
-                    operator: "eq",
-                    value: 1,
-                    field: "agent_enable",
-                },
-            ],
-        },
+        filters: [
+            {
+                operator: "eq",
+                value: 2,
+                field: "role",
+            },
+            {
+                operator: "eq",
+                value: 1,
+                field: "agent_enable",
+            },
+        ],
+        pagination: { mode: "off" },
     });
+    const users = usersResult;
     const { form } = useForm();
     const navigate = useNavigate();
     const { showUrl } = useNavigation();

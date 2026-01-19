@@ -9,20 +9,20 @@ type Props = {
 
 function useMerchant(props?: Props) {
     const field = props?.valueField || "id";
-    const queryObserverResult = useList<Merchant>({
+    const { result, query } = useList<Merchant>({
         resource: "merchants",
         pagination: {
             mode: "off",
         },
     });
 
-    const { data, isLoading, isError, isFetching } = queryObserverResult;
+    const { isLoading, isError, isFetching } = query;
 
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: queryObserverResult.data?.data.map((merchant) => ({
+        options: result.data?.map((merchant: Merchant) => ({
             value: merchant[field],
             label: `${merchant.username}(${merchant.name})`,
         })),
@@ -33,7 +33,7 @@ function useMerchant(props?: Props) {
     };
 
     return {
-        data: data?.data,
+        data: result.data,
         isLoading,
         isError,
         isFetching,

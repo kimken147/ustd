@@ -11,13 +11,13 @@ import {
 const { Title, Text } = Typography;
 
 export const PostShow: React.FC<IResourceComponentsProps> = () => {
-    const { queryResult } = useShow<IPost>({
+    const { query } = useShow<IPost>({
         dataProviderName: "test",
     });
-    const { data, isLoading } = queryResult;
+    const { data, isLoading } = query;
     const record = data?.data;
 
-    const { data: categoryData } = useOne<ICategory>({
+    const { result: categoryData } = useOne<ICategory>({
         resource: "categories",
         id: record?.category.id ?? "",
         queryOptions: {
@@ -38,7 +38,7 @@ export const PostShow: React.FC<IResourceComponentsProps> = () => {
             </Text>
 
             <Title level={5}>Category</Title>
-            <Text>{categoryData?.data.title}</Text>
+            <Text>{categoryData?.title}</Text>
 
             <Title level={5}>Content</Title>
             <MarkdownField value={record?.content} />

@@ -17,13 +17,13 @@ import { FC } from "react";
 import { Helmet } from "react-helmet";
 
 const PayForAnotherShow: FC = () => {
-    const { queryResult } = useShow<Withdraw>();
+    const { query } = useShow<Withdraw>();
     const { mutateAsync } = useUpdate();
-    if (!queryResult.data) return <Spin />;
+    if (!query.data) return <Spin />;
     const {
         data: { data },
         refetch,
-    } = queryResult;
+    } = query;
 
     const columns: TableColumnProps<MerchantFee>[] = [
         {

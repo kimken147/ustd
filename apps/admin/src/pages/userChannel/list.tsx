@@ -632,7 +632,7 @@ const UserChannelAccountList: FC = () => {
                     <ShowButton
                       icon={null}
                       recordItemId={record.user.id}
-                      resourceNameOrRouteName="providers"
+                      resource="providers"
                     >
                       {record.user.name}
                     </ShowButton>

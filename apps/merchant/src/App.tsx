@@ -2,7 +2,7 @@ import "./index.sass";
 import { Refine } from "@refinedev/core";
 import { useNotificationProvider, ErrorComponent } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
-import routerProvider from "@refinedev/react-router-v6/legacy";
+import routerProvider from "@refinedev/react-router/legacy";
 import { ConfigProvider, App as AntdApp } from "antd";
 import { Title, Header, Sider, Footer, Layout, OffLayoutArea } from "components/layout";
 import { authProvider } from "./authProvider";
