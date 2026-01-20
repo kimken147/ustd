@@ -37,7 +37,7 @@
 - ⬚ thirdChannel/setting/list.tsx
 
 ### 用戶管理
-- ⬚ merchant/list.tsx (601 行)
+- ✅ merchant/list.tsx (601 行)
 - ⬚ merchant/wallet-history/list.tsx
 - ⬚ merchant/user-wallet-history/list.tsx
 - ✅ providers/list.tsx (658 行)
