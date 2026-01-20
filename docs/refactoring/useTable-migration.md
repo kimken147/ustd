@@ -41,7 +41,7 @@
 - ✅ merchant/wallet-history/list.tsx
 - ✅ merchant/user-wallet-history/list.tsx
 - ✅ providers/list.tsx (658 行)
-- ⬚ providers/wallet-history/list.tsx
+- ✅ providers/wallet-history/list.tsx
 - ⬚ providers/user-wallet-history/list.tsx
 - ⬚ provider/list.tsx
 - ⬚ provider/deposit/list.tsx
