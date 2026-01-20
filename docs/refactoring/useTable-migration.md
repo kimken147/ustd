@@ -45,7 +45,7 @@
 - ✅ providers/user-wallet-history/list.tsx
 - ✅ provider/list.tsx
 - ✅ provider/deposit/list.tsx
-- ⬚ provider/transaction/list.tsx
+- ✅ provider/transaction/list.tsx
 
 ### 其他
 - ⬚ systemSetting/list.tsx
