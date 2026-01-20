@@ -1,199 +1,70 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import {
-  DateField,
-  List,
-  ShowButton,
-  TextField,
-} from '@refinedev/antd';
-import {
-  Card,
-  Col,
-  ColProps,
-  DatePicker,
-  Divider,
-  Input,
-  Popover,
-  Row,
-  Select,
-  Space,
-  Statistic,
-  TableColumnProps,
-} from 'antd';
-import { useGetIdentity } from '@refinedev/core';
-import ContentHeader from 'components/contentHeader';
-import CustomDatePicker from 'components/customDatePicker';
-import dayjs, { Dayjs } from 'dayjs';
-import useSelector from 'hooks/useSelector';
-import useTable from 'hooks/useTable';
-import {
-  Merchant,
-  MerchantWalletHistory as MerchantWallet,
-  MerchantWalletOperator as Operator,
-  MerchantWalletUser as User,
-  MerchantWalletMeta as Meta,
-  Format,
-} from '@morgan-ustd/shared';
-import { getSign } from 'lib/number';
 import { FC } from 'react';
+import { List, useTable } from '@refinedev/antd';
+import { Card, Col, ColProps, DatePicker, Divider, Row, Select, Statistic } from 'antd';
+import { useGetIdentity } from '@refinedev/core';
+import dayjs, { Dayjs } from 'dayjs';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import {
+  ListPageLayout,
+  Merchant,
+  MerchantWalletHistory,
+  MerchantWalletMeta as Meta,
+} from '@morgan-ustd/shared';
+import ContentHeader from 'components/contentHeader';
+import CustomDatePicker from 'components/customDatePicker';
+import useSelector from 'hooks/useSelector';
+import { useColumns, type ColumnDependencies } from './columns';
+
+const colProps: ColProps = {
+  xs: 24,
+  sm: 24,
+  md: 12,
+  lg: 4,
+};
 
 const MerchantWalletList: FC = () => {
   const { t } = useTranslation('merchant');
   const { data: profile } = useGetIdentity<Profile>();
+  const defaultStartAt = dayjs().startOf('day');
+
   const { selectProps: merchantSelectProps } = useSelector<Merchant>({
     resource: 'merchants',
     valueField: 'name',
   });
-  const defaultStartAt = dayjs().startOf('day');
 
-  const { Form, Table, form, meta } = useTable<MerchantWallet, Meta>({
-    formItems: [
-      {
-        label: t('filters.startDate'),
-        name: 'started_at',
-        trigger: 'onSelect',
-        children: (
-          <CustomDatePicker
-            showTime
-            className="w-full"
-            onFastSelectorChange={(startAt, endAt) =>
-              form.setFieldsValue({
-                started_at: startAt,
-                ended_at: endAt,
-              })
-            }
-          />
-        ),
-        rules: [{ required: true }],
-      },
-      {
-        label: t('filters.endDate'),
-        name: 'ended_at',
-        trigger: 'onSelect',
-        children: (
-          <DatePicker
-            showTime
-            className="w-full"
-            disabledDate={current => {
-              const startAt = form.getFieldValue('started_at') as Dayjs;
-              return (
-                current &&
-                (current > startAt.add(1, 'month') || current < startAt)
-              );
-            }}
-          />
-        ),
-      },
-      {
-        label: t('fields.merchantOrAccount'),
-        name: 'name_or_username',
-        children: <Select {...merchantSelectProps} />,
-      },
-    ],
-    filters: [
-      {
-        field: 'started_at',
-        value: defaultStartAt.format(),
-        operator: 'eq',
-      },
-      {
-        field: 'role',
-        value: 3,
-        operator: 'eq',
-      },
-    ],
+  const {
+    tableProps,
+    searchFormProps,
+    tableQuery: { data: tableData },
+  } = useTable<MerchantWalletHistory>({
+    resource: 'wallet-histories',
+    syncWithLocation: true,
+    filters: {
+      initial: [
+        {
+          field: 'started_at',
+          value: defaultStartAt.format(),
+          operator: 'eq',
+        },
+        {
+          field: 'role',
+          value: 3,
+          operator: 'eq',
+        },
+      ],
+    },
   });
 
-  const columns: TableColumnProps<MerchantWallet>[] = [
-    {
-      title: t('fields.name'),
-      dataIndex: 'user',
-      render(value: User) {
-        return (
-          <ShowButton
-            recordItemId={value.id}
-            icon={null}
-            resource="merchants"
-          >
-            {value.name}
-          </ShowButton>
-        );
-      },
-    },
-    {
-      title: t('wallet.balanceDelta'),
-      dataIndex: 'balance_delta',
-      render(value) {
-        return getSign(value);
-      },
-    },
-    {
-      title: t('wallet.frozenBalanceDelta'),
-      dataIndex: 'frozen_balance_delta',
-      render(value) {
-        return getSign(value);
-      },
-    },
-    {
-      title: t('wallet.balanceResult'),
-      dataIndex: 'balance_result',
-    },
-    {
-      title: t('wallet.frozenBalanceResult'),
-      dataIndex: 'frozen_balance_result',
-    },
-    {
-      title: t('wallet.note'),
-      dataIndex: 'note',
-    },
-    {
-      title: t('wallet.alterationTime'),
-      dataIndex: 'created_at',
-      render(value) {
-        return <DateField value={value} format={Format} />;
-      },
-    },
-    {
-      title: t('wallet.operator'),
-      dataIndex: 'operator',
-      render(value: Operator) {
-        return (
-          <Space>
-            {value.role === 1 ? (
-              <TextField value={value.username} />
-            ) : (
-              <ShowButton
-                recordItemId={value.id}
-                disabled={profile?.role !== 1}
-                resource="sub-accounts"
-                icon={null}
-              >
-                {value.username}
-              </ShowButton>
-            )}
-            <Popover
-              trigger={'click'}
-              content={
-                <TextField
-                  value={t('wallet.operatorInfo', { name: value.name })}
-                />
-              }
-            >
-              <InfoCircleOutlined className="text-[#1677ff]" />
-            </Popover>
-          </Space>
-        );
-      },
-    },
-  ];
+  const meta = (tableData as any)?.meta as Meta | undefined;
+  const form = searchFormProps.form;
 
-  const colProps: ColProps = {
-    xs: 24,
-    sm: 24,
-    md: 12,
-    lg: 4,
+  const columnDeps: ColumnDependencies = {
+    t,
+    profileRole: profile?.role,
   };
+
+  const columns = useColumns(columnDeps);
 
   return (
     <>
@@ -201,18 +72,65 @@ const MerchantWalletList: FC = () => {
         <title>{t('titles.walletHistory')}</title>
       </Helmet>
       <List
-        title={
-          <ContentHeader
-            title={t('titles.walletHistory')}
-            resource="merchants"
-          />
-        }
+        title={<ContentHeader title={t('titles.walletHistory')} resource="merchants" />}
       >
-        <Form
-          initialValues={{
-            started_at: defaultStartAt,
-          }}
-        />
+        <ListPageLayout>
+          <ListPageLayout.Filter
+            formProps={{
+              ...searchFormProps,
+              initialValues: { started_at: defaultStartAt },
+            }}
+          >
+            <Col xs={24} md={8}>
+              <ListPageLayout.Filter.Item
+                label={t('filters.startDate')}
+                name="started_at"
+                rules={[{ required: true }]}
+                trigger="onSelect"
+              >
+                <CustomDatePicker
+                  showTime
+                  className="w-full"
+                  onFastSelectorChange={(startAt, endAt) =>
+                    form?.setFieldsValue({
+                      started_at: startAt,
+                      ended_at: endAt,
+                    })
+                  }
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <ListPageLayout.Filter.Item
+                label={t('filters.endDate')}
+                name="ended_at"
+                trigger="onSelect"
+              >
+                <DatePicker
+                  showTime
+                  className="w-full"
+                  disabledDate={current => {
+                    const startAt = form?.getFieldValue('started_at') as Dayjs;
+                    return (
+                      current &&
+                      startAt &&
+                      (current > startAt.add(1, 'month') || current < startAt)
+                    );
+                  }}
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <ListPageLayout.Filter.Item
+                label={t('fields.merchantOrAccount')}
+                name="name_or_username"
+              >
+                <Select {...merchantSelectProps} allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
+          </ListPageLayout.Filter>
+        </ListPageLayout>
+
         <Divider />
         <Row gutter={[16, 16]}>
           <Col {...colProps}>
@@ -235,7 +153,8 @@ const MerchantWalletList: FC = () => {
           </Col>
         </Row>
         <Divider />
-        <Table columns={columns} />
+
+        <ListPageLayout.Table {...tableProps} columns={columns} />
       </List>
     </>
   );
