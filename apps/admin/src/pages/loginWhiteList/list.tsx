@@ -1,188 +1,72 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusSquareOutlined,
-} from '@ant-design/icons';
-import {
-  List,
-  TextField,
-} from '@refinedev/antd';
-import {
-  Button,
-  Divider,
-  Input,
-  Space,
-  TableColumnProps,
-} from 'antd';
+import { List, useTable } from '@refinedev/antd';
+import { Col, Divider, Input } from 'antd';
 import ContentHeader from 'components/contentHeader';
-import useTable from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { User, WhitelistedIp } from '@morgan-ustd/shared';
+import { ListPageLayout } from '@morgan-ustd/shared';
+import type { User } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { useColumns, type ColumnDependencies } from './columns';
 
 const LoginWhiteList: FC = () => {
   const { t } = useTranslation('permission');
+
   const { Modal, show } = useUpdateModal({
     formItems: [
       {
         label: t('whitelist.filters.loginWhitelist'),
         name: 'ipv4',
         children: <Input />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
-      {
-        name: 'type',
-        hidden: true,
-      },
-      {
-        name: 'user_id',
-        hidden: true,
-      },
-    ],
-  });
-  const { Form, Table, refetch } = useTable<User>({
-    resource: 'users',
-    formItems: [
-      {
-        label: t('whitelist.filters.nameOrLoginAccount'),
-        name: 'name_or_fuzzy_username',
-        children: <Input />,
-      },
-      {
-        label: t('whitelist.filters.loginWhitelist'),
-        name: 'ipv4',
-        children: <Input />,
-      },
-    ],
-    filters: [
-      {
-        field: 'include[]',
-        value: 'whitelisted_ips',
-        operator: 'eq',
-      },
-      {
-        field: 'role',
-        value: 1,
-        operator: 'eq',
-      },
-      {
-        field: 'whitelisted_ip_type',
-        value: 1,
-        operator: 'eq',
-      },
+      { name: 'type', hidden: true },
+      { name: 'user_id', hidden: true },
     ],
   });
 
-  const columns: TableColumnProps<User>[] = [
-    {
-      title: t('whitelist.fields.name'),
-      dataIndex: 'name',
+  const {
+    tableProps,
+    searchFormProps,
+    tableQuery: { refetch },
+  } = useTable<User>({
+    resource: 'users',
+    syncWithLocation: true,
+    filters: {
+      permanent: [
+        { field: 'include[]', value: 'whitelisted_ips', operator: 'eq' },
+        { field: 'role', value: 1, operator: 'eq' },
+        { field: 'whitelisted_ip_type', value: 1, operator: 'eq' },
+      ],
     },
-    {
-      title: t('whitelist.fields.loginAccount'),
-      dataIndex: 'username',
-    },
-    {
-      title: t('whitelist.fields.loginWhitelist'),
-      dataIndex: 'whitelisted_ips',
-      render(value: WhitelistedIp[], record, index) {
-        return (
-          <Space>
-            {value?.map(white => (
-              <Space key={white.id}>
-                <TextField value={white.ipv4} code />
-                <Button
-                  icon={<EditOutlined className="text-[#6eb9ff]" />}
-                  size="small"
-                  onClick={() =>
-                    show({
-                      title: t('whitelist.actions.editWhitelist'),
-                      id: white.id,
-                      initialValues: {
-                        ipv4: white.ipv4,
-                      },
-                      onSuccess() {
-                        refetch();
-                      },
-                      resource: 'whitelisted-ips',
-                    })
-                  }
-                />
-                <Button
-                  icon={
-                    <DeleteOutlined
-                      style={{
-                        color: '#6eb9ff',
-                      }}
-                    />
-                  }
-                  onClick={() =>
-                    Modal.confirm({
-                      id: white.id,
-                      resource: 'whitelisted-ips',
-                      title: t('whitelist.messages.confirmDelete'),
-                      mode: 'delete',
-                      onSuccess() {
-                        refetch();
-                      },
-                    })
-                  }
-                  size="small"
-                />
-              </Space>
-            ))}
-          </Space>
-        );
-      },
-    },
-    {
-      title: t('whitelist.fields.operation'),
-      render(value, record, index) {
-        return (
-          <Button
-            icon={<PlusSquareOutlined />}
-            onClick={() =>
-              show({
-                title: t('whitelist.actions.addWhitelist'),
-                id: record.id,
-                initialValues: {
-                  user_id: record.id,
-                  type: 1,
-                },
-                mode: 'create',
-                resource: 'whitelisted-ips',
-                onSuccess() {
-                  refetch();
-                },
-              })
-            }
-          >
-            {t('whitelist.actions.add')}
-          </Button>
-        );
-      },
-    },
-  ];
+  });
+
+  const columnDeps: ColumnDependencies = { t, show, Modal, refetch };
+  const columns = useColumns(columnDeps);
 
   return (
     <>
       <Helmet>
         <title>{t('whitelist.title')}</title>
       </Helmet>
-      <List
-        title={
-          <ContentHeader title={t('whitelist.title')} resource="sub-accounts" />
-        }
-      >
-        <Form />
+      <List title={<ContentHeader title={t('whitelist.title')} resource="sub-accounts" />}>
+        <ListPageLayout>
+          <ListPageLayout.Filter formProps={searchFormProps}>
+            <Col xs={24} md={8}>
+              <ListPageLayout.Filter.Item label={t('whitelist.filters.nameOrLoginAccount')} name="name_or_fuzzy_username">
+                <Input allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={8}>
+              <ListPageLayout.Filter.Item label={t('whitelist.filters.loginWhitelist')} name="ipv4">
+                <Input allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
+          </ListPageLayout.Filter>
+        </ListPageLayout>
+
         <Divider />
-        <Table columns={columns} />
+        <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
       </List>
       <Modal />
     </>
