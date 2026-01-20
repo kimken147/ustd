@@ -24,7 +24,7 @@
 
 ### Transaction 相關
 - ✅ transaction/PayForAnother/list.tsx
-- ⬚ transaction/collection/list.tsx (1,434 行，高優先)
+- ✅ transaction/collection/list.tsx (1,434 行，高優先)
 - ⬚ transaction/deposit/list.tsx (806 行)
 - ⬚ transaction/deposit/systemBankCard/list.tsx
 - ⬚ transaction/fund/list.tsx
