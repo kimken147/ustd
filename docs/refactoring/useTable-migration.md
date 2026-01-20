@@ -61,7 +61,7 @@
 - ✅ member/list.tsx
 - ✅ PayForAnother/list.tsx
 - ✅ bankCard/list.tsx
-- ⬚ subAccount/list.tsx
+- ✅ subAccount/list.tsx
 - ⬚ wallet-history/index.tsx
 
 ## 完成後
