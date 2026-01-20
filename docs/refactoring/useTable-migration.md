@@ -31,7 +31,7 @@
 - ⬚ transaction/message/list.tsx
 
 ### Channel 相關
-- ⬚ userChannel/list.tsx (1,432 行，高優先)
+- ✅ userChannel/list.tsx (1,432 行，高優先)
 - ⬚ channel/list.tsx
 - ⬚ thirdChannel/list.tsx
 - ⬚ thirdChannel/setting/list.tsx
