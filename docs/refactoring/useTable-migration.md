@@ -54,7 +54,7 @@
 - ✅ loginWhiteList/list.tsx
 - ✅ financeStatitic/list.tsx
 - ✅ live/list.tsx
-- ⬚ posts/list.tsx
+- ✅ posts/list.tsx
 
 ## Merchant (7 個檔案)
 - ⬚ collection/list.tsx
