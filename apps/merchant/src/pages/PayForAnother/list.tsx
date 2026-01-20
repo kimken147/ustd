@@ -165,18 +165,23 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("collection.fields.systemTransactionNo"),
             dataIndex: "system_order_number",
+            responsive: ["xl", "xxl"],
         },
         {
             title: translate("collection.fields.merchantTransactionNo"),
             dataIndex: "order_number",
+            fixed: "left" as const,
+            width: 150,
         },
         {
             title: translate("collection.fields.merchantNo"),
             dataIndex: ["merchant", "username"],
+            responsive: ["md", "lg", "xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.type"),
             dataIndex: "subType",
+            responsive: ["md", "lg", "xl", "xxl"],
             render(value, record, index) {
                 return value === 1 ? translate("withdraw.values.withdraw") : translate("withdraw.values.payout");
             },
@@ -184,14 +189,18 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("collection.fields.amount"),
             dataIndex: "amount",
+            responsive: ["sm", "md", "lg", "xl", "xxl"],
         },
         {
             title: translate("collection.fields.fee"),
             dataIndex: "fee",
+            responsive: ["lg", "xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.withdrawStatus"),
             dataIndex: "status",
+            fixed: "right" as const,
+            width: 100,
             render(value, record, index) {
                 let status: BadgeProps["status"];
                 if ([WithdrawStatus.成功, WithdrawStatus.手动成功].includes(value)) {
@@ -214,26 +223,33 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("withdraw.fields.accountOwner"),
             dataIndex: "bank_card_holder_name",
+            responsive: ["sm", "md", "lg", "xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.bankName"),
             dataIndex: "bank_name",
+            responsive: ["md", "lg", "xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.bankAccount"),
             dataIndex: "bank_card_number",
+            responsive: ["md", "lg", "xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.province"),
             dataIndex: "bank_province",
+            responsive: ["xl", "xxl"],
         },
         {
             title: translate("withdraw.fields.city"),
             dataIndex: "bank_city",
+            responsive: ["xl", "xxl"],
         },
         {
             title: translate("createAt"),
             dataIndex: "created_at",
+            responsive: ["md", "lg", "xl", "xxl"],
+            width: 160,
             render(value, record, index) {
                 return <DateField value={value} format="YYYY-MM-DD HH:mm:ss" />;
             },
@@ -241,6 +257,8 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("confirmAt"),
             dataIndex: "confirmed_at",
+            responsive: ["lg", "xl", "xxl"],
+            width: 160,
             render(value, record, index) {
                 return value ? <DateField value={value} format="YYYY-MM-DD HH:mm:ss" /> : null;
             },
@@ -249,6 +267,7 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("collection.fields.callbackStatus"),
             dataIndex: "notify_status",
+            responsive: ["lg", "xl", "xxl"],
             render(value, record, index) {
                 let status: BadgeProps["status"];
                 if ([tranCallbackStatus.成功].includes(value)) {
@@ -266,6 +285,7 @@ const PayForAnotherList: FC = () => {
         {
             title: translate("withdraw.fields.callbackTime"),
             dataIndex: "notified_at",
+            responsive: ["xl", "xxl"],
             render(value, record, index) {
                 return value ? <DateField value={value} format={Format} /> : "";
             },

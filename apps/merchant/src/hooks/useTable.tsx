@@ -254,6 +254,7 @@ function useTable<TData extends BaseRecord = any, Meta = any>({
     loading: isFetching,
     size: 'small',
     rowKey: 'id',
+    scroll: { x: 'max-content' },
     ...tableProps,
   };
 
