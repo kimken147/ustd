@@ -1,59 +1,28 @@
-import {
-  CreateButton,
-  DeleteButton,
-  List,
-} from '@refinedev/antd';
-import {
-  Table,
-  TableColumnProps,
-} from 'antd';
-import dayjs from 'dayjs';
-import useTable from 'hooks/useTable';
-import { Tag, Format } from '@morgan-ustd/shared';
+import { CreateButton, List, useTable } from '@refinedev/antd';
+import { ListPageLayout, Tag } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { useColumns, type ColumnDependencies } from './columns';
 
 const TagList: FC = () => {
   const { t } = useTranslation();
-  const { tableProps } = useTable({
+
+  const { tableProps } = useTable<Tag>({
     resource: 'tags',
+    syncWithLocation: true,
   });
 
-  const columns: TableColumnProps<Tag>[] = [
-    {
-      title: t('tagsPage.fields.name'),
-      dataIndex: 'name',
-    },
-    {
-      title: t('createAt'),
-      dataIndex: 'created_at',
-      render(value, record, index) {
-        return dayjs(value).format(Format);
-      },
-    },
-    {
-      title: t('operation'),
-      dataIndex: 'id',
-      render: id => {
-        return <DeleteButton recordItemId={id} danger></DeleteButton>;
-      },
-    },
-  ];
+  const columnDeps: ColumnDependencies = { t };
+  const columns = useColumns(columnDeps);
 
   return (
     <>
       <Helmet>
         <title>{t('tagsPage.title')}</title>
       </Helmet>
-      <List
-        headerButtons={
-          <>
-            <CreateButton></CreateButton>
-          </>
-        }
-      >
-        <Table {...tableProps} columns={columns} rowKey="id"></Table>
+      <List headerButtons={<CreateButton />}>
+        <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
       </List>
     </>
   );
