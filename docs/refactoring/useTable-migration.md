@@ -48,7 +48,7 @@
 - ✅ provider/transaction/list.tsx
 
 ### 其他
-- ⬚ systemSetting/list.tsx
+- ✅ systemSetting/list.tsx
 - ⬚ tag/list.tsx
 - ⬚ permissions/list.tsx
 - ⬚ loginWhiteList/list.tsx
