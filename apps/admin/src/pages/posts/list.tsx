@@ -1,122 +1,45 @@
-import { IResourceComponentsProps, useMany } from "@refinedev/core";
-import {
-  List,
-  TextField,
-  useTable,
-  getDefaultSortOrder,
-  DateField,
-  EditButton,
-  DeleteButton,
-  useSelect,
-  TagField,
-  FilterDropdown,
-  ShowButton,
-} from '@refinedev/antd';
-import {
-  Table,
-  Space,
-  Select,
-} from 'antd';
+import { useMany } from '@refinedev/core';
+import { List, useTable, useSelect } from '@refinedev/antd';
+import { ListPageLayout } from '@morgan-ustd/shared';
+import { FC } from 'react';
+import { useColumns, type ColumnDependencies } from './columns';
 
-export const PostList: React.FC<IResourceComponentsProps> = () => {
-    const { tableProps, sorters } = useTable<IPost>({
-        dataProviderName: "test",
-        sorters: {
-            initial: [
-                {
-                    field: "id",
-                    order: "desc",
-                },
-            ],
-        },
-    });
+export const PostList: FC = () => {
+  const { tableProps, sorters } = useTable<IPost>({
+    dataProviderName: 'test',
+    syncWithLocation: true,
+    sorters: {
+      initial: [{ field: 'id', order: 'desc' }],
+    },
+  });
 
-    const categoryIds = tableProps?.dataSource?.map((item: IPost) => item.category.id) ?? [];
-    const { result: categoriesResult, query: categoriesQuery } = useMany<ICategory>({
-        resource: "categories",
-        dataProviderName: "test",
-        ids: categoryIds,
-        queryOptions: {
-            queryKey: ['categories', categoryIds],
-            enabled: categoryIds.length > 0,
-        },
-    });
-    const categoriesData = categoriesResult;
-    const isLoading = categoriesQuery.isLoading;
+  const categoryIds = tableProps?.dataSource?.map((item: IPost) => item.category.id) ?? [];
+  const { result: categoriesData, query: categoriesQuery } = useMany<ICategory>({
+    resource: 'categories',
+    dataProviderName: 'test',
+    ids: categoryIds,
+    queryOptions: {
+      queryKey: ['categories', categoryIds],
+      enabled: categoryIds.length > 0,
+    },
+  });
 
-    const { selectProps: categorySelectProps } = useSelect<ICategory>({
-        resource: "categories",
-        dataProviderName: "test",
-    });
+  const { selectProps: categorySelectProps } = useSelect<ICategory>({
+    resource: 'categories',
+    dataProviderName: 'test',
+  });
 
-    return (
-        <List>
-            <Table {...tableProps} rowKey="id">
-                <Table.Column
-                    dataIndex="id"
-                    key="id"
-                    title="ID"
-                    render={(value) => <TextField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("id", sorters)}
-                    sorter
-                />
-                <Table.Column
-                    dataIndex="title"
-                    key="title"
-                    title="Title"
-                    render={(value) => <TextField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("title", sorters)}
-                    sorter
-                />
-                <Table.Column
-                    dataIndex="status"
-                    key="status"
-                    title="Status"
-                    render={(value) => <TagField value={value} />}
-                    defaultSortOrder={getDefaultSortOrder("status", sorters)}
-                    sorter
-                />
-                <Table.Column
-                    dataIndex="createdAt"
-                    key="createdAt"
-                    title="Created At"
-                    render={(value) => <DateField value={value} format="LLL" />}
-                    defaultSortOrder={getDefaultSortOrder("createdAt", sorters)}
-                    sorter
-                />
-                <Table.Column
-                    dataIndex={["category", "id"]}
-                    title="Category"
-                    render={(value) => {
-                        if (isLoading) {
-                            return <TextField value="Loading..." />;
-                        }
+  const columnDeps: ColumnDependencies = {
+    sorters,
+    categoriesData,
+    isLoading: categoriesQuery.isLoading,
+    categorySelectProps,
+  };
+  const columns = useColumns(columnDeps);
 
-                        return <TextField value={categoriesData?.data.find((item) => item.id === value)?.title} />;
-                    }}
-                    filterDropdown={(props) => (
-                        <FilterDropdown {...props}>
-                            <Select
-                                style={{ minWidth: 200 }}
-                                mode="multiple"
-                                placeholder="Select Category"
-                                {...categorySelectProps}
-                            />
-                        </FilterDropdown>
-                    )}
-                />
-                <Table.Column<IPost>
-                    title="Actions"
-                    dataIndex="actions"
-                    render={(_, record) => (
-                        <Space>
-                            <EditButton hideText size="small" recordItemId={record.id} />
-                            <ShowButton hideText size="small" recordItemId={record.id} />
-                            <DeleteButton hideText size="small" recordItemId={record.id} />
-                        </Space>
-                    )}
-                />
-            </Table>
-        </List>
-    );
+  return (
+    <List>
+      <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
+    </List>
+  );
 };
