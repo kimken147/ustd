@@ -1,256 +1,160 @@
-import { EditOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import {
-  DateField,
-  List,
-  ShowButton,
-  TextField,
-} from '@refinedev/antd';
-import {
-  DatePicker,
-  Divider,
-  Input,
-  Popover,
-  Space,
-  TableColumnProps,
-} from 'antd';
-import { useGetIdentity, useOne } from "@refinedev/core";
-import { useSearchParams } from "react-router";
-import CustomDatePicker from "components/customDatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import useUserWalletStatus from "hooks/userUserWalletStatus";
-import useTable from "hooks/useTable";
-import useUpdateModal from "hooks/useUpdateModal";
-import { MerchantWalletOperator as Operator, User, Format } from "@morgan-ustd/shared";
-import { UserWalletHistory } from "interfaces/userWalletHistory";
-import { getSign } from "lib/number";
-import { FC } from "react";
-import { Helmet } from "react-helmet";
-import { useTranslation } from "react-i18next";
+import { FC } from 'react';
+import { List, ShowButton, TextField, useTable } from '@refinedev/antd';
+import { Col, DatePicker, Divider, Input, Space } from 'antd';
+import { useGetIdentity, useOne } from '@refinedev/core';
+import { useSearchParams } from 'react-router';
+import dayjs, { Dayjs } from 'dayjs';
+import { Helmet } from 'react-helmet';
+import { useTranslation } from 'react-i18next';
+import { ListPageLayout, User } from '@morgan-ustd/shared';
+import CustomDatePicker from 'components/customDatePicker';
+import useUserWalletStatus from 'hooks/userUserWalletStatus';
+import useUpdateModal from 'hooks/useUpdateModal';
+import { UserWalletHistory } from 'interfaces/userWalletHistory';
+import { useColumns, type ColumnDependencies } from './columns';
 
 const ProviderUserWalletHistoryList: FC = () => {
-    const { t } = useTranslation('providers');
-    const { data: profile } = useGetIdentity<Profile>();
-    const defaultStartAt = dayjs().startOf("days");
-    const [searchParams] = useSearchParams();
-    const userId = searchParams.get("user_id");
-    const { result: user } = useOne<User>({
-        resource: "users",
-        id: userId || 0,
-    });
-    const { Select: UserWalletSelect, getUserWalletStatusText } = useUserWalletStatus();
+  const { t } = useTranslation('providers');
+  const { data: profile } = useGetIdentity<Profile>();
+  const defaultStartAt = dayjs().startOf('days');
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get('user_id');
 
-    const { Form, Table, form } = useTable<UserWalletHistory>({
-        resource: `users/${userId}/wallet-histories`,
-        filters: [
-            {
-                field: "started_at",
-                operator: "eq",
-                value: defaultStartAt.format(),
-            },
-            {
-                field: "user_id",
-                operator: "eq",
-                value: userId,
-            },
-        ],
-        formItems: [
-            {
-                label: t('walletHistory.startDate'),
-                name: "started_at",
-                trigger: "onSelect",
-                children: (
-                  <CustomDatePicker
-                    showTime
-                    className="w-full"
-                    onFastSelectorChange={(startAt, endAt) =>
-                      form.setFieldsValue({
-                          started_at: startAt,
-                          ended_at: endAt,
-                      })
-                    }
-                  />
-                ),
-                rules: [
-                    {
-                        required: true,
-                    },
-                ],
-            },
-            {
-                label: t('walletHistory.endDate'),
-                name: "ended_at",
-                trigger: "onSelect",
-                children: (
-                  <DatePicker
-                    showTime
-                    className="w-full"
-                    disabledDate={(current) => {
-                        const startAt = form.getFieldValue("started_at") as Dayjs;
-                        return current && (current > startAt.add(1, "month") || current < startAt);
-                    }}
-                  />
-                ),
-            },
-            {
-                label: t('walletHistory.alterationType'),
-                name: "type[]",
-                children: <UserWalletSelect mode="multiple" />,
-            },
-            {
-                label: t('walletHistory.note'),
-                name: "note",
-                children: <Input />,
-            },
-        ],
-    });
-    const { Modal, show } = useUpdateModal({
-        formItems: [
-            {
-                label: t('walletHistory.note'),
-                name: "note",
-                children: <Input.TextArea />,
-                rules: [{ required: true }],
-            },
-        ],
-    });
-    if (!userId) return null;
+  const { result: user } = useOne<User>({
+    resource: 'users',
+    id: userId || 0,
+  });
 
-    const columns: TableColumnProps<UserWalletHistory>[] = [
-        {
-            title: t('walletHistory.alterationType'),
-            dataIndex: "type",
-            render(value, record, index) {
-                return getUserWalletStatusText(value);
-            },
-        },
-        {
-            title: t('walletHistory.balanceDelta'),
-            dataIndex: "balance_delta",
-            render(value, record, index) {
-                return getSign(value);
-            },
-        },
-        {
-            title: t('walletHistory.profitDelta'),
-            dataIndex: "profit_delta",
-            render(value, record, index) {
-                return getSign(value);
-            },
-        },
-        {
-            title: t('walletHistory.frozenBalanceDelta'),
-            dataIndex: "frozen_balance_delta",
-            render(value, record, index) {
-                return getSign(value);
-            },
-        },
-        {
-            title: t('walletHistory.balanceResult'),
-            dataIndex: "balance_result",
-        },
-        {
-            title: t('walletHistory.profitResult'),
-            dataIndex: "profit_result",
-        },
-        {
-            title: t('walletHistory.frozenBalanceResult'),
-            dataIndex: "frozen_balance_result",
-        },
+  const { Select: UserWalletSelect, getUserWalletStatusText } = useUserWalletStatus();
 
+  const {
+    tableProps,
+    searchFormProps,
+  } = useTable<UserWalletHistory>({
+    resource: `users/${userId}/wallet-histories`,
+    syncWithLocation: true,
+    filters: {
+      initial: [
         {
-            title: t('walletHistory.note'),
-            dataIndex: "note",
-            render(value, record, index) {
-                return (
-                  <Space>
-                      <TextField value={value} />
-                      <EditOutlined
-                        style={{
-                            color: "#6eb9ff",
-                        }}
-                        onClick={() =>
-                          show({
-                              title: t('walletHistory.editNote'),
-                              id: record.id,
-                              resource: `users/${userId}/wallet-histories`,
-                              filterFormItems: ["note"],
-                              initialValues: {
-                                  note: record.note,
-                              },
-                          })
-                        }
-                      />
-                  </Space>
-                );
-            },
+          field: 'started_at',
+          operator: 'eq',
+          value: defaultStartAt.format(),
         },
         {
-            title: t('walletHistory.alterationTime'),
-            dataIndex: "created_at",
-            render(value, record, index) {
-                return value ? <DateField value={value} format={Format} /> : null;
-            },
+          field: 'user_id',
+          operator: 'eq',
+          value: userId,
         },
-        {
-            title: t('walletHistory.operator'),
-            dataIndex: "operator",
-            render(value: Operator, record, index) {
-                if (!value) return;
-                return (
-                  <Space>
-                      {value?.role === 1 ? (
-                        <TextField value={value?.username} />
-                      ) : (
-                        <ShowButton
-                          recordItemId={value?.id}
-                          disabled={profile?.role !== 1}
-                          resource="sub-accounts"
-                          icon={null}
-                        >
-                            {value?.username}
-                        </ShowButton>
-                      )}
+      ],
+    },
+  });
 
-                      <Popover trigger={"click"} content={<TextField value={t('walletHistory.operatorInfo', { name: value?.name })} />}>
-                          <InfoCircleOutlined className="text-[#1677ff]" />
-                      </Popover>
-                  </Space>
-                );
-            },
-        },
-    ];
-    return (
-      <>
-          <Helmet>
-              <title>{t('walletHistory.title')}</title>
-          </Helmet>
-          <List
-            title={
-                <Space align="center">
-                    <ShowButton
-                      size="large"
-                      icon={null}
-                      recordItemId={user?.id}
-                      resource="providers"
-                    >
-                        {user?.name}
-                    </ShowButton>
-                    {" - "}
-                    <TextField value={t('walletHistory.title')} strong className="text-xl" />
-                </Space>
-            }
+  const form = searchFormProps.form;
+
+  const { modalProps, show, Modal: UpdateModal } = useUpdateModal({
+    formItems: [
+      {
+        label: t('walletHistory.note'),
+        name: 'note',
+        children: <Input.TextArea />,
+        rules: [{ required: true }],
+      },
+    ],
+  });
+
+  const columnDeps: ColumnDependencies = {
+    t,
+    profileRole: profile?.role,
+    userId: userId || '',
+    getUserWalletStatusText,
+    show,
+  };
+
+  const columns = useColumns(columnDeps);
+
+  if (!userId) return null;
+
+  return (
+    <>
+      <Helmet>
+        <title>{t('walletHistory.title')}</title>
+      </Helmet>
+      <List
+        title={
+          <Space align="center">
+            <ShowButton size="large" icon={null} recordItemId={user?.id} resource="providers">
+              {user?.name}
+            </ShowButton>
+            {' - '}
+            <TextField value={t('walletHistory.title')} strong className="text-xl" />
+          </Space>
+        }
+      >
+        <ListPageLayout>
+          <ListPageLayout.Filter
+            formProps={{
+              ...searchFormProps,
+              initialValues: { started_at: defaultStartAt },
+            }}
           >
-              <Form
-                initialValues={{
-                    started_at: defaultStartAt,
-                }}
-              />
-              <Divider />
-              <Table columns={columns} />
-          </List>
-          <Modal />
-      </>
-    );
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item
+                label={t('walletHistory.startDate')}
+                name="started_at"
+                rules={[{ required: true }]}
+                trigger="onSelect"
+              >
+                <CustomDatePicker
+                  showTime
+                  className="w-full"
+                  onFastSelectorChange={(startAt, endAt) =>
+                    form?.setFieldsValue({
+                      started_at: startAt,
+                      ended_at: endAt,
+                    })
+                  }
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item
+                label={t('walletHistory.endDate')}
+                name="ended_at"
+                trigger="onSelect"
+              >
+                <DatePicker
+                  showTime
+                  className="w-full"
+                  disabledDate={current => {
+                    const startAt = form?.getFieldValue('started_at') as Dayjs;
+                    return (
+                      current &&
+                      startAt &&
+                      (current > startAt.add(1, 'month') || current < startAt)
+                    );
+                  }}
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('walletHistory.alterationType')} name="type[]">
+                <UserWalletSelect mode="multiple" allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('walletHistory.note')} name="note">
+                <Input allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
+          </ListPageLayout.Filter>
+        </ListPageLayout>
+
+        <Divider />
+        <ListPageLayout.Table {...tableProps} columns={columns} />
+      </List>
+      <UpdateModal {...modalProps} />
+    </>
+  );
 };
 
 export default ProviderUserWalletHistoryList;
