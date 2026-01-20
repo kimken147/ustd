@@ -12,6 +12,8 @@ export function createOrderStatusColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.orderStatus'),
     dataIndex: 'status',
+    fixed: 'right' as const,
+    width: 100,
     render(value) {
       let color = '';
       if ([WithdrawStatus.成功, WithdrawStatus.手动成功].includes(value)) {
@@ -38,6 +40,8 @@ export function createCallbackStatusColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.callbackStatus'),
     dataIndex: 'notify_status',
+    responsive: ['lg', 'xl', 'xxl'] as const,
+    width: 100,
     render(value) {
       let color = '';
       if ([tranCallbackStatus.成功].includes(value)) {

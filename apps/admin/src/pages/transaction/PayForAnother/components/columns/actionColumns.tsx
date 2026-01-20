@@ -30,6 +30,7 @@ export function createLockedColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.locked'),
     dataIndex: 'locked',
+    width: 80,
     render(value, record) {
       const { separated, locked, locked_by } = record;
       const notLocker =
@@ -107,6 +108,7 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('actions.operation'),
     dataIndex: 'locked',
+    width: 100,
     render(_, record) {
       const { locked, locked_by } = record;
       const notLocker =
@@ -249,6 +251,8 @@ export function createCallbackColumn(ctx: ColumnContext): WithdrawColumn {
 
   return {
     title: t('actions.callback'),
+    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
+    width: 60,
     render: (_, record) => {
       const { status, notify_url } = record;
       if (!notify_url) return null;
@@ -288,6 +292,8 @@ export function createThirdPartyPayoutColumn(ctx: ColumnContext): WithdrawColumn
 
   return {
     title: t('actions.thirdPartyPayout'),
+    responsive: ['lg', 'xl', 'xxl'] as const,
+    width: 60,
     render(_, record) {
       const isDisabled =
         record.status === WithdrawStatus.失败 ||

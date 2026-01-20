@@ -17,6 +17,7 @@ export function createAmountColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.orderAmount'),
     dataIndex: 'amount',
+    responsive: ['sm', 'md', 'lg', 'xl', 'xxl'] as const,
   };
 }
 
@@ -26,6 +27,7 @@ export function createFeeColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.fee'),
     dataIndex: 'merchant_fees',
+    responsive: ['lg', 'xl', 'xxl'] as const,
     render(value) {
       return value?.length ? value[value.length - 1].actual_fee : 0;
     },
@@ -38,6 +40,8 @@ export function createCreatedAtColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.createdAt'),
     dataIndex: 'created_at',
+    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
+    width: 160,
     render(value) {
       return <DateField value={value} format="YYYY-MM-DD HH:mm:ss" />;
     },
@@ -50,6 +54,8 @@ export function createConfirmedAtColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.successTime'),
     dataIndex: 'confirmed_at',
+    responsive: ['lg', 'xl', 'xxl'] as const,
+    width: 160,
     render(value) {
       return value ? <DateField value={value} format="YYYY-MM-DD HH:mm:ss" /> : null;
     },
@@ -62,6 +68,7 @@ export function createSystemOrderNumberColumn(ctx: ColumnContext): WithdrawColum
   return {
     title: t('fields.systemOrderNumber'),
     dataIndex: 'system_order_number',
+    responsive: ['xl', 'xxl'] as const,
     render(value) {
       return (
         <Typography.Paragraph

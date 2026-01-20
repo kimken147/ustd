@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Form, Button, Table, Row, Col, Grid } from 'antd';
+import { Card, Form, Button, Table, Row, Col } from 'antd';
 import type { FormProps, TableProps, FormItemProps } from 'antd';
 import { useTranslate } from '@refinedev/core';
 
@@ -108,31 +108,26 @@ function Filter({ formProps, children, loading }: FilterProps) {
 Filter.Item = FilterItem;
 
 /**
- * ListTable - 表格區塊（帶響應式滾動）
+ * ListTable - 表格區塊
+ *
+ * 使用 Ant Design Table 內建的 RWD 支援:
+ * - scroll.x: 'max-content' 啟用水平捲動
+ * - 欄位使用 responsive 屬性控制顯示 (如 responsive: ['lg', 'xl'])
+ * - 欄位使用 fixed: 'left' | 'right' 固定重要欄位
  */
 function ListTable<T extends object = any>({
   children,
   ...tableProps
 }: ListTableProps<T>) {
-  const breakpoint = Grid.useBreakpoint();
-  const isSmallScreen = breakpoint.xs || breakpoint.sm || breakpoint.md;
-
   return (
-    <div
-      style={{
-        overflowX: 'auto',
-        maxWidth: isSmallScreen ? 'calc(100vw - 24px)' : 'auto',
-      }}
+    <Table<T>
+      size="small"
+      rowKey="id"
+      scroll={{ x: 'max-content' }}
+      {...tableProps}
     >
-      <Table<T>
-        size="small"
-        rowKey="id"
-        scroll={{ x: 'max-content' }}
-        {...tableProps}
-      >
-        {children}
-      </Table>
-    </div>
+      {children}
+    </Table>
   );
 }
 
