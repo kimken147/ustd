@@ -1,79 +1,46 @@
-import { Badge, Divider, Input, Space } from "antd";
-import type { TableColumnProps } from "antd";
-import { CreateButton, DateField, List, ShowButton, TextField } from "@refinedev/antd";
-import { useTranslate } from "@refinedev/core";
-import Table from "components/table";
-import useTable from "hooks/useTable";
-import { SubAccount } from "interfaces/subAccount";
-import { Format } from "@morgan-ustd/shared";
-import { FC } from "react";
-import { Helmet } from "react-helmet";
+import { Col, Divider, Input } from 'antd';
+import { CreateButton, List, useTable } from '@refinedev/antd';
+import { useTranslate } from '@refinedev/core';
+import { ListPageLayout } from '@morgan-ustd/shared';
+import type { SubAccount } from 'interfaces/subAccount';
+import { FC } from 'react';
+import { Helmet } from 'react-helmet';
+import { useColumns, type ColumnDependencies } from './columns';
 
 const SubAccountList: FC = () => {
-    const t = useTranslate();
-    const title = t("subAccount.titles.list");
-    const columns: TableColumnProps<SubAccount>[] = [
-        {
-            title: t("subAccount.fields.name"),
-            dataIndex: "name",
-            render(value, record, index) {
-                return (
-                    <ShowButton icon={null} recordItemId={record.id}>
-                        {value}
-                    </ShowButton>
-                );
-            },
-        },
-        {
-            title: t("subAccount.fields.status"),
-            dataIndex: "status",
-            render(value, record, index) {
-                const color = value === 1 ? "#16a34a" : "#ff4d4f";
-                const text = value === 1 ? t("enable") : t("disable");
-                return <Badge color={color} text={text} />;
-            },
-        },
-        {
-            title: t("subAccount.fields.theLastLoginTimeOrIp"),
-            render(value, record, index) {
-                return (
-                    <Space>
-                        {record.last_login_at ? <DateField value={record.last_login_at} format={Format} /> : "-"}
-                        /
-                        <TextField value={record.last_login_ipv4 || "-"} />
-                    </Space>
-                );
-            },
-        },
-    ];
-    const { Form, tableProps } = useTable({
-        resource: "sub-accounts",
-        formItems: [
-            {
-                label: t("subAccount.query.nameOrAccount"),
-                name: "name_or_username",
-                children: <Input />,
-            },
-        ],
-        columns,
-    });
-    return (
-        <List
-            title={title}
-            headerButtons={() => (
-                <>
-                    <CreateButton>{t("subAccount.buttons.create")}</CreateButton>
-                </>
-            )}
-        >
-            <Helmet>
-                <title>{title}</title>
-            </Helmet>
-            <Form />
-            <Divider />
-            <Table {...tableProps} />
-        </List>
-    );
+  const t = useTranslate();
+  const title = t('subAccount.titles.list');
+
+  const { tableProps, searchFormProps } = useTable<SubAccount>({
+    resource: 'sub-accounts',
+    syncWithLocation: true,
+  });
+
+  const columnDeps: ColumnDependencies = { t };
+  const columns = useColumns(columnDeps);
+
+  return (
+    <List
+      title={title}
+      headerButtons={() => <CreateButton>{t('subAccount.buttons.create')}</CreateButton>}
+    >
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+      <ListPageLayout>
+        <ListPageLayout.Filter formProps={searchFormProps}>
+          <Col xs={24} md={8}>
+            <ListPageLayout.Filter.Item label={t('subAccount.query.nameOrAccount')} name="name_or_username">
+              <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+        </ListPageLayout.Filter>
+      </ListPageLayout>
+
+      <Divider />
+      <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
+    </List>
+  );
 };
 
 export default SubAccountList;
