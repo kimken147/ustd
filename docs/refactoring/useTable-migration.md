@@ -49,7 +49,7 @@
 
 ### 其他
 - ✅ systemSetting/list.tsx
-- ⬚ tag/list.tsx
+- ✅ tag/list.tsx
 - ⬚ permissions/list.tsx
 - ⬚ loginWhiteList/list.tsx
 - ⬚ financeStatitic/list.tsx
