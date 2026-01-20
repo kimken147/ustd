@@ -53,7 +53,7 @@
 - ✅ permissions/list.tsx
 - ✅ loginWhiteList/list.tsx
 - ✅ financeStatitic/list.tsx
-- ⬚ live/list.tsx
+- ✅ live/list.tsx
 - ⬚ posts/list.tsx
 
 ## Merchant (7 個檔案)
