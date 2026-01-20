@@ -1,40 +1,24 @@
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import {
-  List,
-  TextField,
-} from '@refinedev/antd';
-import {
-  Button,
-  Divider,
-  Input,
-  InputNumber,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
-  TableColumnProps,
-} from 'antd';
-import ContentHeader from 'components/contentHeader';
-import useSelector from 'hooks/useSelector';
-import useTable from 'hooks/useTable';
-import useUpdateModal from 'hooks/useUpdateModal';
-import { Channel, Gray } from '@morgan-ustd/shared';
-import {
-  MerchantThirdChannel,
-  ThirdChannelsList,
-} from 'interfaces/merchantThirdChannel';
-import { ThirdChannel } from 'interfaces/thirdChannel';
 import { FC, useState } from 'react';
+import { List, useTable } from '@refinedev/antd';
+import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { ListPageLayout, Channel } from '@morgan-ustd/shared';
+import ContentHeader from 'components/contentHeader';
+import useSelector from 'hooks/useSelector';
+import useUpdateModal from 'hooks/useUpdateModal';
+import { MerchantThirdChannel } from 'interfaces/merchantThirdChannel';
+import { ThirdChannel } from 'interfaces/thirdChannel';
+import { useColumns, type ColumnDependencies } from './columns';
 
 const ThirdChannelSettingList: FC = () => {
   const { t } = useTranslation('thirdParty');
+
   const { Select: ChannelSelect, data: channels } = useSelector<Channel>({
     resource: 'channels',
     valueField: 'code',
   });
+
   const { data: thirdChannels } = useSelector<ThirdChannel>({
     resource: 'thirdchannel',
     valueField: 'name',
@@ -44,24 +28,14 @@ const ThirdChannelSettingList: FC = () => {
   const selectedThirdChannels = thirdChannels?.filter(
     third => third.id === selectedThirdChannelId
   );
-  const { Form, tableProps, refetch } = useTable({
-    formItems: [
-      {
-        label: t('filters.user'),
-        name: 'name_or_username',
-        children: <Input />,
-      },
-      {
-        label: t('filters.thirdPartyName'),
-        name: 'thirdchannel_name',
-        children: <Input />,
-      },
-      {
-        label: t('filters.channelType'),
-        name: 'channel_code[]',
-        children: <ChannelSelect mode="multiple" />,
-      },
-    ],
+
+  const {
+    tableProps,
+    searchFormProps,
+    tableQuery: { refetch },
+  } = useTable<MerchantThirdChannel>({
+    resource: 'merchant-third-channel',
+    syncWithLocation: true,
   });
 
   const {
@@ -78,19 +52,15 @@ const ThirdChannelSettingList: FC = () => {
         name: 'thirdChannel',
         children: (
           <Select
-            options={thirdChannels?.map(t => ({
-              label: `${t.thirdChannel}(${t.channel})`,
-              value: t.id,
+            options={thirdChannels?.map(tc => ({
+              label: `${tc.thirdChannel}(${tc.channel})`,
+              value: tc.id,
             }))}
             value={selectedThirdChannelId}
             onChange={value => setSelectedThirdChannelId(value)}
           />
         ),
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('filters.channelType'),
@@ -99,9 +69,7 @@ const ThirdChannelSettingList: FC = () => {
           <Select
             options={channels
               ?.filter(channel => {
-                return selectedThirdChannels?.find(
-                  s => s.channel === channel.name
-                );
+                return selectedThirdChannels?.find(s => s.channel === channel.name);
               })
               .map(channel => ({
                 label: channel.name,
@@ -110,91 +78,57 @@ const ThirdChannelSettingList: FC = () => {
           />
         ),
         hidden: !selectedThirdChannelId,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.collectionMinLimit'),
         name: 'deposit_min',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.collectionMaxLimit'),
         name: 'deposit_max',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.feePercent'),
         name: 'deposit_fee_percent',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.payoutMinLimit'),
         name: 'daifu_min',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.payoutMaxLimit'),
         name: 'daifu_max',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.feeAmount'),
         name: 'withdraw_fee',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
       {
         label: t('fields.feePercent'),
         name: 'daifu_fee_percent',
         children: <InputNumber className="w-full" />,
-        rules: [
-          {
-            required: true,
-          },
-        ],
+        rules: [{ required: true }],
       },
     ],
     transferFormValues(record) {
-      const channel = channels?.find(
-        channel => channel.code === record.channel_code
-      );
+      const channel = channels?.find(ch => ch.code === record.channel_code);
       if (channel) {
         const thirdChannelId = thirdChannels?.find(
-          t =>
-            t.id === record.thirdChannel &&
+          tc =>
+            tc.id === record.thirdChannel &&
             channel.code.toUpperCase() === record.channel_code.toUpperCase()
         )?.id;
         return {
@@ -205,129 +139,51 @@ const ThirdChannelSettingList: FC = () => {
       return record;
     },
   });
-  const columns: TableColumnProps<MerchantThirdChannel>[] = [
-    {
-      title: t('fields.merchantName'),
-      dataIndex: 'name',
-    },
-    {
-      title: t('fields.loginAccount'),
-      dataIndex: 'username',
-    },
-    {
-      title: t('fields.sharedThirdPartyLine'),
-      dataIndex: 'include_self_providers',
-      render(value, record, index) {
-        return (
-          <Switch
-            checked={value}
-            onChange={checked =>
-              UpdateModal.confirm({
-                title: t('messages.confirmModifyChannel'),
-                id: record.id,
-                resource: 'merchants',
-                values: {
-                  include_self_providers: checked,
-                  id: record.id,
-                },
-                onSuccess() {
-                  refetch();
-                },
-              })
-            }
-          />
-        );
-      },
-    },
-    {
-      title: t('fields.thirdChannel'),
-      dataIndex: 'thirdChannelsList',
-      render(value: ThirdChannelsList[], record, index) {
-        return (
-          <Space>
-            {value.map(thirdChannel => {
-              return (
-                <Space key={thirdChannel.id}>
-                  <TextField
-                    value={`${thirdChannel.thirdChannel}(${thirdChannel.channel_code})`}
-                    style={{ background: Gray, padding: '5px 10px' }}
-                  />
-                  <EditOutlined
-                    style={{
-                      color: '#6eb9ff',
-                    }}
-                    onClick={() => {
-                      setSelectedThirdChannelId(thirdChannel.id);
-                      show({
-                        title: t('actions.editChannel'),
-                        id: thirdChannel.id,
-                        initialValues: {
-                          ...thirdChannel,
-                        },
-                      });
-                    }}
-                  />
-                  <DeleteOutlined
-                    style={{
-                      color: '#ff4d4f',
-                    }}
-                    onClick={() => {
-                      UpdateModal.confirm({
-                        title: t('messages.confirmDeleteThirdChannel'),
-                        id: thirdChannel.id,
-                        mode: 'delete',
-                        // onSuccess: () => {
-                        //     refetch();
-                        // },
-                      });
-                    }}
-                  />
-                </Space>
-              );
-            })}
-          </Space>
-        );
-      },
-    },
-    {
-      title: t('actions.operation'),
-      render(value, record, index) {
-        return (
-          <Space>
-            <Button
-              type="primary"
-              onClick={() =>
-                show({
-                  title: t('actions.addThirdChannel'),
-                  formValues: {
-                    merchant_id: record.id,
-                  },
-                  mode: 'create',
-                })
-              }
-            >
-              {t('actions.add')}
-            </Button>
-          </Space>
-        );
-      },
-    },
-  ];
+
+  const columnDeps: ColumnDependencies = {
+    t,
+    show,
+    setSelectedThirdChannelId,
+    refetch,
+    UpdateModal,
+  };
+
+  const columns = useColumns(columnDeps);
+
   return (
     <List
-      title={
-        <ContentHeader
-          title={t('buttons.thirdChannelSettings')}
-          resource="thirdchannel"
-        />
-      }
+      title={<ContentHeader title={t('buttons.thirdChannelSettings')} resource="thirdchannel" />}
     >
       <Helmet>
         <title>{t('buttons.thirdChannelSettings')}</title>
       </Helmet>
-      <Form />
+
+      <ListPageLayout>
+        <ListPageLayout.Filter formProps={searchFormProps}>
+          <Col xs={24} md={8}>
+            <ListPageLayout.Filter.Item label={t('filters.user')} name="name_or_username">
+              <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <ListPageLayout.Filter.Item
+              label={t('filters.thirdPartyName')}
+              name="thirdchannel_name"
+            >
+              <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <ListPageLayout.Filter.Item label={t('filters.channelType')} name="channel_code[]">
+              <ChannelSelect mode="multiple" allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+        </ListPageLayout.Filter>
+      </ListPageLayout>
+
       <Divider />
-      <Table {...tableProps} columns={columns} rowKey="id" />
+      <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
+
       <Modal {...modalProps} />
     </List>
   );
