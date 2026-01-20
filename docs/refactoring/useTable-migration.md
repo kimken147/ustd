@@ -28,7 +28,7 @@
 - ✅ transaction/deposit/list.tsx (806 行)
 - ✅ transaction/deposit/systemBankCard/list.tsx
 - ✅ transaction/fund/list.tsx
-- ⬚ transaction/message/list.tsx
+- ✅ transaction/message/list.tsx
 
 ### Channel 相關
 - ✅ userChannel/list.tsx (1,432 行，高優先)
