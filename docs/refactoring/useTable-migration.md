@@ -34,7 +34,7 @@
 - ✅ userChannel/list.tsx (1,432 行，高優先)
 - ✅ channel/list.tsx
 - ✅ thirdChannel/list.tsx
-- ⬚ thirdChannel/setting/list.tsx
+- ✅ thirdChannel/setting/list.tsx
 
 ### 用戶管理
 - ✅ merchant/list.tsx (601 行)
