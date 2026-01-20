@@ -49,12 +49,18 @@
 
 ### 其他
 - ✅ systemSetting/list.tsx
+- ✅ systemSetting/bank/list.tsx
 - ✅ tag/list.tsx
 - ✅ permissions/list.tsx
 - ✅ loginWhiteList/list.tsx
 - ✅ financeStatitic/list.tsx
 - ✅ live/list.tsx
 - ✅ posts/list.tsx
+- ✅ userBankCard/list.tsx
+- ✅ providers/whiteList.tsx
+- ✅ merchant/whiteList.tsx
+- ✅ merchant/apiWhiteList.tsx
+- ✅ merchant/bannedList.tsx
 
 ## Merchant (7 個檔案)
 - ✅ collection/list.tsx
@@ -64,8 +70,7 @@
 - ✅ subAccount/list.tsx
 - ✅ wallet-history/index.tsx
 
-## 完成後
-當所有檔案都標記為 ✅ 後，可以：
-1. 刪除 `apps/admin/src/hooks/useTable.tsx`
-2. 刪除 `apps/merchant/src/hooks/useTable.tsx`
-3. 刪除備份檔案 `list.backup.tsx`
+## 完成狀態
+所有檔案已遷移完成。以下清理工作已執行：
+1. ✅ 已刪除 `apps/admin/src/hooks/useTable.tsx`
+2. ✅ 已刪除 `apps/merchant/src/hooks/useTable.tsx`
