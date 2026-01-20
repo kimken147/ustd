@@ -1,0 +1,20 @@
+{
+  "withdrawStatus": {
+    "reviewing": "审核中",
+    "matching": "匹配中",
+    "waitingPayment": "等待付款",
+    "success": "成功",
+    "manualSuccess": "手动成功",
+    "matchTimeout": "匹配超时",
+    "paymentTimeout": "支付超时",
+    "failed": "失败",
+    "thirdPartyProcessing": "三方处理中"
+  },
+  "callbackStatus": {
+    "notNotified": "未通知",
+    "notifying": "通知中",
+    "notified": "已通知",
+    "success": "成功",
+    "failed": "失败"
+  }
+}

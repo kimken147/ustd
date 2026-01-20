@@ -1,0 +1,20 @@
+{
+  "withdrawStatus": {
+    "reviewing": "Reviewing",
+    "matching": "Matching",
+    "waitingPayment": "Processing",
+    "success": "Success",
+    "manualSuccess": "Success(Manual)",
+    "matchTimeout": "Matching Timeout",
+    "paymentTimeout": "Timeout",
+    "failed": "Failed",
+    "thirdPartyProcessing": "Third-Party Processing"
+  },
+  "callbackStatus": {
+    "notNotified": "Not Sent",
+    "notifying": "Notifying",
+    "notified": "Notified",
+    "success": "Success",
+    "failed": "Failed"
+  }
+}
