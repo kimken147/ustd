@@ -57,7 +57,7 @@
 - ✅ posts/list.tsx
 
 ## Merchant (7 個檔案)
-- ⬚ collection/list.tsx
+- ✅ collection/list.tsx
 - ⬚ member/list.tsx
 - ✅ PayForAnother/list.tsx
 - ⬚ bankCard/list.tsx
