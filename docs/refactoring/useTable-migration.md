@@ -62,7 +62,7 @@
 - ✅ PayForAnother/list.tsx
 - ✅ bankCard/list.tsx
 - ✅ subAccount/list.tsx
-- ⬚ wallet-history/index.tsx
+- ✅ wallet-history/index.tsx
 
 ## 完成後
 當所有檔案都標記為 ✅ 後，可以：
