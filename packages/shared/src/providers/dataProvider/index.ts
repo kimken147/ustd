@@ -30,7 +30,7 @@ export const createDataProvider = (
       const query = pagination?.mode === 'off'
         ? { no_paginate: 1 }
         : {
-            page: pagination?.current || 1,
+            page: pagination?.currentPage || 1,
             per_page: pagination?.pageSize || 20,
           };
 

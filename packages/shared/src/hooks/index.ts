@@ -1,4 +1,4 @@
-export { useSelector, type UseSelectorProps } from './useSelector';
+export { useSelector, type UseSelectorProps, type UseSelectorResult } from './useSelector';
 export {
   useWithdrawStatus,
   WithdrawStatus,

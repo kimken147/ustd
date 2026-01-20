@@ -187,7 +187,7 @@ const PayForAnotherList: FC = () => {
     searchFormProps,
     tableQuery: { data, refetch, isFetching },
     filters,
-  } = useTable<Withdraw, unknown, unknown, Withdraw>({
+  } = useTable<Withdraw>({
     resource: 'withdraws',
     syncWithLocation: true,
     filters: {

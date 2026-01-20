@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { AxiosInstance } from 'axios';
 import {
   TableColumnProps,
   Typography,
@@ -59,7 +60,7 @@ export interface UseColumnsProps {
   providerSelectProps: SelectProps;
   currentMerchantThirdChannelSelect: SelectProps['options'];
   setSelectMerchantId: (id: number) => void;
-  axiosInstance: any;
+  axiosInstance: AxiosInstance;
 }
 
 export function useColumns(props: UseColumnsProps): TableColumnProps<Withdraw>[] {

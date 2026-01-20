@@ -17,6 +17,17 @@ export interface ListTableProps<T = any> extends TableProps<T> {
   children?: React.ReactNode;
 }
 
+// 定義 Filter 元件類型（包含 Item 子元件）
+export interface FilterComponent extends React.FC<FilterProps> {
+  Item: React.FC<FormItemProps>;
+}
+
+// 定義 ListPageLayout 元件類型
+export interface ListPageLayoutComponent extends React.FC<ListPageLayoutProps> {
+  Filter: FilterComponent;
+  Table: <T extends object = any>(props: ListTableProps<T>) => React.ReactElement;
+}
+
 /**
  * ListPageLayout - 列表頁面佈局元件
  *
@@ -125,13 +136,14 @@ function ListTable<T extends object = any>({
   );
 }
 
-// 掛載子元件
-ListPageLayout.Filter = Filter;
-ListPageLayout.Table = ListTable;
+// 掛載子元件並轉型
+const ListPageLayoutWithSubComponents = ListPageLayout as ListPageLayoutComponent;
+ListPageLayoutWithSubComponents.Filter = Filter as FilterComponent;
+ListPageLayoutWithSubComponents.Table = ListTable;
 
 // 匯出類型
 export type { FilterProps as ListPageLayoutFilterProps };
 export type { ListTableProps as ListPageLayoutTableProps };
 
-export { ListPageLayout };
-export default ListPageLayout;
+export { ListPageLayoutWithSubComponents as ListPageLayout };
+export default ListPageLayoutWithSubComponents;

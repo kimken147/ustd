@@ -1,3 +1,4 @@
+import React from 'react';
 import { Select as AntdSelect } from 'antd';
 import type { SelectProps } from 'antd';
 import { BaseRecord, CrudFilters, useList } from '@refinedev/core';
@@ -10,9 +11,19 @@ export type UseSelectorProps<TData> = {
   labelRender?: (record: TData) => string;
 };
 
+export interface UseSelectorResult<TData> {
+  Select: (props: SelectProps) => React.ReactElement;
+  data: TData[] | undefined;
+  selectProps: SelectProps;
+  isLoading: boolean;
+  isFetching: boolean;
+  isError: boolean;
+  refetch: () => void;
+}
+
 export function useSelector<TData extends BaseRecord>(
   props?: UseSelectorProps<TData>
-) {
+): UseSelectorResult<TData> {
   const { result, query } = useList<TData>({
     resource: props?.resource || '',
     pagination: {
@@ -36,10 +47,13 @@ export function useSelector<TData extends BaseRecord>(
   };
 
   return {
-    ...query,
     Select,
     data: result.data,
     selectProps,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    isError: query.isError,
+    refetch: query.refetch,
   };
 }
 
