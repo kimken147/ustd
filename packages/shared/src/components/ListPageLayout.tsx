@@ -11,6 +11,7 @@ export interface FilterProps {
   formProps: FormProps;
   children: React.ReactNode;
   loading?: boolean;
+  onSearch?: () => void;
 }
 
 export interface ListTableProps<T = any> extends TableProps<T> {
@@ -61,14 +62,19 @@ function FilterItem(props: FormItemProps) {
 /**
  * Filter - 篩選表單區塊
  */
-function Filter({ formProps, children, loading }: FilterProps) {
+function Filter({ formProps, children, loading, onSearch }: FilterProps) {
   const t = useTranslate();
   const [form] = Form.useForm();
   const actualForm = formProps.form || form;
 
+  const handleFinish = (values: any) => {
+    formProps.onFinish?.(values);
+    onSearch?.();
+  };
+
   return (
     <Card className="mb-4">
-      <Form {...formProps} form={actualForm} layout="vertical">
+      <Form {...formProps} form={actualForm} layout="vertical" onFinish={handleFinish}>
         <Row gutter={[{ xs: 8, sm: 8, md: 16 }, 0]} align="middle">
           {children}
         </Row>
