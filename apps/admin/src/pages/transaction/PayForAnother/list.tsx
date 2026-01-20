@@ -1,43 +1,28 @@
 /**
  * PayForAnother List Page - 重構後版本
  *
- * 使用 ListPageLayout + 抽取的 FilterForm 和 useColumns
- * 將原本 1348 行重構為更易維護的結構
+ * 使用 ListPageLayout + 抽取的元件和 hooks
  */
-import { List, ListButton } from '@refinedev/antd';
+import { FC, useState } from 'react';
+import { List, ListButton, TextField } from '@refinedev/antd';
+import { useTable } from '@refinedev/antd';
 import {
   Button,
-  Card,
-  Col,
-  ColProps,
   Divider,
-  Input,
-  Row,
   Space,
-  Statistic,
   Modal as AntdModal,
-  Select,
   SelectProps,
   Switch,
-  Table,
-  Grid,
 } from 'antd';
-import { useTable } from '@refinedev/antd';
 import {
   ListPageLayout,
   useWithdrawStatus,
   useTransactionCallbackStatus,
-  useUpdateModal,
   useSelector,
   WithdrawMeta as Meta,
   Withdraw,
 } from '@morgan-ustd/shared';
-import { FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import useMerchant from 'hooks/useMerchant';
-import useChannel from 'hooks/useChannel';
-import dayjs from 'dayjs';
-import { ExportOutlined } from '@ant-design/icons';
 import {
   CrudFilter,
   useApiUrl,
@@ -46,25 +31,28 @@ import {
   useGetIdentity,
 } from '@refinedev/core';
 import { axiosInstance } from '@refinedev/simple-rest';
-import useAutoRefetch from 'hooks/useAutoRefetch';
 import { useNavigate } from 'react-router';
+import { ExportOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import queryString from 'query-string';
+import { useTranslation } from 'react-i18next';
+
+// Local imports
+import useMerchant from 'hooks/useMerchant';
+import useChannel from 'hooks/useChannel';
+import useAutoRefetch from 'hooks/useAutoRefetch';
 import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';
 import { MerchantThirdChannel } from 'interfaces/merchantThirdChannel';
 import { ThirdChannel } from 'interfaces/thirdChannel';
-import { isEqual } from 'lodash';
 import { Provider } from 'interfaces/provider';
 import Enviroment from 'lib/env';
 import NoticeAudio from 'assets/notice.mp3';
-import { useAudioPermission } from 'hooks/useAudioPermission';
 import AudioPermissionAlert from 'components/AudioPermissionAlert';
-import { useTranslation } from 'react-i18next';
-import { TextField } from '@refinedev/antd';
 
-// Page components
-import { FilterForm } from './components/FilterForm';
-import { useColumns } from './components/columns';
+// Page components and hooks
+import { FilterForm, useColumns, StatisticsCards } from './components';
+import { useNewDataNotification, useUpdateModalConfig } from './hooks';
 
 const PayForAnotherList: FC = () => {
   const { t } = useTranslation('transaction');
@@ -73,23 +61,16 @@ const PayForAnotherList: FC = () => {
   const apiUrl = useApiUrl();
   const { data: profile } = useGetIdentity<Profile>();
   const defaultStartAt = dayjs().startOf('days').format();
-  const colProps: ColProps = { xs: 24, sm: 24, md: 6 };
-  const breakpoint = Grid.useBreakpoint();
-  const isSmallScreen = breakpoint.xs || breakpoint.sm || breakpoint.md;
 
-  const { data: canEdit } = useCan({
-    action: '12',
-    resource: 'withdraws',
-  });
+  const { data: canEdit } = useCan({ action: '12', resource: 'withdraws' });
 
+  // Selector hooks
   const [selectedMerchantId, setSelectMerchantId] = useState(0);
   const { Select: MerchantSelect } = useMerchant({ valueField: 'username' });
   const { Select: ChannelSelect } = useChannel();
   const { Select: ThirdChannelSelect } = useSelector<ThirdChannel>({
     resource: 'thirdchannel',
-    labelRender(record) {
-      return `${record.thirdChannel}-${record.channel}`;
-    },
+    labelRender: record => `${record.thirdChannel}-${record.channel}`,
   });
   const { selectProps: providerSelectProps } = useSelector<Provider>({
     resource: 'users',
@@ -103,6 +84,7 @@ const PayForAnotherList: FC = () => {
     ],
   });
 
+  // Compute merchant third channel options
   let currentMerchantThirdChannelSelect: SelectProps['options'] = [];
   if (merchantThirdChannel?.length) {
     const thirdChannelsList = merchantThirdChannel?.find(
@@ -110,11 +92,12 @@ const PayForAnotherList: FC = () => {
     )?.thirdChannelsList;
     if (thirdChannelsList) {
       currentMerchantThirdChannelSelect = Object.values(thirdChannelsList).map(
-        t => ({ label: t.thirdChannel, value: t.thirdchannel_id })
+        item => ({ label: item.thirdChannel, value: item.thirdchannel_id })
       );
     }
   }
 
+  // Status hooks
   const {
     Select: WithdrawStatusSelect,
     getStatusText: getWithdrawStatusText,
@@ -126,62 +109,16 @@ const PayForAnotherList: FC = () => {
     getStatusText: getTranCallbackStatus,
   } = useTransactionCallbackStatus();
 
-  const {
-    Modal,
-    show: showUpdateModal,
-    modalProps,
-  } = useUpdateModal({
-    formItems: [
-      {
-        label: t('fields.note'),
-        name: 'note',
-        children: <Input.TextArea />,
-      },
-      { name: 'realname', hidden: true },
-      { name: 'type', hidden: true },
-      { name: 'ipv4', hidden: true },
-      { name: 'transaction_id', hidden: true },
-      {
-        name: 'to_thirdchannel_id',
-        children: <Select options={currentMerchantThirdChannelSelect} />,
-      },
-      {
-        name: 'withdrawType',
-        label: t('withdraw.type'),
-        children: (
-          <Select
-            options={[
-              { label: t('types.manualAgency'), value: 4 },
-              { label: t('types.paufenAgency'), value: 2 },
-            ]}
-          />
-        ),
-      },
-      {
-        name: 'to_id',
-        label: t('fields.assignProvider'),
-        children: (
-          <Select
-            {...providerSelectProps}
-            options={[
-              { label: t('placeholders.notAssign'), value: null },
-              ...(providerSelectProps.options ?? []),
-            ]}
-          />
-        ),
-      },
-    ],
-    transferFormValues(record) {
-      if (record.withdrawType) {
-        return { ...record, type: record.withdrawType };
-      }
-      return record;
-    },
+  // Modal hook
+  const { Modal, show: showUpdateModal, modalProps } = useUpdateModalConfig({
+    providerSelectProps,
+    currentMerchantThirdChannelSelect,
   });
 
+  // Auto refresh
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
 
-  // Use Refine's useTable
+  // Table hook
   const {
     tableProps,
     searchFormProps,
@@ -202,13 +139,12 @@ const PayForAnotherList: FC = () => {
     },
   });
 
-  const meta = (data as any)?.meta as Meta || { banned_realnames: [] };
+  const meta = ((data as any)?.meta as Meta) || { banned_realnames: [] };
   const withdrawData = data?.data;
   const pagination = tableProps.pagination as { current?: number };
-
   const { mutateAsync } = useCustomMutation();
 
-  // Use extracted columns
+  // Columns
   const columns = useColumns({
     canEdit: canEdit?.can ?? false,
     profile,
@@ -229,45 +165,27 @@ const PayForAnotherList: FC = () => {
     axiosInstance,
   });
 
-  // Audio notification state
-  const [previouData, setPrevData] = useState<{
-    withdraws?: Withdraw[];
-    page?: number;
-    filters?: CrudFilter[];
-  }>({ page: 1, filters });
-
+  // Audio notification
   const {
+    enableNotice,
+    setEnableNotice,
     showPermissionAlert,
     grantPermission,
     dismissPermissionAlert,
-    playAudio,
-  } = useAudioPermission(NoticeAudio);
+  } = useNewDataNotification({
+    data: withdrawData,
+    currentPage: pagination?.current,
+    filters: filters as CrudFilter[],
+    audioSrc: NoticeAudio,
+  });
 
-  const [enableNotice, setEnableNotice] = useState(true);
-  useEffect(() => {
-    if (enableNotice) {
-      if (
-        previouData &&
-        previouData.page === pagination?.current &&
-        withdrawData?.[0]?.id &&
-        previouData.withdraws?.[0]?.id !== withdrawData?.[0]?.id &&
-        isEqual(previouData.filters, filters)
-      ) {
-        playAudio();
-        setPrevData({ ...previouData, withdraws: withdrawData });
-      }
-      if (
-        !isEqual(previouData.filters, filters) ||
-        previouData?.page !== pagination?.current
-      ) {
-        setPrevData({
-          withdraws: withdrawData,
-          page: pagination?.current,
-          filters: filters,
-        });
-      }
-    }
-  }, [withdrawData, pagination, previouData, enableNotice, filters, playAudio]);
+  // Export handler
+  const handleExport = () => {
+    const url = `${apiUrl}/withdraw-report?${queryString.stringify(
+      generateFilter(filters as CrudFilter[])
+    )}&token=${getToken()}`;
+    window.open(url);
+  };
 
   return (
     <>
@@ -283,15 +201,7 @@ const PayForAnotherList: FC = () => {
                 ? t('withdraw.merchantProviderBankList')
                 : t('withdraw.merchantBankList')}
             </ListButton>
-            <Button
-              icon={<ExportOutlined />}
-              onClick={async () => {
-                const url = `${apiUrl}/withdraw-report?${queryString.stringify(
-                  generateFilter(filters as CrudFilter[])
-                )}&token=${getToken()}`;
-                window.open(url);
-              }}
-            >
+            <Button icon={<ExportOutlined />} onClick={handleExport}>
               {t('buttons.export')}
             </Button>
           </>
@@ -311,53 +221,14 @@ const PayForAnotherList: FC = () => {
         </ListPageLayout>
 
         <Divider />
-        <Row gutter={[16, 16]}>
-          <Col {...colProps}>
-            <Card className="border-[#ff4d4f] border-[2.5px]">
-              <Statistic
-                value={meta?.total}
-                title={t('statistics.paymentCount')}
-                valueStyle={{ fontStyle: 'italic', fontWeight: 'bold' }}
-              />
-            </Card>
-          </Col>
-          <Col {...colProps}>
-            <Card className="border-[#3f7cac] border-[2.5px]">
-              <Statistic
-                value={meta?.total_amount}
-                title={t('statistics.paymentAmount')}
-                valueStyle={{ fontStyle: 'italic', fontWeight: 'bold' }}
-              />
-            </Card>
-          </Col>
-          <Col {...colProps}>
-            <Card className="border-[#f7b801] border-[2.5px]">
-              <Statistic
-                value={meta?.total_profit}
-                title={t('statistics.paymentProfit')}
-                valueStyle={{ fontStyle: 'italic', fontWeight: 'bold' }}
-              />
-            </Card>
-          </Col>
-          <Col {...colProps}>
-            <Card className="border-[#f7b801] border-[2.5px]">
-              <Statistic
-                value={meta?.third_channel_fee}
-                title={t('statistics.thirdPartyFee')}
-                valueStyle={{ fontStyle: 'italic', fontWeight: 'bold' }}
-              />
-            </Card>
-          </Col>
-        </Row>
+        <StatisticsCards meta={meta} />
         <Divider />
+
         <Space>
           <AutoRefetch />
           <Space className="px-4 mb-4">
             <TextField value={t('switches.soundAlert')} />
-            <Switch
-              checked={enableNotice}
-              onChange={checked => setEnableNotice(checked)}
-            />
+            <Switch checked={enableNotice} onChange={setEnableNotice} />
           </Space>
         </Space>
 
@@ -368,6 +239,7 @@ const PayForAnotherList: FC = () => {
           size="small"
         />
       </List>
+
       <AntdModal {...modalProps} />
       {showPermissionAlert && (
         <AudioPermissionAlert
