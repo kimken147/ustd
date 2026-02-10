@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Provider;
 
-use App\Http\Resources\Exchange\UserChannelAccountCollection;
+use App\Http\Resources\UserChannelAccountCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 

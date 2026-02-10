@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\ThirdPartyResponseUtil;
 
 class BankCardController extends Controller
 {
@@ -69,13 +68,6 @@ class BankCardController extends Controller
         }
 
         abort_if($featureToggleRepository->enabled(FeatureToggle::WITHDRAW_BANK_NAME_MAPPING) && !$inDaifuBank, Response::HTTP_BAD_GATEWAY, "不支援此银行");
-        // if ($featureToggleRepository->enabled(FeatureToggle::WITHDRAW_BANK_NAME_MAPPING) && !$inDaifuBank) {
-        //     return response()->json([
-        //         'http_status_code' => Response::HTTP_BAD_REQUEST,
-        //         'error_code'       => ThirdPartyResponseUtil::ERROR_CODE_BANK_NOT_FOUND,
-        //         'message'          => '不支援此银行'
-        //     ]);
-        // }
 
         $bankCard = BankCard::create([
             'user_id'               => auth()->user()->getKey(),

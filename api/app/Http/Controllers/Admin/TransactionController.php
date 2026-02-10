@@ -28,7 +28,6 @@ use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use App\Utils\InsufficientAvailableBalance;
 use App\Utils\WalletUtil;
-use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;

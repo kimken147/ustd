@@ -364,12 +364,6 @@ class Transaction extends Model
         return $this->belongsTo(UserChannelAccount::class, 'to_channel_account_id', 'id');
     }
 
-    public function scopeForceIndex($query, $index)
-    {
-        $table = $this->getTable();
-        return $query->from(DB::raw("`$table` FORCE INDEX(`$index`)"));
-    }
-
     public function scopeUseIndex($query, $index)
     {
         $table = $this->getTable();

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static $this|Builder ofIpv4(string $ipv4)
- * @method static $this|Builder ofIpv4s(array $ipv4s)
  * @method static $this|Builder ofUser(Authenticatable|User $user)
  * @method static $this|Builder ofType(int $type)
  * @property string ipv4
@@ -50,11 +49,6 @@ class WhitelistedIp extends Model
     public function scopeOfType(Builder $builder, int $type)
     {
         return $builder->where('type', $type);
-    }
-
-    public function scopeOfIpv4s(Builder $builder, $ipv4s)
-    {
-        return $builder->whereIn('ipv4', $ipv4s);
     }
 
     public function user()

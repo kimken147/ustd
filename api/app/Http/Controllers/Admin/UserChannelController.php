@@ -44,15 +44,6 @@ class UserChannelController extends Controller
                     __('channel.Invalid fee')
                 );
 
-                // 只有上級為信用模式時，才可以設定下級為信用模式
-                // abort_if(
-                //     $agentUserChannel
-                //     && $bcMath->notEqual($agentUserChannel->fee_percent, 0)
-                //     && $bcMath->eq($request->fee_percent, 0),
-                //     Response::HTTP_BAD_REQUEST,
-                //     __('channel.Zero fee can only be used in root')
-                // );
-
                 abort_if(
                     $agentUserChannel
                     && $bcMath->eq($agentUserChannel->fee_percent, 0)

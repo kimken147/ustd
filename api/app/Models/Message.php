@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-
 /**
  * @property string name
  */
@@ -29,8 +27,4 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeUnread(Builder $builder)
-    {
-        return $builder->whereNull('readed_at');
-    }
 }

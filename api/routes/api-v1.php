@@ -708,29 +708,6 @@ Route::prefix("app")
         Route::apiResource("error-logs", "ErrorLogController")->only(["store"]);
     });
 
-// Route::prefix('exchange')
-//     ->namespace('Exchange')->group(function () {
-//         Route::post('pre-login', 'AuthController@preLogin');
-//         Route::post('login', 'AuthController@login');
-
-//         Route::middleware(['auth:api', 'role:provider', 'exchange.mode.enabled', 'check.whitelisted.ip'])->group(function () {
-//             Route::get('me', 'AuthController@me');
-//             Route::put('me', 'AuthController@updateMe');
-//             Route::post('change-password', 'AuthController@changePassword');
-
-//             Route::apiResource('user-channel-accounts', 'UserChannelAccountController')->only(['index', 'store', 'update', 'show', 'destroy']);
-
-//             Route::apiResource('transactions', 'TransactionController')->only(['index', 'update', 'show']);
-
-//             Route::put('deposits/{deposit}/certificates-presigned-url', 'DepositController@certificatesPresignedUrl');
-//             Route::apiResource('deposits', 'DepositController')->only(['update']);
-
-//             Route::apiResource('matching-deposits', 'MatchingDepositController')->only(['index', 'update']);
-
-//             Route::apiResource('banks', 'BankController')->only(['index']);
-//         });
-//     });
-
 $telegramToken = config("services.telegram-bot-api.token", function () {
     return Str::random(40);
 });

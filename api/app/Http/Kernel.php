@@ -10,7 +10,6 @@ use App\Http\Middleware\CheckPermission;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\CheckWhitelistedIp;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\ExchangeModeEnabled;
 use App\Http\Middleware\LogRequestResponse;
 use App\Http\Middleware\ParseTextPlainJson; // 新增這一行
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -101,7 +100,6 @@ class Kernel extends HttpKernel
         'check.account.status'  => CheckAccountStatus::class,
         'check.account.token'   => CheckAccountToken::class,
         'check.whitelisted.ip'  => CheckWhitelistedIp::class,
-        'exchange.mode.enabled' => ExchangeModeEnabled::class,
         'parse.textplain.json'  => ParseTextPlainJson::class, // 新增這一行
     ];
 }

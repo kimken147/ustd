@@ -12,7 +12,6 @@ use App\Console\Commands\SyncThirdchannelBalance;
 
 
 use App\Console\Commands\CheckDelayedProviderDeposit;
-use App\Console\Commands\CheckMatchingUserLastActivity;
 use App\Console\Commands\DisableNonLoginUser;
 use App\Console\Commands\DisableTimeLimitUserChannelAccount;
 
@@ -53,8 +52,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(CheckDelayedProviderDeposit::class)->everyMinute()->onOneServer();
-        //$schedule->command(CheckMatchingUserLastActivity::class)->everyMinute()->onOneServer();
-
         $schedule->command(CheckThirdchannelBalance::class)->everyMinute()->onOneServer();
         $schedule->command(SyncThirdchannelBalance::class)->everyMinute()->onOneServer();
         $schedule->command(SyncThirdchannelDaifuOrder::class)->everyMinute()->onOneServer();
@@ -74,9 +71,6 @@ class Kernel extends ConsoleKernel
 
     protected function shortSchedule(ShortSchedule $shortSchedule)
     {
-        //$shortSchedule->command("thirdchannel:sync-balance")->everySeconds(10)->onOneServer();
-
-
-
+        //
     }
 }
