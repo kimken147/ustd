@@ -5,6 +5,7 @@ return [
     'No data found'                       => 'No Data Available',
     'User not found'                      => 'User Not Found',
     'Order not found'                     => 'No Order Data Found',
+    'Invalid order number'                => 'Invalid order number',
     'Transaction not found'               => 'Transaction Not Found',
     'Transaction cannot be paid'          => 'Transaction Cannot Be Paid',
     'Channel not found'                   => 'Channel Not Found',
@@ -95,6 +96,8 @@ return [
     'Cannot transfer to yourself'         => 'Cannot Transfer to Yourself',
     'File name error'                     => 'File Name Error',
     'Please check your input'             => 'Please Check If the Order Details Are Correct',
+    'Create transfer failed'              => 'Failed to create transfer',
+    'Account is processing transfer, please try later' => ':account is processing a transfer, please try later',
     
     // ========== Contact Customer Service ==========
     'Please contact admin'                => 'Please Contact Customer Service',
@@ -115,6 +118,7 @@ return [
     
     // ========== Time Related ==========
     'Time range cannot exceed one month'  => 'Time Range Cannot Exceed One Month, Please Adjust',
+    'Date range limited to one month'     => 'Date range limited to one month, please adjust the time range',
     
     // ========== Others ==========
     'FailedToAdd'                         => 'Creation Failed',

@@ -12,6 +12,7 @@ class WithdrawContext
 {
     public const SOURCE_THIRD_PARTY = 'third_party';
     public const SOURCE_MERCHANT = 'merchant';
+    public const SOURCE_ADMIN = 'admin';
 
     public function __construct(
         public readonly User $merchant,
@@ -33,6 +34,11 @@ class WithdrawContext
     public function isFromMerchant(): bool
     {
         return $this->source === self::SOURCE_MERCHANT;
+    }
+
+    public function isFromAdmin(): bool
+    {
+        return $this->source === self::SOURCE_ADMIN;
     }
 
     public function isUsdt(): bool

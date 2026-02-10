@@ -470,6 +470,64 @@ class TransactionFactory
         return $transaction;
     }
 
+    /**
+     * Create an internal transfer transaction.
+     *
+     * @param UserChannelAccount|null $account Target channel account
+     */
+    public function internalTransferFrom(?UserChannelAccount $account = null): ?Transaction
+    {
+        $this->throwIfAnyMissing(["amount", "bankCard"]);
+
+        try {
+            DB::beginTransaction();
+
+            $data = [
+                "from_id" => 0,
+                "from_wallet_id" => 0,
+                "to_id" => 0,
+                "to_channel_account_id" => null,
+                "type" => Transaction::TYPE_INTERNAL_TRANSFER,
+                "status" => Transaction::STATUS_MATCHING,
+                "notify_status" => Transaction::NOTIFY_STATUS_NONE,
+                "to_account_mode" => null,
+                "from_channel_account" => [
+                    UserChannelAccount::DETAIL_KEY_BANK_NAME => $this->bankCard->bankName,
+                    UserChannelAccount::DETAIL_KEY_BANK_CARD_NUMBER => $this->bankCard->bankCardNumber,
+                    UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME => $this->bankCard->bankCardHolderName,
+                ],
+                "to_channel_account" => [],
+                "amount" => $this->amount,
+                "floating_amount" => $this->amount,
+                "actual_amount" => 0,
+                "usdt_rate" => $this->usdtRate ?? 0,
+                "channel_code" => null,
+                "order_number" => $this->orderNumber,
+                "note" => $this->note,
+            ];
+
+            if ($account) {
+                $data["to_id"] = $account->user_id;
+                $data["to_channel_account_id"] = $account->id;
+                $data["to_channel_account"] = array_merge($account->detail, [
+                    "channel_code" => $account->channel_code,
+                ]);
+                $data["status"] = Transaction::STATUS_PAYING;
+                $data["matched_at"] = now();
+            }
+
+            $transaction = Transaction::create($data);
+
+            DB::commit();
+        } catch (RuntimeException $e) {
+            DB::rollback();
+
+            return null;
+        }
+
+        return $transaction;
+    }
+
     public function createThirdchannel(
         User $user,
     ) {

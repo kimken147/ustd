@@ -5,6 +5,7 @@ return [
     'No data found'                       => '查无资料',
     'User not found'                      => '查无使用者',
     'Order not found'                     => '查无订单',
+    'Invalid order number'                => '单号错误',
     'Transaction not found'               => '查無此交易',
     'Transaction cannot be paid'          => '此筆交易無法付款',
     'Channel not found'                   => '通道不存在',
@@ -95,6 +96,8 @@ return [
     'Cannot transfer to yourself'         => '禁止转点给自己',
     'File name error'                     => '档案名称错误',
     'Please check your input'             => '请检查提交内容是否正确',
+    'Create transfer failed'              => '建立出款失败',
+    'Account is processing transfer, please try later' => ':account 正在出款，请稍候再试',
     
     // ========== 聯絡客服 ==========
     'Please contact admin'                => '请联络客服',
@@ -115,6 +118,7 @@ return [
     
     // ========== 時間相關 ==========
     'Time range cannot exceed one month'  => '时间区间最多一次筛选一个月，请重新调整时间',
+    'Date range limited to one month'     => '时间区间最多一次筛选一个月，请重新调整时间',
     
     // ========== 其他 ==========
     'FailedToAdd'                         => '新增失败',
