@@ -7,6 +7,7 @@ use App\Http\Resources\Merchant\TransactionCollection;
 use App\Models\Transaction;
 use App\Models\TransactionFee;
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,23 +29,12 @@ class TransactionController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $confirmed = $request->confirmed;
         $lang = $request->input('lang', 'zh_CN');
 
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            __('transaction.noRecord',[],$lang)
-        );
-
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('transaction.timeIntervalError',[],$lang)
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2, __('transaction.noRecord',[],$lang))
+            ->validateDays(31, __('transaction.timeIntervalError',[],$lang));
 
         $transactions = Transaction::where('type', Transaction::TYPE_PAUFEN_TRANSACTION)
             ->whereIn('to_id', auth()->user()->getDescendantsId())
@@ -156,16 +146,10 @@ class TransactionController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $lang = $request->input('lang', 'zh_CN');
 
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('transaction.timeIntervalError',[],$lang)
-        );
+        DateRangeValidator::parse($request)
+            ->validateDays(31, __('transaction.timeIntervalError',[],$lang));
 
         $confirmed = $request->confirmed;
 

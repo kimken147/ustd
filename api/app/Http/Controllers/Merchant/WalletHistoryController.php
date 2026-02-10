@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ListWalletHistoryRequest;
 use App\Http\Resources\WalletHistoryCollection;
 use App\Utils\AmountDisplayTransformer;
-use Illuminate\Http\Response;
+use App\Utils\DateRangeValidator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -15,16 +15,11 @@ class WalletHistoryController extends Controller
 
     public function index(ListWalletHistoryRequest $request)
     {
-        $startedAt = $request->started_at ? Carbon::make($request->started_at)->tz(config('app.timezone')) : today();
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $lang = $request->input('lang', 'zh_CN');
 
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('wallet.timeIntervalError',[],$lang)
-        );
+        $dateRange = DateRangeValidator::parse($request, today())
+            ->validateDays(31, __('wallet.timeIntervalError',[],$lang));
+        $startedAt = $dateRange->startedAt;
 
         $walletHistories = auth()->user()->walletHistories()
             ->where('created_at', '>=', $startedAt)
@@ -63,16 +58,11 @@ class WalletHistoryController extends Controller
 
     public function exportCsv(ListWalletHistoryRequest $request)
     {
-        $startedAt = $request->started_at ? Carbon::make($request->started_at)->tz(config('app.timezone')) : today();
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $lang = $request->input('lang', 'zh_CN');
 
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('wallet.timeIntervalError',[],$lang)
-        );
+        $dateRange = DateRangeValidator::parse($request, today())
+            ->validateDays(31, __('wallet.timeIntervalError',[],$lang));
+        $startedAt = $dateRange->startedAt;
 
         $walletHistories = auth()->user()->walletHistories()
             ->where('created_at', '>=', $startedAt)

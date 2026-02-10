@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use App\Http\Controllers\Controller;
 
 use App\Http\Resources\UserChannelAccountCollection;
@@ -44,17 +45,13 @@ class GenericSearchController extends Controller
         ]);
 
         $type = $request->type;
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
+        $dateRange = DateRangeValidator::parse($request);
+        $startedAt = $dateRange->startedAt;
+        $endedAt = $dateRange->endedAt;
         $userId = auth()->user()->getKey();
 
         if ($type == 'transaction') {
-            abort_if(
-                $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-                now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-                Response::HTTP_BAD_REQUEST,
-                '查无资料'
-            );
+            $dateRange->validateDaysFromFeatureToggle($featureToggleRepository);
 
             $query = Transaction::where('type', Transaction::TYPE_PAUFEN_TRANSACTION)
                 ->where('from_id', $userId)
@@ -81,12 +78,7 @@ class GenericSearchController extends Controller
                     ]
                 ]);
         } else if ($type == 'wallet-history') {
-            abort_if(
-                $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-                now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-                Response::HTTP_BAD_REQUEST,
-                '查无资料'
-            );
+            $dateRange->validateDaysFromFeatureToggle($featureToggleRepository);
 
             $query = WalletHistory::where('user_id', $userId)
                 ->where('created_at', '>=', Carbon::make($startedAt)->tz(config('app.timezone')))
@@ -141,12 +133,7 @@ class GenericSearchController extends Controller
             return DeviceCollection::make($request->no_paginate ? $query->get() : $query->paginate());
 
         } else if ($type == 'deposit') {
-            abort_if(
-                $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-                now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-                Response::HTTP_BAD_REQUEST,
-                '查无资料'
-            );
+            $dateRange->validateDaysFromFeatureToggle($featureToggleRepository);
 
             $query = Transaction::whereIn('type', [Transaction::TYPE_PAUFEN_WITHDRAW, Transaction::TYPE_NORMAL_DEPOSIT])
             ->where('to_id', $userId)
@@ -179,12 +166,7 @@ class GenericSearchController extends Controller
 
             return BankCardCollection::make($request->no_paginate ? $query->get() : $query->paginate());
         } else if ($type == 'withdraw') {
-            abort_if(
-                $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-                now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-                Response::HTTP_BAD_REQUEST,
-                '查无资料'
-            );
+            $dateRange->validateDaysFromFeatureToggle($featureToggleRepository);
 
             $query = Transaction::where('type', Transaction::TYPE_NORMAL_WITHDRAW)
                 ->where('from_id', $userId)

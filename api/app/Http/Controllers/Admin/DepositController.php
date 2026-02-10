@@ -9,6 +9,7 @@ use App\Http\Resources\Admin\DepositCollection;
 use App\Models\Permission;
 use App\Models\Transaction;
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use App\Utils\TransactionUtil;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
@@ -40,21 +41,9 @@ class DepositController extends Controller
             ],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(31);
 
         $builder = new TransactionBuilder;
         $deposits = $builder->deposits($request);
@@ -261,21 +250,9 @@ class DepositController extends Controller
             ],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(31);
 
         $builder = new TransactionBuilder;
         $deposits = $builder->deposits($request)->get();

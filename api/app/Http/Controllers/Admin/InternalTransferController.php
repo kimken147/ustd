@@ -7,6 +7,7 @@ use App\Http\Resources\Admin\InternalTransferCollection;
 use App\Http\Resources\Admin\InternalTransfer;
 use App\Models\Permission;
 use App\Models\Transaction;
+use App\Utils\DateRangeValidator;
 use App\Utils\TransactionUtil;
 use App\Builders\Transaction as TransactionBuilder;
 use App\Exceptions\TransactionLockerNotYouException;
@@ -14,7 +15,6 @@ use App\Services\InternalTransfer\InternalTransferService;
 use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class InternalTransferController extends Controller
@@ -35,24 +35,9 @@ class InternalTransferController extends Controller
             "status" => ["nullable", "array"],
         ]);
 
-        $startedAt = $request->started_at
-            ? optional(Carbon::make($request->started_at))->tz(config("app.timezone"))
-            : now()->startOfDay();
-        $endedAt = $request->ended_at
-            ? Carbon::make($request->ended_at)->tz(config("app.timezone"))
-            : now()->endOfDay();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            __('common.No data found')
-        );
-
-        abort_if(
-            !$startedAt || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('common.Date range limited to one month')
-        );
+        DateRangeValidator::parse($request, now()->startOfDay(), now()->endOfDay())
+            ->validateMonths(2, __('common.No data found'))
+            ->validateDays(31, __('common.Date range limited to one month'));
 
         $builder = new TransactionBuilder();
         $transactions = $builder->internalTransfer($request);

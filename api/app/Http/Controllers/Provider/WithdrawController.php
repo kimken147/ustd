@@ -12,6 +12,7 @@ use App\Models\BannedRealname;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\BankCardTransferObject;
+use App\Utils\DateRangeValidator;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
 use App\Utils\TransactionFactory;
@@ -39,28 +40,10 @@ class WithdrawController extends Controller
             'status'     => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-            now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDaysFromFeatureToggle($featureToggleRepository)
+            ->validateDays(31);
 
         $withdraws = Transaction::where('type', Transaction::TYPE_NORMAL_WITHDRAW);
 

@@ -26,6 +26,7 @@ use App\Models\FeatureToggle;
 use App\Models\TransactionFee;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
+use App\Utils\DateRangeValidator;
 use App\Utils\InsufficientAvailableBalance;
 use App\Utils\WalletUtil;
 use Illuminate\Http\Request;
@@ -55,21 +56,9 @@ class TransactionController extends Controller
             'thirdchannel_id'         => 'nullable',
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 8,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 91,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选三个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(8)
+            ->validateDays(91, '时间区间最多一次筛选三个月，请重新调整时间');
 
         $builder = new TransactionBuilder;
         $transactions = $builder->transactions($request);
@@ -289,21 +278,9 @@ class TransactionController extends Controller
             'provider_device_hash_id' => ['nullable', 'string'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 91,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选三个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(91, '时间区间最多一次筛选三个月，请重新调整时间');
 
         $builder = new TransactionBuilder;
         $transactions = $builder->transactions($request)->with('channel', 'to')
@@ -415,21 +392,9 @@ class TransactionController extends Controller
             'thirdchannel_id'         => 'nullable',
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 91,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选三个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(91, '时间区间最多一次筛选三个月，请重新调整时间');
 
         $builder = new TransactionBuilder;
         $transactions = $builder->transactions($request);

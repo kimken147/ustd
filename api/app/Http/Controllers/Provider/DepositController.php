@@ -10,12 +10,13 @@ use App\Models\SystemBankCard;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Repository\FeatureToggleRepository;
+use App\Services\CertificateService;
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use App\Utils\AtomicLockUtil;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\TransactionFactory;
-use AWS;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -23,12 +24,14 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DepositController extends Controller
 {
+    public function __construct(
+        private readonly CertificateService $certificateService
+    ) {
+    }
 
     public function certificatesPresignedUrl(Transaction $deposit)
     {
@@ -38,50 +41,7 @@ class DepositController extends Controller
             '目前状态无法修改电子回单'
         );
 
-        $userId = auth()->user()->getAuthIdentifier();
-
-        return Redis::funnel("funnel-create-certificate-presigned-url-$userId")->limit(1)->then(function () use ($userId
-        ) {
-            $path = Str::random(40);
-            $retryCount = 0;
-
-            while (Storage::disk('transaction-certificate-files')->has($path) && $retryCount <= 10) {
-                $path = Str::random(40);
-                $retryCount += 1;
-            }
-
-            abort_if(
-                Storage::disk('transaction-certificate-files')->has($path),
-                Response::HTTP_BAD_REQUEST,
-                '系统繁忙，请重试'
-            );
-
-            // 第二版電子回單使用
-            $paths = collect(Cache::pull("certificate-paths-$userId") ?? []);
-
-            $paths->push($path);
-
-            Cache::put("certificate-paths-$userId", $paths, now()->addHour());
-
-            // 暫時維持原樣以確保新舊程式重疊時不會有問題
-            Cache::put("certificate-path-owner-$path", auth()->user()->getKey(), now()->addHour());
-
-            $s3 = AWS::createClient('s3');
-
-            $cmd = $s3->getCommand('PutObject', [
-                'Bucket' => config('filesystems.disks.transaction-certificate-files.bucket'),
-                'Key'    => $path,
-            ]);
-
-            $uri = (string) $s3->createPresignedRequest($cmd, '+1 hour')->getUri();
-
-            return response()->json([
-                'certificate_file_path'     => $path,
-                'certificate_presigned_url' => $uri,
-            ]);
-        }, function () {
-            abort(Response::HTTP_BAD_REQUEST, '请稍候重试');
-        });
+        return $this->certificateService->createPresignedUrl();
     }
 
     public function index(
@@ -94,28 +54,10 @@ class DepositController extends Controller
             'status'     => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-            now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDaysFromFeatureToggle($featureToggleRepository)
+            ->validateDays(31);
 
         $deposits = Transaction::whereIn('type', [Transaction::TYPE_PAUFEN_WITHDRAW, Transaction::TYPE_NORMAL_DEPOSIT]);
 
@@ -382,7 +324,7 @@ class DepositController extends Controller
         DB::transaction(function () use ($request, $deposit) {
             $this->updateNoteIfPresent($request, $deposit);
 
-            $this->updateCertificateIfPresent($request, $deposit);
+            $this->certificateService->updateCertificate($request, $deposit);
         });
 
         return Deposit::make($deposit->load(['to', 'transactionNotes' => function($query) {
@@ -405,47 +347,4 @@ class DepositController extends Controller
         return $deposit;
     }
 
-    private function updateCertificateIfPresent(Request $request, Transaction $deposit)
-    {
-        // 第一版
-        if ($path = $request->input('certificate_file_path')) {
-            abort_if(
-                auth()->user()->getKey() != Cache::pull("certificate-path-owner-$path"),
-                Response::HTTP_BAD_REQUEST,
-                '档案名称错误'
-            );
-
-            $deposit->update(['certificate_file_path' => $path]);
-        }
-
-        $requestedPaths = collect($request->input('certificate_file_paths', []))->unique();
-
-        // 第二版
-        if ($requestedPaths->isNotEmpty()) {
-            $userId = auth()->user()->getAuthIdentifier();
-            $existingPaths = $deposit->certificateFiles->pluck('path');
-            $paths = collect(Cache::pull("certificate-paths-$userId") ?? [])->merge($existingPaths);
-
-            abort_if(
-                $requestedPaths->intersect($paths)->count() !== $requestedPaths->count(),
-                Response::HTTP_BAD_REQUEST,
-                '档案名称错误'
-            );
-
-            DB::transaction(function () use ($deposit, $requestedPaths) {
-                if ($deposit->certificate_file_path) {
-                    $deposit->update(['certificate_file_path' => null]);
-                }
-
-                $deposit->certificateFiles()->delete();
-                $deposit->certificateFiles()->createMany($requestedPaths->map(function ($path) {
-                    return compact('path');
-                }));
-            });
-
-            $deposit->load('certificateFiles');
-        }
-
-        return $deposit;
-    }
 }

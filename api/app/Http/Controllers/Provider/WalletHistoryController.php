@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ListWalletHistoryRequest;
 use App\Http\Resources\WalletHistoryCollection;
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Http\Response;
@@ -19,22 +20,10 @@ class WalletHistoryController extends Controller
         ListWalletHistoryRequest $request,
         FeatureToggleRepository $featureToggleRepository
     ) {
-        $startedAt = $request->started_at ? Carbon::make($request->started_at)->tz(config('app.timezone')) : today();
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            $featureToggleRepository->enabled(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS) &&
-            now()->diffInDays($startedAt) > $featureToggleRepository->valueOf(FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS, 30),
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        $dateRange = DateRangeValidator::parse($request, today())
+            ->validateDaysFromFeatureToggle($featureToggleRepository)
+            ->validateDays(31);
+        $startedAt = $dateRange->startedAt;
 
         $walletHistories = auth()->user()->walletHistories()
             ->where('created_at', '>=', $startedAt)

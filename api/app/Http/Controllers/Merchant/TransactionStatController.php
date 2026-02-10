@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Merchant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Merchant\TransactionStatCollection;
+use App\Utils\DateRangeValidator;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSet;
@@ -76,10 +76,11 @@ class TransactionStatController extends Controller
     public function v1(Request $request)
     {
         $user = auth()->user();
-        $startedAt = $request->has('started_at') ? Carbon::parse($request->started_at) : Carbon::now()->startOfDay();
-        $endedAt = $request->has('ended_at') ? Carbon::parse($request->ended_at) : Carbon::now()->endOfDay();
 
-        abort_if($startedAt->diffInDays($endedAt) > 31, Response::HTTP_BAD_REQUEST, '时间区间最多一次筛选一个月，请重新调整时间');
+        $dateRange = DateRangeValidator::parse($request, Carbon::now()->startOfDay(), Carbon::now()->endOfDay())
+            ->validateDays(31);
+        $startedAt = $dateRange->startedAt;
+        $endedAt = $dateRange->endedAt;
 
         $daiso = Transaction::where('type', Transaction::TYPE_PAUFEN_TRANSACTION)
             ->whereIn('status', [Transaction::STATUS_SUCCESS, Transaction::STATUS_MANUAL_SUCCESS])

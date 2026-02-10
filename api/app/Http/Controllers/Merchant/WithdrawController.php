@@ -13,6 +13,7 @@ use App\Models\TransactionFee;
 use App\Repository\FeatureToggleRepository;
 use App\Services\Withdraw\WithdrawService;
 use App\Utils\BCMathUtil;
+use App\Utils\DateRangeValidator;
 use App\Utils\TransactionUtil;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,16 +34,10 @@ class WithdrawController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $lang = $request->input('lang', 'zh_CN');
 
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            __('withdraw.timeIntervalError', [], $lang)
-        );
+        DateRangeValidator::parse($request)
+            ->validateDays(31, __('withdraw.timeIntervalError', [], $lang));
 
         $withdraws = Transaction::whereIn(
             'type',
@@ -162,22 +157,11 @@ class WithdrawController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
         $confirmed = $request->confirmed;
 
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-            || $startedAt->diffInDays($endedAt) > 31,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选一个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(31);
 
         $withdraws = Transaction::whereIn(
             'type',

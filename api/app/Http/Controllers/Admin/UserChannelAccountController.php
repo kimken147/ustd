@@ -11,34 +11,20 @@ use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
 use App\Models\ChannelAmount;
 use App\Models\TransactionGroup;
-use App\Models\Transaction;
 use App\Models\Device;
 use App\Models\Bank;
 use App\Models\UserChannelAccountAudit;
 use App\Utils\AmountDisplayTransformer;
 use App\Repository\FeatureToggleRepository;
-use Endroid\QrCode\Builder\Builder as QrBuilder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\Writer\PngWriter;
-use Exception;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\RequestOptions;
-use Hashids\Hashids;
+use App\Services\UserChannelAccount\UserChannelAccountService;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Zxing\QrReader;
 use App\Http\Resources\UserChannelAccountAuditCollection;
-use App\Utils\GuzzleHttpClientTrait;
 use App\Builders\UserChannelAccount as UserChannelAccountBuilder;
 use App\Jobs\SyncGcashAccount;
 use App\Jobs\SyncMayaAccountJob;
@@ -48,10 +34,9 @@ use Illuminate\Support\Facades\Redis;
 
 class UserChannelAccountController extends Controller
 {
-    use GuzzleHttpClientTrait;
-
-    public function __construct()
-    {
+    public function __construct(
+        private readonly UserChannelAccountService $userChannelAccountService
+    ) {
         $this->middleware([
             "permission:" . Permission::ADMIN_UPDATE_USER_CHANNEL_ACCOUNT,
         ])->only("update");
@@ -440,182 +425,26 @@ class UserChannelAccountController extends Controller
             $request->provider . " 查无此码商"
         );
 
-        $channelAmount = ChannelAmount::find($request->channel_amount_id);
-
-        abort_if(
-            !$channelAmount,
-            Response::HTTP_BAD_REQUEST,
-            __("channel.User channel not found")
+        $data = array_merge(
+            $request->only([
+                'channel_amount_id', 'account', 'bank_card_number', 'bank_name',
+                'device_name', 'status', 'type', 'name', 'note', 'balance',
+                'balance_limit', 'is_auto', 'daily_limit', 'withdraw_daily_limit',
+                'monthly_limit', 'withdraw_monthly_limit', 'single_min_limit',
+                'single_max_limit', 'withdraw_single_min_limit', 'withdraw_single_max_limit',
+                'sync_after_create',
+            ]),
+            [
+                'detail' => $request->only(
+                    'account', 'bank_name', 'bank_card_number', 'bank_card_holder_name',
+                    'bank_card_branch', 'mpin', 'new_mpin', 'mobile', 'receiver_name',
+                    'pin', 'otp', 'pwd', 'sync_after_create'
+                ),
+                'qr_code_file' => $request->file('qr_code'),
+            ]
         );
 
-        $userChannel = UserChannel::where([
-            "user_id" => $provider->getKey(),
-            "channel_group_id" => $channelAmount->channel_group_id,
-        ])->first();
-
-        abort_if(
-            !$userChannel,
-            Response::HTTP_BAD_REQUEST,
-            __("channel.User channel not found")
-        );
-
-        abort_if(
-            is_null($userChannel->fee_percent),
-            Response::HTTP_BAD_REQUEST,
-            "通道费率未设定"
-        );
-
-        if ($request->has("account")) {
-            $isExists = UserChannelAccount::where(
-                "channel_code",
-                $channelAmount->channel_code
-            )
-                ->where("account", $request->account)
-                ->exists();
-            abort_if(
-                $isExists,
-                Response::HTTP_BAD_REQUEST,
-                $request->account . " 已存在"
-            );
-        }
-
-        $device = [
-            "user_id" => $provider->getKey(),
-            "name" => $request->input("device_name", $provider->name),
-        ];
-
-        Device::insertIgnore($device);
-
-        $device = Device::where($device)->firstOrFail();
-
-        $userChannelAccount = null;
-
-        $wallet = $provider->wallet;
-
-        if ($provider->depositModeEnabled()) {
-            $wallet = User::whereIsRoot()
-                ->whereAncestorOrSelf($provider)
-                ->firstOrFail()->wallet;
-        }
-
-        $detail = $request->only(
-            "account",
-            "bank_name",
-            "bank_card_number",
-            "bank_card_holder_name",
-            "bank_card_branch",
-            "mpin",
-            "new_mpin",
-            "mobile",
-            "receiver_name",
-            "pin",
-            "otp",
-            "pwd",
-            "sync_after_create"
-        );
-
-        if ($request->has("qr_code")) {
-            $file = $request->file("qr_code");
-            $redirectUrl = $this->decodeQrCode($file);
-            $path = Storage::disk("user-channel-accounts-qr-code")->putFile(
-                $this->getQrCodeFileBasePath($provider),
-                $file
-            );
-            $processedPath = $this->saveProcessedQrCode(
-                $redirectUrl,
-                $provider
-            );
-
-            // 新增 qrcode 在用的 field
-            $detail["redirect_url"] = $redirectUrl;
-            $detail["processed_qr_code_file_path"] = $processedPath;
-            $detail["qr_code_file_path"] = $path;
-        }
-
-        $account = $request->account;
-        if ($request->has("bank_card_number")) {
-            $account = $request->bank_card_number;
-        }
-
-        $bankId = 0;
-        if ($request->has("bank_name")) {
-            $bank = Bank::firstWhere("name", $request->bank_name);
-            abort_if(!$bank, Response::HTTP_BAD_REQUEST, "銀行設定錯誤");
-            $bankId = $bank->id;
-        }
-
-        $status = $request->input("status", UserChannelAccount::STATUS_DISABLE);
-        if ($request->has("sync_after_create")) {
-            $status = UserChannelAccount::STATUS_DISABLE;
-        }
-
-        DB::beginTransaction();
-        try {
-            $userChannelAccount = $channelAmount
-                ->userChannelAccounts()
-                ->create([
-                    "user_id" => $provider->getKey(),
-                    "device_id" => $device->getKey(),
-                    "wallet_id" => $wallet->getKey(),
-                    "bank_id" => $bankId,
-                    "channel_code" => $channelAmount->channel_code,
-                    "status" => $status,
-                    "type" => $request->input(
-                        "type",
-                        UserChannelAccount::TYPE_DEPOSIT_WITHDRAW
-                    ),
-                    "fee_percent" => $userChannel->fee_percent,
-                    "min_amount" => $userChannel->min_amount,
-                    "max_amount" => $userChannel->max_amount,
-                    "account" => $account,
-                    "detail" => $detail,
-                    "note" => $request->input("note", ""),
-                    "balance" => $request->input("balance", 0) ?? 0,
-                    "balance_limit" => $request->input("balance_limit"),
-                    "is_auto" => $request->input("is_auto", false),
-                    "daily_status" => UserChannelAccount::DAILY_STATUS_ENABLE,
-                    "daily_limit" => $request->input("daily_limit"),
-                    "withdraw_daily_limit" => $request->input(
-                        "withdraw_daily_limit"
-                    ),
-                    "monthly_status" =>
-                    UserChannelAccount::MONTHLY_STATUS_ENABLE,
-                    "monthly_limit" => $request->input("monthly_limit"),
-                    "withdraw_monthly_limit" => $request->input(
-                        "withdraw_monthly_limit"
-                    ),
-                    'single_min_limit'          => $request->input('single_min_limit'),
-                    'single_max_limit'          => $request->input('single_max_limit'),
-                    'withdraw_single_min_limit' => $request->input('withdraw_single_min_limit'),
-                    'withdraw_single_max_limit' => $request->input('withdraw_single_max_limit'),
-                ]);
-            $userChannelAccount->name = $request->input(
-                "name",
-                Str::padLeft($userChannelAccount->id, 5, "0")
-            );
-            $userChannelAccount->save();
-
-            $transactionGroups = TransactionGroup::where(
-                "transaction_type",
-                Transaction::TYPE_PAUFEN_TRANSACTION
-            )
-                ->whereHas("worker", function (Builder $users) use ($provider) {
-                    $users->whereAncestorOrSelf($provider);
-                })
-                ->pluck("id");
-            $userChannelAccount
-                ->transactionGroups()
-                ->syncWithoutDetaching($transactionGroups);
-            DB::commit();
-
-            if ($request->has("sync_after_create")) {
-                SyncGcashAccount::dispatch($userChannelAccount->id, "init");
-            }
-        } catch (exception $e) {
-            DB::rollBack();
-        }
-
-        abort_if(!$userChannelAccount, Response::HTTP_INTERNAL_SERVER_ERROR);
+        $userChannelAccount = $this->userChannelAccountService->createAccount($data, $provider);
 
         Artisan::call("paufen:disable-time-limit-user-channel-account", [
             "user_channel_account" => $userChannelAccount,
@@ -667,11 +496,6 @@ class UserChannelAccountController extends Controller
             $providers = [];
             $banks = [];
             foreach ($request->accounts as $account) {
-                $channelAmount = data_get(
-                    $channelAmounts,
-                    $account["channel_amount_id"]
-                );
-
                 $provider = data_get($providers, $account["provider"]);
                 if (!$provider) {
                     $provider = User::with("wallet", "devices")->find(
@@ -686,100 +510,32 @@ class UserChannelAccountController extends Controller
                     data_set($banks, $account["bank_name"], $bank);
                 }
 
-                $userChannel = UserChannel::where([
-                    "user_id" => $provider->getKey(),
-                    "channel_group_id" => $channelAmount->channel_group_id,
-                ])->first();
+                $data = [
+                    'channel_amount_id' => $account['channel_amount_id'],
+                    'device'            => $provider->devices->first(),
+                    'wallet'            => $provider->wallet,
+                    'bank_id'           => optional($bank)->id ?? 0,
+                    'account'           => $account['account'],
+                    'detail'            => Arr::only($account, [
+                        'account', 'bank_name', 'bank_card_number', 'bank_card_holder_name',
+                        'bank_card_branch', 'mpin', 'new_mpin', 'mobile', 'receiver_name',
+                        'pin', 'otp', 'pwd', 'sync_after_create',
+                    ]),
+                    'status'                 => data_get($account, 'status', UserChannelAccount::STATUS_DISABLE),
+                    'sync_after_create'      => $account['sync_after_create'] ?? null,
+                    'type'                   => data_get($account, 'type', UserChannelAccount::TYPE_DEPOSIT_WITHDRAW),
+                    'name'                   => $account['name'] ?? null,
+                    'note'                   => data_get($account, 'note', ''),
+                    'balance'                => data_get($account, 'balance', 0) ?? 0,
+                    'balance_limit'          => data_get($account, 'balance_limit'),
+                    'is_auto'                => data_get($account, 'is_auto', false),
+                    'daily_limit'            => data_get($account, 'daily_limit'),
+                    'withdraw_daily_limit'   => data_get($account, 'withdraw_daily_limit'),
+                    'monthly_limit'          => data_get($account, 'monthly_limit'),
+                    'withdraw_monthly_limit' => data_get($account, 'withdraw_monthly_limit'),
+                ];
 
-                $device = $provider->devices->first();
-                $wallet = $provider->wallet;
-                $detail = Arr::only($account, [
-                    "account",
-                    "bank_name",
-                    "bank_card_number",
-                    "bank_card_holder_name",
-                    "bank_card_branch",
-                    "mpin",
-                    "new_mpin",
-                    "mobile",
-                    "receiver_name",
-                    "pin",
-                    "otp",
-                    "pwd",
-                    "sync_after_create",
-                ]);
-
-                $status = data_get(
-                    $account,
-                    "status",
-                    UserChannelAccount::STATUS_DISABLE
-                );
-                if (isset($detail["sync_after_create"])) {
-                    $status = UserChannelAccount::STATUS_DISABLE;
-                }
-
-                $userChannelAccount = $channelAmount
-                    ->userChannelAccounts()
-                    ->create([
-                        "user_id" => $provider->getKey(),
-                        "device_id" => $device->getKey(),
-                        "wallet_id" => $wallet->getKey(),
-                        "bank_id" => optional($bank)->id ?? 0,
-                        "channel_code" => $channelAmount->channel_code,
-                        "status" => $status,
-                        "type" => data_get(
-                            $account,
-                            "type",
-                            UserChannelAccount::TYPE_DEPOSIT_WITHDRAW
-                        ),
-                        "fee_percent" => $userChannel->fee_percent,
-                        "min_amount" => $userChannel->min_amount,
-                        "max_amount" => $userChannel->max_amount,
-                        "account" => $account["account"],
-                        "detail" => $detail,
-                        "note" => data_get($account, "note", ""),
-                        "balance" => data_get($account, "balance", 0) ?? 0,
-                        "balance_limit" => data_get($account, "balance_limit"),
-                        "is_auto" => data_get($account, "is_auto", false),
-                        "daily_status" =>
-                        UserChannelAccount::DAILY_STATUS_ENABLE,
-                        "daily_limit" => data_get($account, "daily_limit"),
-                        "withdraw_daily_limit" => data_get(
-                            $account,
-                            "withdraw_daily_limit"
-                        ),
-                        "monthly_status" =>
-                        UserChannelAccount::MONTHLY_STATUS_ENABLE,
-                        "monthly_limit" => data_get($account, "monthly_limit"),
-                        "withdraw_monthly_limit" => data_get(
-                            $account,
-                            "withdraw_monthly_limit"
-                        ),
-                    ]);
-                $userChannelAccount->name = data_get(
-                    $account,
-                    "name",
-                    Str::padLeft($userChannelAccount->id, 5, "0")
-                );
-                $userChannelAccount->save();
-
-                $transactionGroups = TransactionGroup::where(
-                    "transaction_type",
-                    Transaction::TYPE_PAUFEN_TRANSACTION
-                )
-                    ->whereHas("worker", function (Builder $users) use (
-                        $provider
-                    ) {
-                        $users->whereAncestorOrSelf($provider);
-                    })
-                    ->pluck("id");
-                $userChannelAccount
-                    ->transactionGroups()
-                    ->syncWithoutDetaching($transactionGroups);
-
-                if (isset($detail["sync_after_create"])) {
-                    SyncGcashAccount::dispatch($userChannelAccount->id, "init");
-                }
+                $this->userChannelAccountService->createAccountInTransaction($data, $provider);
             }
 
             DB::commit();
@@ -789,88 +545,6 @@ class UserChannelAccountController extends Controller
         }
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
-    }
-
-    private function decodeQrCode(UploadedFile $file)
-    {
-        try {
-            $qrCodeText = "";
-
-            try {
-                $qrCodeText = trim((new QrReader($file))->text());
-            } catch (Exception $exception) {
-                return abort(
-                    Response::HTTP_BAD_REQUEST,
-                    __("common.Invalid qr-code")
-                );
-            }
-
-            if (!empty($qrCodeText)) {
-                return $qrCodeText;
-            }
-
-            $response = $this->makeClient()->post(
-                "http://api.qrserver.com/v1/read-qr-code/",
-                [
-                    RequestOptions::MULTIPART => [
-                        [
-                            "name" => "file",
-                            "contents" => fopen($file->path(), "r"),
-                        ],
-                        [
-                            "name" => "MAX_FILE_SIZE",
-                            "contents" => $file->getSize(),
-                        ],
-                    ],
-                ]
-            );
-
-            $responseData = json_decode($response->getBody()->getContents());
-
-            $qrCodeText = trim(data_get($responseData, "0.symbol.0.data"));
-
-            abort_if(
-                empty($qrCodeText),
-                Response::HTTP_BAD_REQUEST,
-                __("common.Invalid qr-code")
-            );
-
-            return $qrCodeText;
-        } catch (TransferException $transferException) {
-            return abort(
-                Response::HTTP_BAD_REQUEST,
-                __("common.Invalid qr-code")
-            );
-        }
-    }
-
-    private function getQrCodeFileBasePath($user)
-    {
-        $userId = $user->getKey();
-
-        return "users/$userId";
-    }
-
-    private function saveProcessedQrCode($redirectUrl, $user)
-    {
-        $qrcode = QrBuilder::create()
-            ->writer(new PngWriter())
-            ->data($redirectUrl)
-            ->encoding(new Encoding("UTF-8"))
-            ->margin(10)
-            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->size(500)
-            ->build();
-
-        $basePath = $this->getQrCodeFileBasePath($user);
-        $fileHashName = Str::random(40);
-
-        Storage::disk("user-channel-accounts-qr-code")->put(
-            $path = trim("$basePath/$fileHashName", "/") . ".png",
-            $qrcode->getString()
-        );
-
-        return $path;
     }
 
     public function batchUpdate(Request $request)

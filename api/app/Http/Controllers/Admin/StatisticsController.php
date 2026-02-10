@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Utils\DateRangeValidator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -204,15 +205,11 @@ class StatisticsController extends Controller
 
     public function v1(Request $request)
     {
-        $startedAt = $request->has('started_at') ? Carbon::parse($request->started_at) : Carbon::now()->startOfDay();
-        $endedAt = $request->has('ended_at') ? Carbon::parse($request->ended_at) : Carbon::now()->endOfDay();
+        $dateRange = DateRangeValidator::parse($request, now()->startOfDay(), now()->endOfDay())
+            ->validateDays(31);
+        $startedAt = $dateRange->startedAt;
+        $endedAt = $dateRange->endedAt;
         $timeType = $request->timeType == "created_at" ? "created_at" : "confirmed_at";
-
-        abort_if($startedAt->diffInDays($endedAt) > 31, Response::HTTP_BAD_REQUEST, '时间区间最多一次筛选一个月，请重新调整时间');
-
-        // 确保 $startedAt 和 $endedAt 是 Carbon 实例
-        $startedAt = Carbon::parse($startedAt);
-        $endedAt = Carbon::parse($endedAt);
 
         // 获取交易类型常量
         $typePaufenTransaction = Transaction::TYPE_PAUFEN_TRANSACTION;

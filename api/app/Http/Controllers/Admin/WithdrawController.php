@@ -20,6 +20,7 @@ use App\Builders\Transaction as TransactionBuilder;
 use App\Models\MerchantThirdChannel;
 use App\Models\ThirdChannel;
 use App\Utils\BCMathUtil;
+use App\Utils\DateRangeValidator;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -65,21 +66,9 @@ class WithdrawController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 8,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 91,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选三个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(8)
+            ->validateDays(91, '时间区间最多一次筛选三个月，请重新调整时间');
 
         if (empty($request->type)) {
             $request->merge([
@@ -459,21 +448,9 @@ class WithdrawController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $startedAt = optional(Carbon::make($request->started_at))->tz(config('app.timezone'));
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 2,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
-
-        abort_if(
-            !$startedAt
-                || $startedAt->diffInDays($endedAt) > 91,
-            Response::HTTP_BAD_REQUEST,
-            '时间区间最多一次筛选三个月，请重新调整时间'
-        );
+        DateRangeValidator::parse($request)
+            ->validateMonths(2)
+            ->validateDays(91, '时间区间最多一次筛选三个月，请重新调整时间');
 
         if (empty($request->type)) {
             $request->merge([

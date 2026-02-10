@@ -7,11 +7,11 @@ use App\Http\Resources\Admin\NotificationCollection;
 use App\Models\Notification;
 use App\Models\User;
 use App\Utils\AmountDisplayTransformer;
+use App\Utils\DateRangeValidator;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -27,14 +27,10 @@ class NotificationController extends Controller
             'ended_at'             => ['nullable', 'date_format:'.DateTimeInterface::ATOM],
         ]);
 
-        $startedAt = $request->has('started_at') ? Carbon::parse($request->started_at) : Carbon::now()->startOfDay();
-        $endedAt = $request->ended_at ? Carbon::make($request->ended_at)->tz(config('app.timezone')) : now();
-
-        abort_if(
-            now()->diffInMonths($startedAt) > 1,
-            Response::HTTP_BAD_REQUEST,
-            '查无资料'
-        );
+        $dateRange = DateRangeValidator::parse($request, now()->startOfDay())
+            ->validateMonths(1);
+        $startedAt = $dateRange->startedAt;
+        $endedAt = $dateRange->endedAt;
 
         $query = Notification::when($request->mobile, function ($builder, $mobile) {
             $builder->where('mobile', 'like', "%{$mobile}%");

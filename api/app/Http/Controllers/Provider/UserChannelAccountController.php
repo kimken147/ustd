@@ -4,12 +4,8 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserChannelAccountCollection;
-use App\Console\Commands\DisableTimeLimitUserChannelAccount;
 use App\Models\Channel;
-use App\Models\ChannelAmount;
 use App\Models\Device;
-use App\Models\Transaction;
-use App\Models\TransactionGroup;
 use App\Models\User;
 use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
@@ -18,32 +14,24 @@ use App\Models\FeatureToggle;
 use App\Utils\GuzzleHttpClientTrait;
 use App\Utils\AmountDisplayTransformer;
 use App\Repository\FeatureToggleRepository;
-use Endroid\QrCode\Builder\Builder as QrBuilder;
-use Endroid\QrCode\Encoding\Encoding;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
-use Endroid\QrCode\Writer\PngWriter;
-use Exception;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\RequestOptions;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\UserChannelAccount\UserChannelAccountService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
-use Zxing\QrReader;
-use Hashids\Hashids;
 
 class UserChannelAccountController extends Controller
 {
-
     use GuzzleHttpClientTrait;
+
+    public function __construct(
+        private readonly UserChannelAccountService $userChannelAccountService
+    ) {
+    }
 
     public function destroy(UserChannelAccount $userChannelAccount)
     {
@@ -197,179 +185,28 @@ class UserChannelAccountController extends Controller
             'device_name'       => 'required',
         ]);
 
-        /** @var ChannelAmount $channelAmount */
-        $channelAmount = ChannelAmount::find($request->channel_amount_id);
+        $data = array_merge(
+            $request->only([
+                'channel_amount_id', 'account', 'bank_card_number', 'bank_name',
+                'device_name', 'type', 'name', 'note', 'balance', 'balance_limit',
+                'is_auto',
+            ]),
+            [
+                'detail' => $request->only(
+                    'account', 'bank_name', 'bank_card_number', 'bank_card_holder_name',
+                    'bank_card_branch', 'mpin', 'mobile', 'receiver_name', 'pin', 'otp', 'pwd'
+                ),
+                'qr_code_file' => $request->file('qr_code'),
+            ]
+        );
 
-        abort_if(!$channelAmount, Response::HTTP_BAD_REQUEST, __('channel.User channel not found'));
-
-        /** @var UserChannel $userChannel */
-        $userChannel = UserChannel::where([
-            'user_id'          => auth()->user()->getKey(),
-            'channel_group_id' => $channelAmount->channel_group_id,
-        ])->first();
-
-        abort_if(!$userChannel, Response::HTTP_BAD_REQUEST, __('channel.User channel not found'));
-
-        abort_if(is_null($userChannel->fee_percent), Response::HTTP_BAD_REQUEST, '通道费率未设定');
-
-        $device = ['user_id' => auth()->user()->getKey(), 'name' => $request->device_name];
-
-        Device::insertIgnore($device);
-
-        $device = Device::where($device)->firstOrFail();
-
-        $userChannelAccount = null;
-
-        $wallet = auth()->user()->wallet;
-
-        if (auth()->user()->depositModeEnabled()) {
-            $wallet = User::whereIsRoot()->whereAncestorOrSelf(auth()->user())->firstOrFail()->wallet;
-        }
-
-        $detail = $request->only('account', 'bank_name', 'bank_card_number', 'bank_card_holder_name', 'bank_card_branch', 'mpin', 'mobile', 'receiver_name', 'pin', 'otp', 'pwd');
-
-        if ($request->has('qr_code')) {
-            $file = $request->file('qr_code');
-            $redirectUrl = $this->decodeQrCode($file);
-            $path = Storage::disk('user-channel-accounts-qr-code')->putFile($this->getQrCodeFileBasePath(), $file);
-            $processedPath = $this->saveProcessedQrCode($redirectUrl);
-
-            // 新增 qrcode 在用的 field
-            $detail['redirect_url'] = $redirectUrl;
-            $detail['processed_qr_code_file_path'] = $processedPath;
-            $detail['qr_code_file_path'] = $path;
-        }
-
-        $account = $request->account;
-        if ($request->has('bank_card_number')) {
-            $account = $request->bank_card_number;
-        }
-
-        $bankId = 0;
-        if ($request->has('bank_name')) {
-            $bank = Bank::firstWhere('name', $request->bank_name);
-            abort_if(!$bank, Response::HTTP_BAD_REQUEST, '銀行設定錯誤');
-            $bankId = $bank->id;
-        }
-
-
-        DB::beginTransaction();
-        try {
-            $userChannelAccount = $channelAmount->userChannelAccounts()->create([
-                'user_id'      => auth()->user()->getKey(),
-                'device_id'    => $device->getKey(),
-                'wallet_id'    => $wallet->getKey(),
-                'bank_id'      => $bankId,
-                'channel_code' => $channelAmount->channel_code,
-                'status'       => UserChannelAccount::STATUS_DISABLE,
-                'type'         => $request->input('type', UserChannelAccount::TYPE_DEPOSIT_WITHDRAW),
-                'fee_percent'  => $userChannel->fee_percent,
-                'min_amount'   => $userChannel->min_amount,
-                'max_amount'   => $userChannel->max_amount,
-                'account'      => $account,
-                'detail'       => $detail,
-                'balance'      => $request->input('balance'),
-                'balance_limit' => $request->input('balance_limit'),
-                "note" => $request->input("note") ?? "",
-                'is_auto' => $request->input('is_auto', false),
-                'daily_status' => UserChannelAccount::DAILY_STATUS_ENABLE,
-                'monthly_status' => UserChannelAccount::MONTHLY_STATUS_ENABLE
-            ]);
-            $userChannelAccount->name = $request->input('name', Str::padLeft($userChannelAccount->id, 5, '0'));
-            $userChannelAccount->save();
-
-            $transactionGroups = TransactionGroup::where('transaction_type', Transaction::TYPE_PAUFEN_TRANSACTION)
-                ->whereHas('worker', function (Builder $users) {
-                    $users->whereAncestorOrSelf(auth()->user());
-                })
-                ->pluck('id');
-            $userChannelAccount->transactionGroups()->syncWithoutDetaching($transactionGroups);
-            DB::commit();
-        } catch (exception $e) {
-            DB::rollBack();
-        }
-
-        abort_if(!$userChannelAccount, Response::HTTP_INTERNAL_SERVER_ERROR);
+        $userChannelAccount = $this->userChannelAccountService->createAccount($data, auth()->user());
 
         Artisan::call('paufen:disable-time-limit-user-channel-account', [
             'user_channel_account' => $userChannelAccount
         ]);
 
         return \App\Http\Resources\UserChannelAccount::make($userChannelAccount);
-    }
-
-    private function decodeQrCode(UploadedFile $file)
-    {
-        try {
-            $qrCodeText = '';
-
-            try {
-                $qrCodeText = trim((new QrReader($file))->text());
-            } catch (Exception $exception) {
-                return abort(Response::HTTP_BAD_REQUEST, __('common.Invalid qr-code'));
-            }
-
-            if (!empty($qrCodeText)) {
-                return $qrCodeText;
-            }
-
-            $response = $this->makeClient()
-                ->post('http://api.qrserver.com/v1/read-qr-code/', [
-                    RequestOptions::MULTIPART => [
-                        [
-                            'name'     => 'file',
-                            'contents' => fopen($file->path(), 'r'),
-                        ],
-                        [
-                            'name'     => 'MAX_FILE_SIZE',
-                            'contents' => $file->getSize(),
-                        ]
-                    ],
-                ]);
-
-            $responseData = json_decode($response->getBody()->getContents());
-
-            $qrCodeText = trim(data_get($responseData, '0.symbol.0.data'));
-
-            abort_if(
-                empty($qrCodeText),
-                Response::HTTP_BAD_REQUEST,
-                __('common.Invalid qr-code')
-            );
-
-            return $qrCodeText;
-        } catch (TransferException $transferException) {
-            return abort(Response::HTTP_BAD_REQUEST, __('common.Invalid qr-code'));
-        }
-    }
-
-    private function getQrCodeFileBasePath()
-    {
-        $userId = auth()->user()->getKey();
-
-        return "users/$userId";
-    }
-
-    private function saveProcessedQrCode($redirectUrl)
-    {
-        $qrcode = QrBuilder::create()
-            ->writer(new PngWriter())
-            ->data($redirectUrl)
-            ->encoding(new Encoding('UTF-8'))
-            ->margin(10)
-            ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->size(500)
-            ->build();
-
-        $basePath = $this->getQrCodeFileBasePath();
-        $fileHashName = Str::random(40);
-
-        Storage::disk('user-channel-accounts-qr-code')->put(
-            $path = trim("$basePath/$fileHashName", '/') . '.png',
-            $qrcode->getString()
-        );
-
-        return $path;
     }
 
     private function bankCode($bankCardNumber)
