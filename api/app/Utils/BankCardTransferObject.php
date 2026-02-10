@@ -6,6 +6,7 @@ namespace App\Utils;
 
 use App\Models\BankCard;
 use App\Models\SystemBankCard;
+use App\Models\UserChannelAccount;
 
 class BankCardTransferObject
 {
@@ -69,5 +70,21 @@ class BankCardTransferObject
         $bankCardTransferObject->bankCardHolderName = $bankCardHolderName;
 
         return $bankCardTransferObject;
+    }
+
+    public function toFromChannelAccount(bool $withAddress = true): array
+    {
+        $data = [
+            UserChannelAccount::DETAIL_KEY_BANK_NAME => $this->bankName,
+            UserChannelAccount::DETAIL_KEY_BANK_CARD_NUMBER => $this->bankCardNumber,
+            UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME => $this->bankCardHolderName,
+        ];
+
+        if ($withAddress) {
+            $data[UserChannelAccount::DETAIL_KEY_BANK_PROVINCE] = $this->bankProvince;
+            $data[UserChannelAccount::DETAIL_KEY_BANK_CITY] = $this->bankCity;
+        }
+
+        return $data;
     }
 }
