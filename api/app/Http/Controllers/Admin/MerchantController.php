@@ -19,6 +19,7 @@ use App\Models\Wallet;
 use App\Models\WalletHistory;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
+use App\Services\UserManagementService;
 use App\Utils\BCMathUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\PermissionUtil;
@@ -39,9 +40,12 @@ class MerchantController extends Controller
      */
     private $user;
 
-    public function __construct(UserUtil $user)
+    private UserManagementService $userManagementService;
+
+    public function __construct(UserUtil $user, UserManagementService $userManagementService)
     {
         $this->user = $user;
+        $this->userManagementService = $userManagementService;
 
         $this->middleware(['permission:' . Permission::ADMIN_CREATE_MERCHANT])->only('store');
     }
@@ -109,29 +113,7 @@ class MerchantController extends Controller
         WhitelistedIpManager $whitelistedIpManager,
         Request $request
     ) {
-        $google2faSecret = DB::transaction(function () use (
-            $merchant,
-            $notificationUtil,
-            $whitelistedIpManager,
-            $request
-        ) {
-            $merchant->update([
-                'google2fa_secret' => $google2faSecret = $this->user->generateGoogle2faSecret(),
-            ]);
-
-            $notificationUtil->notifyAdminResetGoogle2faSecret(
-                auth()->user()->realUser(),
-                $merchant,
-                $whitelistedIpManager->extractIpFromRequest($request)
-            );
-
-            return $google2faSecret;
-        });
-
-        return UserResource::make($merchant->load('wallet', 'parent'))
-            ->withCredentials(['google2fa_secret' => $google2faSecret])
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return $this->userManagementService->resetGoogle2faSecret($merchant, $notificationUtil, $whitelistedIpManager, $request);
     }
 
     public function resetPassword(
@@ -140,24 +122,7 @@ class MerchantController extends Controller
         WhitelistedIpManager $whitelistedIpManager,
         Request $request
     ) {
-        $password = DB::transaction(function () use ($merchant, $notificationUtil, $whitelistedIpManager, $request) {
-            $merchant->update([
-                'password' => Hash::make($password = $this->user->generatePassword()),
-            ]);
-
-            $notificationUtil->notifyAdminResetPassword(
-                auth()->user()->realUser(),
-                $merchant,
-                $whitelistedIpManager->extractIpFromRequest($request)
-            );
-
-            return $password;
-        });
-
-        return UserResource::make($merchant->load('wallet', 'parent'))
-            ->withCredentials(['password' => $password])
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return $this->userManagementService->resetPassword($merchant, $notificationUtil, $whitelistedIpManager, $request);
     }
 
     public function resetSecret(
@@ -205,8 +170,8 @@ class MerchantController extends Controller
 
     public function store(AdminCreateUserRequest $request, BCMathUtil $bcMath)
     {
-        $this->abortIfUsernameNotAlnum($request->username);
-        $this->abortIfUsernameAlreadyExists($request->username);
+        $this->userManagementService->abortIfUsernameNotAlnum($request->username);
+        $this->userManagementService->abortIfUsernameAlreadyExists($request->username);
 
         $agent = null;
 
@@ -224,50 +189,7 @@ class MerchantController extends Controller
         );
 
         if ($agent) {
-
-            foreach ($request->input('user_channels', []) as $userChannel) {
-                // ignore nulls
-                if (!isset($userChannel['fee_percent'])) {
-                    continue;
-                }
-
-                $agentUserChannel = UserChannel::where([
-                    ['channel_group_id', $userChannel['channel_group_id']],
-                    ['user_id', $agent->getKey()],
-                ])->first();
-
-                abort_if(!$agentUserChannel, Response::HTTP_BAD_REQUEST, __('channel.Parent user channel not found'));
-
-                // 以下程式碼若執行代表請求中一定有設定非 null 的手續費
-
-                abort_if(
-                    $agentUserChannel->status === UserChannel::STATUS_DISABLED,
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Parent user channel not enabled')
-                );
-
-                // 上級一定要設定手續費
-                abort_if(
-                    is_null($agentUserChannel->fee_percent),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-
-                // 上下級都必須為 0
-                abort_if(
-                    ($agentUserChannel->fee_percent == 0 && $userChannel['fee_percent'] != 0)
-                        || ($agentUserChannel->fee_percent != 0 && $userChannel['fee_percent'] == 0),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-
-                // 其他狀況
-                abort_if(
-                    $bcMath->lt($userChannel['fee_percent'], $agentUserChannel->fee_percent),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-            }
+            $this->userManagementService->validateChannelFees($agent, $request->input('user_channels', []), $bcMath, 'lt');
         }
 
         $password = $this->user->generatePassword();
@@ -355,24 +277,6 @@ class MerchantController extends Controller
             ->withCredentials(['password' => $password, 'google2fa_secret' => $google2faSecret, 'secret_key' => $secretKey]);
     }
 
-    private function abortIfUsernameNotAlnum(string $username)
-    {
-        abort_if(
-            !ctype_alnum($username),
-            Response::HTTP_BAD_REQUEST,
-            __('common.Username can only be alphanumeric')
-        );
-    }
-
-    private function abortIfUsernameAlreadyExists(string $username)
-    {
-        abort_if(
-            $this->user->usernameAlreadyExists($username),
-            Response::HTTP_BAD_REQUEST,
-            __('common.Duplicate username')
-        );
-    }
-
     public function update(
         UpdateUserRequest $request,
         UserModel $merchant,
@@ -390,8 +294,8 @@ class MerchantController extends Controller
         );
 
         if ($request->username) {
-            $this->abortIfUsernameNotAlnum($request->username);
-            $this->abortIfUsernameAlreadyExists($request->username);
+            $this->userManagementService->abortIfUsernameNotAlnum($request->username);
+            $this->userManagementService->abortIfUsernameAlreadyExists($request->username);
         }
 
         if ($request->balance_delta || $request->frozen_balance_delta) {

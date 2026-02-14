@@ -22,6 +22,7 @@ use App\Models\WalletHistory;
 use App\Models\TransactionGroup;
 use App\Models\Device;
 use App\Repository\FeatureToggleRepository;
+use App\Services\UserManagementService;
 use App\Utils\BCMathUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\PermissionUtil;
@@ -43,9 +44,12 @@ class ProviderController extends Controller
      */
     private $user;
 
-    public function __construct(UserUtil $user)
+    private UserManagementService $userManagementService;
+
+    public function __construct(UserUtil $user, UserManagementService $userManagementService)
     {
         $this->user = $user;
+        $this->userManagementService = $userManagementService;
 
         $this->middleware(['permission:' . Permission::ADMIN_CREATE_PROVIDER])->only('store');
     }
@@ -117,29 +121,7 @@ class ProviderController extends Controller
         WhitelistedIpManager $whitelistedIpManager,
         Request $request
     ) {
-        $google2faSecret = DB::transaction(function () use (
-            $provider,
-            $notificationUtil,
-            $whitelistedIpManager,
-            $request
-        ) {
-            $provider->update([
-                'google2fa_secret' => $google2faSecret = $this->user->generateGoogle2faSecret(),
-            ]);
-
-            $notificationUtil->notifyAdminResetGoogle2faSecret(
-                auth()->user()->realUser(),
-                $provider,
-                $whitelistedIpManager->extractIpFromRequest($request)
-            );
-
-            return $google2faSecret;
-        });
-
-        return UserResource::make($provider->load('wallet', 'parent'))
-            ->withCredentials(['google2fa_secret' => $google2faSecret])
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return $this->userManagementService->resetGoogle2faSecret($provider, $notificationUtil, $whitelistedIpManager, $request);
     }
 
     public function resetPassword(
@@ -148,24 +130,7 @@ class ProviderController extends Controller
         WhitelistedIpManager $whitelistedIpManager,
         Request $request
     ) {
-        $password = DB::transaction(function () use ($provider, $notificationUtil, $whitelistedIpManager, $request) {
-            $provider->update([
-                'password' => Hash::make($password = $request->input('password', $this->user->generatePassword())),
-            ]);
-
-            $notificationUtil->notifyAdminResetPassword(
-                auth()->user()->realUser(),
-                $provider,
-                $whitelistedIpManager->extractIpFromRequest($request)
-            );
-
-            return $password;
-        });
-
-        return UserResource::make($provider->load('wallet', 'parent'))
-            ->withCredentials(['password' => $password])
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        return $this->userManagementService->resetPassword($provider, $notificationUtil, $whitelistedIpManager, $request, allowCustomPassword: true);
     }
 
     public function show(UserModel $provider, FeatureToggleRepository $featureToggleRepository)
@@ -190,8 +155,8 @@ class ProviderController extends Controller
         BCMathUtil $bcMath,
         FeatureToggleRepository $featureToggleRepository
     ) {
-        $this->abortIfUsernameNotAlnum($request->username);
-        $this->abortIfUsernameAlreadyExists($request->username);
+        $this->userManagementService->abortIfUsernameNotAlnum($request->username);
+        $this->userManagementService->abortIfUsernameAlreadyExists($request->username);
 
         $agent = null;
 
@@ -209,49 +174,7 @@ class ProviderController extends Controller
         );
 
         if ($agent) {
-            foreach ($request->input('user_channels', []) as $userChannel) {
-                // ignore nulls
-                if (!isset($userChannel['fee_percent'])) {
-                    continue;
-                }
-
-                $agentUserChannel = UserChannel::where([
-                    ['channel_group_id', $userChannel['channel_group_id']],
-                    ['user_id', $agent->getKey()],
-                ])->first();
-
-                abort_if(!$agentUserChannel, Response::HTTP_BAD_REQUEST, __('channel.Parent user channel not found'));
-
-                // 以下程式碼若執行代表請求中一定有設定非 null 的手續費
-
-                abort_if(
-                    $agentUserChannel->status === UserChannel::STATUS_DISABLED,
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Parent user channel not enabled')
-                );
-
-                // 上級一定要設定手續費
-                abort_if(
-                    is_null($agentUserChannel->fee_percent),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-
-                // 上下級都必須為 0
-                abort_if(
-                    ($agentUserChannel->fee_percent == 0 && $userChannel['fee_percent'] != 0)
-                        || ($agentUserChannel->fee_percent != 0 && $userChannel['fee_percent'] == 0),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-
-                // 其他狀況
-                abort_if(
-                    $bcMath->gt($userChannel['fee_percent'], $agentUserChannel->fee_percent),
-                    Response::HTTP_BAD_REQUEST,
-                    __('channel.Invalid fee')
-                );
-            }
+            $this->userManagementService->validateChannelFees($agent, $request->input('user_channels', []), $bcMath, 'gt');
         }
 
         $password = $request->password ?? $this->user->generatePassword();
@@ -349,24 +272,6 @@ class ProviderController extends Controller
             ->withCredentials(['password' => $password, 'google2fa_secret' => $google2faSecret]);
     }
 
-    private function abortIfUsernameNotAlnum(string $username)
-    {
-        abort_if(
-            !ctype_alnum($username),
-            Response::HTTP_BAD_REQUEST,
-            __('common.Username can only be alphanumeric')
-        );
-    }
-
-    private function abortIfUsernameAlreadyExists(string $username)
-    {
-        abort_if(
-            $this->user->usernameAlreadyExists($username),
-            Response::HTTP_BAD_REQUEST,
-            __('common.Duplicate username')
-        );
-    }
-
     public function update(
         UpdateUserRequest $request,
         UserModel $provider,
@@ -395,8 +300,8 @@ class ProviderController extends Controller
         );
 
         if ($request->username) {
-            $this->abortIfUsernameNotAlnum($request->username);
-            $this->abortIfUsernameAlreadyExists($request->username);
+            $this->userManagementService->abortIfUsernameNotAlnum($request->username);
+            $this->userManagementService->abortIfUsernameAlreadyExists($request->username);
         }
 
         if ($request->balance_delta || $request->profit_delta || $request->frozen_balance_delta) {
