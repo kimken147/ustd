@@ -524,10 +524,10 @@ class TransactionFactory
     public function changeToThirdChannelPending(Transaction $transaction)
     {
         $updated = $transaction->update([
-            'status' => Transaction::STATUS_THIRD_PAYING_PENDING
+            'status' => Transaction::STATUS_THIRD_PAYING
         ]);
         if ($updated) {
-            $transaction->status = Transaction::STATUS_THIRD_PAYING_PENDING;
+            $transaction->status = Transaction::STATUS_THIRD_PAYING;
         }
         return $transaction;
     }
