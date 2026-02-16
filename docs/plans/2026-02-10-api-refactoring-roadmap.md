@@ -8,13 +8,7 @@
 | Phase 2 | Extract 4 shared services — QrCodeService, CertificateService, DateRangeValidator, UserChannelAccountService | `12c6a9e4c` | 2026-02-10 |
 | Phase 3 | TransactionFactory refactoring — extract TransactionFeeService, add BankCardTransferObject::toFromChannelAccount(), remove dead code (1597 → 919 lines) | `3113c7644` | 2026-02-10 |
 | Phase 4 | TransactionUtil refactoring — extract TransactionLockService (133 lines) and TransactionStatusService (1,311 lines), TransactionUtil reduced to ~105-line thin proxy | `d185a7dd1` | 2026-02-10 |
-
-## Remaining — P0: God Classes
-
-### Phase 5: Provider/Merchant Controller Duplication (621+549 lines)
-- `ProviderController` and `MerchantController` have 6+ identical methods (resetPassword, resetGoogle2fa, store validation, etc.)
-- Extract `UserManagementService`
-- Status: Pending
+| Phase 5 | Provider/Merchant Controller dedup — extract UserManagementService (5 shared methods), ProviderController 621→526, MerchantController 549→453 | `731a41c0a` | 2026-02-12 |
 
 ## Remaining — P1: Service Layer Unification
 
