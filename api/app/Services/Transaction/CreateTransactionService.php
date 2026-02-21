@@ -27,7 +27,6 @@ use App\Services\Withdraw\DTO\ThirdPartyErrorResponse;
 use App\Utils\BCMathUtil;
 use App\Utils\TransactionFactory;
 use App\Utils\TransactionNoteUtil;
-use App\Utils\TransactionUtil;
 use App\Utils\UsdtUtil;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
@@ -52,6 +51,7 @@ class CreateTransactionService
         private WhitelistedIpManager $whitelistedIpManager,
         private AccountMatchingQueryBuilder $accountMatchingQueryBuilder,
         private TransactionValidationService $validationService,
+        private TransactionStatusService $statusService,
     ) {}
 
     /**
@@ -103,8 +103,6 @@ class CreateTransactionService
      */
     public function handleCallback(string $orderNumber, Request $request): CallbackResult
     {
-        $transactionUtil = app(TransactionUtil::class);
-
         $transaction = Transaction::where('order_number', $orderNumber)
             ->whereIn('type', [
                 Transaction::TYPE_PAUFEN_TRANSACTION,
@@ -153,7 +151,7 @@ class CreateTransactionService
             Log::debug($path . " callback", ["result" => $returnCallback]);
 
             if (isset($returnCallback["success"])) {
-                $transactionUtil->markAsSuccess($transaction, null, true, false, false);
+                $this->statusService->markAsSuccess($transaction, null, true, false, false);
                 $responseBody = isset($returnCallback["resBody"])
                     ? json_encode($returnCallback["resBody"])
                     : ($api->success ?? "SUCCESS");
@@ -168,7 +166,7 @@ class CreateTransactionService
                         "note" => "{$thirdChannel->name}: {$errorMessage}"
                     ]);
                 }
-                $transactionUtil->markAsFailed($transaction, null, $returnCallback["fail"], false);
+                $this->statusService->markAsFailed($transaction, null, $returnCallback["fail"], false);
 
                 if (isset($returnCallback["resBody"])) {
                     $statusCode = $returnCallback["statusCode"] ?? 400;

@@ -15,7 +15,8 @@ use App\Models\TransactionGroup;
 use App\Models\TransactionNote;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
-use App\Utils\TransactionUtil;
+use App\Services\Transaction\TransactionStatusService;
+use App\Services\Transaction\TransactionLockService;
 use App\Builders\Transaction as TransactionBuilder;
 use App\Models\MerchantThirdChannel;
 use App\Models\ThirdChannel;
@@ -128,7 +129,7 @@ class WithdrawController extends Controller
         return $adminLastReadAt && $withdrawsAddedAt && ($adminLastReadAt->lt($withdrawsAddedAt));
     }
 
-    private function markAsPaufenWithdraw(Transaction $withdraw, Request $request, TransactionUtil $transactionUtil, bool $shouldLock = true)
+    private function markAsPaufenWithdraw(Transaction $withdraw, Request $request, TransactionStatusService $statusService, bool $shouldLock = true)
     {
         $user = null;
 
@@ -138,7 +139,7 @@ class WithdrawController extends Controller
             abort_if(!$user, Response::HTTP_BAD_REQUEST, __('common.User not found'));
         }
 
-        return $transactionUtil->markAsPaufenWithdraw($withdraw, $user, $shouldLock);
+        return $statusService->markAsPaufenWithdraw($withdraw, $user, $shouldLock);
     }
 
     public function show(Transaction $withdraw)
@@ -149,7 +150,8 @@ class WithdrawController extends Controller
     public function update(
         Request $request,
         Transaction $withdraw,
-        TransactionUtil $transactionUtil,
+        TransactionStatusService $statusService,
+        TransactionLockService $lockService,
         FeatureToggleRepository $featureToggleRepository
     ) {
         $this->validate($request, [
@@ -191,7 +193,7 @@ class WithdrawController extends Controller
             ]);
 
             try {
-                $transactionUtil->markAsFailed($withdraw, auth()->user()->realUser(), $request->input('note'), false);
+                $statusService->markAsFailed($withdraw, auth()->user()->realUser(), $request->input('note'), false);
             } catch (TransactionLockerNotYouException $e) {
                 abort(Response::HTTP_FORBIDDEN, __('common.Operation error, locked by different user'));
             }
@@ -207,7 +209,7 @@ class WithdrawController extends Controller
             }
 
             try {
-                $transactionUtil->markAsSuccess($withdraw, auth()->user()->realUser());
+                $statusService->markAsSuccess($withdraw, auth()->user()->realUser());
             } catch (TransactionLockerNotYouException $e) {
                 abort(Response::HTTP_FORBIDDEN, __('common.Operation error, locked by different user'));
             }
@@ -225,7 +227,7 @@ class WithdrawController extends Controller
                 'child_withdraws.*.to_id'  => ['nullable']
             ]);
 
-            $withdraw = $transactionUtil->separateWithdraw($withdraw, collect($request->input('child_withdraws')), false);
+            $withdraw = $statusService->separateWithdraw($withdraw, collect($request->input('child_withdraws')), false);
         }
 
         if ($request->input('status') === Transaction::STATUS_REVIEW_PASSED) {
@@ -242,21 +244,21 @@ class WithdrawController extends Controller
                 ]);
 
                 if ($request->input('type') === Transaction::TYPE_NORMAL_WITHDRAW) {
-                    $withdraw = $transactionUtil->markAsNormalWithdraw($withdraw, $withdraw->note, false);
+                    $withdraw = $statusService->markAsNormalWithdraw($withdraw, $withdraw->note, false);
                 } else {
                     $this->validate($request, [
                         'to_id' => 'nullable|present|int|min:1',
                     ]);
 
-                    $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $transactionUtil, false);
+                    $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $statusService, false);
                 }
             }
         }
 
-        $transactionUtil->supportLockingLogics(
+        $lockService->supportLockingLogics(
             $withdraw,
             $request,
-            function () use ($transactionUtil, $withdraw, $featureToggleRepository) {
+            function () use ($withdraw, $featureToggleRepository) {
                 $paufenWithdrawTimedOutInSeconds = $featureToggleRepository->valueOf(FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT);
 
                 // 跑分提現未搶單且超時，按鎖定時直接轉為一般提現
@@ -319,17 +321,17 @@ class WithdrawController extends Controller
                 abort_unless($binded || $ancestorsBinded || $noBinded, Response::HTTP_BAD_REQUEST, '请检查快充专线设置');
             }
 
-            $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $transactionUtil);
+            $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $statusService);
         }
 
         if (!$request->has('status') && $request->has('to_thirdchannel_id')) { // 轉為三方出
-            $withdraw = $this->markAsThirdChannelWithdraw($withdraw, $request, $transactionUtil);
+            $withdraw = $this->markAsThirdChannelWithdraw($withdraw, $request, $statusService);
         }
 
         return Withdraw::make($withdraw->refresh()->load('from', 'to', 'transactionFees.user', 'parent', 'children'));
     }
 
-    private function markAsThirdChannelWithdraw(Transaction $withdraw, Request $request, TransactionUtil $transactionUtil, bool $shouldLock = true)
+    private function markAsThirdChannelWithdraw(Transaction $withdraw, Request $request, TransactionStatusService $statusService, bool $shouldLock = true)
     {
         $merchantThirdChannel = MerchantThirdChannel::where('owner_id', $withdraw->from_id)
             ->where('thirdchannel_id', $request->to_thirdchannel_id)
@@ -406,14 +408,14 @@ class WithdrawController extends Controller
         ]);
 
         if ($result['success']) {
-            return $transactionUtil->markAsThirdChannelWithdraw($withdraw, $thirdChannel, $shouldLock);
+            return $statusService->markAsThirdChannelWithdraw($withdraw, $thirdChannel, $shouldLock);
         } else {
             $query = $api->queryDaifu($data);
             if (isset($query['success']) && $query['success'] && $query['status'] == Transaction::STATUS_PAYING) {
-                return $transactionUtil->markAsThirdChannelWithdraw($withdraw, $thirdChannel, true);
+                return $statusService->markAsThirdChannelWithdraw($withdraw, $thirdChannel, true);
             }
             if (isset($query['timeout']) && $query['timeout']) { // 超時
-                return $transactionUtil->markAsThirdChannelWithdraw($withdraw, $thirdChannel, true);
+                return $statusService->markAsThirdChannelWithdraw($withdraw, $thirdChannel, true);
             }
             abort(Response::HTTP_BAD_REQUEST, __('withdraw.Third party payment failed'));
         }

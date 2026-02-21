@@ -10,7 +10,8 @@ use App\Models\Permission;
 use App\Models\Transaction;
 use App\Utils\AmountDisplayTransformer;
 use App\Utils\DateRangeValidator;
-use App\Utils\TransactionUtil;
+use App\Services\Transaction\TransactionStatusService;
+use App\Services\Transaction\TransactionLockService;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -85,7 +86,7 @@ class DepositController extends Controller
         return Deposit::make($deposit->load('to', 'transactionNotes.user'));
     }
 
-    public function update(Request $request, Transaction $deposit, TransactionUtil $transactionUtil)
+    public function update(Request $request, Transaction $deposit, TransactionStatusService $statusService, TransactionLockService $lockService)
     {
         $this->validate($request, [
             'status'               => [
@@ -102,7 +103,7 @@ class DepositController extends Controller
         if ($deposit->status === Transaction::STATUS_MANUAL_SUCCESS && $request->has('delay_settle_hours')) {
             abort_if($deposit->to_wallet_settled, Response::HTTP_BAD_REQUEST, '充值已上分');
 
-            DB::transaction(function () use ($transactionUtil, $deposit, $request) {
+            DB::transaction(function () use ($statusService, $deposit, $request) {
                 $updatedRow = Transaction::where([
                     'id'                          => $deposit->getKey(),
                     'to_wallet_settled'           => false,
@@ -113,14 +114,14 @@ class DepositController extends Controller
 
                 throw_if($updatedRow !== 1, new RaceConditionException());
 
-                $transactionUtil->settleToWallet($deposit->refresh());
+                $statusService->settleToWallet($deposit->refresh());
             });
         }
 
         if ($deposit->status === Transaction::STATUS_MANUAL_SUCCESS && $request->has('delay_settle_minutes')) {
             abort_if($deposit->to_wallet_settled, Response::HTTP_BAD_REQUEST, '充值已上分');
 
-            DB::transaction(function () use ($transactionUtil, $deposit, $request) {
+            DB::transaction(function () use ($statusService, $deposit, $request) {
                 $updatedRow = Transaction::where([
                     'id'                          => $deposit->getKey(),
                     'to_wallet_settled'           => false,
@@ -131,7 +132,7 @@ class DepositController extends Controller
 
                 throw_if($updatedRow !== 1, new RaceConditionException());
 
-                $transactionUtil->settleToWallet($deposit->refresh());
+                $statusService->settleToWallet($deposit->refresh());
             });
         }
 
@@ -161,7 +162,7 @@ class DepositController extends Controller
                 '已上分，无法取消'
             );
 
-            $deposit = $transactionUtil->rollbackAsPaying($deposit, auth()->user()->realUser());
+            $deposit = $statusService->rollbackAsPaying($deposit, auth()->user()->realUser());
         }
 
         if (in_array($request->status, [Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED])) {
@@ -186,7 +187,7 @@ class DepositController extends Controller
 
             switch ($request->status) {
                 case Transaction::STATUS_MANUAL_SUCCESS:
-                    DB::transaction(function () use ($transactionUtil, $deposit, $request) {
+                    DB::transaction(function () use ($statusService, $deposit, $request) {
                         $updatedRow = ($deposit->type === Transaction::TYPE_NORMAL_DEPOSIT ? 1 : 0);
                         if ($request->has('delay_settle_hours')) {
                             $updatedRow = Transaction::where([
@@ -212,21 +213,21 @@ class DepositController extends Controller
 
                         throw_if($updatedRow !== 1, new RaceConditionException());
 
-                        $transactionUtil->markAsSuccess($deposit->refresh(), auth()->user()->realUser());
+                        $statusService->markAsSuccess($deposit->refresh(), auth()->user()->realUser());
                     });
                     break;
                 case Transaction::STATUS_FAILED:
-                    $transactionUtil->markAsFailed($deposit, auth()->user()->realUser());
+                    $statusService->markAsFailed($deposit, auth()->user()->realUser());
                     break;
                 default:
                     abort(Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
-        $transactionUtil->supportLockingLogics($deposit, $request);
+        $lockService->supportLockingLogics($deposit, $request);
 
         if ($request->to_id === 0 && isset($request->note)) {
-            $deposit = $transactionUtil->markAsNormalWithdraw($deposit, $request->note);
+            $deposit = $statusService->markAsNormalWithdraw($deposit, $request->note);
         }
 
         return Deposit::make($deposit->load('to', 'transactionNotes.user'));

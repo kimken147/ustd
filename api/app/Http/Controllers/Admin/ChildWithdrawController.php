@@ -9,7 +9,7 @@ use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\TransactionFactory;
-use App\Utils\TransactionUtil;
+use App\Services\Transaction\TransactionStatusService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +21,7 @@ class ChildWithdrawController extends Controller
     public function store(
         Transaction $withdraw,
         Request $request,
-        TransactionUtil $transactionUtil
+        TransactionStatusService $statusService
     ) {
         $this->validate($request, [
             'child_withdraws'          => 'required|array',
@@ -32,7 +32,7 @@ class ChildWithdrawController extends Controller
             'child_withdraws.*.to_id'  => ['nullable']
         ]);
 
-        $transactionUtil->separateWithdraw($withdraw, collect($request->input('child_withdraws')));
+        $statusService->separateWithdraw($withdraw, collect($request->input('child_withdraws')));
 
         return response()->json(null, Response::HTTP_CREATED);
     }

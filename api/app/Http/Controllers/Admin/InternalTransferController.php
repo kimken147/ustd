@@ -8,7 +8,8 @@ use App\Http\Resources\Admin\InternalTransfer;
 use App\Models\Permission;
 use App\Models\Transaction;
 use App\Utils\DateRangeValidator;
-use App\Utils\TransactionUtil;
+use App\Services\Transaction\TransactionStatusService;
+use App\Services\Transaction\TransactionLockService;
 use App\Builders\Transaction as TransactionBuilder;
 use App\Exceptions\TransactionLockerNotYouException;
 use App\Services\InternalTransfer\InternalTransferService;
@@ -64,7 +65,8 @@ class InternalTransferController extends Controller
     public function update(
         Request $request,
         Transaction $transfer,
-        TransactionUtil $transactionUtil
+        TransactionStatusService $statusService,
+        TransactionLockService $lockService
     ) {
         abort_if(
             $transfer->type != Transaction::TYPE_INTERNAL_TRANSFER,
@@ -86,7 +88,7 @@ class InternalTransferController extends Controller
             "to_id" => ["nullable", "int"],
         ]);
 
-        $transactionUtil->supportLockingLogics($transfer, $request);
+        $lockService->supportLockingLogics($transfer, $request);
 
         if ($request->input("status") === Transaction::STATUS_FAILED) {
             $this->validate($request, [
@@ -94,7 +96,7 @@ class InternalTransferController extends Controller
             ]);
 
             try {
-                $transactionUtil->markAsFailed(
+                $statusService->markAsFailed(
                     $transfer,
                     auth()->user()->realUser(),
                     $request->input("note"),
@@ -123,7 +125,7 @@ class InternalTransferController extends Controller
             }
 
             try {
-                $transactionUtil->markAsSuccess(
+                $statusService->markAsSuccess(
                     $transfer,
                     auth()->user()->realUser()
                 );

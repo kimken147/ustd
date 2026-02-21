@@ -18,7 +18,8 @@ use App\Services\Transaction\CreateTransactionService;
 use App\Services\Transaction\DTO\DemoContext;
 use App\Services\Transaction\Exceptions\TransactionValidationException;
 use App\Utils\AmountDisplayTransformer;
-use App\Utils\TransactionUtil;
+use App\Services\Transaction\TransactionStatusService;
+use App\Services\Transaction\TransactionLockService;
 use App\Utils\TransactionFactory;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
@@ -80,7 +81,7 @@ class TransactionController extends Controller
         return \App\Http\Resources\Admin\Transaction::make($transaction->load('from', 'to', 'transactionFees.user', 'channel'));
     }
 
-    public function update(Request $request, Transaction $transaction, TransactionUtil $transactionUtil)
+    public function update(Request $request, Transaction $transaction, TransactionStatusService $statusService, TransactionLockService $lockService)
     {
         $this->validate($request, [
             'status'        => ['int', Rule::in(Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED)],
@@ -90,7 +91,7 @@ class TransactionController extends Controller
             'refund'        => ['boolean'],
         ]);
 
-        $transactionUtil->supportLockingLogics($transaction, $request);
+        $lockService->supportLockingLogics($transaction, $request);
 
         if (in_array($request->status, [Transaction::STATUS_MANUAL_SUCCESS])) {
             if ($request->has('_search1')) {
@@ -101,7 +102,7 @@ class TransactionController extends Controller
                 $transaction->update(['_search1' => $request->input('_search1')]);
             }
 
-            $transaction = $transactionUtil->markAsSuccess(
+            $transaction = $statusService->markAsSuccess(
                 $transaction,
                 auth()->user()->realUser(),
                 false,
@@ -110,7 +111,7 @@ class TransactionController extends Controller
         }
 
         if (in_array($request->status, [Transaction::STATUS_FAILED])) {
-            $transaction = $transactionUtil->markAsFailed(
+            $transaction = $statusService->markAsFailed(
                 $transaction,
                 auth()->user()->realUser(),
                 null,
@@ -154,7 +155,7 @@ class TransactionController extends Controller
 
     public function store(
         Transaction $transaction,
-        TransactionUtil $transactionUtil,
+        TransactionStatusService $statusService,
         TransactionFactory $factory,
         BCMathUtil $bcMath,
         WalletUtil $wallet,
@@ -198,7 +199,7 @@ class TransactionController extends Controller
 
         $fillInOrder = DB::transaction(function () use (
             $transaction,
-            $transactionUtil,
+            $statusService,
             $factory,
             $bcMath,
             $wallet,
@@ -253,7 +254,7 @@ class TransactionController extends Controller
                 );
             }
 
-            return $transactionUtil->markAsSuccess($transaction);
+            return $statusService->markAsSuccess($transaction);
         });
 
         return \App\Http\Resources\Admin\Transaction::make($fillInOrder->load('from', 'to'));
