@@ -10,7 +10,8 @@ use App\Models\User;
 use App\Models\Channel;
 use App\Models\TransactionNote;
 use App\Utils\AmountDisplayTransformer;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
+use App\Services\TransactionLockService;
 use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
 use App\Services\CertificateService;
@@ -177,7 +178,7 @@ class TransactionController extends Controller
         return \App\Http\Resources\Provider\Transaction::make($transaction->load('from', 'to', 'transactionFees.user', 'channel', 'certificateFiles'));
     }
 
-    public function update(Request $request, Transaction $transaction, TransactionUtil $transactionUtil)
+    public function update(Request $request, Transaction $transaction, TransactionStatusService $statusService, TransactionLockService $lockService)
     {
         $user = auth()->user();
         $isUplineUser = $transaction->from->isDescendantOf($user);
@@ -196,7 +197,7 @@ class TransactionController extends Controller
             'locked' => ['boolean'],
         ]);
 
-        $transactionUtil->supportLockingLogics($transaction, $request, null, $isUplineUser);
+        $lockService->supportLockingLogics($transaction, $request, null, $isUplineUser);
 
         $this->certificateService->updateCertificate($request, $transaction);
 
@@ -219,7 +220,7 @@ class TransactionController extends Controller
                 '订单已锁定，请联系客服'
             );
 
-            $transaction = $transactionUtil->markAsSuccess(
+            $transaction = $statusService->markAsSuccess(
                 $transaction,
                 auth()->user(),
                 false,

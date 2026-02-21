@@ -8,7 +8,7 @@ use App\Models\Transaction;
 use App\Models\Notification;
 use App\Models\Channel;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,10 +37,10 @@ class ProcessVnTransactionNotification implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  TransactionUtil  $transactionUtil
+     * @param  TransactionStatusService  $statusService
      * @return void
      */
-    public function handle(TransactionUtil $transactionUtil, FeatureToggleRepository $featureToggleRepository)
+    public function handle(TransactionStatusService $statusService, FeatureToggleRepository $featureToggleRepository)
     {
         if (!$featureToggleRepository->enabled(FeatureToggle::FEATURE_PROCESS_TRANSACTION_NOTIFICATION, true)) {
             Log::info(self::class.' disabled');
@@ -143,7 +143,7 @@ class ProcessVnTransactionNotification implements ShouldQueue
                 if ($transaction->status == Transaction::STATUS_PAYING_TIMED_OUT) {
                     $fromPayingTimedOut = true;
                 }
-                $transactionUtil->markAsSuccess($transaction, null, true, $fromPayingTimedOut);
+                $statusService->markAsSuccess($transaction, null, true, $fromPayingTimedOut);
                 break;
             }
         }

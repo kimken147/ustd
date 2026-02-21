@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Transaction;
 use App\Models\ThirdChannel;
-use App\Utils\TransactionUtil;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -20,7 +19,7 @@ class SyncThirdchannelBalance extends Command
      */
     protected $signature = 'thirdchannel:sync-balance';
 
-    public function handle(TransactionUtil $transactionUtil)
+    public function handle()
     {
         $syncThirdchannels = ThirdChannel::where('status', ThirdChannel::STATUS_ENABLE)->get();
 

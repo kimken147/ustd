@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Transaction;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,14 +30,14 @@ class SettleDelayedProviderDeposit implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  TransactionUtil  $transactionUtil
+     * @param  TransactionStatusService  $statusService
      * @return void
      */
-    public function handle(TransactionUtil $transactionUtil)
+    public function handle(TransactionStatusService $statusService)
     {
         Log::debug(__METHOD__ . 'Start ', [$this->transaction->getKey()]);
 
-        $transactionUtil->settleToWallet($this->transaction);
+        $statusService->settleToWallet($this->transaction);
 
         Log::debug(__METHOD__ . 'End', [$this->transaction->getKey()]);
     }

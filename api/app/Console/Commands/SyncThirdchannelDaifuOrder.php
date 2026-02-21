@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Transaction;
 use App\Models\MerchantThirdChannel;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -20,7 +20,7 @@ class SyncThirdchannelDaifuOrder extends Command
      */
     protected $signature = 'thirdchannel:sync-daifu';
 
-    public function handle(TransactionUtil $transactionUtil)
+    public function handle(TransactionStatusService $statusService)
     {
 
         $now = now();
@@ -58,9 +58,9 @@ class SyncThirdchannelDaifuOrder extends Command
                 $returnData = $thirdchannel->queryDaifu($data);
 
                 if ($returnData['success'] && isset($returnData['status']) && $returnData['status'] == Transaction::STATUS_FAILED){
-                    $transactionUtil->markAsFailed($transaction, null, $returnData['msg'], false);
+                    $statusService->markAsFailed($transaction, null, $returnData['msg'], false);
                 } if ($returnData['success'] && isset($returnData['status']) && $returnData['status']  == Transaction::STATUS_SUCCESS){
-                    $transactionUtil->markAsSuccess($transaction, null, true, false, false);
+                    $statusService->markAsSuccess($transaction, null, true, false, false);
                 }
             }
         }

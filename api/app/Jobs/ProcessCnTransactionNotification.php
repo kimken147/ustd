@@ -8,7 +8,7 @@ use App\Models\FeatureToggle;
 use App\Models\Transaction;
 use App\Models\Notification;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,10 +49,10 @@ class ProcessCnTransactionNotification implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  TransactionUtil  $transactionUtil
+     * @param  TransactionStatusService  $statusService
      * @return void
      */
-    public function handle(TransactionUtil $transactionUtil, FeatureToggleRepository $featureToggleRepository)
+    public function handle(TransactionStatusService $statusService, FeatureToggleRepository $featureToggleRepository)
     {
         $provider = $this->device->user;
 
@@ -146,7 +146,7 @@ class ProcessCnTransactionNotification implements ShouldQueue
                     'matched'        => 1,
                 ]);
 
-                $transactionUtil->markAsSuccess($transactions->first(), null, true);
+                $statusService->markAsSuccess($transactions->first(), null, true);
 
                 $user_channel_account = UserChannelAccount::where('id',$transactions->first()->from_channel_account_id)->first();
 

@@ -9,7 +9,7 @@ use App\Models\Transaction;
 use App\Models\Notification;
 use App\Models\Channel;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -50,10 +50,10 @@ class ProcessPhTransactionNotification implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  TransactionUtil  $transactionUtil
+     * @param  TransactionStatusService  $statusService
      * @return void
      */
-    public function handle(TransactionUtil $transactionUtil, FeatureToggleRepository $featureToggleRepository)
+    public function handle(TransactionStatusService $statusService, FeatureToggleRepository $featureToggleRepository)
     {
         $provider = $this->device->user;
 
@@ -137,7 +137,7 @@ class ProcessPhTransactionNotification implements ShouldQueue
                 //     'matched'        => 1,
                 // ]);
 
-                $transactionUtil->markAsSuccess($transaction, null, true);
+                $statusService->markAsSuccess($transaction, null, true);
                 break;
             }
         }

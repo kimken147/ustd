@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Transaction;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -30,12 +30,12 @@ class SettleDelayedProviderCancelOrder implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param  TransactionUtil  $transactionUtil
+     * @param  TransactionStatusService  $statusService
      * @return void
      */
-    public function handle(TransactionUtil $transactionUtil)
+    public function handle(TransactionStatusService $statusService)
     {
-        $transactionUtil->markAsRefunded(
+        $statusService->markAsRefunded(
           $this->transaction,
           $this->transaction->lockedBy,
           false,

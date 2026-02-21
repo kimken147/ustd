@@ -9,7 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\User;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +18,7 @@ class ThirdChannelDispatcher
 {
     public function __construct(
         private readonly FeatureToggleRepository $featureToggleRepository,
-        private readonly TransactionUtil $transactionUtil,
+        private readonly TransactionStatusService $statusService,
     ) {}
 
     /**
@@ -228,7 +228,7 @@ class ThirdChannelDispatcher
     private function markAsFailedIfEnabled(Transaction $transaction, ?string $message): void
     {
         if ($this->featureToggleRepository->enabled(FeatureToggle::IF_THIRDCHANNEL_DAIFU_FIAL_THAN_ORDER_FAIL)) {
-            $this->transactionUtil->markAsFailed($transaction, null, $message, false);
+            $this->statusService->markAsFailed($transaction, null, $message, false);
         }
     }
 }

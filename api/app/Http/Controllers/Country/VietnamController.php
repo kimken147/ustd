@@ -12,7 +12,7 @@ use App\Models\UserChannelAccount;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use App\Utils\UserChannelAccountUtil;
 use App\Utils\BCMathUtil;
 
@@ -37,7 +37,7 @@ class VietnamController extends Controller
         return response()->json([$field => $to[$field]]);
     }
 
-    public function updateTransaction (Request $request, TransactionUtil $transactionUtil, $order)
+    public function updateTransaction (Request $request, TransactionStatusService $statusService, $order)
     {
         $transaction = Transaction::firstWhere('system_order_number', $order);
 
@@ -107,7 +107,7 @@ class VietnamController extends Controller
             if ($request->status == 'success') {
 
             } else if ($request->status == 'fail') {
-                $transactionUtil->markAsFailed($transaction, null, $request->input('msg', ''), false);
+                $statusService->markAsFailed($transaction, null, $request->input('msg', ''), false);
             } else {
                 $to['status'] = $request->status;
 
@@ -125,7 +125,7 @@ class VietnamController extends Controller
         return abort(400);
     }
 
-    public function updateDaifu(Request $request, TransactionUtil $transactionUtil, UserChannelAccountUtil $accountUtil, $order)
+    public function updateDaifu(Request $request, TransactionStatusService $statusService, UserChannelAccountUtil $accountUtil, $order)
     {
         $math = new BCMathUtil;
         $transaction = Transaction::find($order);
@@ -145,11 +145,11 @@ class VietnamController extends Controller
         if ($request->has('status')) {
             if ($request->status == Transaction::STATUS_SUCCESS) {
                 $account = $transaction->toChannelAccount;
-                $transactionUtil->markAsSuccess($transaction, null, true, false, false);
+                $statusService->markAsSuccess($transaction, null, true, false, false);
             }
 
             if ($request->status == Transaction::STATUS_FAILED) {
-                $transactionUtil->markAsFailed($transaction, null, $request->input('msg', ''), false);
+                $statusService->markAsFailed($transaction, null, $request->input('msg', ''), false);
             }
         }
 

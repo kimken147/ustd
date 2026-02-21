@@ -14,7 +14,7 @@ use App\Repository\FeatureToggleRepository;
 use App\Services\Withdraw\WithdrawService;
 use App\Utils\BCMathUtil;
 use App\Utils\DateRangeValidator;
-use App\Utils\TransactionUtil;
+use App\Services\TransactionStatusService;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -282,7 +282,7 @@ class WithdrawController extends Controller
         return Withdraw::make($result->getTransaction());
     }
 
-    public function update(Request $request, Transaction $withdraw, TransactionUtil $transactionUtil)
+    public function update(Request $request, Transaction $withdraw, TransactionStatusService $statusService)
     {
         abort_if(!$withdraw->from->is(auth()->user()), Response::HTTP_NOT_FOUND);
 
@@ -307,7 +307,7 @@ class WithdrawController extends Controller
         }
 
         if ($request->status === Transaction::STATUS_RECEIVED) {
-            $transactionUtil->markAsReceived($withdraw, auth()->user()->realUser());
+            $statusService->markAsReceived($withdraw, auth()->user()->realUser());
         }
 
         return Withdraw::make($withdraw->load('from', 'transactionFees.user'));
