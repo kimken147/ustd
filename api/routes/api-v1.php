@@ -716,19 +716,5 @@ Route::post("/telegram/$telegramToken/webhook", "TelegramWebhookController");
 
 
 
-Route::prefix("vn")
-    ->namespace("Country")
-    ->group(function () {
-        Route::get("direct/{order}", "VietnamController@getTransaction")->name(
-            "api.v1.vn.get-tx"
-        );
-        Route::post(
-            "direct/{order}",
-            "VietnamController@updateTransaction"
-        )->name("api.v1.vn.update-tx");
-        Route::post("daifu/{order}", "VietnamController@updateDaifu")->name(
-            "api.v1.vn.update-daifu"
-        );
-    });
 
 
