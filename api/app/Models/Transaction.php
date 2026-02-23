@@ -100,7 +100,6 @@ class Transaction extends Model
         'operated_at',
         'refunded_at',
         'should_refund_at',
-        'mall_sync_at',
         'thirdchannel_id',
         'from_channel_account_id',
         'to_channel_account_id',

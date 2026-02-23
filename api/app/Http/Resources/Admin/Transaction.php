@@ -135,19 +135,13 @@ class Transaction extends JsonResource
                 isset($toChannel['mobile_number']),
                 data_get($toChannel, 'mobile_number')
             ),
-            'red_envelope_password'            => $this->when(
-                isset($toChannel['red_envelope_password']),
-                data_get($toChannel, 'red_envelope_password')
-            ),
-            're_qq_qrcode_path'                => $this->when(
-                isset($toChannel['re_qq_qrcode_path']),
-                $this->temporaryQRcodeUrl(data_get($toChannel, 're_qq_qrcode_path'))
-            ),
             'recorded_at'                      => $this->when(
                 isset($toChannel['recorded_at']),
                 data_get($toChannel, 'recorded_at') ? Carbon::parse(data_get($toChannel, 'recorded_at'))->toIso8601String() : null
             ),
             'usdt_rate' => $this->usdt_rate,
+            'chain_network' => $this->chain_network,
+            'tx_hash' => $this->tx_hash,
             '_search1' => $this->_search1
         ];
     }

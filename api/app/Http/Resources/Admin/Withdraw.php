@@ -109,6 +109,8 @@ class Withdraw extends JsonResource
 
             'certificate_file_path'             => $this->temporaryUrl($this->certificate_file_path),
             'certificate_files'                 => TransactionCertificateFileCollection::make($this->getCertificateFiles()),
+            'chain_network' => $this->chain_network,
+            'tx_hash' => $this->tx_hash,
             '_search1' => $this->_search1
         ];
     }
