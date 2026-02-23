@@ -119,6 +119,9 @@ class UserChannelAccount extends JsonResource
             return new \stdClass();
         }
 
+        // Scrub encrypted private key from API responses
+        unset($detail[\App\Models\UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY]);
+
         try {
             if ($qrCodeFilePath = data_get(
                 $detail,

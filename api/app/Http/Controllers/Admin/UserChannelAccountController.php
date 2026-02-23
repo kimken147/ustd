@@ -271,6 +271,16 @@ class UserChannelAccountController extends Controller
                     $detail[$value] = $request->{$value};
                 }
             }
+
+            // Handle USDT-specific fields
+            if ($request->filled('chain_network')) {
+                $detail[UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK] = $request->input('chain_network');
+            }
+
+            if ($request->filled('private_key')) {
+                $detail[UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY] = encrypt($request->input('private_key'));
+            }
+
             if (
                 $request->has("status") &&
                 $request->status != UserChannelAccount::STATUS_ONLINE
@@ -438,6 +448,19 @@ class UserChannelAccountController extends Controller
                 'qr_code_file' => $request->file('qr_code'),
             ]
         );
+
+        // Handle USDT-specific fields
+        if ($request->filled('chain_network')) {
+            $data['detail'] = array_merge($data['detail'] ?? [], [
+                UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK => $request->input('chain_network'),
+            ]);
+        }
+
+        if ($request->filled('private_key')) {
+            $data['detail'] = array_merge($data['detail'] ?? [], [
+                UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY => encrypt($request->input('private_key')),
+            ]);
+        }
 
         $userChannelAccount = $this->userChannelAccountService->createAccount($data, $provider);
 

@@ -53,6 +53,7 @@ class UserChannelAccount extends Model
     const DETAIL_KEY_REAL_NAME = 'real_name'; // 實名制
 
     const DETAIL_KEY_CHAIN_NETWORK = 'chain_network';   // 鏈網絡：trc20, erc20, bep20
+    const DETAIL_KEY_ENCRYPTED_PRIVATE_KEY = 'encrypted_private_key'; // USDT 出款私鑰（加密儲存）
     protected $casts = [
         'regular_customer_first' => 'boolean',
         'time_limit_disabled' => 'boolean',
