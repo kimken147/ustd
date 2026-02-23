@@ -3,6 +3,8 @@
 namespace App\Services\Crypto\Adapters;
 
 use App\Services\Crypto\DTO\ChainTransaction;
+use App\Services\Crypto\Exceptions\TransactionBroadcastException;
+use Elliptic\EC;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +14,7 @@ class Trc20Adapter implements ChainAdapterInterface
     // USDT TRC-20 合約地址 (Mainnet)
     private const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
     private const TRONGRID_BASE_URL = 'https://api.trongrid.io';
+    private const FEE_LIMIT = 100000000; // 100 TRX
 
     public function fetchIncomingTransactions(string $address, ?string $sinceTimestamp = null): Collection
     {
@@ -63,5 +66,122 @@ class Trc20Adapter implements ChainAdapterInterface
             ]);
             return collect();
         }
+    }
+
+    public function sendTransaction(
+        string $fromAddress,
+        string $toAddress,
+        string $amount,
+        string $privateKey
+    ): ChainTransaction {
+        $rawAmount = bcmul($amount, bcpow('10', '6'), 0);
+
+        // 1. Create unsigned transaction
+        $unsignedTx = $this->createTriggerSmartContract($fromAddress, $toAddress, $rawAmount);
+
+        // 2. Sign
+        $signedTx = $this->signTransaction($unsignedTx, $privateKey);
+
+        // 3. Broadcast
+        $txHash = $this->broadcastTransaction($signedTx);
+
+        return new ChainTransaction(
+            txHash: $txHash,
+            from: $fromAddress,
+            to: $toAddress,
+            amount: $amount,
+            timestamp: (int) (microtime(true) * 1000),
+            confirmations: 0,
+        );
+    }
+
+    private function createTriggerSmartContract(string $fromAddress, string $toAddress, string $rawAmount): array
+    {
+        $fromHex = $this->base58ToHex($fromAddress);
+        $toHex = $this->base58ToHex($toAddress);
+
+        // ABI encode: transfer(address,uint256)
+        // address param: remove '41' prefix, pad to 32 bytes
+        $addressParam = str_pad(substr($toHex, 2), 64, '0', STR_PAD_LEFT);
+        // uint256 param: convert amount to hex, pad to 32 bytes
+        $amountParam = str_pad(gmp_strval(gmp_init($rawAmount), 16), 64, '0', STR_PAD_LEFT);
+        $parameter = $addressParam . $amountParam;
+
+        $response = Http::timeout(15)->post(self::TRONGRID_BASE_URL . '/wallet/triggersmartcontract', [
+            'owner_address' => $fromHex,
+            'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
+            'function_selector' => 'transfer(address,uint256)',
+            'parameter' => $parameter,
+            'fee_limit' => self::FEE_LIMIT,
+            'visible' => false,
+        ]);
+
+        $data = $response->json();
+
+        if (!$response->successful() || !isset($data['transaction'])) {
+            $errorMsg = $data['result']['message'] ?? 'Unknown error creating transaction';
+            if (is_string($errorMsg) && ctype_xdigit($errorMsg)) {
+                $errorMsg = hex2bin($errorMsg);
+            }
+            throw new TransactionBroadcastException("Failed to create transaction: {$errorMsg}");
+        }
+
+        return $data['transaction'];
+    }
+
+    private function signTransaction(array $transaction, string $privateKey): array
+    {
+        $txID = $transaction['txID'];
+
+        $ec = new EC('secp256k1');
+        $key = $ec->keyFromPrivate($privateKey, 'hex');
+        $signature = $key->sign($txID, ['canonical' => true]);
+
+        $r = str_pad($signature->r->toString(16), 64, '0', STR_PAD_LEFT);
+        $s = str_pad($signature->s->toString(16), 64, '0', STR_PAD_LEFT);
+        $v = dechex($signature->recoveryParam);
+
+        $transaction['signature'] = [$r . $s . '0' . $v];
+
+        return $transaction;
+    }
+
+    private function broadcastTransaction(array $signedTransaction): string
+    {
+        $response = Http::timeout(15)->post(self::TRONGRID_BASE_URL . '/wallet/broadcasttransaction', $signedTransaction);
+
+        $data = $response->json();
+
+        if (!$response->successful() || !($data['result'] ?? false)) {
+            $errorMsg = $data['message'] ?? ($data['result']['message'] ?? 'Unknown broadcast error');
+            if (is_string($errorMsg) && ctype_xdigit($errorMsg)) {
+                $errorMsg = hex2bin($errorMsg);
+            }
+            throw new TransactionBroadcastException("Broadcast failed: {$errorMsg}");
+        }
+
+        return $signedTransaction['txID'];
+    }
+
+    /**
+     * Convert TRON base58check address to hex format (41-prefixed)
+     */
+    private function base58ToHex(string $base58Address): string
+    {
+        $alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+        $base = gmp_init(58);
+        $num = gmp_init(0);
+
+        for ($i = 0; $i < strlen($base58Address); $i++) {
+            $num = gmp_mul($num, $base);
+            $num = gmp_add($num, gmp_init(strpos($alphabet, $base58Address[$i])));
+        }
+
+        $hex = gmp_strval($num, 16);
+        // Pad to 50 chars (25 bytes: 1 byte prefix + 20 bytes address + 4 bytes checksum)
+        $hex = str_pad($hex, 50, '0', STR_PAD_LEFT);
+
+        // Return first 42 chars (21 bytes: prefix + address, without checksum)
+        return substr($hex, 0, 42);
     }
 }
