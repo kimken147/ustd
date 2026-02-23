@@ -17,8 +17,6 @@ import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import useSelector from 'hooks/useSelector';
 import { useUserChannelForm } from './hooks/useUserChannelForm';
-import { QRCodeFields } from './components/QRCodeFields';
-import { BankFields } from './components/BankFields';
 import { FormColumn } from './components/FormColumn';
 
 export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
@@ -34,11 +32,6 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
 
   const { selectProps: ProviderSelectProps } = useSelector({
     resource: 'providers',
-  });
-
-  const { Select: BankSelect } = useSelector({
-    resource: 'banks',
-    valueField: 'name',
   });
 
   const curChannelAmountId = Form.useWatch('channel_amount_id', form);
@@ -95,36 +88,41 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
             {curChannelCode && (
               <FormColumn>
                 <Form.Item
-                  label={
-                    curChannelCode === 'BANK_CARD'
-                      ? t('fields.bankCardNumber')
-                      : t('fields.bankCardNumber')
-                  }
+                  label={t('fields.account')}
                   name="bank_card_number"
                   rules={[{ required: true }]}
                 >
-                  <Input />
+                  <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
                 </Form.Item>
               </FormColumn>
             )}
 
-            {(curChannelCode?.includes('QR') ||
-              curChannelCode === 'ALIPAY_SAC' ||
-              curChannelCode === 'ALIPAY_BAC' ||
-              curChannelCode === 'ALIPAY_GC') && <QRCodeFields form={form} />}
-
-            {curChannelCode === 'BANK_CARD' && (
-              <BankFields BankSelect={BankSelect} />
-            )}
-
-            {curChannelCode === 'ALIPAY_COPY' && (
+            {curChannelCode === 'USDT' && (
               <FormColumn>
                 <Form.Item
-                  label={t('fields.bankCardHolderName')}
-                  name="bank_card_holder_name"
+                  label={t('fields.chainNetwork')}
+                  name="chain_network"
                   rules={[{ required: true }]}
+                  initialValue="trc20"
                 >
-                  <Input />
+                  <Select
+                    options={[
+                      { label: 'TRC-20', value: 'trc20' },
+                      { label: 'ERC-20', value: 'erc20' },
+                      { label: 'BEP-20', value: 'bep20' },
+                    ]}
+                  />
+                </Form.Item>
+              </FormColumn>
+            )}
+
+            {curChannelCode === 'USDT' && (
+              <FormColumn>
+                <Form.Item
+                  label={t('fields.privateKey')}
+                  name="private_key"
+                >
+                  <Input.Password placeholder={t('placeholders.privateKey')} />
                 </Form.Item>
               </FormColumn>
             )}

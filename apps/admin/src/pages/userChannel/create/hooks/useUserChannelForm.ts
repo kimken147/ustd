@@ -15,18 +15,15 @@ export const useUserChannelForm = () => {
   const handleSubmit = async (values: FormValues) => {
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-      if (key === 'qr_code') {
-        formData.append(key, value[value.length - 1].originFileObj);
-      } else if (key === 'note' && !value) {
+      if (key === 'note' && !value) {
         // Skip empty note
-      } else {
+      } else if (value != null) {
         formData.append(key, value as any);
       }
     });
 
     formData.append('device_name', 'default');
     formData.append('type', '2'); // UserChannelType.收款
-    formData.append('receiver_name', values.bank_card_holder_name || '');
 
     await create({
       resource: 'user-channel-accounts',

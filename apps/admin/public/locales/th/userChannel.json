@@ -50,7 +50,9 @@
     "mpin": "MPIN",
     "newPassword": "รหัสผ่านใหม่",
     "newEmail": "อีเมลใหม่",
-    "operation": "ดำเนินการ"
+    "operation": "ดำเนินการ",
+    "chainNetwork": "เครือข่ายเชน",
+    "privateKey": "คีย์ส่วนตัว (สำหรับการจ่ายเงิน)"
   },
   "switches": {
     "dailyLimit": "สวิตช์วงเงินรายวัน",
@@ -141,7 +143,9 @@
   },
   "placeholders": {
     "qrcode": "QR Code",
-    "viewQrcode": "ดู QR Code"
+    "viewQrcode": "ดู QR Code",
+    "walletAddress": "ป้อนที่อยู่กระเป๋า USDT",
+    "privateKey": "จำเป็นเฉพาะสำหรับการจ่ายเงิน เว้นว่างเพื่อข้าม"
   },
   "validation": {
     "required": "จำเป็น"

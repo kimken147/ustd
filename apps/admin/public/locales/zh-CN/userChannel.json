@@ -16,7 +16,7 @@
     "balanceLimit": "余额上限",
     "bankName": "收款银行",
     "accountNumber": "帐号编号",
-    "account": "账号",
+    "account": "帐号",
     "accountName": "收款人名称",
     "singleLimit": "单笔收款限额",
     "singleLimitReceive": "单笔限额(收/出)",
@@ -50,7 +50,9 @@
     "mpin": "MPIN",
     "newPassword": "新密码",
     "newEmail": "新Email",
-    "operation": "操作"
+    "operation": "操作",
+    "chainNetwork": "鏈網路",
+    "privateKey": "私鑰（出款用）"
   },
   "switches": {
     "dailyLimit": "每日收/付限额开关",
@@ -141,7 +143,9 @@
   },
   "placeholders": {
     "qrcode": "二维码",
-    "viewQrcode": "查看二维码"
+    "viewQrcode": "查看二维码",
+    "walletAddress": "輸入 USDT 錢包地址",
+    "privateKey": "僅出款時需要，留空則不設定"
   },
   "validation": {
     "required": "必填"
