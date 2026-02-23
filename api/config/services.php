@@ -36,4 +36,9 @@ return [
         'engineer-leader-group-id' => env('TELEGRAM_BOT_ENGINEER_LEADER_GROUP_ID'),
     ],
 
+    'trongrid' => [
+        'api_key' => env('TRONGRID_API_KEY'),
+        'base_url' => env('TRONGRID_BASE_URL', 'https://api.trongrid.io'),
+    ],
+
 ];

@@ -5,6 +5,7 @@ namespace App\Services\Crypto\Adapters;
 use App\Services\Crypto\DTO\ChainTransaction;
 use App\Services\Crypto\Exceptions\TransactionBroadcastException;
 use Elliptic\EC;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,6 @@ class Trc20Adapter implements ChainAdapterInterface
 {
     // USDT TRC-20 合約地址 (Mainnet)
     private const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-    private const TRONGRID_BASE_URL = 'https://api.trongrid.io';
     private const FEE_LIMIT = 100000000; // 100 TRX
 
     public function fetchIncomingTransactions(string $address, ?string $sinceTimestamp = null): Collection
@@ -30,8 +30,8 @@ class Trc20Adapter implements ChainAdapterInterface
                 $params['min_timestamp'] = $sinceTimestamp;
             }
 
-            $response = Http::timeout(10)
-                ->get(self::TRONGRID_BASE_URL . "/v1/accounts/{$address}/transactions/trc20", $params);
+            $response = $this->buildHttpClient()
+                ->get($this->getBaseUrl() . "/v1/accounts/{$address}/transactions/trc20", $params);
 
             if (!$response->successful()) {
                 Log::warning('Trc20Adapter: TronGrid API 請求失敗', [
@@ -107,7 +107,7 @@ class Trc20Adapter implements ChainAdapterInterface
         $amountParam = str_pad(gmp_strval(gmp_init($rawAmount), 16), 64, '0', STR_PAD_LEFT);
         $parameter = $addressParam . $amountParam;
 
-        $response = Http::timeout(15)->post(self::TRONGRID_BASE_URL . '/wallet/triggersmartcontract', [
+        $response = $this->buildHttpClient()->post($this->getBaseUrl() . '/wallet/triggersmartcontract', [
             'owner_address' => $fromHex,
             'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
             'function_selector' => 'transfer(address,uint256)',
@@ -148,7 +148,7 @@ class Trc20Adapter implements ChainAdapterInterface
 
     private function broadcastTransaction(array $signedTransaction): string
     {
-        $response = Http::timeout(15)->post(self::TRONGRID_BASE_URL . '/wallet/broadcasttransaction', $signedTransaction);
+        $response = $this->buildHttpClient()->post($this->getBaseUrl() . '/wallet/broadcasttransaction', $signedTransaction);
 
         $data = $response->json();
 
@@ -161,6 +161,22 @@ class Trc20Adapter implements ChainAdapterInterface
         }
 
         return $signedTransaction['txID'];
+    }
+
+    private function getBaseUrl(): string
+    {
+        return config('services.trongrid.base_url', 'https://api.trongrid.io');
+    }
+
+    private function buildHttpClient(): PendingRequest
+    {
+        $client = Http::timeout(15);
+        $apiKey = config('services.trongrid.api_key');
+        if ($apiKey) {
+            $client = $client->withHeaders(['TRON-PRO-API-KEY' => $apiKey]);
+        }
+
+        return $client;
     }
 
     /**

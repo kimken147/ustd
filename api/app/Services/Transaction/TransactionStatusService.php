@@ -17,6 +17,8 @@ use App\Exceptions\TransactionLockerNotYouException;
 use App\Exceptions\TransactionRefundedException;
 use App\Exceptions\TransactionShouldLockBeforeUpdateException;
 use App\Jobs\NotifyTransaction;
+use App\Jobs\ProcessUsdtWithdraw;
+use App\Models\Channel;
 use App\Models\Device;
 use App\Models\DevicePayingTransaction;
 use App\Models\DeviceRegularCustomer;
@@ -1251,7 +1253,7 @@ class TransactionStatusService
         bool $shouldLock = true,
         bool $keepLock = false
     ) {
-        return DB::transaction(function () use ($transaction, $note, $shouldLock, $keepLock) {
+        $transaction = DB::transaction(function () use ($transaction, $note, $shouldLock, $keepLock) {
             $transaction = Transaction::lockForUpdate()->findOrFail($transaction->getKey());
 
             abort_if(
@@ -1307,5 +1309,17 @@ class TransactionStatusService
 
             return $transaction->refresh();
         });
+
+        // USDT 自營出款：狀態變為 PAYING 後自動發送鏈上交易
+        if (
+            !$keepLock
+            && $transaction->channel_code === Channel::CODE_USDT
+            && !$transaction->thirdchannel_id
+            && $transaction->from_channel_account_id
+        ) {
+            ProcessUsdtWithdraw::dispatch($transaction->id);
+        }
+
+        return $transaction;
     }
 }
