@@ -11,15 +11,14 @@
 | Phase 5 | Provider/Merchant Controller dedup — extract UserManagementService (5 shared methods), ProviderController 621→526, MerchantController 549→453 | `731a41c0a` | 2026-02-12 |
 | Phase 6 | CreateTransactionService extraction — extract AccountMatchingQueryBuilder and TransactionValidationService | `dde4c4113` | 2026-02-21 |
 | Phase 7 | Eliminate Admin controller TransactionUtil dependency — 6 Admin controllers + CreateTransactionService::handleCallback() now use TransactionStatusService/TransactionLockService directly | `213a1272d` | 2026-02-21 |
-| Phase 8 | Eliminate ALL remaining TransactionUtil dependencies (11 files: Provider/Merchant/Country controllers, 5 Jobs, ThirdChannelDispatcher, 2 Commands) and delete TransactionUtil class | — | 2026-02-21 |
+| Phase 8 | Eliminate ALL remaining TransactionUtil dependencies (11 files: Provider/Merchant/Country controllers, 5 Jobs, ThirdChannelDispatcher, 2 Commands) and delete TransactionUtil class | `818cf36a9` | 2026-02-21 |
+| Phase 9 | Dead code cleanup — remove VietnamController + 3 Country Notification Jobs (ProcessVn/Ph/Cn) + 2 dispatching controllers + routes; fix swallowed exceptions (10 catch blocks: add logging, fix lowercase `exception` bug) | `1712dcb02`, `4a6626161` | 2026-02-23 |
 
 ## Remaining — P2: Medium Impact
 
 | Item | Description |
 |------|-------------|
-| Country Notification Job consolidation | CN/VN/PH ProcessTransactionNotification Jobs share similar structure — use Template Method |
 | TransactionFactory mutable state | Replace public properties + `fresh()` with immutable DTOs |
-| Swallowed Exceptions | `catch (exception $e) { DB::rollBack(); }` with no logging, lowercase `exception` |
 | Raw SQL to Repository | Admin WithdrawController, TransactionController raw join/sum queries |
 
 ## Separate Track
