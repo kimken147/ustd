@@ -14,6 +14,7 @@ use App\Utils\AmountDisplayTransformer;
 use App\Utils\BankCardTransferObject;
 use App\Utils\DateRangeValidator;
 use App\Utils\BCMathUtil;
+use App\DTOs\TransactionParams;
 use App\Utils\FloatUtil;
 use App\Utils\TransactionFactory;
 use App\Utils\WalletUtil;
@@ -259,16 +260,14 @@ class WithdrawController extends Controller
             $transactionFactory,
             $bankCardTransferObject
         ) {
+            $params = new TransactionParams(
+                amount: $request->amount,
+                bankCard: $bankCardTransferObject->model($bankCard),
+                subType: $request->type == 'profit' ? Transaction::SUB_TYPE_WITHDRAW_PROFIT : null,
+            );
+
             /** @var Transaction $transaction */
-            $transaction = $transactionFactory
-                ->bankCard($bankCardTransferObject->model($bankCard))
-                ->amount($request->amount);
-
-            if ($request->type == 'profit') {
-                $transaction->subType(TRANSACTION::SUB_TYPE_WITHDRAW_PROFIT);
-            }
-
-            $transaction = $transaction->normalWithdrawFrom(auth()->user(), false, null, $request->type);
+            $transaction = $transactionFactory->normalWithdrawFrom($params, auth()->user(), false, null, $request->type);
 
             $wallet->withdraw(auth()->user()->wallet, $totalCost, $transaction->order_number, $transactionType='withdraw', $request->type);
 

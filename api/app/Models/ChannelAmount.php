@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property Channel $channel
@@ -56,5 +57,10 @@ class ChannelAmount extends Model
     public function accounts()
     {
         return $this->hasMany(UserChannelAccount::class);
+    }
+
+    public function scopeOrderByAmountRange($query)
+    {
+        return $query->orderBy(DB::raw('max_amount - min_amount'));
     }
 }

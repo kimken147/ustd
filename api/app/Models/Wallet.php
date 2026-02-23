@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Utils\BCMathUtil;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Wallet extends Model
 {
@@ -81,6 +82,14 @@ class Wallet extends Model
             $bcMath->mulPercent($amount, $this->agency_withdraw_fee),
             $this->agency_withdraw_fee_dollar,
             $hasAdditionalFee ? $this->additional_agency_withdraw_fee : 0
+        ]);
+    }
+
+    public function scopeSelectTotalBalance($query)
+    {
+        return $query->select([
+            DB::raw('SUM(balance) AS total_balance'),
+            DB::raw('SUM(frozen_balance) AS total_frozen_balance'),
         ]);
     }
 }

@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Models\WalletHistory;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class UserWalletHistoryController extends Controller
 {
@@ -34,14 +33,7 @@ class UserWalletHistoryController extends Controller
                 $builder->where('note', 'like', "%{$note}%");
             });
 
-        $walletBalanceTotal = (clone $walletHistories)
-            ->first(
-                [
-                    DB::raw(
-                        'SUM(delta->>"$.balance") + SUM(delta->>"$.profit") + SUM(delta->>"$.frozen_balance")AS total'
-                    )
-                ]
-            );
+        $walletBalanceTotal = (clone $walletHistories)->selectAllDeltaTotal()->first();
 
         return WalletHistoryCollection::make(
             $walletHistories->with('operator')->latest('created_at')->latest('id')->paginate(20)->appends($request->query->all())

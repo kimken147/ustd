@@ -369,4 +369,9 @@ class Transaction extends Model
         $table = $this->getTable();
         return $query->from(DB::raw("`$table` USE INDEX(`$index`)"));
     }
+
+    public function scopeSelectTotalAmount($query)
+    {
+        return $query->select([DB::raw('SUM(amount) AS total_amount')]);
+    }
 }

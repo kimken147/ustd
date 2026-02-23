@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\DTOs\TransactionParams;
 use App\Exceptions\RaceConditionException;
 use App\Models\Bank;
 use App\Models\Channel;
@@ -21,20 +22,7 @@ use RuntimeException;
 
 class TransactionFactory
 {
-    public $amount;
-    public $bankCard;
     private $bcMath;
-    public $clientIpv4;
-    public $floatingAmount;
-    public $note;
-    public $notifyUrl;
-    public $orderNumber;
-    public $parent;
-    private $realName;
-    private $subType;
-    private $usdtRate;
-    private $binanceUsdtRate;
-    private $toData = [];
     private $userChannelAccountUtil;
     private $featureToggleRepository;
     private $transactionFeeService;
@@ -51,62 +39,9 @@ class TransactionFactory
         $this->transactionFeeService = $transactionFeeService;
     }
 
-    public function usdtRate($usdtRate, $binanceUsdtRate)
+    public function normalDepositTo(TransactionParams $params, User $provider)
     {
-        $this->usdtRate = $usdtRate;
-        $this->binanceUsdtRate = $binanceUsdtRate;
-
-        return $this;
-    }
-
-    public function amount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function bankCard(BankCardTransferObject $bankCardTransferObject)
-    {
-        $this->bankCard = $bankCardTransferObject;
-
-        return $this;
-    }
-
-    public function clientIpv4(?string $clientIpv4)
-    {
-        $this->clientIpv4 = $clientIpv4;
-
-        return $this;
-    }
-
-    public function floatingAmount($floatingAmount)
-    {
-        $this->floatingAmount = $floatingAmount;
-
-        return $this;
-    }
-
-    public function fresh()
-    {
-        return new self(
-            $this->bcMath,
-            $this->userChannelAccountUtil,
-            $this->featureToggleRepository,
-            $this->transactionFeeService
-        );
-    }
-
-    public function toData($data)
-    {
-        $this->toData = array_merge($this->toData, array_filter($data)); // 过滤掉空资料
-
-        return $this;
-    }
-
-    public function normalDepositTo(User $provider)
-    {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
@@ -116,22 +51,22 @@ class TransactionFactory
                 "to_id" => $provider->getKey(),
                 "to_wallet_id" => $provider->wallet->getKey(),
                 "locked_by_id" => null,
-                "client_ipv4" => $this->clientIpv4,
+                "client_ipv4" => $params->clientIpv4,
                 "type" => Transaction::TYPE_NORMAL_DEPOSIT,
                 "status" => Transaction::STATUS_PAYING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
                 "from_account_mode" => null,
                 "to_account_mode" => $provider->account_mode,
-                "from_channel_account" => $this->bankCard->toFromChannelAccount(),
-                "to_channel_account" => $this->toData ?? [],
-                "amount" => $this->amount,
-                "floating_amount" => $this->amount,
+                "from_channel_account" => $params->bankCard->toFromChannelAccount(),
+                "to_channel_account" => $params->toData ?: [],
+                "amount" => $params->amount,
+                "floating_amount" => $params->amount,
                 "actual_amount" => 0,
                 "channel_code" => null,
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
-                "notify_url" => $this->notifyUrl,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
+                "notify_url" => $params->notifyUrl,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "from_device_name" => null,
                 "certificate_file_path" => null,
                 "notified_at" => null,
@@ -140,11 +75,11 @@ class TransactionFactory
                 "locked_at" => null,
             ]);
 
-            if ($this->note) {
+            if ($params->note) {
                 TransactionNote::create([
                     "transaction_id" => $transaction->getKey(),
                     "user_id" => $provider->realUser()->getKey(),
-                    "note" => $this->note,
+                    "note" => $params->note,
                 ]);
             }
 
@@ -161,24 +96,19 @@ class TransactionFactory
         return $transaction;
     }
 
-    /**
-     * @param  array  $attributes
-     * @throws Throwable
-     */
-    private function throwIfAnyMissing(array $attributes)
+    private function throwIfMissing(TransactionParams $params, array $attributes)
     {
         foreach ($attributes as $attribute) {
             if ($attribute === "bankCard") {
                 if (
-                    is_null($this->bankCard) ||
-                    !($this->bankCard instanceof BankCardTransferObject)
+                    is_null($params->bankCard) ||
+                    !($params->bankCard instanceof BankCardTransferObject)
                 ) {
                     throw new RuntimeException("bankCard can not be empty");
                 }
 
-                foreach ($this->bankCard as $key => $bankCardProperty) {
+                foreach ($params->bankCard as $key => $bankCardProperty) {
                     if (in_array($key, ["bankProvince", "bankCity"])) {
-                        // 开户省份 开户市不检查
                         continue;
                     }
                     throw_if(
@@ -188,56 +118,51 @@ class TransactionFactory
                 }
             } else {
                 throw_if(
-                    is_null($this->$attribute),
+                    is_null($params->$attribute),
                     new RuntimeException($attribute . " can not be empty")
                 );
             }
         }
     }
 
-    /** @deprecated Use TransactionFeeService::createDepositFees() */
-    public function createDepositFees(...$args)
-    {
-        return $this->transactionFeeService->createDepositFees(...$args);
-    }
-
     public function normalWithdrawFrom(
+        TransactionParams $params,
         User $user,
         $agency = false,
         ?Transaction $parent = null,
         $type = "balance"
     ) {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
 
             $transaction = Transaction::create([
-                "parent_id" => optional($this->parent)->getKey(),
+                "parent_id" => optional($params->parent)->getKey(),
                 "from_id" => $user->getKey(),
                 "from_wallet_id" => $user->wallet->getKey(),
                 "to_id" => 0,
                 "locked_by_id" => null,
-                "client_ipv4" => $this->clientIpv4,
+                "client_ipv4" => $params->clientIpv4,
                 "type" => Transaction::TYPE_NORMAL_WITHDRAW,
-                "sub_type" => $this->subType,
+                "sub_type" => $params->subType,
                 "status" =>
-                !$this->parent && $user->withdraw_review_enable
+                !$params->parent && $user->withdraw_review_enable
                     ? Transaction::STATUS_PENDING_REVIEW
                     : Transaction::STATUS_PAYING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
                 "from_account_mode" => $user->account_mode,
                 "to_account_mode" => null,
-                "from_channel_account" => $this->bankCard->toFromChannelAccount(),
-                "to_channel_account" => $this->toData ?? [],
-                "amount" => $this->amount,
-                "floating_amount" => $this->amount,
+                "from_channel_account" => $params->bankCard->toFromChannelAccount(),
+                "to_channel_account" => $params->toData ?: [],
+                "amount" => $params->amount,
+                "floating_amount" => $params->amount,
                 "actual_amount" => 0,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "channel_code" => null,
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
-                "notify_url" => $this->notifyUrl,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
+                "notify_url" => $params->notifyUrl,
                 "from_device_name" => null,
                 "certificate_file_path" => null,
                 "notified_at" => null,
@@ -266,41 +191,42 @@ class TransactionFactory
     }
 
     public function paufenWithdrawFrom(
+        TransactionParams $params,
         User $merchant,
         $agency = false,
         ?Transaction $parent = null
     ) {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
 
             $transaction = Transaction::create([
-                "parent_id" => optional($this->parent)->getKey(),
+                "parent_id" => optional($params->parent)->getKey(),
                 "from_id" => $merchant->getKey(),
                 "from_wallet_id" => $merchant->wallet->getKey(),
                 "to_id" => null,
                 "locked_by_id" => null,
-                "client_ipv4" => $this->clientIpv4,
+                "client_ipv4" => $params->clientIpv4,
                 "type" => Transaction::TYPE_PAUFEN_WITHDRAW,
-                "sub_type" => $this->subType,
+                "sub_type" => $params->subType,
                 "status" =>
-                !$this->parent && $merchant->withdraw_review_enable
+                !$params->parent && $merchant->withdraw_review_enable
                     ? Transaction::STATUS_PENDING_REVIEW
                     : Transaction::STATUS_MATCHING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
                 "from_account_mode" => $merchant->account_mode,
                 "to_account_mode" => null,
-                "from_channel_account" => $this->bankCard->toFromChannelAccount(),
-                "to_channel_account" => $this->toData ?? [],
-                "amount" => $this->amount,
-                "floating_amount" => $this->amount,
+                "from_channel_account" => $params->bankCard->toFromChannelAccount(),
+                "to_channel_account" => $params->toData ?: [],
+                "amount" => $params->amount,
+                "floating_amount" => $params->amount,
                 "actual_amount" => 0,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "channel_code" => null,
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
-                "notify_url" => $this->notifyUrl,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
+                "notify_url" => $params->notifyUrl,
                 "from_device_name" => null,
                 "certificate_file_path" => null,
                 "notified_at" => null,
@@ -327,39 +253,40 @@ class TransactionFactory
     }
 
     public function thirdchannelWithdrawFrom(
+        TransactionParams $params,
         User $user,
         $agency = false,
         ?Transaction $parent = null,
         $thirdchannel_id = null
     ) {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
 
             $transaction = Transaction::create([
-                "parent_id" => optional($this->parent)->getKey(),
+                "parent_id" => optional($params->parent)->getKey(),
                 "from_id" => $user->getKey(),
                 "from_wallet_id" => $user->wallet->getKey(),
                 "to_id" => 0,
                 "locked_by_id" => null,
-                "client_ipv4" => $this->clientIpv4,
+                "client_ipv4" => $params->clientIpv4,
                 "type" => Transaction::TYPE_NORMAL_WITHDRAW,
-                "sub_type" => $this->subType,
+                "sub_type" => $params->subType,
                 "status" => Transaction::STATUS_THIRD_PAYING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
                 "from_account_mode" => $user->account_mode,
                 "to_account_mode" => null,
-                "from_channel_account" => $this->bankCard->toFromChannelAccount(),
-                "to_channel_account" => $this->toData ?? [],
-                "amount" => $this->amount,
-                "floating_amount" => $this->amount,
+                "from_channel_account" => $params->bankCard->toFromChannelAccount(),
+                "to_channel_account" => $params->toData ?: [],
+                "amount" => $params->amount,
+                "floating_amount" => $params->amount,
                 "actual_amount" => 0,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "channel_code" => null,
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
-                "notify_url" => $this->notifyUrl,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
+                "notify_url" => $params->notifyUrl,
                 "from_device_name" => null,
                 "certificate_file_path" => null,
                 "notified_at" => null,
@@ -385,11 +312,12 @@ class TransactionFactory
     /**
      * Create an internal transfer transaction.
      *
+     * @param TransactionParams $params Transaction parameters
      * @param UserChannelAccount|null $account Target channel account
      */
-    public function internalTransferFrom(?UserChannelAccount $account = null): ?Transaction
+    public function internalTransferFrom(TransactionParams $params, ?UserChannelAccount $account = null): ?Transaction
     {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
@@ -403,15 +331,15 @@ class TransactionFactory
                 "status" => Transaction::STATUS_MATCHING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
                 "to_account_mode" => null,
-                "from_channel_account" => $this->bankCard->toFromChannelAccount(false),
+                "from_channel_account" => $params->bankCard->toFromChannelAccount(false),
                 "to_channel_account" => [],
-                "amount" => $this->amount,
-                "floating_amount" => $this->amount,
+                "amount" => $params->amount,
+                "floating_amount" => $params->amount,
                 "actual_amount" => 0,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "channel_code" => null,
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
             ];
 
             if ($account) {
@@ -438,32 +366,33 @@ class TransactionFactory
     }
 
     public function createThirdchannel(
+        TransactionParams $params,
         User $user,
     ) {
-        $this->throwIfAnyMissing(["amount", "bankCard"]);
-        $transactionParams = [
-            "parent_id" => optional($this->parent)->getKey(),
+        $this->throwIfMissing($params, ["amount", "bankCard"]);
+        $transactionData = [
+            "parent_id" => optional($params->parent)->getKey(),
             "from_id" => $user->getKey(),
             "from_wallet_id" => $user->wallet->getKey(),
             "to_id" => 0,
             "locked_by_id" => null,
-            "client_ipv4" => $this->clientIpv4,
+            "client_ipv4" => $params->clientIpv4,
             "type" => Transaction::TYPE_NORMAL_WITHDRAW,
-            "sub_type" => $this->subType,
+            "sub_type" => $params->subType,
             "status" => Transaction::STATUS_THIRD_PAYING,
             "notify_status" => Transaction::NOTIFY_STATUS_NONE,
             "from_account_mode" => $user->account_mode,
             "to_account_mode" => null,
-            "from_channel_account" => $this->bankCard->toFromChannelAccount(),
-            "to_channel_account" => $this->toData ?? [],
-            "amount" => $this->amount,
-            "floating_amount" => $this->amount,
+            "from_channel_account" => $params->bankCard->toFromChannelAccount(),
+            "to_channel_account" => $params->toData ?: [],
+            "amount" => $params->amount,
+            "floating_amount" => $params->amount,
             "actual_amount" => 0,
-            "usdt_rate" => $this->usdtRate ?? 0,
+            "usdt_rate" => $params->usdtRate ?? 0,
             "channel_code" => null,
-            "order_number" => $this->orderNumber,
-            "note" => $this->note,
-            "notify_url" => $this->notifyUrl,
+            "order_number" => $params->orderNumber,
+            "note" => $params->note,
+            "notify_url" => $params->notifyUrl,
             "from_device_name" => null,
             "certificate_file_path" => null,
             "notified_at" => null,
@@ -471,23 +400,23 @@ class TransactionFactory
             "confirmed_at" => null,
             "locked_at" => null,
         ];
-        return Transaction::create($transactionParams);
+        return Transaction::create($transactionData);
     }
 
-    public function changeToPaufenWithdraw(Transaction $transaction, User $user, $agency = true)
+    public function changeToPaufenWithdraw(Transaction $transaction, User $user, $agency = true, ?Transaction $parent = null)
     {
         $transaction->type = Transaction::TYPE_PAUFEN_WITHDRAW;
         $transaction->to_id = null;
-        $transaction->status = !$this->parent && $user->withdraw_review_enable
+        $transaction->status = !$parent && $user->withdraw_review_enable
             ? Transaction::STATUS_PENDING_REVIEW
             : Transaction::STATUS_MATCHING;
         $transaction->save();
     }
 
-    public function changeToNormalWithdraw(Transaction $transaction, User $user, $agency = true)
+    public function changeToNormalWithdraw(Transaction $transaction, User $user, $agency = true, ?Transaction $parent = null)
     {
         $transaction->type = Transaction::TYPE_NORMAL_WITHDRAW;
-        $transaction->status = !$this->parent && $user->withdraw_review_enable
+        $transaction->status = !$parent && $user->withdraw_review_enable
             ? Transaction::STATUS_PENDING_REVIEW
             : Transaction::STATUS_PAYING;
         $transaction->save();
@@ -538,40 +467,6 @@ class TransactionFactory
         return $transaction;
     }
 
-    /** @deprecated Use TransactionFeeService::createWithdrawFees() */
-    public function createWithdrawFees(...$args)
-    {
-        return $this->transactionFeeService->createWithdrawFees(...$args);
-    }
-
-    public function note(?string $note)
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    public function notifyUrl(?string $notifyUrl)
-    {
-        $this->notifyUrl = $notifyUrl;
-
-        return $this;
-    }
-
-    public function orderNumber(string $orderNumber)
-    {
-        $this->orderNumber = $orderNumber;
-
-        return $this;
-    }
-
-    public function parent(?Transaction $transaction)
-    {
-        $this->parent = $transaction;
-
-        return $this;
-    }
-
     public function paufenDepositTo(
         User $provider,
         Transaction $transaction,
@@ -605,7 +500,6 @@ class TransactionFactory
 
             throw_if(!$success, new RuntimeException("Unknown"));
 
-            // 前面建立出款時已經有記錄系統利潤
             $this->transactionFeeService->createDepositFees($transaction, $provider, false, $parent);
 
             return $transaction;
@@ -625,7 +519,6 @@ class TransactionFactory
             $featureToggleRepository = app(FeatureToggleRepository::class);
 
             throw_if(
-                // 如果啟用了 記錄收款帳號額度(RECORD_USER_CHANNEL_ACCOUNT_BALANCE) 才需要驗證
                 $featureToggleRepository->enabled(
                     FeatureToggle::RECORD_USER_CHANNEL_ACCOUNT_BALANCE,
                     false
@@ -683,10 +576,7 @@ class TransactionFactory
 
             throw_if(!$success, new RuntimeException("Unknown"));
 
-            // 前面建立出款時已經有記錄系統利潤
             $this->transactionFeeService->createDepositFees($transaction, $provider, false, $parent);
-
-            // 要累積帳號的出款日/月限額
 
             $amount = $this->bcMath->add(
                 $transaction->floating_amount,
@@ -702,7 +592,6 @@ class TransactionFactory
         });
     }
 
-    // 跑分代收配到收款卡，更新收款卡資訊
     public function paufenTransactionFrom(
         UserChannelAccount $providerUserChannelAccount,
         Transaction $transaction
@@ -713,7 +602,6 @@ class TransactionFactory
         ) {
             $bcMath = app(BCMathUtil::class);
 
-            // 確認不會超過限額檢查
             $defaultDailyLimit = 0;
             $dailyLimitEnabled = $this->featureToggleRepository->enabled(
                 FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_LIMIT
@@ -743,7 +631,7 @@ class TransactionFactory
             )
                 ->where("status", Transaction::STATUS_PAYING)
                 ->where("created_at", ">=", now()->subMinutes(15))
-                ->sum("amount"); // 取得收款帳號目前等待付款的金額
+                ->sum("amount");
 
             if (
                 $account->balance_limit != 0 &&
@@ -838,32 +726,25 @@ class TransactionFactory
         return $transaction;
     }
 
-    /** @deprecated Use TransactionFeeService::createPaufenTransactionFees() */
-    public function createPaufenTransactionFees(...$args)
+    public function paufenTransactionTo(TransactionParams $params, User $merchant, Channel $channel)
     {
-        return $this->transactionFeeService->createPaufenTransactionFees(...$args);
-    }
-
-    // 跑分代收建立訂單，但是還沒配到收款卡
-    public function paufenTransactionTo(User $merchant, Channel $channel)
-    {
-        $this->throwIfAnyMissing(["amount", "clientIpv4"]);
+        $this->throwIfMissing($params, ["amount", "clientIpv4"]);
 
         $to = array_merge(
             [
-                UserChannelAccount::DETAIL_KEY_REAL_NAME => $this->realName,
+                UserChannelAccount::DETAIL_KEY_REAL_NAME => $params->realName,
                 "query" => json_encode(request()->all()),
-                "binance_usdt_rate" => $this->binanceUsdtRate,
+                "binance_usdt_rate" => $params->binanceUsdtRate,
             ],
-            $this->toData
+            $params->toData
         );
-        return DB::transaction(function () use ($merchant, $channel, $to) {
+        return DB::transaction(function () use ($params, $merchant, $channel, $to) {
             $transaction = Transaction::create([
                 "from_id" => null,
                 "to_id" => $merchant->getKey(),
                 "to_wallet_id" => $merchant->wallet->getKey(),
                 "locked_by_id" => null,
-                "client_ipv4" => $this->clientIpv4,
+                "client_ipv4" => $params->clientIpv4,
                 "type" => Transaction::TYPE_PAUFEN_TRANSACTION,
                 "status" => Transaction::STATUS_MATCHING,
                 "notify_status" => Transaction::NOTIFY_STATUS_NONE,
@@ -871,16 +752,16 @@ class TransactionFactory
                 "to_account_mode" => $merchant->account_mode,
                 "from_channel_account" => [],
                 "to_channel_account" => $to,
-                "amount" => $this->amount,
-                "floating_amount" => $this->floatingAmount
-                    ? $this->floatingAmount
-                    : $this->amount,
+                "amount" => $params->amount,
+                "floating_amount" => $params->floatingAmount
+                    ? $params->floatingAmount
+                    : $params->amount,
                 "actual_amount" => 0,
                 "channel_code" => $channel->getKey(),
-                "order_number" => $this->orderNumber,
-                "note" => $this->note,
-                "notify_url" => $this->notifyUrl,
-                "usdt_rate" => $this->usdtRate ?? 0,
+                "order_number" => $params->orderNumber,
+                "note" => $params->note,
+                "notify_url" => $params->notifyUrl,
+                "usdt_rate" => $params->usdtRate ?? 0,
                 "from_device_name" => null,
                 "certificate_file_path" => null,
                 "notified_at" => null,
@@ -907,19 +788,5 @@ class TransactionFactory
 
             return $transaction;
         });
-    }
-
-    public function realName(?string $realName)
-    {
-        $this->realName = $realName;
-
-        return $this;
-    }
-
-    public function subType($subType)
-    {
-        $this->subType = $subType;
-
-        return $this;
     }
 }

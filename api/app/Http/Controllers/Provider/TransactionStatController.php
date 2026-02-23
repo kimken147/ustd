@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Provider;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Provider\TransactionStatCollection;
-use App\Models\Transaction;
 use App\Models\User;
+use App\Repository\UserTransactionStatRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSet;
 
 class TransactionStatController extends Controller
 {
+    public function __construct(
+        private readonly UserTransactionStatRepository $statRepository
+    ) {}
 
     public function index(Request $request)
     {
@@ -30,17 +32,7 @@ class TransactionStatController extends Controller
             $users = User::where('id', $parentId)->get(['id', 'name', NestedSet::PARENT_ID, NestedSet::LFT, NestedSet::RGT]);
         }
 
-        $selfTransactionStats = DB::table('transactions')
-            ->whereIn('from_id', $users->pluck('id'))
-            ->where('confirmed_at', '>=', Carbon::yesterday())
-            ->where('type', Transaction::TYPE_PAUFEN_TRANSACTION)
-            ->whereIn('status', [Transaction::STATUS_SUCCESS, Transaction::STATUS_MANUAL_SUCCESS])
-            ->groupBy(DB::raw('CONCAT(from_id, "_", DATE(confirmed_at))'))
-            ->get([
-                DB::raw('CONCAT(from_id, "_", DATE(confirmed_at)) AS user_id_date'),
-                DB::raw('SUM(floating_amount) AS total'),
-            ])
-            ->pluck('total', 'user_id_date');
+        $selfTransactionStats = $this->statRepository->getSelfTransactionStats($users->pluck('id'), 'from_id', 'floating_amount');
 
         $today = Carbon::today()->format('Y-m-d');
         $yesterday = Carbon::yesterday()->format('Y-m-d');
@@ -51,17 +43,7 @@ class TransactionStatController extends Controller
 
             $descendantIds = $user->descendants()->pluck('id');
 
-            $descendantTransactionStats = DB::table('transactions')
-                ->whereIn('from_id', $descendantIds)
-                ->where('confirmed_at', '>=', Carbon::yesterday())
-                ->where('type', Transaction::TYPE_PAUFEN_TRANSACTION)
-                ->whereIn('status', [Transaction::STATUS_SUCCESS, Transaction::STATUS_MANUAL_SUCCESS])
-                ->groupBy(DB::raw('DATE(confirmed_at)'))
-                ->get([
-                    DB::raw('DATE(confirmed_at) AS date'),
-                    DB::raw('SUM(floating_amount) AS total'),
-                ])
-                ->pluck('total', 'date');
+            $descendantTransactionStats = $this->statRepository->getDescendantTransactionStats($descendantIds, 'from_id', 'floating_amount');
 
             $user->setAttribute('yesterday_descendants_total', data_get($descendantTransactionStats, $yesterday, '0.00'));
             $user->setAttribute('today_descendants_total', data_get($descendantTransactionStats, $today, '0.00'));

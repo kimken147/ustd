@@ -2,6 +2,7 @@
 
 namespace App\Services\InternalTransfer;
 
+use App\DTOs\TransactionParams;
 use App\Models\Transaction;
 use App\Models\UserChannelAccount;
 use App\Utils\BCMathUtil;
@@ -72,12 +73,14 @@ class InternalTransferService
             chr(mt_rand(65, 90)) . chr(mt_rand(65, 90)) . chr(mt_rand(65, 90)) . date('YmdHis') . rand(100, 999)
         );
 
-        return $this->transactionFactory->fresh()
-            ->bankCard($bankCard)
-            ->orderNumber($orderNumber)
-            ->amount($request->input('amount'))
-            ->note($request->input('note'))
-            ->internalTransferFrom($account);
+        $params = new TransactionParams(
+            amount: $request->input('amount'),
+            bankCard: $bankCard,
+            note: $request->input('note'),
+            orderNumber: $orderNumber,
+        );
+
+        return $this->transactionFactory->internalTransferFrom($params, $account);
     }
 
     /**

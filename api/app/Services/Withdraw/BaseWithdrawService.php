@@ -13,6 +13,7 @@ use App\Services\Withdraw\DTO\ThirdPartyErrorResponse;
 use App\Services\Withdraw\DTO\WithdrawContext;
 use App\Services\Withdraw\DTO\WithdrawResult;
 use App\Services\Withdraw\Exceptions\WithdrawValidationException;
+use App\DTOs\TransactionParams;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
@@ -366,16 +367,15 @@ abstract class BaseWithdrawService
 
     protected function createTransaction(WithdrawContext $context): Transaction
     {
-        $factory = $this->transactionFactory->fresh()
-            ->bankCard($context->bankCard)
-            ->orderNumber($context->orderNumber)
-            ->notifyUrl($context->notifyUrl)
-            ->amount($context->amount)
-            ->subType($this->getSubType());
-
-        if ($context->isUsdt() && $context->usdtRate) {
-            $factory = $factory->usdtRate($context->usdtRate, $context->binanceUsdtRate);
-        }
+        $params = new TransactionParams(
+            amount: $context->amount,
+            bankCard: $context->bankCard,
+            notifyUrl: $context->notifyUrl,
+            orderNumber: $context->orderNumber,
+            subType: $this->getSubType(),
+            usdtRate: $context->isUsdt() && $context->usdtRate ? $context->usdtRate : null,
+            binanceUsdtRate: $context->isUsdt() && $context->usdtRate ? $context->binanceUsdtRate : null,
+        );
 
         $paufenEnabled = $this->getPaufenEnabled($context->merchant);
         $withdrawMethod = $paufenEnabled ? 'paufenWithdrawFrom' : 'normalWithdrawFrom';
@@ -395,13 +395,15 @@ abstract class BaseWithdrawService
             amount: $context->amount,
             orderNumber: $context->orderNumber,
             bankCardData: $bankCardData,
-            onThirdChannelSuccess: fn($channelId) => $factory->thirdchannelWithdrawFrom(
+            onThirdChannelSuccess: fn($channelId) => $this->transactionFactory->thirdchannelWithdrawFrom(
+                $params,
                 $context->merchant,
                 $context->isFromMerchant(),
                 null,
                 $channelId
             ),
-            onLocalFallback: fn() => $factory->$withdrawMethod(
+            onLocalFallback: fn() => $this->transactionFactory->$withdrawMethod(
+                $params,
                 $context->merchant,
                 $context->isFromMerchant()
             ),

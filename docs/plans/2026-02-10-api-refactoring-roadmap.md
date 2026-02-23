@@ -14,12 +14,14 @@
 | Phase 8 | Eliminate ALL remaining TransactionUtil dependencies (11 files: Provider/Merchant/Country controllers, 5 Jobs, ThirdChannelDispatcher, 2 Commands) and delete TransactionUtil class | `818cf36a9` | 2026-02-21 |
 | Phase 9 | Dead code cleanup — remove VietnamController + 3 Country Notification Jobs (ProcessVn/Ph/Cn) + 2 dispatching controllers + routes; fix swallowed exceptions (10 catch blocks: add logging, fix lowercase `exception` bug) | `1712dcb02`, `4a6626161` | 2026-02-23 |
 
-## Remaining — P2: Medium Impact
+## Completed — P2: Medium Impact
 
-| Item | Description |
-|------|-------------|
-| TransactionFactory mutable state | Replace public properties + `fresh()` with immutable DTOs |
-| Raw SQL to Repository | Admin WithdrawController, TransactionController raw join/sum queries |
+| Phase | Description | Date |
+|-------|-------------|------|
+| P2-Step 1 | Fix SQL injection in StatisticsController — 10 raw SQL queries converted to parameterized bindings | 2026-02-23 |
+| P2-Step 2 | TransactionFactory immutable DTO — create `TransactionParams` DTO, remove all mutable state/builder methods/`fresh()`, update 9 caller files, remove 3 deprecated fee proxy methods | 2026-02-23 |
+| P2-Step 3 | Extract repositories — `StatisticsRepository` (5 methods from StatisticsController), `UserTransactionStatRepository` (3 methods shared by 3 stat controllers) | 2026-02-23 |
+| P2-Step 4 | Extract simple raw SQL to model scopes — `Transaction::scopeSelectTotalAmount`, `Wallet::scopeSelectTotalBalance`, `WalletHistory::scopeSelectBalanceDeltaTotal`/`scopeSelectAllDeltaTotal`, `UserChannelAccount::scopeSelectTotalBalance`, `ChannelAmount::scopeOrderByAmountRange`; wired into 7 Admin controllers | 2026-02-23 |
 
 ## Separate Track
 

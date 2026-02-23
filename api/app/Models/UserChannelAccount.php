@@ -281,4 +281,9 @@ class UserChannelAccount extends Model
             DB::rollback();
         }
     }
+
+    public function scopeSelectTotalBalance($query)
+    {
+        return $query->select([DB::raw('SUM(balance) AS total_balance')]);
+    }
 }

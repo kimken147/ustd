@@ -90,9 +90,7 @@ class UserChannelAccountController extends Controller
         $builder = new UserChannelAccountBuilder();
         $userChannelAccounts = $builder->query($request)->with("user");
 
-        $totalBalance = (clone $userChannelAccounts)->first([
-            DB::raw("SUM(balance) AS total_balance"),
-        ]);
+        $totalBalance = (clone $userChannelAccounts)->selectTotalBalance()->first();
 
         $dailyLimitId = FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_LIMIT;
         $dailyLimitEnabled = $featureToggleRepository->enabled($dailyLimitId);

@@ -12,7 +12,6 @@ use App\Utils\DateRangeValidator;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class WalletHistoryController extends Controller
@@ -49,25 +48,13 @@ class WalletHistoryController extends Controller
             ->where(function ($builder) {
                 $builder->where('delta->balance', '>=', 0);
             })
-            ->first(
-                [
-                    DB::raw(
-                        'SUM(delta->>"$.balance") AS total'
-                    )
-                ]
-            );
+            ->selectBalanceDeltaTotal()->first();
 
         $decreasingTotal = (clone $walletHistories)
             ->where(function ($builder) {
                 $builder->where('delta->balance', '<', 0);
             })
-            ->first(
-                [
-                    DB::raw(
-                        'SUM(delta->>"$.balance") AS total'
-                    )
-                ]
-            );
+            ->selectBalanceDeltaTotal()->first();
 
         return WalletHistoryCollection::make(
             $walletHistories->with('user')->with('operator')->latest('created_at')->latest('id')->paginate(20)->appends($request->query->all())

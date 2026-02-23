@@ -39,6 +39,7 @@ use App\Utils\BCMathUtil;
 use App\Utils\BankCardTransferObject;
 use App\Utils\InsufficientAvailableBalance;
 use App\Utils\TransactionFactory;
+use App\Services\Transaction\TransactionFeeService;
 use App\Utils\UserChannelAccountUtil;
 use App\Utils\WalletUtil;
 use Illuminate\Database\Eloquent\Builder;
@@ -83,6 +84,11 @@ class TransactionStatusService
      */
     private $userChannelAccountUtil;
 
+    /**
+     * @var TransactionFeeService
+     */
+    private $transactionFeeService;
+
     private $cancelPaufen;
 
     public function __construct(
@@ -90,6 +96,7 @@ class TransactionStatusService
         BCMathUtil $bcMath,
         FeatureToggleRepository $featureToggleRepository,
         TransactionFactory $transactionFactory,
+        TransactionFeeService $transactionFeeService,
         BankCardTransferObject $bankCardTransferObject,
         UserChannelAccountUtil $userChannelAccountUtil
     ) {
@@ -97,6 +104,7 @@ class TransactionStatusService
         $this->bcMath = $bcMath;
         $this->featureToggleRepository = $featureToggleRepository;
         $this->transactionFactory = $transactionFactory;
+        $this->transactionFeeService = $transactionFeeService;
         $this->bankCardTransferObject = $bankCardTransferObject;
         $this->userChannelAccountUtil = $userChannelAccountUtil;
         $this->cancelPaufen = $this->featureToggleRepository->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM);
@@ -168,10 +176,10 @@ class TransactionStatusService
 
             $transaction->transactionFees()->delete();
 
-            $this->transactionFactory->createWithdrawFees($transaction, $transaction->from, $transaction->sub_type == Transaction::SUB_TYPE_AGENCY_WITHDRAW);
+            $this->transactionFeeService->createWithdrawFees($transaction, $transaction->from, $transaction->sub_type == Transaction::SUB_TYPE_AGENCY_WITHDRAW);
 
             if (!empty($provider)) {
-                $this->transactionFactory->createDepositFees($transaction, $provider, false);
+                $this->transactionFeeService->createDepositFees($transaction, $provider, false);
             }
 
             return $transaction;
@@ -224,7 +232,7 @@ class TransactionStatusService
             // 變成三方代付後，要刪除原本手續費
             $transaction->transactionFees()->delete();
 
-            $this->transactionFactory->createWithdrawFees($transaction, $transaction->from, $transaction->sub_type == Transaction::SUB_TYPE_AGENCY_WITHDRAW);
+            $this->transactionFeeService->createWithdrawFees($transaction, $transaction->from, $transaction->sub_type == Transaction::SUB_TYPE_AGENCY_WITHDRAW);
 
             return $transaction->refresh();
         });
@@ -1181,25 +1189,27 @@ class TransactionStatusService
             $withdraw = $this->markAsNormalWithdraw($withdraw, null, $shouldLock, true);
 
             foreach ($childWithdraws as $childWithdraw) {
-                $this->transactionFactory = $this->transactionFactory
-                    ->fresh()
-                    ->bankCard($this->bankCardTransferObject->plain(
-                        $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_NAME],
-                        $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CARD_NUMBER],
-                        $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME],
-                        $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_PROVINCE] ?? '',
-                        $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CITY] ?? ''
-                    ))
-                    ->parent($withdraw);
+                $bankCard = $this->bankCardTransferObject->plain(
+                    $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_NAME],
+                    $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CARD_NUMBER],
+                    $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME],
+                    $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_PROVINCE] ?? '',
+                    $withdraw->from_channel_account[UserChannelAccount::DETAIL_KEY_BANK_CITY] ?? ''
+                );
+
+                $params = new \App\DTOs\TransactionParams(
+                    amount: data_get($childWithdraw, 'amount'),
+                    bankCard: $bankCard,
+                    clientIpv4: $withdraw->client_ipv4,
+                    parent: $withdraw,
+                    subType: $withdraw->sub_type,
+                );
 
                 switch (data_get($childWithdraw, 'type')) {
                     case Transaction::TYPE_PAUFEN_WITHDRAW:
-                        /** @var Transaction $transaction */
-                        $this->transactionFactory->amount(data_get($childWithdraw, 'amount'))
-                            ->clientIpv4($withdraw->client_ipv4)
-                            ->subType($withdraw->sub_type);
-
+                        /** @var Transaction $childWithdrawModel */
                         $childWithdrawModel = $this->transactionFactory->paufenWithdrawFrom(
+                            $params,
                             $withdraw->from,
                             false,
                             $withdraw
@@ -1229,12 +1239,7 @@ class TransactionStatusService
 
                         break;
                     case Transaction::TYPE_NORMAL_WITHDRAW:
-                        $this->transactionFactory
-                            ->amount(data_get($childWithdraw, 'amount'))
-                            ->clientIpv4($withdraw->client_ipv4)
-                            ->subType($withdraw->sub_type);
-
-                        $this->transactionFactory->normalWithdrawFrom($withdraw->from, false, $withdraw);
+                        $this->transactionFactory->normalWithdrawFrom($params, $withdraw->from, false, $withdraw);
                         break;
                     default:
                         abort(Response::HTTP_INTERNAL_SERVER_ERROR);

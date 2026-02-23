@@ -91,10 +91,7 @@ class MerchantController extends Controller
             });
         }
 
-        $stats = Wallet::whereIn('user_id', (clone $merchants)->select(['id']))->first([
-            DB::raw('SUM(balance) AS total_balance'),
-            DB::raw('SUM(frozen_balance) AS total_frozen_balance'),
-        ]);
+        $stats = Wallet::whereIn('user_id', (clone $merchants)->select(['id']))->selectTotalBalance()->first();
 
         $perPage = $request->input('per_page', 20);
         $merchants = $merchants->paginate($perPage)->appends($request->query->all());

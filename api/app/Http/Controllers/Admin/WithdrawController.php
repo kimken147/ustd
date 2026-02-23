@@ -28,7 +28,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -86,13 +85,7 @@ class WithdrawController extends Controller
                 ->orWhereNotIn('id', (clone $withdraws)->whereNotNull('parent_id')->get()->pluck('parent_id'));
         });
 
-        $stats = $stats->first(
-            [
-                DB::raw(
-                    'SUM(amount) AS total_amount'
-                ),
-            ]
-        );
+        $stats = $stats->selectTotalAmount()->first();
         $totalWithdrawFees = (clone $withdraws)->join('transaction_fees', 'transactions.id', '=', 'transaction_fees.transaction_id');
 
         $totalFee = (clone $totalWithdrawFees)->whereNull('transaction_fees.thirdchannel_id')->sum('transaction_fees.actual_fee');

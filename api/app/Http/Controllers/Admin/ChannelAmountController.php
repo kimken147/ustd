@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ChannelAmountCollection;
 use App\Models\ChannelAmount;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ChannelAmountController extends Controller
 {
@@ -17,7 +16,7 @@ class ChannelAmountController extends Controller
             'no_paginate' => 'bool',
         ]);
 
-        $channelAmounts = ChannelAmount::orderBy('channel_code')->orderBy(DB::raw('max_amount - min_amount'));
+        $channelAmounts = ChannelAmount::orderBy('channel_code')->orderByAmountRange();
 
         return ChannelAmountCollection::make($request->boolean('no_paginate') ? $channelAmounts->get() : $channelAmounts->paginate(20));
     }

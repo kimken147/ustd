@@ -25,6 +25,7 @@ use App\Services\Transaction\DTO\MatchedInfo;
 use App\Services\Transaction\Exceptions\TransactionValidationException;
 use App\Services\Withdraw\DTO\ThirdPartyErrorResponse;
 use App\Utils\BCMathUtil;
+use App\DTOs\TransactionParams;
 use App\Utils\TransactionFactory;
 use App\Utils\TransactionNoteUtil;
 use App\Utils\UsdtUtil;
@@ -47,6 +48,7 @@ class CreateTransactionService
         private FeatureToggleRepository $featureToggleRepository,
         private TransactionNoteUtil $transactionNoteUtil,
         private TransactionFactory $transactionFactory,
+        private TransactionFeeService $transactionFeeService,
         private WalletUtil $walletUtil,
         private WhitelistedIpManager $whitelistedIpManager,
         private AccountMatchingQueryBuilder $accountMatchingQueryBuilder,
@@ -275,50 +277,59 @@ class CreateTransactionService
     ): Transaction {
         $clientIp = $context->clientIp ?? Arr::last(request()->ips());
 
-        $factory = $this->transactionFactory
-            ->clientIpv4($clientIp)
-            ->amount($context->amount)
-            ->orderNumber($context->orderNumber)
-            ->notifyUrl($context->notifyUrl)
-            ->realName($context->realName);
-
+        $usdtRate = null;
+        $binanceUsdtRate = null;
         if ($channel->code == Channel::CODE_USDT) {
             $usdtUtil = app(UsdtUtil::class);
             $binanceUsdtRate = $usdtUtil->getRate()["rate"];
             $usdtRate = $context->usdtRate ?? $binanceUsdtRate;
-            $factory = $factory->usdtRate($usdtRate, $binanceUsdtRate);
         }
 
+        $toData = [];
         if ($channel->code == Channel::CODE_DC_BANK) {
-            $factory = $factory->toData(["bank_name" => $context->bankName]);
+            $toData["bank_name"] = $context->bankName;
         }
-
         if ($context->returnUrl) {
-            $factory = $factory->toData(["return_url" => $context->returnUrl]);
+            $toData["return_url"] = $context->returnUrl;
         }
 
+        $note = null;
         if ($channel->note_enable) {
             if ($channel->note_type || $channel->code == Channel::CODE_RE_ALIPAY) {
-                $factory->note($this->transactionNoteUtil->randomNote($context->amount, $channel));
+                $note = $this->transactionNoteUtil->randomNote($context->amount, $channel);
             }
         }
 
+        $floatingAmount = null;
         if ($channel->floating_enable) {
-            $floatingAmount = $this->floatingAmount($context->amount, $channel->floating);
+            $computed = $this->floatingAmount($context->amount, $channel->floating);
 
             if (!$this->featureToggleRepository->enabled(FeatureToggle::MAX_AMOUNT_TO_START_FLOATING)) {
-                $factory->floatingAmount($floatingAmount);
+                $floatingAmount = $computed;
             } else {
                 if ($this->bcMath->lte(
                     $context->amount,
                     $this->featureToggleRepository->valueOf(FeatureToggle::MAX_AMOUNT_TO_START_FLOATING, "2000")
                 )) {
-                    $factory->floatingAmount($floatingAmount);
+                    $floatingAmount = $computed;
                 }
             }
         }
 
-        $transaction = $factory->paufenTransactionTo($merchant, $channel);
+        $params = new TransactionParams(
+            amount: $context->amount,
+            clientIpv4: $clientIp,
+            floatingAmount: $floatingAmount,
+            note: $note,
+            notifyUrl: $context->notifyUrl,
+            orderNumber: $context->orderNumber,
+            realName: $context->realName,
+            usdtRate: $usdtRate,
+            binanceUsdtRate: $binanceUsdtRate,
+            toData: array_filter($toData),
+        );
+
+        $transaction = $this->transactionFactory->paufenTransactionTo($params, $merchant, $channel);
 
         if ($channel->order_timeout_enable) {
             MarkPaufenTransactionMatchingTimedOut::dispatch($transaction)
@@ -561,7 +572,7 @@ class CreateTransactionService
                     "matched_at" => now(),
                 ]);
 
-                $this->transactionFactory->createPaufenTransactionFees(
+                $this->transactionFeeService->createPaufenTransactionFees(
                     $transaction->refresh(),
                     $merchantUserChannel->channelGroup
                 );

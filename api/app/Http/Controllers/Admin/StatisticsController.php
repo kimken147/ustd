@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Repository\StatisticsRepository;
 use App\Utils\DateRangeValidator;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 
 class StatisticsController extends Controller
 {
+    public function __construct(
+        private readonly StatisticsRepository $statisticsRepository
+    ) {}
+
     public function index(Request $request)
     {
         $admin = User::where([
@@ -41,71 +46,13 @@ class StatisticsController extends Controller
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
 
-        $status1 = Transaction::STATUS_SUCCESS;
-        $status2 = Transaction::STATUS_MANUAL_SUCCESS;
-        $withdrawStatus1 = Transaction::TYPE_PAUFEN_WITHDRAW;
-        $withdrawStatus2 = Transaction::TYPE_NORMAL_WITHDRAW;
+        $transactions = $this->statisticsRepository->getTransactionStatsByUsername($start, $end);
+        $withdraws = $this->statisticsRepository->getWithdrawStatsByUsername($start, $end);
 
-        $transactionSql = "
-            SELECT u.username AS username, COUNT(*) AS count, SUM(amount) AS sum
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_to_id_index)
-            LEFT JOIN users AS u ON t.to_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            GROUP BY to_id
-            ORDER BY username
-        ";
+        $todayTransactions = $this->statisticsRepository->getTransactionStatsByUsername($todayStart, $todayEnd);
+        $todayWithdraws = $this->statisticsRepository->getWithdrawStatsByUsername($todayStart, $todayEnd);
 
-        $todayTransactionSql = "
-            SELECT u.username AS username, COUNT(*) AS count, SUM(amount) AS sum
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_to_id_index)
-            LEFT JOIN users AS u ON t.to_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$todayStart}' AND '{$todayEnd}'
-            GROUP BY to_id
-            ORDER BY username
-        ";
-
-        $withdrawSql = "
-            SELECT u.username AS username, COUNT(*) AS count, SUM(amount) AS sum
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_from_id_index)
-            LEFT JOIN users AS u ON t.from_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND t.sub_type IN ({$withdrawStatus1}, {$withdrawStatus2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            GROUP BY from_id
-            ORDER BY username
-        ";
-
-        $todayWithdrawSql = "
-            SELECT u.username AS username, COUNT(*) AS count, SUM(amount) AS sum
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_from_id_index)
-            LEFT JOIN users AS u ON t.from_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND t.sub_type IN ({$withdrawStatus1}, {$withdrawStatus2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$todayStart}' AND '{$todayEnd}'
-            GROUP BY from_id
-            ORDER BY username
-        ";
-
-        $systemProfitSql = "
-            SELECT SUM(f.actual_profit) AS sum FROM transaction_fees AS f
-            LEFT JOIN transactions AS t ON f.transaction_id = t.id
-            WHERE t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            AND f.user_id = 0
-        ";
-
-        $transactions = collect(DB::select(DB::raw($transactionSql)))->keyBy('username');
-        $withdraws = collect(DB::select(DB::raw($withdrawSql)))->keyBy('username');
-
-        $todayTransactions = collect(DB::select(DB::raw($todayTransactionSql)))->keyBy('username');
-        $todayWithdraws = collect(DB::select(DB::raw($todayWithdrawSql)))->keyBy('username');
-
-        $systemProfit = DB::select(DB::raw($systemProfitSql))[0];
+        $systemProfit = $this->statisticsRepository->getSystemProfit($start, $end);
 
         return response()->json(compact('transactions', 'todayTransactions', 'withdraws', 'todayWithdraws', 'systemProfit'));
     }
@@ -138,67 +85,13 @@ class StatisticsController extends Controller
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
 
-        $status1 = Transaction::STATUS_SUCCESS;
-        $status2 = Transaction::STATUS_MANUAL_SUCCESS;
-        $withdrawStatus1 = Transaction::TYPE_PAUFEN_WITHDRAW;
-        $withdrawStatus2 = Transaction::TYPE_NORMAL_WITHDRAW;
+        $transactions = $this->statisticsRepository->getTransactionStatsByDate($start, $end);
+        $withdraws = $this->statisticsRepository->getWithdrawStatsByDate($start, $end);
 
-        $transactionSql = "
-            SELECT COUNT(*) AS count, SUM(amount) AS sum, DATE(confirmed_at) AS date
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_to_id_index)
-            LEFT JOIN users AS u ON t.to_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            GROUP BY date
-        ";
+        $todayTransactions = $this->statisticsRepository->getTransactionStatsByDate($todayStart, $todayEnd);
+        $todayWithdraws = $this->statisticsRepository->getWithdrawStatsByDate($todayStart, $todayEnd);
 
-        $todayTransactionSql = "
-            SELECT COUNT(*) AS count, SUM(amount) AS sum, DATE(confirmed_at) AS date
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_to_id_index)
-            LEFT JOIN users AS u ON t.to_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$todayStart}' AND '{$todayEnd}'
-            GROUP BY date
-        ";
-
-        $withdrawSql = "
-            SELECT COUNT(*) AS count, SUM(amount) AS sum, DATE(confirmed_at) AS date
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_from_id_index)
-            LEFT JOIN users AS u ON t.from_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND t.sub_type IN ({$withdrawStatus1}, {$withdrawStatus2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            GROUP BY date
-        ";
-
-        $todayWithdrawSql = "
-            SELECT COUNT(*) AS count, SUM(amount) AS sum, DATE(confirmed_at) AS date
-            FROM transactions AS t FORCE INDEX(transactions_confirmed_at_from_id_index)
-            LEFT JOIN users AS u ON t.from_id = u.id
-            WHERE t.status IN ({$status1}, {$status2})
-            AND t.sub_type IN ({$withdrawStatus1}, {$withdrawStatus2})
-            AND u.role = 3
-            AND t.confirmed_at BETWEEN '{$todayStart}' AND '{$todayEnd}'
-            GROUP BY date
-        ";
-
-        $systemProfitSql = "
-            SELECT SUM(f.actual_profit) AS sum FROM transaction_fees AS f
-            LEFT JOIN transactions AS t ON f.transaction_id = t.id
-            WHERE t.confirmed_at BETWEEN '{$start}' AND '{$end}'
-            AND f.user_id = 0
-        ";
-
-        $transactions = collect(DB::select(DB::raw($transactionSql)))->keyBy('date');
-        $withdraws = collect(DB::select(DB::raw($withdrawSql)))->keyBy('date');
-
-        $todayTransactions = collect(DB::select(DB::raw($todayTransactionSql)))->keyBy('date');
-        $todayWithdraws = collect(DB::select(DB::raw($todayWithdrawSql)))->keyBy('date');
-
-        $systemProfit = DB::select(DB::raw($systemProfitSql))[0];
+        $systemProfit = $this->statisticsRepository->getSystemProfit($start, $end);
 
         return response()->json(compact('transactions', 'todayTransactions', 'withdraws', 'todayWithdraws', 'systemProfit'));
     }

@@ -49,13 +49,7 @@ class DepositController extends Controller
         $builder = new TransactionBuilder;
         $deposits = $builder->deposits($request);
 
-        $stats = (clone $deposits)->first(
-            [
-                DB::raw(
-                    'SUM(amount) AS total_amount'
-                ),
-            ]
-        );
+        $stats = (clone $deposits)->selectTotalAmount()->first();
 
         return DepositCollection::make($deposits->paginate(20))
             ->additional([

@@ -20,6 +20,8 @@ use App\Services\Transaction\Exceptions\TransactionValidationException;
 use App\Utils\AmountDisplayTransformer;
 use App\Services\Transaction\TransactionStatusService;
 use App\Services\Transaction\TransactionLockService;
+use App\DTOs\TransactionParams;
+use App\Services\Transaction\TransactionFeeService;
 use App\Utils\TransactionFactory;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
@@ -157,6 +159,7 @@ class TransactionController extends Controller
         Transaction $transaction,
         TransactionStatusService $statusService,
         TransactionFactory $factory,
+        TransactionFeeService $transactionFeeService,
         BCMathUtil $bcMath,
         WalletUtil $wallet,
         FeatureToggleRepository $featureToggleRepository,
@@ -201,6 +204,7 @@ class TransactionController extends Controller
             $transaction,
             $statusService,
             $factory,
+            $transactionFeeService,
             $bcMath,
             $wallet,
             $featureToggleRepository,
@@ -213,9 +217,12 @@ class TransactionController extends Controller
             ])->first();
             $channelGroup = $merchantUserChannel->channelGroup;
 
-            $factory->amount = $request->amount;
-            $factory->clientIpv4 = '0.0.0.0';
+            $params = new TransactionParams(
+                amount: $request->amount,
+                clientIpv4: '0.0.0.0',
+            );
             $transaction = $factory->paufenTransactionTo(
+                $params,
                 $merchant,
                 $channelGroup->channel
             );
@@ -226,7 +233,7 @@ class TransactionController extends Controller
                     'thirdchannel_id' => $request->thirdchannel,
                     'matched_at' => now()
                 ]);
-                $factory->createPaufenTransactionFees($transaction->refresh(), $merchantUserChannel->channelGroup);
+                $transactionFeeService->createPaufenTransactionFees($transaction->refresh(), $merchantUserChannel->channelGroup);
             }
 
             if ($request->has('account') && $request->account) {

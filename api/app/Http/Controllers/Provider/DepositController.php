@@ -15,6 +15,7 @@ use App\Utils\AmountDisplayTransformer;
 use App\Utils\DateRangeValidator;
 use App\Utils\AtomicLockUtil;
 use App\Utils\BankCardTransferObject;
+use App\DTOs\TransactionParams;
 use App\Utils\BCMathUtil;
 use App\Utils\TransactionFactory;
 use DateTimeInterface;
@@ -259,12 +260,14 @@ class DepositController extends Controller
                 $systemBankCard,
                 $bcMath
             ) {
+                $params = new TransactionParams(
+                    amount: $request->amount,
+                    bankCard: $bankCardTransferObject->model($systemBankCard),
+                    note: $request->note,
+                );
+
                 /** @var Transaction $transaction */
-                $transaction = $transactionFactory
-                    ->bankCard($bankCardTransferObject->model($systemBankCard))
-                    ->amount($request->amount)
-                    ->note($request->note)
-                    ->normalDepositTo(auth()->user());
+                $transaction = $transactionFactory->normalDepositTo($params, auth()->user());
 
                 $balance = $bcMath->subMinZero($systemBankCard->balance, $request->amount);
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class WalletHistory extends Model
 {
@@ -42,5 +43,17 @@ class WalletHistory extends Model
     public function operator()
     {
         return $this->belongsTo(User::class,'operator_id');
+    }
+
+    public function scopeSelectBalanceDeltaTotal($query)
+    {
+        return $query->select([DB::raw('SUM(delta->>"$.balance") AS total')]);
+    }
+
+    public function scopeSelectAllDeltaTotal($query)
+    {
+        return $query->select([
+            DB::raw('SUM(delta->>"$.balance") + SUM(delta->>"$.profit") + SUM(delta->>"$.frozen_balance") AS total'),
+        ]);
     }
 }
