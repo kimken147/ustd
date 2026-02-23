@@ -4,7 +4,6 @@ namespace App\Utils;
 
 use App\DTOs\TransactionParams;
 use App\Exceptions\RaceConditionException;
-use App\Models\Bank;
 use App\Models\Channel;
 use App\Models\DevicePayingTransaction;
 use App\Models\FeatureToggle;
@@ -527,27 +526,9 @@ class TransactionFactory
             );
 
             $provider = $account->user;
-            $channelCode = $account->channel_code;
             $fromChannelAccount = $transaction->from_channel_account;
 
-            $bank = Bank::where("name", $fromChannelAccount["bank_name"])
-                ->orWhere("code", $fromChannelAccount["bank_name"])
-                ->first();
-            if (strtoupper($channelCode) === strtoupper(Channel::CODE_MAYA)) {
-                if (
-                    strtoupper($bank->name) === strtoupper($channelCode) ||
-                    strtoupper($bank->name) ===
-                    strtoupper("PayMaya / Maya Wallet")
-                ) {
-                    $fromChannelAccount["extra_withdraw_fee"] = 0;
-                }
-            } else {
-                if (strtoupper($bank->name) === strtoupper($channelCode)) {
-                    $fromChannelAccount["extra_withdraw_fee"] = 15;
-                } else {
-                    $fromChannelAccount["extra_withdraw_fee"] = 0;
-                }
-            }
+            $fromChannelAccount["extra_withdraw_fee"] = 0;
             $success =
                 Transaction::where("id", $transaction->getKey())
                 ->whereNull("to_id")

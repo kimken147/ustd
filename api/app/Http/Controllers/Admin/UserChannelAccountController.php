@@ -26,12 +26,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\UserChannelAccountAuditCollection;
 use App\Builders\UserChannelAccount as UserChannelAccountBuilder;
-use App\Jobs\SyncGcashAccount;
-use App\Jobs\SyncMayaAccountJob;
-use App\Models\Channel;
 use App\Models\MemberDevice;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
 
 class UserChannelAccountController extends Controller
 {
@@ -650,30 +646,6 @@ class UserChannelAccountController extends Controller
 
     public function sync(Request $request)
     {
-        $builder = new UserChannelAccountBuilder();
-        $userChannelAccounts = $builder->query($request);
-        $accounts = $userChannelAccounts->get();
-
-        foreach ($accounts as $account) {
-            $channelCode = $account->channel_code;
-            if ($channelCode == Channel::CODE_MAYA) {
-                SyncMayaAccountJob::dispatch($account->id, "init");
-            } else {
-                if (
-                    !Redis::set(
-                        "gcash:account:sync:{$account->id}",
-                        1,
-                        "EX",
-                        60,
-                        "NX"
-                    )
-                ) {
-                    continue;
-                }
-                SyncGcashAccount::dispatch($account->id, "init");
-            }
-        }
-
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -13,29 +13,17 @@ class ChannelSeeder extends Seeder
     public function run()
     {
         DB::table('channels')->insertOrIgnore([
-            'code' => Channel::CODE_QR_ALIPAY,
-            'name' => '支付宝扫码',
+            'code' => Channel::CODE_USDT,
+            'name' => 'USDT',
             'status' => true,
+            'type' => Channel::TYPE_DEPOSIT_WITHDRAW,
             'order_timeout' => 30,
             'order_timeout_enable' => true,
             'transaction_timeout' => 30,
             'transaction_timeout_enable' => true,
-            'floating' => 1,
+            'floating' => 0,
             'floating_enable' => false,
-            'present_result' => Channel::RESPONSE_QRCODE
-        ]);
-
-        DB::table('channels')->insertOrIgnore([
-            'code' => Channel::CODE_ALIPAY_BANK,
-            'name' => '支转银',
-            'status' => true,
-            'order_timeout' => 30,
-            'order_timeout_enable' => true,
-            'transaction_timeout' => 30,
-            'transaction_timeout_enable' => true,
-            'floating' => 1,
-            'floating_enable' => false,
-            'present_result' => Channel::RESPONSE_BANK_CARD,
+            'present_result' => Channel::RESPONSE_FORM,
         ]);
     }
 }

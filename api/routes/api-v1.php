@@ -8,14 +8,6 @@ Route::get("create-transactions", "CreateTransactionController")->name(
 );
 Route::get("cashier/{id}", "CashierController")->name("api.v1.cashier");
 Route::post(
-    "transactions/{transaction}/red-envelope-password",
-    "Provider\TransactionController@updatePassword"
-)->name("api.v1.update-red-envelope-password");
-Route::post(
-    "transactions/{transaction}/red-envelope-qrcode",
-    "Provider\TransactionController@updateQRcode"
-)->name("api.v1.update-red-envelope-qrcode");
-Route::post(
     "transactions/{transaction}/bug-report",
     "Provider\TransactionController@bugReport"
 )->name("api.v1.bug-report");

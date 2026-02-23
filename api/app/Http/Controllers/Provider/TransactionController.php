@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
@@ -229,56 +228,6 @@ class TransactionController extends Controller
         }
 
         return \App\Http\Resources\Provider\Transaction::make($transaction->load('from', 'to', 'transactionFees.user', 'channel', 'certificateFiles'));
-    }
-
-    public function updatePassword(Request $request, Transaction $transaction)
-    {
-        abort_if(
-            $transaction->channel_code != Channel::CODE_RE_ALIPAY,
-            Response::HTTP_BAD_REQUEST,
-            '无法送出，请联系客服'
-        );
-
-        if (isset($transaction->to_channel_account['red_envelope_password'])) {
-            return redirect($request->full_url);
-        }
-
-        $this->validate($request, [
-            'red_envelope_password' => ['required']
-        ]);
-
-        $toChannelAccount = $transaction->to_channel_account;
-        $toChannelAccount['red_envelope_password'] = $request->red_envelope_password;
-        $toChannelAccount['recorded_at'] = now()->toIso8601String();
-        $transaction->update(['to_channel_account' => $toChannelAccount]);
-
-        return redirect($request->full_url);
-    }
-
-    public function updateQRcode(Request $request, Transaction $transaction)
-    {
-        abort_if(
-            $transaction->channel_code != Channel::CODE_RE_QQ,
-            Response::HTTP_BAD_REQUEST,
-            '无法送出，请联系客服'
-        );
-
-        $this->validate($request, [
-            'qr_code_img'       => 'required|file'
-        ]);
-
-        $file = $request->file('qr_code_img');
-
-        $qrCodeFilePath = "transactions/{$transaction->id}/" . Str::random(32);
-
-        $path = Storage::disk('user-channel-accounts-qr-code')->putFile($qrCodeFilePath, $file);
-
-        $toChannelAccount = $transaction->to_channel_account;
-        $toChannelAccount['re_qq_qrcode_path'] = $path;
-        $toChannelAccount['recorded_at'] = now()->toIso8601String();
-        $transaction->update(['to_channel_account' => $toChannelAccount]);
-
-        return redirect($request->full_url);
     }
 
     public function bugReport(Request $request, Transaction $transaction)

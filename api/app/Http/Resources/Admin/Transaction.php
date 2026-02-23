@@ -154,22 +154,10 @@ class Transaction extends JsonResource
 
     private function getProviderAccountVendorName()
     {
-        switch ($this->channel_code) {
-            case \App\Model\Channel::CODE_QR_ALIPAY:
-                return '支付宝';
-            case \App\Model\Channel::CODE_QR_WECHATPAY:
-                return '微信支付';
-            case \App\Model\Channel::CODE_QR_YFB:
-                return '易付宝';
-            case \App\Model\Channel::CODE_RE_ALIPAY:
-                return '口令红包';
-            case \App\Model\Channel::CODE_RE_QQ:
-                return '面对面红包';
-            case \App\Model\Channel::CODE_USDT:
-                return 'USDT';
-            default:
-                return data_get($this->from_channel_account, UserChannelAccount::DETAIL_KEY_BANK_NAME);;
+        if ($this->channel_code === Channel::CODE_USDT) {
+            return 'USDT';
         }
+        return data_get($this->from_channel_account, UserChannelAccount::DETAIL_KEY_BANK_NAME);
     }
 
     private function qrCodeFilePath($qrCodeFilePath)

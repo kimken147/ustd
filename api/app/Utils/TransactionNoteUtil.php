@@ -22,8 +22,6 @@ class TransactionNoteUtil
 
     private $treasureNotes;
 
-    private $reNotes;
-
     public function __construct()
     {
         $this->groceriesNotes = collect([
@@ -76,28 +74,10 @@ class TransactionNoteUtil
             ],
         ]);
 
-        $this->reNotes = collect([
-            '生活如意', '事业高升', '前程似锦', '美梦成真', '岁岁今朝', '事事顺利',
-            '万事如意', '愿与同僚', '共分此乐', '事业有成', '多财满家', '家肥屋润',
-            '彩蝶翩翩', '余钱多多', '生意兴隆', '财源广进', '长命百岁', '福如东海',
-            '寿比南山', '寿与天齐', '蒸蒸日上', '日新月异', '财源滚滚', '百年好合',
-            '龙马精神', '开门大吉', '意气风发', '好事连连', '花开富贵', '文定吉祥',
-            '万事如意', '事事顺心', '福寿安康', '笑口常开', '家庭和睦', '事业有成',
-            '幸福快乐', '年年有余', '青春常在', '横财就手', '前程似锦', '财运亨通',
-            '飞黄腾达', '一本万利', '货如轮转', '拾己救人', '义行可风', '春晖广被',
-            '佳偶天成', '宜室宜家', '白头偕老', '百年琴瑟', '岁岁平安', '大展鸿图',
-            '大展经纶', '同业楷模', '美仑美奂', '才华潢溢', '名冠群伦', '前程万里',
-            '淑德可风', '教子有方', '德术兼备', '二龙起飞', '三羊开泰', '四季安全',
-            '五福临门', '六六大顺'
-        ]);
     }
 
     public function randomNote($amount, $channel): string
     {
-        if ($channel->code == Channel::CODE_RE_ALIPAY) {
-            return $this->reNotes->random();
-        }
-
         if ($channel->note_type == Channel::NOTE_GROCERIES) {
             if ($amount < 2001) {
                 return Arr::random($this->groceriesNotes->get(200));

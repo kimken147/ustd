@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Channel;
 use App\Models\TimeLimitBank;
 use App\Models\UserChannelAccount;
 use Illuminate\Database\Eloquent\Builder;
@@ -71,9 +70,6 @@ class DisableTimeLimitUserChannelAccount extends Command
         $baseUserChannelAccountQuery = UserChannelAccount::withTrashed()
             ->when($this->userChannelAccount, function (Builder $builder) {
                 $builder->where('id', $this->userChannelAccount->getKey());
-            })
-            ->whereHas('channelAmount', function (Builder $builder) {
-                $builder->whereIn('channel_code', [Channel::CODE_ALIPAY_BANK, Channel::CODE_BANK_CARD]);
             });
 
         DB::transaction(function () use (

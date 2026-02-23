@@ -8,7 +8,6 @@ use App\Utils\AmountDisplayTransformer;
 use App\Utils\BCMathUtil;
 use App\Models\TransactionFee;
 use App\Models\Notification;
-use App\Models\Channel;
 use App\Http\Resources\User;
 use App\Http\Resources\TransactionCertificateFileCollection;
 use App\Models\TransactionCertificateFile;
@@ -135,7 +134,6 @@ class Transaction extends JsonResource
             && $this->from->isSelfOrDescendantOf(auth()->user())
             && $this->status === \App\Model\Transaction::STATUS_PAYING
             && $this->type === \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION
-            && ($this->channel_code != Channel::CODE_RE_ALIPAY || isset($this->to_channel_account['red_envelope_password'])) // 如果是口令红包，需要有口令才可以确认收款
         );
     }
 
