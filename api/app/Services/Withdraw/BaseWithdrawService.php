@@ -18,7 +18,6 @@ use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
 use App\Utils\TransactionFactory;
-use App\Utils\UsdtUtil;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
 use Illuminate\Http\Request;
@@ -38,7 +37,6 @@ abstract class BaseWithdrawService
         protected readonly WhitelistedIpManager $whitelistedIpManager,
         protected readonly BankCardTransferObject $bankCardTransferObject,
         protected readonly ThirdChannelDispatcher $thirdChannelDispatcher,
-        protected readonly UsdtUtil $usdtUtil,
     ) {}
 
     // ========== Abstract Methods (must be implemented by subclasses) ==========
@@ -435,16 +433,11 @@ abstract class BaseWithdrawService
             return null;
         }
 
-        $binanceRate = $this->usdtUtil->getRate()['rate'];
-        return $request->input('usdt_rate', $binanceRate);
+        return $request->input('usdt_rate');
     }
 
     protected function resolveBinanceUsdtRate(Request $request): ?string
     {
-        if ($request->input('bank_name') !== Channel::CODE_USDT) {
-            return null;
-        }
-
-        return $this->usdtUtil->getRate()['rate'];
+        return null;
     }
 }

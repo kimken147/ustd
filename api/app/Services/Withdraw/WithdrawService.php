@@ -106,16 +106,11 @@ class WithdrawService extends BaseWithdrawService
             return null;
         }
 
-        $binanceRate = $this->usdtUtil->getRate()['rate'];
-        return $request->input('usdt_rate', $binanceRate);
+        return $request->input('usdt_rate');
     }
 
     private function resolveBinanceUsdtRateForBankCard(BankCard $bankCard): ?string
     {
-        if ($bankCard->bank_name !== \App\Models\Channel::CODE_USDT) {
-            return null;
-        }
-
-        return $this->usdtUtil->getRate()['rate'];
+        return null;
     }
 }

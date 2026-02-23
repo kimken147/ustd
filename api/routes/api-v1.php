@@ -664,9 +664,6 @@ Route::prefix("merchant")
 
             Route::get("descendants", "UserController@descendants");
 
-            Route::apiResource("getUsdtRate", "UsdtRateController")->only([
-                "index",
-            ]);
         });
     });
 
@@ -685,7 +682,6 @@ Route::prefix("third-party")
             "agency-withdraws",
             "AgencyWithdrawController"
         )->only(["store"]);
-        Route::get("rate/{coin}/{currency}", "UsdtController@rate");
     });
 
 
