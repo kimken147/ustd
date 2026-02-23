@@ -31,7 +31,7 @@ trait MatchedJsonResponse
         // USDT 通道回傳錢包地址和鏈網絡
         if ($channel->code === Channel::CODE_USDT) {
             $info['wallet_address'] =
-                data_get($transaction->from_channel_account, 'wallet_address', '');
+                data_get($transaction->from_channel_account, 'account', '');
             $info['chain_network'] =
                 data_get($transaction->from_channel_account, 'chain_network', '');
         }

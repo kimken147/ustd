@@ -458,7 +458,7 @@ class CreateTransactionService
                     UsdtDepositMonitor::create([
                         'transaction_id' => $transaction->id,
                         'user_channel_account_id' => $account->id,
-                        'address' => data_get($account->detail, UserChannelAccount::DETAIL_KEY_WALLET_ADDRESS, ''),
+                        'address' => $account->account ?? '',
                         'chain_network' => data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20'),
                         'expected_amount' => $transaction->floating_amount,
                         'status' => UsdtDepositMonitor::STATUS_PENDING,
