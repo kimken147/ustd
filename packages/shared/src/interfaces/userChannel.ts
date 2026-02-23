@@ -50,20 +50,16 @@ export interface UserOfChannel {
 }
 
 export interface Detail {
-    mpin: string;
-    account: string;
-    sync_at?: Date;
-    sync_status: string;
-    account_status: string;
-    bank_name: string;
-    otp: string;
-    pwd: string;
-    bank_card_branch?: any;
-    bank_card_number: string;
-    bank_card_holder_name: string;
-    password_status: string;
-    email_status?: string;
-    email?: string;
+    account?: string;
+    bank_name?: string;
+    bank_card_branch?: string;
+    bank_card_number?: string;
+    bank_card_holder_name?: string;
+    chain_network?: string;
+    redirect_url?: string;
+    receiver_name?: string;
+    processed_qr_code_file_path?: string;
+    qr_code_file_path?: string;
 }
 
 export interface Device {

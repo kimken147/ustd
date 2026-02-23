@@ -64,12 +64,8 @@ export interface ToChannelAccount {
 }
 
 export interface Detail {
-    mpin: string;
     account: string;
-    sync_at: string;
-    sync_status: string;
     balance_diff: string;
-    account_status: string;
 }
 
 export interface Note {

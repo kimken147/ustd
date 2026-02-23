@@ -77,7 +77,6 @@ const UserChannelAccountList: FC = () => {
       { label: name, name: 'provider_id', children: <ProviderSelect /> },
       { label: t('fields.balance'), name: 'balance', children: <InputNumber className="w-full" /> },
       { label: t('fields.balanceLimit'), name: 'balance_limit', children: <InputNumber className="w-full" /> },
-      { label: t('fields.mpin'), name: 'mpin', children: <Input /> },
       { label: t('fields.dailyLimitReceive'), name: 'daily_limit', children: <InputNumber className="w-full" /> },
       { label: t('fields.dailyLimitPayout'), name: 'withdraw_daily_limit', children: <InputNumber className="w-full" /> },
       { label: t('fields.monthlyLimitReceive'), name: 'monthly_limit', children: <InputNumber className="w-full" /> },

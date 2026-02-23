@@ -18,29 +18,6 @@ export const getChannelStatusText = (status: UserChannelStatus) => {
     else return "上线";
 };
 
-export const SyncStatus: Record<string, string> = {
-    handshake_fail: "初始失败请重试",
-    success: "完成",
-    need_mpin: "输入MPIN",
-    mpin_processing: "等验MPIN",
-    need_otp: "等待OTP",
-    otp_fail: "OTP错误",
-    device_fail: "设备失败请重试",
-    fail: "失败请重试",
-    account_unverified: "帐号未认证",
-    mpin_fail: "MPIN错误",
-    account_limited: "帐号被限制",
-};
-
-export const AccountStatus: Record<string, string> = {
-    pass: "通过认证",
-    fail: "失败/风控",
-    unverified: "未认证",
-};
-
 export const ChannelCode = {
-    GCash: "GCash",
-    Maya: "MAYA",
-    支轉支: "QR_ALIPAY",
-    卡對卡: "BANK_CARD",
+    USDT: "USDT",
 };

@@ -252,14 +252,9 @@ export interface FromChannelAccount {
 }
 
 export interface ToChannelAccount {
-    mpin: string;
     status: string;
     account: string;
-    sync_at: string;
-    accessToken: string;
-    sync_status: string;
     channel_code: string;
-    expiresChallengeId: string;
 }
 
 export enum TransactionType {
