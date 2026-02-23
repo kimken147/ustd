@@ -14,6 +14,7 @@ import {
 import { createSystemOrderColumn, createMerchantOrderColumn } from './orderColumns';
 import {
   createChannelColumn,
+  createChainNetworkColumn,
   createAmountColumn,
   createTransferNameColumn,
   createStatusColumn,
@@ -39,6 +40,7 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<Transacti
     createSystemOrderColumn(deps),
     createMerchantOrderColumn(deps),
     createChannelColumn(deps),
+    createChainNetworkColumn(deps),
     createAmountColumn(deps),
     createTransferNameColumn(deps),
     createStatusColumn(deps),

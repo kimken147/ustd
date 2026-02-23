@@ -136,7 +136,8 @@
     "rewardMode": "หมวดหมู่",
     "rewardCommission": "จำนวนเงิน",
     "agentLine": "กรอบตัวแทน",
-    "holderName": "ชื่อผู้รับ"
+    "holderName": "ชื่อผู้รับ",
+    "chainNetwork": "เครือข่ายบล็อกเชน"
   },
   "types": {
     "withdraw": "Withdrawal",

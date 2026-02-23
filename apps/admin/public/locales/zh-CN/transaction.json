@@ -136,7 +136,8 @@
     "rewardMode": "模式",
     "rewardCommission": "奖励佣金",
     "agentLine": "代理线",
-    "holderName": "持卡人姓名"
+    "holderName": "持卡人姓名",
+    "chainNetwork": "鏈網路"
   },
   "types": {
     "withdraw": "下发",

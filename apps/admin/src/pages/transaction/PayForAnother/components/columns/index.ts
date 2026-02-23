@@ -6,7 +6,7 @@
  * - Action columns: locked, operation, callback, third party payout
  * - Status columns: order status, callback status
  * - Bank columns: bank name, province, city, card number, card holder
- * - Data columns: amount, fee, created at, confirmed at, system order number
+ * - Data columns: amount, fee, chain network, tx hash, created at, confirmed at, system order number
  */
 import { useMemo } from 'react';
 import type { AxiosInstance } from 'axios';
@@ -77,10 +77,12 @@ export function useColumns(props: UseColumnsProps): TableColumnProps<Withdraw>[]
         bankColumns[4],  // card holder
         dataColumns[0],  // amount
         dataColumns[1],  // fee
-        dataColumns[2],  // created at
-        dataColumns[3],  // confirmed at
+        dataColumns[2],  // chain network
+        dataColumns[3],  // tx hash
+        dataColumns[4],  // created at
+        dataColumns[5],  // confirmed at
         statusColumns[1], // callback status
-        dataColumns[4],  // system order number
+        dataColumns[6],  // system order number
       ];
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

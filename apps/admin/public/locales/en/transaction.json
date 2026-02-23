@@ -136,7 +136,8 @@
     "rewardMode": "Category",
     "rewardCommission": "Amount",
     "agentLine": "Agency Framework",
-    "holderName": "Recipient Name"
+    "holderName": "Recipient Name",
+    "chainNetwork": "Chain Network"
   },
   "types": {
     "withdraw": "Withdrawal",

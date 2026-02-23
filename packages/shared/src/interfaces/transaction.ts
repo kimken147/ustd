@@ -60,6 +60,8 @@ export interface Transaction {
     certificate_files: any[];
     real_name: string;
     usdt_rate: string;
+    chain_network?: string;
+    tx_hash?: string;
     _search1: any;
     mobile_number?: string;
     type: number;
@@ -243,12 +245,14 @@ export interface Thirdchannel {
 }
 
 export interface FromChannelAccount {
-    bank_city: string;
-    bank_name: string;
-    bank_province: string;
-    bank_card_number: string;
+    bank_city?: string;
+    bank_name?: string;
+    bank_province?: string;
+    bank_card_number?: string;
     extra_withdraw_fee: number;
-    bank_card_holder_name: string;
+    bank_card_holder_name?: string;
+    account?: string;
+    chain_network?: string;
 }
 
 export interface ToChannelAccount {

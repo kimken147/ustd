@@ -85,6 +85,36 @@ export function createSystemOrderNumberColumn(ctx: ColumnContext): WithdrawColum
   };
 }
 
+export function createChainNetworkColumn(ctx: ColumnContext): WithdrawColumn {
+  const { t } = ctx;
+
+  return {
+    title: t('fields.chainNetwork'),
+    dataIndex: 'chain_network',
+    responsive: ['lg', 'xl', 'xxl'] as const,
+    width: 80,
+    render(value: string) {
+      return value ? value.toUpperCase() : '-';
+    },
+  };
+}
+
+export function createTxHashColumn(ctx: ColumnContext): WithdrawColumn {
+  return {
+    title: 'Tx Hash',
+    dataIndex: 'tx_hash',
+    responsive: ['xl', 'xxl'] as const,
+    width: 140,
+    render(value: string) {
+      return value ? (
+        <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
+          {value}
+        </Typography.Text>
+      ) : '-';
+    },
+  };
+}
+
 /**
  * Get all data columns
  */
@@ -92,6 +122,8 @@ export function getDataColumns(ctx: ColumnContext): WithdrawColumn[] {
   return [
     createAmountColumn(ctx),
     createFeeColumn(ctx),
+    createChainNetworkColumn(ctx),
+    createTxHashColumn(ctx),
     createCreatedAtColumn(ctx),
     createConfirmedAtColumn(ctx),
     createSystemOrderNumberColumn(ctx),

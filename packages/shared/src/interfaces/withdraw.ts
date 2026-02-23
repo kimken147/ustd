@@ -48,6 +48,8 @@ export interface Withdraw {
     thirdchannel?: Thirdchannel2;
     certificate_file_path: any;
     certificate_files: CertificateFile[];
+    chain_network?: string;
+    tx_hash?: string;
     _search1?: string;
 }
 export interface Provider {

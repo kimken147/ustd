@@ -16,6 +16,20 @@ export function createChannelColumn(deps: ColumnDependencies): CollectionColumn 
   };
 }
 
+export function createChainNetworkColumn(deps: ColumnDependencies): CollectionColumn {
+  const { t } = deps;
+
+  return {
+    title: t('fields.chainNetwork'),
+    dataIndex: 'chain_network',
+    responsive: ['lg', 'xl', 'xxl'],
+    width: 80,
+    render(value: string) {
+      return value ? value.toUpperCase() : '-';
+    },
+  };
+}
+
 export function createAmountColumn(deps: ColumnDependencies): CollectionColumn {
   const { t } = deps;
 
