@@ -13,9 +13,8 @@ import {
 import { Create, useForm } from "@refinedev/antd";
 import { useCreate, useGetIdentity, useNotification, useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router";
-import useSelector from "hooks/useSelector";
 import useUpdateModal from "hooks/useUpdateModal";
-import { SelectOptions, Bank } from "@morgan-ustd/shared";
+import { SelectOptions } from "@morgan-ustd/shared";
 import { sumBy } from "lodash";
 import numeral from "numeral";
 import { FC, useState } from "react";
@@ -28,10 +27,6 @@ const PayForAnotherCreate: FC = () => {
     const navigate = useNavigate();
     const goBack = () => navigate(-1);
     const { form } = useForm<any, any, { lists: any[] }>();
-    const { Select: BankSelect } = useSelector<Bank>({
-        resource: "banks",
-        valueField: "name",
-    });
     const { modalProps, show } = useUpdateModal({
         formItems: [
             {
@@ -49,25 +44,16 @@ const PayForAnotherCreate: FC = () => {
     const lists = Form.useWatch("lists", form);
     const selectOptions: SelectOptions = [
         {
-            label: translate("channels.BANK_CARD"),
-            value: "BANK_CARD",
+            label: translate("channels.USDT"),
+            value: "USDT",
         },
     ];
     const getCardLabel = (index: number) => {
         const type = lists?.[index]?.type;
-        switch (type) {
-            case "BANK_CARD":
-                return translate("withdraw.fields.bankAccount");
-            case "GCASH":
-                return translate("withdraw.fields.gcashAccount");
-            case "MAYA":
-                return translate("withdraw.fields.mayaAccount");
-            case "QR_ALIPAY":
-                return translate("withdraw.fields.alipayAccount");
-            case "USDT":
-                return translate("withdraw.fields.walletAddress");
+        if (type === "USDT") {
+            return translate("withdraw.fields.walletAddress");
         }
-        return "";
+        return translate("withdraw.fields.account");
     };
 
     const { open } = useNotification();
@@ -105,12 +91,7 @@ const PayForAnotherCreate: FC = () => {
                                 return;
                             }
                             for (let item of values.lists) {
-                                if (item.type !== "BANK_CARD") {
-                                    if (item.type === "GCASH") {
-                                        item.bank_name = "GCash";
-                                    } else if (item.type === "QR_ALIPAY") item.bank_name = translate("channels.QR_ALIPAY");
-                                    else item.bank_name = item.type;
-                                }
+                                item.bank_name = item.type;
                                 try {
                                     await mutateAsync({
                                         resource: "agency-withdraws",
@@ -144,7 +125,7 @@ const PayForAnotherCreate: FC = () => {
                         name={"lists"}
                         initialValue={[
                             {
-                                type: "BANK_CARD",
+                                type: "USDT",
                             },
                         ]}
                     >
@@ -152,7 +133,6 @@ const PayForAnotherCreate: FC = () => {
                             return (
                                 <>
                                     {fields.map(({ key, name, ...rest }, index) => {
-                                        const isBankCard = lists?.[index]?.type === "BANK_CARD";
                                         return (
                                             <Row gutter={16} className="mb-4" key={key}>
                                                 <Col xs={24} md={12} lg={2}>
@@ -164,7 +144,7 @@ const PayForAnotherCreate: FC = () => {
                                                         <Select options={selectOptions} />
                                                     </Form.Item>
                                                 </Col>
-                                                <Col xs={24} md={12} lg={2}>
+                                                <Col xs={24} md={12} lg={3}>
                                                     <Form.Item
                                                         label={translate("amount")}
                                                         {...rest}
@@ -174,19 +154,7 @@ const PayForAnotherCreate: FC = () => {
                                                         <InputNumber className="w-full" />
                                                     </Form.Item>
                                                 </Col>
-                                                {isBankCard ? (
-                                                    <Col xs={24} md={12} lg={3}>
-                                                        <Form.Item
-                                                            {...rest}
-                                                            name={[name, "bank_name"]}
-                                                            label={translate("withdraw.fields.bankName")}
-                                                            rules={[{ required: true }]}
-                                                        >
-                                                            <BankSelect />
-                                                        </Form.Item>
-                                                    </Col>
-                                                ) : null}
-                                                <Col xs={24} md={12} lg={isBankCard ? 4 : 6}>
+                                                <Col xs={24} md={12} lg={6}>
                                                     <Form.Item
                                                         label={getCardLabel(index)}
                                                         name={[name, "bank_card_number"]}
@@ -196,39 +164,16 @@ const PayForAnotherCreate: FC = () => {
                                                         <Input />
                                                     </Form.Item>
                                                 </Col>
-                                                <Col xs={24} md={12} lg={isBankCard ? 3 : 6}>
+                                                <Col xs={24} md={12} lg={5}>
                                                     <Form.Item
                                                         {...rest}
                                                         name={[name, "bank_card_holder_name"]}
                                                         label={translate("withdraw.fields.accountOwner")}
-                                                        rules={[{ required: isBankCard }]}
                                                     >
                                                         <Input />
                                                     </Form.Item>
                                                 </Col>
-                                                {isBankCard ? (
-                                                    <Col xs={24} md={12} lg={3}>
-                                                        <Form.Item
-                                                            label={translate("withdraw.fields.province")}
-                                                            {...rest}
-                                                            name={[name, "bank_province"]}
-                                                        >
-                                                            <Input placeholder={translate("optional")} />
-                                                        </Form.Item>
-                                                    </Col>
-                                                ) : null}
-                                                {isBankCard ? (
-                                                    <Col xs={24} md={12} lg={3}>
-                                                        <Form.Item
-                                                            label={translate("withdraw.fields.city")}
-                                                            {...rest}
-                                                            name={[name, "bank_city"]}
-                                                        >
-                                                            <Input placeholder={translate("optional")} />
-                                                        </Form.Item>
-                                                    </Col>
-                                                ) : null}
-                                                <Col xs={24} md={12} lg={3}>
+                                                <Col xs={24} md={12} lg={5}>
                                                     <Form.Item
                                                         label={translate(
                                                             "withdraw.create.fields.merchantTransactionNo",
@@ -256,7 +201,7 @@ const PayForAnotherCreate: FC = () => {
                                                 type="dashed"
                                                 onClick={() =>
                                                     add({
-                                                        type: "BANK_CARD",
+                                                        type: "USDT",
                                                     })
                                                 }
                                             >

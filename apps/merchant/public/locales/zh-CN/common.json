@@ -243,6 +243,7 @@
     }
   },
   "channels": {
+    "USDT": "USDT",
     "BANK_CARD": "卡对卡",
     "QR_ALIPAY": "支转支",
     "ZH_ALIPAY": "支付宝聚合码",

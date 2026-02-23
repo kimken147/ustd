@@ -243,6 +243,7 @@
     }
   },
   "channels": {
+    "USDT": "USDT",
     "BANK_CARD": "Bank Card Transfer",
     "QR_ALIPAY": "Alipay Account-to-Account Transfer",
     "ZH_ALIPAY": "Alipay Aggregated QR Code",

@@ -243,6 +243,7 @@
     }
   },
   "channels": {
+    "USDT": "USDT",
     "BANK_CARD": "โอนผ่านบัตรธนาคาร",
     "QR_ALIPAY": "โอน Alipay บัญชีต่อบัญชี",
     "ZH_ALIPAY": "Alipay Aggregated QR Code",
