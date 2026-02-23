@@ -28,7 +28,6 @@ use App\Utils\BCMathUtil;
 use App\DTOs\TransactionParams;
 use App\Utils\TransactionFactory;
 use App\Utils\TransactionNoteUtil;
-use App\Utils\UsdtUtil;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
 use Exception;
@@ -279,23 +278,15 @@ class CreateTransactionService
 
         $usdtRate = null;
         $binanceUsdtRate = null;
-        if ($channel->code == Channel::CODE_USDT) {
-            $usdtUtil = app(UsdtUtil::class);
-            $binanceUsdtRate = $usdtUtil->getRate()["rate"];
-            $usdtRate = $context->usdtRate ?? $binanceUsdtRate;
-        }
 
         $toData = [];
-        if ($channel->code == Channel::CODE_DC_BANK) {
-            $toData["bank_name"] = $context->bankName;
-        }
         if ($context->returnUrl) {
             $toData["return_url"] = $context->returnUrl;
         }
 
         $note = null;
         if ($channel->note_enable) {
-            if ($channel->note_type || $channel->code == Channel::CODE_RE_ALIPAY) {
+            if ($channel->note_type) {
                 $note = $this->transactionNoteUtil->randomNote($context->amount, $channel);
             }
         }

@@ -151,16 +151,7 @@ class AccountMatchingQueryBuilder
     private function applyPayingTransactionsRestriction($query, Transaction $transaction, Channel $channel): void
     {
         if (!request()->input('match_last_account') && !$this->featureToggleRepository->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
-            $isAlipay = in_array($transaction->channel_code, [
-                Channel::CODE_QR_ALIPAY,
-                Channel::CODE_ALIPAY_SAC,
-                Channel::CODE_ALIPAY_BAC,
-                Channel::CODE_ALIPAY_GC
-            ]);
-
-            $featureToggle = $isAlipay
-                ? FeatureToggle::ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT
-                : FeatureToggle::ALLOW_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT;
+            $featureToggle = FeatureToggle::ALLOW_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT;
 
             $query->whereDoesntHave('devicePayingTransactions.transaction', function ($q) use ($transaction, $channel, $featureToggle) {
                 $q->where('channel_code', $transaction->channel_code);
@@ -241,7 +232,7 @@ class AccountMatchingQueryBuilder
 
     private function applyBankRestrictions($query, Channel $channel): void
     {
-        if (request()->filled('bank_name') && $channel->code != Channel::CODE_DC_BANK) {
+        if (request()->filled('bank_name')) {
             $query->whereHas('bank', function (Builder $channelBanks) {
                 $channelBanks->where('name', request()->input('bank_name'));
             });

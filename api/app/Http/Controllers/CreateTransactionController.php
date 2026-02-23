@@ -174,27 +174,7 @@ class CreateTransactionController extends Controller
 
     private function getChannelCode(Channel $channel, Transaction $transaction): string
     {
-        $code = strtolower($channel->code);
-
-        if ($channel->code == Channel::CODE_DC_BANK) {
-            $bank = $transaction->to_channel_account["bank_name"] ?? '';
-            return "dc_" . strtolower($bank);
-        }
-
-        if (in_array($channel->code, [
-            Channel::CODE_ALIPAY_BAC,
-            Channel::CODE_ALIPAY_SAC,
-            Channel::CODE_ALIPAY_COPY,
-            Channel::CODE_ALIPAY_GC
-        ])) {
-            return strtolower(Channel::CODE_QR_ALIPAY);
-        }
-
-        if (in_array($channel->code, [Channel::CODE_WECHATPAY_BAC, Channel::CODE_WECHATPAY_SAC])) {
-            return strtolower(Channel::CODE_QR_WECHATPAY);
-        }
-
-        return $code;
+        return strtolower($channel->code);
     }
 
     private function buildMatchedViewPath(Channel $channel, string $country, string $code): string

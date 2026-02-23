@@ -17,7 +17,6 @@ use App\Exceptions\TransactionLockerNotYouException;
 use App\Exceptions\TransactionRefundedException;
 use App\Exceptions\TransactionShouldLockBeforeUpdateException;
 use App\Jobs\NotifyTransaction;
-use App\Models\Channel;
 use App\Models\Device;
 use App\Models\DevicePayingTransaction;
 use App\Models\DeviceRegularCustomer;
@@ -147,10 +146,6 @@ class TransactionStatusService
             Response::HTTP_BAD_REQUEST,
             '目前状态无法转为码商出'
         );
-
-        if ($transaction->channel_code == Channel::CODE_GCASH) {
-            Redis::del($transaction->id . ':gcash:daifu:mpin', $transaction->id . ':gcash:daifu:pay');
-        }
 
         return DB::transaction(function () use ($transaction, $provider, $shouldLock) {
             $transaction = Transaction::lockForUpdate()->findOrFail($transaction->getKey());

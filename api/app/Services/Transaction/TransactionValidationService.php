@@ -45,13 +45,6 @@ class TransactionValidationService
             throw new TransactionValidationException(ThirdPartyErrorResponse::channelMaintenance());
         }
 
-        // DC_BANK 需要 bank_name
-        if ($channel->code == Channel::CODE_DC_BANK && !$context->bankName) {
-            throw new TransactionValidationException(
-                ThirdPartyErrorResponse::missingParameter('bank_name')
-            );
-        }
-
         return $channel;
     }
 
