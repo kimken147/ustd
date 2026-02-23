@@ -83,6 +83,8 @@ class Transaction extends Model
         'floating_amount',
         'actual_amount',
         'usdt_rate',
+        'chain_network',
+        'tx_hash',
         'channel_code',
         'from_channel_account_hash_id',
         'note',

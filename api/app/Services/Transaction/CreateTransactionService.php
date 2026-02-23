@@ -28,6 +28,7 @@ use App\Utils\BCMathUtil;
 use App\DTOs\TransactionParams;
 use App\Utils\TransactionFactory;
 use App\Utils\TransactionNoteUtil;
+use App\Models\UsdtDepositMonitor;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
 use Exception;
@@ -452,6 +453,25 @@ class CreateTransactionService
                     ->delay(now()->addSeconds($channel->transaction_timeout));
             }
         });
+
+        // 如果是 USDT 通道，建立鏈上監控記錄
+        $transaction->refresh();
+        if ($transaction->channel_code === Channel::CODE_USDT && $transaction->from_channel_account_id) {
+            $account = UserChannelAccount::find($transaction->from_channel_account_id);
+            if ($account) {
+                UsdtDepositMonitor::create([
+                    'transaction_id' => $transaction->id,
+                    'user_channel_account_id' => $account->id,
+                    'address' => data_get($account->detail, UserChannelAccount::DETAIL_KEY_WALLET_ADDRESS, ''),
+                    'chain_network' => data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20'),
+                    'expected_amount' => $transaction->floating_amount,
+                    'status' => UsdtDepositMonitor::STATUS_PENDING,
+                    'expires_at' => $channel->transaction_timeout_enable
+                        ? now()->addMinutes($channel->transaction_timeout)
+                        : null,
+                ]);
+            }
+        }
 
         $userId = $providerUserChannelAccount->user_id;
         Cache::put("users_{$userId}_new_transaction", true, 60);

@@ -71,6 +71,6 @@ class Kernel extends ConsoleKernel
 
     protected function shortSchedule(ShortSchedule $shortSchedule)
     {
-        //
+        $shortSchedule->command('usdt:poll-deposits')->everySeconds(30);
     }
 }
