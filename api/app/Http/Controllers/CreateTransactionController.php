@@ -93,7 +93,7 @@ class CreateTransactionController extends Controller
             "redirectUrl" => data_get(
                 $fromChannelAccount,
                 UserChannelAccount::DETAIL_KEY_REDIRECT_URL,
-                $channel->scanQrcodeUrlScheme()
+                ''
             ),
             "bankName" => data_get($fromChannelAccount, UserChannelAccount::DETAIL_KEY_BANK_NAME),
             "bankBranch" => data_get($fromChannelAccount, UserChannelAccount::DETAIL_KEY_BANK_CARD_BRANCH),
@@ -139,7 +139,7 @@ class CreateTransactionController extends Controller
             "note" => $transaction->note,
             "payingLimitEnabled" => $channel->transaction_timeout_enable,
             "payingLimitSeconds" => $channel->transaction_timeout,
-            "redirectUrl" => $channel->scanQrcodeUrlScheme(),
+            "redirectUrl" => '',
             "bankName" => $toChannelAccount['receiver_bank_name'] ?? '',
             "bankBranch" => $toChannelAccount['receiver_bank_branch'] ?? '',
             "bankCardHolderName" => $toChannelAccount['receiver_name'] ?? '',

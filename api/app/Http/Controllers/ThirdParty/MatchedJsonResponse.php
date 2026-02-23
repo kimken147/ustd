@@ -2,27 +2,20 @@
 
 namespace App\Http\Controllers\ThirdParty;
 
-use App\Models\User;
 use App\Models\Channel;
 use App\Models\Transaction;
-use App\Repository\FeatureToggleRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\URL;
 
 trait MatchedJsonResponse
 {
-    private function responseOf(
-        Transaction             $transaction,
-        FeatureToggleRepository $featureToggleRepository
-    )
+    private function responseOf(Transaction $transaction)
     {
         if (env("APP_ENV") != "local") {
             URL::forceScheme("https");
         }
         $channel = $transaction->channel;
-
-        $merchant = User::firstWhere("username", request()->username);
 
         $cashierUrl = urldecode(
             route("api.v1.cashier", $transaction->system_order_number)

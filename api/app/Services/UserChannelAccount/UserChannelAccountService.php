@@ -2,7 +2,6 @@
 
 namespace App\Services\UserChannelAccount;
 
-use App\Jobs\SyncGcashAccount;
 use App\Models\Bank;
 use App\Models\ChannelAmount;
 use App\Models\Device;
@@ -190,10 +189,6 @@ class UserChannelAccountService
             $this->syncTransactionGroups($userChannelAccount, $provider);
 
             DB::commit();
-
-            if (!empty($data['sync_after_create'])) {
-                SyncGcashAccount::dispatch($userChannelAccount->id, 'init');
-            }
         } catch (\Exception $e) {
             Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollBack();
@@ -247,10 +242,6 @@ class UserChannelAccountService
         $userChannelAccount->save();
 
         $this->syncTransactionGroups($userChannelAccount, $provider);
-
-        if (!empty($data['sync_after_create'])) {
-            SyncGcashAccount::dispatch($userChannelAccount->id, 'init');
-        }
 
         return $userChannelAccount;
     }
