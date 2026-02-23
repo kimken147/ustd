@@ -51,6 +51,8 @@ class UserChannelAccount extends Model
     const DETAIL_KEY_ACCOUNT = 'account';
     const DETAIL_KEY_RECEIVER_NAME = 'receiver_name'; // 支付寶轉賬時可能會需要填寫收款人姓名做驗證
     const DETAIL_KEY_REAL_NAME = 'real_name'; // 實名制
+    const DETAIL_KEY_WALLET_ADDRESS = 'wallet_address'; // USDT 收款地址
+    const DETAIL_KEY_CHAIN_NETWORK = 'chain_network';   // 鏈網絡：trc20, erc20, bep20
     protected $casts = [
         'regular_customer_first' => 'boolean',
         'time_limit_disabled' => 'boolean',
