@@ -95,22 +95,6 @@ class WithdrawService extends BaseWithdrawService
             orderNumber: $this->resolveOrderNumber($request),
             notifyUrl: null,
             source: WithdrawContext::SOURCE_MERCHANT,
-            usdtRate: $this->resolveUsdtRateForBankCard($bankCard, $request),
-            binanceUsdtRate: $this->resolveBinanceUsdtRateForBankCard($bankCard),
         );
-    }
-
-    private function resolveUsdtRateForBankCard(BankCard $bankCard, Request $request): ?string
-    {
-        if ($bankCard->bank_name !== \App\Models\Channel::CODE_USDT) {
-            return null;
-        }
-
-        return $request->input('usdt_rate');
-    }
-
-    private function resolveBinanceUsdtRateForBankCard(BankCard $bankCard): ?string
-    {
-        return null;
     }
 }

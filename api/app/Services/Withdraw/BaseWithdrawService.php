@@ -80,8 +80,6 @@ abstract class BaseWithdrawService
             orderNumber: $request->input('order_number'),
             notifyUrl: $request->input('notify_url'),
             source: WithdrawContext::SOURCE_THIRD_PARTY,
-            usdtRate: $this->resolveUsdtRate($request),
-            binanceUsdtRate: $this->resolveBinanceUsdtRate($request),
         );
     }
 
@@ -110,8 +108,6 @@ abstract class BaseWithdrawService
             orderNumber: $this->resolveOrderNumber($request),
             notifyUrl: null,
             source: WithdrawContext::SOURCE_MERCHANT,
-            usdtRate: $this->resolveUsdtRate($request),
-            binanceUsdtRate: $this->resolveBinanceUsdtRate($request),
         );
     }
 
@@ -371,8 +367,6 @@ abstract class BaseWithdrawService
             notifyUrl: $context->notifyUrl,
             orderNumber: $context->orderNumber,
             subType: $this->getSubType(),
-            usdtRate: $context->isUsdt() && $context->usdtRate ? $context->usdtRate : null,
-            binanceUsdtRate: $context->isUsdt() && $context->usdtRate ? $context->binanceUsdtRate : null,
         );
 
         $paufenEnabled = $this->getPaufenEnabled($context->merchant);
@@ -427,17 +421,4 @@ abstract class BaseWithdrawService
             ?? chr(mt_rand(65, 90)) . chr(mt_rand(65, 90)) . chr(mt_rand(65, 90)) . date('YmdHis') . rand(100, 999);
     }
 
-    protected function resolveUsdtRate(Request $request): ?string
-    {
-        if ($request->input('bank_name') !== Channel::CODE_USDT) {
-            return null;
-        }
-
-        return $request->input('usdt_rate');
-    }
-
-    protected function resolveBinanceUsdtRate(Request $request): ?string
-    {
-        return null;
-    }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Channel;
 use App\Models\Transaction;
 use App\Utils\GuzzleHttpClientTrait;
 use Exception;
@@ -94,11 +93,6 @@ class NotifyTransaction implements ShouldQueue
             'amount'              => $this->transaction->amount,
             'status'              => $this->transaction->status,
         ];
-
-        if ($this->transaction->channel_code == Channel::CODE_USDT) {
-            $mainData['usdt_rate'] = $this->transaction->usdt_rate;
-            $mainData['rate_amount'] = $this->transaction->rate_amount;
-        }
 
         $data = [
             'data'             => $mainData,

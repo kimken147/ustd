@@ -22,8 +22,6 @@ class WithdrawContext
         public readonly string $orderNumber,
         public readonly ?string $notifyUrl,
         public readonly string $source,
-        public readonly ?string $usdtRate = null,
-        public readonly ?string $binanceUsdtRate = null,
     ) {}
 
     public function isFromThirdParty(): bool
