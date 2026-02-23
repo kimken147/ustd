@@ -48,10 +48,8 @@ class UserChannelAccount extends Model
     const DETAIL_KEY_BANK_NAME = 'bank_name';
     const DETAIL_KEY_BANK_PROVINCE = 'bank_province';
     const DETAIL_KEY_BANK_CITY = 'bank_city';
-    const DETAIL_KEY_BANK_ID = 'bank_id';
     const DETAIL_KEY_ACCOUNT = 'account';
     const DETAIL_KEY_RECEIVER_NAME = 'receiver_name'; // 支付寶轉賬時可能會需要填寫收款人姓名做驗證
-    const DETAIL_KEY_ALIPAY_BANK_CODE = 'alipay_bank_code'; // 專門給支轉銀用的支付寶銀行代碼（透過支付寶 API 查詢而來）
     const DETAIL_KEY_REAL_NAME = 'real_name'; // 實名制
     protected $casts = [
         'regular_customer_first' => 'boolean',
