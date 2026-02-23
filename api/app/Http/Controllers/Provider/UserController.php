@@ -8,6 +8,7 @@ use \App\Http\Resources\UserCollection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -62,6 +63,7 @@ class UserController extends Controller
             DB::table('control_downlines')->insert($downlines);
             DB::commit();
         } catch (Throwable $throw) {
+            Log::error(__METHOD__ . ': ' . $throw->getMessage(), ['exception' => $throw]);
             DB::rollback();
         }
         return $provider;

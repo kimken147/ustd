@@ -370,11 +370,6 @@ Route::prefix("provider")
         Route::post("pre-login", "AuthController@preLogin");
         Route::post("login", "AuthController@login");
 
-        Route::post(
-            "/vn/transaction-notifications",
-            "TransactionNotificationVnController"
-        );
-
         Route::middleware([
             "auth:api",
             "role:provider",
@@ -520,11 +515,6 @@ Route::prefix("provider")
             ]);
 
             Route::post("heartbeats", "HeartbeatController");
-
-            Route::post(
-                "transaction-notifications",
-                "TransactionNotificationController"
-            );
 
             Route::apiResource(
                 "channel-groups",

@@ -30,6 +30,7 @@ use App\Jobs\SyncGcashAccount;
 use App\Jobs\SyncMayaAccountJob;
 use App\Models\Channel;
 use App\Models\MemberDevice;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class UserChannelAccountController extends Controller
@@ -539,7 +540,8 @@ class UserChannelAccountController extends Controller
             }
 
             DB::commit();
-        } catch (exception $e) {
+        } catch (\Exception $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollBack();
             abort(Response::HTTP_BAD_REQUEST, "新增失败");
         }

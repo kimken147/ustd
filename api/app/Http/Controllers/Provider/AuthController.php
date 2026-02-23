@@ -220,6 +220,7 @@ class AuthController extends Controller
                 ]);
                 DB::commit();
             } catch (Throwable $throw) {
+                Log::error(__METHOD__ . ': ' . $throw->getMessage(), ['exception' => $throw]);
                 DB::rollback();
             }
         }

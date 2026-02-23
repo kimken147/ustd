@@ -15,6 +15,7 @@ use App\Repository\FeatureToggleRepository;
 use App\Services\Transaction\TransactionFeeService;
 use App\Utils\BCMathUtil;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -151,6 +152,7 @@ class TransactionFactory
 
             DB::commit();
         } catch (RuntimeException $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollback();
 
             return null;
@@ -254,6 +256,7 @@ class TransactionFactory
 
             DB::commit();
         } catch (RuntimeException $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollback();
 
             return null;
@@ -315,6 +318,7 @@ class TransactionFactory
 
             DB::commit();
         } catch (RuntimeException $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollback();
             return null;
         }
@@ -369,6 +373,7 @@ class TransactionFactory
 
             DB::commit();
         } catch (RuntimeException $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollback();
 
             return null;
@@ -423,6 +428,7 @@ class TransactionFactory
 
             DB::commit();
         } catch (RuntimeException $e) {
+            Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollback();
 
             return null;
