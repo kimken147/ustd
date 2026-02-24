@@ -77,6 +77,7 @@ const useUpdateUserChannelModal = ({
       withdraw_daily_limit: Number(userChannel?.withdraw_daily_limit),
       monthly_limit: Number(userChannel?.monthly_limit_value),
       withdraw_monthly_limit: Number(userChannel?.withdraw_monthly_limit),
+      chain_network: userChannel?.detail?.chain_network,
     });
   }, [form, userChannel]);
 

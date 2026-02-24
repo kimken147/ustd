@@ -84,6 +84,26 @@ const UserChannelAccountList: FC = () => {
       { label: t('fields.singleMinLimit'), name: 'single_min_limit', children: <InputNumber className="w-full" /> },
       { label: t('fields.singleMaxLimit'), name: 'single_max_limit', children: <InputNumber className="w-full" /> },
       { name: 'allow_unlimited' },
+      {
+        label: t('fields.chainNetwork'),
+        name: 'chain_network',
+        children: (
+          <Select
+            options={[
+              { label: 'TRC-20', value: 'trc20' },
+              { label: 'ERC-20', value: 'erc20' },
+              { label: 'BEP-20', value: 'bep20' },
+            ]}
+            allowClear
+            placeholder={t('fields.chainNetwork')}
+          />
+        ),
+      },
+      {
+        label: t('fields.privateKey'),
+        name: 'private_key',
+        children: <Input.Password placeholder={t('placeholders.privateKey')} />,
+      },
       { label: t('fields.note'), name: 'note', children: <Input /> },
       {
         label: t('fields.status'),
