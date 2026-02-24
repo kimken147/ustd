@@ -94,6 +94,13 @@ class NotifyTransaction implements ShouldQueue
             'status'              => $this->transaction->status,
         ];
 
+        if ($this->transaction->chain_network) {
+            $mainData['chain_network'] = $this->transaction->chain_network;
+        }
+        if ($this->transaction->tx_hash) {
+            $mainData['tx_hash'] = $this->transaction->tx_hash;
+        }
+
         $data = [
             'data'             => $mainData,
             'http_status_code' => Response::HTTP_OK,
