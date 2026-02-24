@@ -206,6 +206,31 @@ class Trc20Adapter implements ChainAdapterInterface
         return bcdiv($rawBalance, bcpow('10', '6'), 6);
     }
 
+    public function getTransactionInfo(string $txHash): ?array
+    {
+        $response = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/walletsolidity/gettransactioninfobyid', [
+                'value' => $txHash,
+            ]);
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $data = $response->json();
+
+        // Empty response means transaction not yet confirmed
+        if (empty($data) || !isset($data['id'])) {
+            return null;
+        }
+
+        return [
+            'confirmed' => true,
+            'success'   => ($data['receipt']['result'] ?? '') === 'SUCCESS',
+            'fee'       => bcdiv((string) ($data['fee'] ?? 0), '1000000', 6),
+        ];
+    }
+
     private function getBaseUrl(): string
     {
         return config('services.trongrid.base_url', 'https://api.trongrid.io');

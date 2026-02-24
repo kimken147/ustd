@@ -38,4 +38,10 @@ interface ChainAdapterInterface
      * Get USDT token balance (6 decimals, human-readable).
      */
     public function getTokenBalance(string $address): string;
+
+    /**
+     * Check transaction status on-chain.
+     * Returns ['confirmed' => bool, 'success' => bool, 'fee' => string] or null if not found yet.
+     */
+    public function getTransactionInfo(string $txHash): ?array;
 }

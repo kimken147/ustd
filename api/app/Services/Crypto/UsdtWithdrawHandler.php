@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Jobs\ConfirmUsdtWithdraw;
 use App\Services\Crypto\Exceptions\InsufficientBalanceException;
 use App\Services\Crypto\Exceptions\TransactionBroadcastException;
 use Illuminate\Support\Facades\Log;
@@ -62,6 +63,9 @@ class UsdtWithdrawHandler
                 'tx_hash' => $chainTx->txHash,
                 'chain_network' => $chainNetwork,
             ]);
+
+            // Dispatch delayed confirmation check
+            ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
             Log::info('UsdtWithdrawHandler: 出款交易已廣播', [
                 'transaction_id' => $transaction->id,
