@@ -9,6 +9,7 @@ use App\Models\Permission;
 use App\Models\User;
 use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
+use App\Models\Channel;
 use App\Models\ChannelAmount;
 use App\Models\TransactionGroup;
 use App\Models\Device;
@@ -669,6 +670,41 @@ class UserChannelAccountController extends Controller
 
     public function sync(Request $request)
     {
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        $this->validate($request, [
+            'id' => 'required|integer',
+        ]);
+
+        $account = UserChannelAccount::findOrFail($request->input('id'));
+
+        if ($account->channel_code !== Channel::CODE_USDT) {
+            return response()->json(['message' => '僅支援 USDT 帳號同步'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (empty($account->account)) {
+            return response()->json(['message' => '帳號未設定錢包地址'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $chainNetwork = data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
+        $adapter = $this->resolveChainAdapter($chainNetwork);
+
+        if (!$adapter) {
+            return response()->json(['message' => '不支援的鏈網路'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $account->update([
+            'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
+            'onchain_trx_balance'  => $adapter->getNativeBalance($account->account),
+            'onchain_synced_at'    => now(),
+        ]);
+
+        return \App\Http\Resources\UserChannelAccount::make($account->refresh());
+    }
+
+    private function resolveChainAdapter(string $chainNetwork): ?\App\Services\Crypto\Adapters\ChainAdapterInterface
+    {
+        return match ($chainNetwork) {
+            'trc20' => app(\App\Services\Crypto\Adapters\Trc20Adapter::class),
+            default => null,
+        };
     }
 }
