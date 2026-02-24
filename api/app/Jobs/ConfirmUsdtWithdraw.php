@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\NotifyTransaction;
 use App\Models\Transaction;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\Trc20Adapter;
@@ -68,6 +69,9 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                 'info' => $info,
             ]);
         }
+
+        // Notify merchant of the final withdrawal result
+        NotifyTransaction::dispatch($transaction);
     }
 
     private function resolveAdapter(string $chainNetwork): ?ChainAdapterInterface
