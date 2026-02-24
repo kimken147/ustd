@@ -6,6 +6,7 @@ import {
   Button,
   Descriptions,
   Switch,
+  Typography,
 } from 'antd';
 import {
   IResourceComponentsProps,
@@ -130,6 +131,25 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
               value={`${record?.monthly_limit}/${record?.withdraw_monthly_limit} ${record?.monthly_total}/${record?.withdraw_monthly_total}`}
             />
           </Descriptions.Item>
+          {record?.channel_code === 'USDT' && (
+            <>
+              <Descriptions.Item label={t('fields.account')}>
+                <Typography.Text copyable>{record?.account}</Typography.Text>
+              </Descriptions.Item>
+              <Descriptions.Item label={t('fields.chainNetwork')}>
+                {record?.detail?.chain_network?.toUpperCase() ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="USDT (鏈上)">
+                {record?.onchain_usdt_balance ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="TRX (Gas)">
+                {record?.onchain_trx_balance ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="上次同步">
+                {record?.onchain_synced_at ? dayjs(record.onchain_synced_at).format('YYYY-MM-DD HH:mm:ss') : '-'}
+              </Descriptions.Item>
+            </>
+          )}
         </Descriptions>
       </Show>
     </>
