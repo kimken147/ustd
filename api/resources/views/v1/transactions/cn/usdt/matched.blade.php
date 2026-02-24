@@ -42,7 +42,7 @@
         <div class="info-row">
             <span class="info-label">收款地址</span>
             <span class="info-value">
-                <button class="copy-btn" onclick="copyText('{{ $transaction->fromChannelAccount->account ?? '' }}')">复制</button>
+                <button class="copy-btn" data-address="{{ $transaction->fromChannelAccount->account ?? '' }}" onclick="copyText(this.dataset.address)">复制</button>
             </span>
         </div>
         <div class="address-box" id="wallet-address">

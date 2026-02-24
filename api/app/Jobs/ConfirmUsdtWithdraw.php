@@ -48,12 +48,20 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         }
 
         if ($info['confirmed'] && $info['success']) {
+            $transaction->update([
+                'status' => Transaction::STATUS_SUCCESS,
+            ]);
+
             Log::info('ConfirmUsdtWithdraw: 鏈上交易已確認成功', [
                 'transaction_id' => $transaction->id,
                 'tx_hash' => $transaction->tx_hash,
                 'fee' => $info['fee'],
             ]);
         } else {
+            $transaction->update([
+                'status' => Transaction::STATUS_FAILED,
+            ]);
+
             Log::error('ConfirmUsdtWithdraw: 鏈上交易失敗', [
                 'transaction_id' => $transaction->id,
                 'tx_hash' => $transaction->tx_hash,

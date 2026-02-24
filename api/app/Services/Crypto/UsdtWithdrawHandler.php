@@ -15,6 +15,15 @@ class UsdtWithdrawHandler
 {
     public function handle(Transaction $transaction): void
     {
+        // Idempotency: skip if already broadcast
+        if (!empty($transaction->tx_hash)) {
+            Log::info('UsdtWithdrawHandler: 交易已有 tx_hash，跳過', [
+                'transaction_id' => $transaction->id,
+                'tx_hash' => $transaction->tx_hash,
+            ]);
+            return;
+        }
+
         $account = UserChannelAccount::find($transaction->from_channel_account_id);
         if (!$account) {
             Log::error('UsdtWithdrawHandler: 找不到出款帳號', ['transaction_id' => $transaction->id]);
@@ -47,7 +56,6 @@ class UsdtWithdrawHandler
             );
         }
 
-        $privateKey = decrypt($encryptedKey);
         $toAddress = data_get($transaction->to_channel_account, 'bank_card_number', '');
         $amount = $transaction->floating_amount ?? $transaction->amount;
 
@@ -56,7 +64,9 @@ class UsdtWithdrawHandler
             return;
         }
 
+        $privateKey = null;
         try {
+            $privateKey = decrypt($encryptedKey);
             $chainTx = $adapter->sendTransaction($fromAddress, $toAddress, $amount, $privateKey);
 
             $transaction->update([
@@ -77,6 +87,14 @@ class UsdtWithdrawHandler
                 'error' => $e->getMessage(),
             ]);
             throw $e;
+        } catch (\Throwable $e) {
+            Log::error('UsdtWithdrawHandler: 未預期錯誤', [
+                'transaction_id' => $transaction->id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        } finally {
+            $privateKey = null;
         }
     }
 
