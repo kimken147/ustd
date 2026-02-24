@@ -29,8 +29,24 @@ class UsdtWithdrawHandler
         $chainNetwork = data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $adapter = $this->resolveAdapter($chainNetwork);
 
-        $privateKey = decrypt($encryptedKey);
         $fromAddress = $account->account;
+
+        // Pre-flight: check TRX balance for gas fees
+        $minTrxBalance = config('services.trongrid.min_trx_balance', '30');
+        $trxBalance = $adapter->getNativeBalance($fromAddress);
+
+        if (bccomp($trxBalance, $minTrxBalance, 6) < 0) {
+            Log::error('UsdtWithdrawHandler: TRX 餘額不足支付 Gas', [
+                'transaction_id' => $transaction->id,
+                'trx_balance'    => $trxBalance,
+                'min_required'   => $minTrxBalance,
+            ]);
+            throw new InsufficientBalanceException(
+                "TRX balance {$trxBalance} below minimum {$minTrxBalance} for gas fees"
+            );
+        }
+
+        $privateKey = decrypt($encryptedKey);
         $toAddress = data_get($transaction->to_channel_account, 'bank_card_number', '');
         $amount = $transaction->floating_amount ?? $transaction->amount;
 

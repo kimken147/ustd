@@ -37,8 +37,10 @@ return [
     ],
 
     'trongrid' => [
-        'api_key' => env('TRONGRID_API_KEY'),
-        'base_url' => env('TRONGRID_BASE_URL', 'https://api.trongrid.io'),
+        'api_key'         => env('TRONGRID_API_KEY'),
+        'base_url'        => env('TRONGRID_BASE_URL', 'https://api.trongrid.io'),
+        'fee_limit'       => (int) env('TRONGRID_FEE_LIMIT', 100000000),
+        'min_trx_balance' => env('TRONGRID_MIN_TRX_BALANCE', '30'),
     ],
 
 ];

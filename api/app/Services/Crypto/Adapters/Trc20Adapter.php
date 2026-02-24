@@ -112,7 +112,7 @@ class Trc20Adapter implements ChainAdapterInterface
             'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
             'function_selector' => 'transfer(address,uint256)',
             'parameter' => $parameter,
-            'fee_limit' => self::FEE_LIMIT,
+            'fee_limit' => (int) config('services.trongrid.fee_limit', self::FEE_LIMIT),
             'visible' => false,
         ]);
 
