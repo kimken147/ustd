@@ -61,7 +61,8 @@ class UserChannelAccount extends Model
         'monthly_status' => 'boolean',
         'detail' => 'array',
         'is_auto' => 'boolean',
-        'auto_sync' => 'boolean'
+        'auto_sync' => 'boolean',
+        'onchain_synced_at' => 'datetime',
     ];
     protected $dates = [
         'last_matched_at',
@@ -100,6 +101,9 @@ class UserChannelAccount extends Model
         'withdraw_monthly_total',
         'balance',
         'balance_limit',
+        'onchain_usdt_balance',
+        'onchain_trx_balance',
+        'onchain_synced_at',
         'is_auto',
         'auto_sync',
         'note',
