@@ -22,4 +22,5 @@ export interface ColumnDependencies {
     method?: 'put' | 'delete';
   }) => void;
   mutateDeleting: (options: { resource: string; id: number | string }) => void;
+  onSync?: (id: number) => void;
 }

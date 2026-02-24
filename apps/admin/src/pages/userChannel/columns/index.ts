@@ -14,6 +14,7 @@ import {
 } from './bankColumns';
 import { createNoteColumn, createAccountNumberColumn } from './infoColumns';
 import { createBalanceColumn, createBalanceLimitColumn } from './balanceColumns';
+import { createOnchainUsdtColumn, createOnchainTrxColumn } from './onchainColumns';
 import { createSingleLimitColumn } from './singleLimitColumn';
 import {
   createDailyStatusColumn,
@@ -43,6 +44,8 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createAccountNumberColumn(deps),
     createBalanceColumn(deps),
     createBalanceLimitColumn(deps),
+    createOnchainUsdtColumn(deps),
+    createOnchainTrxColumn(deps),
     createSingleLimitColumn(deps),
     createDailyStatusColumn(deps),
     createDailyLimitReceiveColumn(deps),

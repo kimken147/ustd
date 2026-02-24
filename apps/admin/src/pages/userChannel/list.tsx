@@ -4,6 +4,7 @@ import { CreateButton, List, useTable } from '@refinedev/antd';
 import {
   useApiUrl,
   useCan,
+  useCustomMutation,
   useDelete,
   useUpdate,
 } from '@refinedev/core';
@@ -132,6 +133,19 @@ const UserChannelAccountList: FC = () => {
 
   const { mutateAsync: mutateUpdating } = useUpdate();
   const { mutateAsync: mutateDeleting } = useDelete();
+  const { mutate: syncBalance } = useCustomMutation();
+
+  const handleSync = (id: number) => {
+    syncBalance({
+      url: `${apiUrl}/admin/user-channel-accounts/sync`,
+      method: 'put',
+      values: { id },
+    }, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
+  };
 
   const mutateUserChannel = ({
     record,
@@ -181,6 +195,7 @@ const UserChannelAccountList: FC = () => {
     showUpdateModal,
     mutateUserChannel,
     mutateDeleting: (opts) => mutateDeleting(opts),
+    onSync: handleSync,
   };
 
   const columns = useColumns(columnDeps);
