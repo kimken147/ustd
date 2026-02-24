@@ -44,6 +44,8 @@ class Withdraw extends JsonResource
             'confirmed_at'          => optional($this->confirmed_at)->toIso8601String(),
             'notified_at'           => optional($this->notified_at)->toIso8601String(),
             'notify_url'            => $this->notify_url,
+            'chain_network'         => $this->chain_network,
+            'tx_hash'               => $this->tx_hash,
             '_search1' => $this->_search1
         ];
     }

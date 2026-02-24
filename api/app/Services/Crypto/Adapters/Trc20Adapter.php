@@ -139,9 +139,9 @@ class Trc20Adapter implements ChainAdapterInterface
 
         $r = str_pad($signature->r->toString(16), 64, '0', STR_PAD_LEFT);
         $s = str_pad($signature->s->toString(16), 64, '0', STR_PAD_LEFT);
-        $v = dechex($signature->recoveryParam);
+        $v = str_pad(dechex($signature->recoveryParam), 2, '0', STR_PAD_LEFT);
 
-        $transaction['signature'] = [$r . $s . '0' . $v];
+        $transaction['signature'] = [$r . $s . $v];
 
         return $transaction;
     }

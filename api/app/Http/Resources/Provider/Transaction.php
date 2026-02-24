@@ -86,7 +86,9 @@ class Transaction extends JsonResource
             ] : null,
             'certificate_file_path'             => $this->temporaryUrl($this->certificate_file_path),
             'certificate_files'                 => TransactionCertificateFileCollection::make($this->getCertificateFiles()),
-            'usdt_rate'                         => $this->usdt_rate
+            'usdt_rate'                         => $this->usdt_rate,
+            'chain_network'                     => $this->chain_network,
+            'tx_hash'                           => $this->tx_hash
         ];
     }
 

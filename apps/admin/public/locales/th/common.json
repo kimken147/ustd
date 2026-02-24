@@ -276,10 +276,7 @@
     }
   },
   "channels": {
-    "BANK_CARD": "โอนผ่านบัตรธนาคาร",
-    "QR_ALIPAY": "โอน Alipay บัญชีต่อบัญชี",
-    "ZH_ALIPAY": "Alipay Aggregated QR Code",
-    "UNION_QUICK_PASS": "UnionPay QuickPass"
+    "USDT": "USDT"
   },
   "enable": "เปิดใช้งาน",
   "disable": "ปิดการใช้งาน",

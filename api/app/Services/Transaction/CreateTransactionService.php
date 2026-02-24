@@ -463,7 +463,7 @@ class CreateTransactionService
                         'expected_amount' => $transaction->floating_amount,
                         'status' => UsdtDepositMonitor::STATUS_PENDING,
                         'expires_at' => $channel->transaction_timeout_enable
-                            ? now()->addMinutes($channel->transaction_timeout)
+                            ? now()->addSeconds($channel->transaction_timeout)
                             : null,
                     ]);
                 }

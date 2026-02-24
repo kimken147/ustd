@@ -38,6 +38,8 @@ class Withdraw extends JsonResource
             'bank_city'             => data_get($this->from_channel_account, 'bank_city'),
             'created_at'            => $this->created_at->toIso8601String(),
             'confirmed_at'          => optional($this->confirmed_at)->toIso8601String(),
+            'chain_network'         => $this->chain_network,
+            'tx_hash'               => $this->tx_hash,
             'type'                  => $this->sub_type == Transaction::SUB_TYPE_WITHDRAW_PROFIT ? 'profit' : 'balance'
         ];
     }

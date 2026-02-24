@@ -119,9 +119,6 @@
       "city": "เมืองสาขาธนาคาร",
       "callbackTime": "ได้รับ Callback เมื่อ",
       "type": "ประเภทออเดอร์ Money-Out",
-      "gcashAccount": "บัญชี GCash",
-      "mayaAccount": "บัญชี Paymaya",
-      "alipayAccount": "Alipay Account",
       "walletAddress": "ที่อยู่กระเป๋าเงิน"
     },
     "values": {
@@ -243,11 +240,7 @@
     }
   },
   "channels": {
-    "USDT": "USDT",
-    "BANK_CARD": "โอนผ่านบัตรธนาคาร",
-    "QR_ALIPAY": "โอน Alipay บัญชีต่อบัญชี",
-    "ZH_ALIPAY": "Alipay Aggregated QR Code",
-    "UNION_QUICK_PASS": "UnionPay QuickPass"
+    "USDT": "USDT"
   },
   "enable": "เปิดใช้งาน",
   "disable": "ปิดการใช้งาน",

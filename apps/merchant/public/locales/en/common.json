@@ -119,9 +119,6 @@
       "city": "Bank Branch City",
       "callbackTime": "Callback Received At",
       "type": "Money-Out Order Type",
-      "gcashAccount": "GCash Account",
-      "mayaAccount": "Paymaya Account",
-      "alipayAccount": "Alipay Account",
       "walletAddress": "Wallet Address"
     },
     "values": {
@@ -243,11 +240,7 @@
     }
   },
   "channels": {
-    "USDT": "USDT",
-    "BANK_CARD": "Bank Card Transfer",
-    "QR_ALIPAY": "Alipay Account-to-Account Transfer",
-    "ZH_ALIPAY": "Alipay Aggregated QR Code",
-    "UNION_QUICK_PASS": "UnionPay QuickPass"
+    "USDT": "USDT"
   },
   "enable": "Enable",
   "disable": "Disable",

@@ -276,10 +276,7 @@
     }
   },
   "channels": {
-    "BANK_CARD": "Bank Card Transfer",
-    "QR_ALIPAY": "Alipay Account-to-Account Transfer",
-    "ZH_ALIPAY": "Alipay Aggregated QR Code",
-    "UNION_QUICK_PASS": "UnionPay QuickPass"
+    "USDT": "USDT"
   },
   "enable": "Enable",
   "disable": "Disable",

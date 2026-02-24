@@ -51,16 +51,12 @@ class UsdtWithdrawHandler
                 'transaction_id' => $transaction->id,
                 'tx_hash' => $chainTx->txHash,
             ]);
-        } catch (InsufficientBalanceException $e) {
-            Log::error('UsdtWithdrawHandler: 餘額不足', [
+        } catch (InsufficientBalanceException|TransactionBroadcastException $e) {
+            Log::error('UsdtWithdrawHandler: 鏈上出款失敗', [
                 'transaction_id' => $transaction->id,
                 'error' => $e->getMessage(),
             ]);
-        } catch (TransactionBroadcastException $e) {
-            Log::error('UsdtWithdrawHandler: 廣播失敗', [
-                'transaction_id' => $transaction->id,
-                'error' => $e->getMessage(),
-            ]);
+            throw $e;
         }
     }
 

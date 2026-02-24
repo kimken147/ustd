@@ -119,9 +119,6 @@
       "city": "开户市",
       "callbackTime": "回调时间",
       "type": "代付类型",
-      "gcashAccount": "GCash账号",
-      "mayaAccount": "MAYA账号",
-      "alipayAccount": "支付宝账号",
       "walletAddress": "钱包地址"
     },
     "values": {
@@ -243,11 +240,7 @@
     }
   },
   "channels": {
-    "USDT": "USDT",
-    "BANK_CARD": "卡对卡",
-    "QR_ALIPAY": "支转支",
-    "ZH_ALIPAY": "支付宝聚合码",
-    "UNION_QUICK_PASS": "银联快捷"
+    "USDT": "USDT"
   },
   "enable": "启用",
   "disable": "停用",

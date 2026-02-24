@@ -57,6 +57,8 @@ class Transaction extends JsonResource
             'notify_url' => $this->notify_url,
             'client_ip' => $this->client_ipv4,
             'usdt_rate' => $this->usdt_rate,
+            'chain_network' => $this->chain_network,
+            'tx_hash' => $this->tx_hash,
             '_search1' => $this->_search1
         ];
     }
