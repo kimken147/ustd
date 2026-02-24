@@ -248,7 +248,8 @@ class Trc20Adapter implements ChainAdapterInterface
     }
 
     /**
-     * Convert TRON base58check address to hex format (41-prefixed)
+     * Convert TRON base58check address to hex format (41-prefixed).
+     * Validates the double-SHA256 checksum to reject mistyped addresses.
      */
     private function base58ToHex(string $base58Address): string
     {
@@ -264,6 +265,15 @@ class Trc20Adapter implements ChainAdapterInterface
         $hex = gmp_strval($num, 16);
         // Pad to 50 chars (25 bytes: 1 byte prefix + 20 bytes address + 4 bytes checksum)
         $hex = str_pad($hex, 50, '0', STR_PAD_LEFT);
+
+        // Verify base58check checksum (last 4 bytes = first 4 bytes of double-SHA256 of payload)
+        $payload = hex2bin(substr($hex, 0, 42)); // 21 bytes: prefix + address
+        $checksum = substr($hex, 42, 8);         // 4 bytes checksum
+        $expectedChecksum = substr(hash('sha256', hash('sha256', $payload, true)), 0, 8);
+
+        if ($checksum !== $expectedChecksum) {
+            throw new \InvalidArgumentException("Invalid TRON address checksum: {$base58Address}");
+        }
 
         // Return first 42 chars (21 bytes: prefix + address, without checksum)
         return substr($hex, 0, 42);

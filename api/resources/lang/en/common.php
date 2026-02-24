@@ -125,4 +125,10 @@ return [
     'noRecord'                            => 'No Data Available', // Keep old key for backward compatibility
     'Who are you?'                        => 'Who Are You?',
     'IP set successfully'                 => 'IP Set Successfully',
+
+    // ========== USDT / Chain Related ==========
+    'Only USDT accounts support sync'    => 'Only USDT accounts support balance sync',
+    'Wallet address not set'             => 'Wallet address not set on this account',
+    'Unsupported chain network'          => 'Unsupported chain network',
+    'Invalid TRON address format'        => 'Invalid TRON address format (must start with T, 34 base58 characters)',
 ];

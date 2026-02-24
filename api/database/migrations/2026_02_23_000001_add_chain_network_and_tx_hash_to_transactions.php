@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('transactions', function (Blueprint $table) {
             $table->string('chain_network', 10)->nullable()->after('usdt_rate');
-            $table->string('tx_hash', 100)->nullable()->after('chain_network');
+            $table->string('tx_hash', 100)->nullable()->index()->after('chain_network');
         });
     }
 

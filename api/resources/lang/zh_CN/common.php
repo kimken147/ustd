@@ -125,4 +125,10 @@ return [
     'noRecord'                            => '查无资料', // 保留舊鍵值以向後兼容
     'Who are you?'                        => '你是谁？',
     'IP set successfully'                 => 'IP 设定成功',
+
+    // ========== USDT / 鏈上相關 ==========
+    'Only USDT accounts support sync'    => '仅支持 USDT 帐号同步',
+    'Wallet address not set'             => '帐号未设定钱包地址',
+    'Unsupported chain network'          => '不支持的链网路',
+    'Invalid TRON address format'        => '无效的 TRON 钱包地址格式（应以 T 开头，34 字元 base58）',
 ];

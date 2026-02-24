@@ -691,18 +691,18 @@ class UserChannelAccountController extends Controller
         $account = UserChannelAccount::findOrFail($request->input('id'));
 
         if ($account->channel_code !== Channel::CODE_USDT) {
-            return response()->json(['message' => '僅支援 USDT 帳號同步'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => __('common.Only USDT accounts support sync')], Response::HTTP_BAD_REQUEST);
         }
 
         if (empty($account->account)) {
-            return response()->json(['message' => '帳號未設定錢包地址'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => __('common.Wallet address not set')], Response::HTTP_BAD_REQUEST);
         }
 
         $chainNetwork = data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $adapter = $this->resolveChainAdapter($chainNetwork);
 
         if (!$adapter) {
-            return response()->json(['message' => '不支援的鏈網路'], Response::HTTP_BAD_REQUEST);
+            return response()->json(['message' => __('common.Unsupported chain network')], Response::HTTP_BAD_REQUEST);
         }
 
         $account->update([
@@ -729,7 +729,7 @@ class UserChannelAccountController extends Controller
         }
 
         if (!preg_match('/^T[1-9A-HJ-NP-Za-km-z]{33}$/', $address)) {
-            abort(Response::HTTP_BAD_REQUEST, '無效的 TRON 錢包地址格式（應以 T 開頭，34 字元 base58）');
+            abort(Response::HTTP_BAD_REQUEST, __('common.Invalid TRON address format'));
         }
     }
 }

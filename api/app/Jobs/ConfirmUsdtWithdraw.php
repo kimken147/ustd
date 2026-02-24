@@ -16,8 +16,8 @@ class ConfirmUsdtWithdraw implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 10;
-    public int $backoff = 15;
+    public int $tries = 20;
+    public int $backoff = 30;
 
     public function __construct(
         public readonly int $transactionId
