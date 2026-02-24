@@ -89,6 +89,7 @@ declare interface IUpdateUserChannel {
     type: number;
     status: number;
     is_auto: boolean;
+    chain_network?: string;
 }
 
 declare type NamePath = string | number | (string | number)[];
