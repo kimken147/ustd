@@ -282,6 +282,14 @@ class UserChannelAccountController extends Controller
                 $detail[UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY] = encrypt($request->input('private_key'));
             }
 
+            // Validate TRON address for USDT channels
+            if ($request->has('account') || $request->has('bank_card_number')) {
+                $channelAmount = $userChannelAccount->channelAmount;
+                if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
+                    $this->validateTronAddress($request->input('account') ?? $request->input('bank_card_number'));
+                }
+            }
+
             if (
                 $request->has("status") &&
                 $request->status != UserChannelAccount::STATUS_ONLINE
@@ -461,6 +469,12 @@ class UserChannelAccountController extends Controller
             $data['detail'] = array_merge($data['detail'] ?? [], [
                 UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY => encrypt($request->input('private_key')),
             ]);
+        }
+
+        // Validate TRON address for USDT channels
+        $channelAmount = ChannelAmount::find($request->input('channel_amount_id'));
+        if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
+            $this->validateTronAddress($request->input('bank_card_number'));
         }
 
         $userChannelAccount = $this->userChannelAccountService->createAccount($data, $provider);
@@ -706,5 +720,16 @@ class UserChannelAccountController extends Controller
             'trc20' => app(\App\Services\Crypto\Adapters\Trc20Adapter::class),
             default => null,
         };
+    }
+
+    private function validateTronAddress(?string $address): void
+    {
+        if ($address === null) {
+            return;
+        }
+
+        if (!preg_match('/^T[1-9A-HJ-NP-Za-km-z]{33}$/', $address)) {
+            abort(Response::HTTP_BAD_REQUEST, '無效的 TRON 錢包地址格式（應以 T 開頭，34 字元 base58）');
+        }
     }
 }

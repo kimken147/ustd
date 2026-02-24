@@ -148,7 +148,8 @@
     "privateKey": "Only needed for payouts, leave blank to skip"
   },
   "validation": {
-    "required": "Required"
+    "required": "Required",
+    "invalidTronAddress": "Invalid TRON address format (must start with T, 34 characters)"
   },
   "syncStatus": {
     "handshake_fail": "Access Denied, Please Try Again",

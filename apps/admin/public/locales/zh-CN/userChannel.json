@@ -148,7 +148,8 @@
     "privateKey": "僅出款時需要，留空則不設定"
   },
   "validation": {
-    "required": "必填"
+    "required": "必填",
+    "invalidTronAddress": "無效的 TRON 地址格式（T 開頭，34 字元）"
   },
   "syncStatus": {
     "handshake_fail": "初始失败请重试",

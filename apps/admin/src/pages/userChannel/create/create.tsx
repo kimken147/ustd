@@ -90,7 +90,13 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                 <Form.Item
                   label={t('fields.account')}
                   name="bank_card_number"
-                  rules={[{ required: true }]}
+                  rules={[
+                    { required: true },
+                    ...(curChannelCode === 'USDT' ? [{
+                      pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
+                      message: t('validation.invalidTronAddress'),
+                    }] : []),
+                  ]}
                 >
                   <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
                 </Form.Item>
