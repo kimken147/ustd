@@ -72,7 +72,8 @@
       "floatingAmount": "浮动金额",
       "merchantAndAgentFeeProfitList": "商户及商户代理手续费、利润列表",
       "merchantName": "商户名称",
-      "realName": "姓名"
+      "realName": "姓名",
+      "chainNetwork": "链网络"
     },
     "status": {
       "established": "已建立",

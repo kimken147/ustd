@@ -72,7 +72,8 @@
       "floatingAmount": "Floating Amount",
       "merchantAndAgentFeeProfitList": "Order Breakdown",
       "merchantName": "Merchant Name",
-      "realName": "Member Name"
+      "realName": "Member Name",
+      "chainNetwork": "Chain"
     },
     "status": {
       "established": "Created",

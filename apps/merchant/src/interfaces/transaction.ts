@@ -19,6 +19,8 @@ export interface Transaction {
     notify_url: any;
     client_ip: any;
     usdt_rate: string;
+    chain_network?: string;
+    tx_hash?: string;
     _search1: any;
 }
 

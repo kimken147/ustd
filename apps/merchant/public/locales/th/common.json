@@ -72,7 +72,8 @@
       "floatingAmount": "จำนวนเงินลอย",
       "merchantAndAgentFeeProfitList": "รายละเอียดออเดอร์",
       "merchantName": "ชื่อพ่อค้า",
-      "realName": "ชื่อสมาชิก"
+      "realName": "ชื่อสมาชิก",
+      "chainNetwork": "เครือข่าย"
     },
     "status": {
       "established": "Created",

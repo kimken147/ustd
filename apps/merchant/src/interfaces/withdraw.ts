@@ -22,6 +22,8 @@ export interface Withdraw {
     notified_at: any;
     notify_url: any;
     _search1: any;
+    chain_network?: string;
+    tx_hash?: string;
 }
 
 export interface Merchant {

@@ -15,6 +15,7 @@ import {
   Row,
   Select,
   Statistic,
+  Typography,
 } from 'antd';
 import type { BadgeProps, ColProps, TableColumnProps } from 'antd';
 import {
@@ -180,6 +181,21 @@ const PayForAnotherList: FC = () => {
       title: translate('withdraw.fields.bankAccount'),
       dataIndex: 'bank_card_number',
       responsive: ['md', 'lg', 'xl', 'xxl'],
+    },
+    {
+      title: translate('payForAnother.fields.chainNetwork', 'Chain'),
+      dataIndex: 'chain_network',
+      responsive: ['lg', 'xl', 'xxl'],
+      render: (value: string) => value ? value.toUpperCase() : '-',
+    },
+    {
+      title: 'Tx Hash',
+      dataIndex: 'tx_hash',
+      responsive: ['xl', 'xxl'],
+      width: 140,
+      render: (value: string) => value
+        ? <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>{value}</Typography.Text>
+        : '-',
     },
     {
       title: translate('withdraw.fields.province'),

@@ -1,4 +1,4 @@
-import { Badge } from 'antd';
+import { Badge, Typography } from 'antd';
 import type { BadgeProps } from 'antd';
 import { DateField } from '@refinedev/antd';
 import { Format } from '@morgan-ustd/shared';
@@ -27,6 +27,11 @@ export function useColumns(deps: ColumnDependencies): CollectionColumn[] {
       title: t('collection.fields.channels'),
       dataIndex: 'channel_code',
       render: value => t(`channels.${value}`),
+    },
+    {
+      title: t('collection.fields.chainNetwork'),
+      dataIndex: 'chain_network',
+      render: (value: string) => value ? value.toUpperCase() : '-',
     },
     {
       title: t('collection.fields.amount'),
@@ -73,6 +78,13 @@ export function useColumns(deps: ColumnDependencies): CollectionColumn[] {
         }
         return <Badge status={status} text={getTranCallbackStatus(value)} />;
       },
+    },
+    {
+      title: 'Tx Hash',
+      dataIndex: 'tx_hash',
+      render: (value: string) => value
+        ? <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>{value}</Typography.Text>
+        : '-',
     },
     {
       title: t('createAt'),
