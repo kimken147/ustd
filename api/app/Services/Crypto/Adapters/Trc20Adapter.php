@@ -163,6 +163,49 @@ class Trc20Adapter implements ChainAdapterInterface
         return $signedTransaction['txID'];
     }
 
+    public function getNativeBalance(string $address): string
+    {
+        $response = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/wallet/getaccount', [
+                'address' => $this->base58ToHex($address),
+                'visible' => false,
+            ]);
+
+        if (!$response->successful()) {
+            return '0';
+        }
+
+        $balance = $response->json('balance', 0);
+
+        return bcdiv((string) $balance, '1000000', 6);
+    }
+
+    public function getTokenBalance(string $address): string
+    {
+        $addressParam = str_pad(substr($this->base58ToHex($address), 2), 64, '0', STR_PAD_LEFT);
+
+        $response = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/wallet/triggerconstantcontract', [
+                'owner_address' => $this->base58ToHex($address),
+                'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
+                'function_selector' => 'balanceOf(address)',
+                'parameter' => $addressParam,
+                'visible' => false,
+            ]);
+
+        if (!$response->successful()) {
+            return '0';
+        }
+
+        $result = $response->json('constant_result.0', '0');
+        if ($result === '0' || empty($result)) {
+            return '0';
+        }
+        $rawBalance = gmp_strval(gmp_init($result, 16));
+
+        return bcdiv($rawBalance, bcpow('10', '6'), 6);
+    }
+
     private function getBaseUrl(): string
     {
         return config('services.trongrid.base_url', 'https://api.trongrid.io');

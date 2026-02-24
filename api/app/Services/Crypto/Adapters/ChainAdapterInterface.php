@@ -28,4 +28,14 @@ interface ChainAdapterInterface
         string $amount,
         string $privateKey
     ): ChainTransaction;
+
+    /**
+     * Get native token balance (e.g. TRX) in human-readable format.
+     */
+    public function getNativeBalance(string $address): string;
+
+    /**
+     * Get USDT token balance (6 decimals, human-readable).
+     */
+    public function getTokenBalance(string $address): string;
 }
