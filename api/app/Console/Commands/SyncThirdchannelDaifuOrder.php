@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Transaction;
 use App\Models\MerchantThirdChannel;
-use App\Services\TransactionStatusService;
+use App\Services\Transaction\TransactionStatusService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 

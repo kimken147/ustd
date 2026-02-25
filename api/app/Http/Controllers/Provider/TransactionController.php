@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Models\Channel;
 use App\Models\TransactionNote;
 use App\Utils\AmountDisplayTransformer;
-use App\Services\TransactionStatusService;
+use App\Services\Transaction\TransactionStatusService;
 use App\Services\TransactionLockService;
 use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;

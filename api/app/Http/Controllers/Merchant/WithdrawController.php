@@ -14,7 +14,7 @@ use App\Repository\FeatureToggleRepository;
 use App\Services\Withdraw\WithdrawService;
 use App\Utils\BCMathUtil;
 use App\Utils\DateRangeValidator;
-use App\Services\TransactionStatusService;
+use App\Services\Transaction\TransactionStatusService;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;

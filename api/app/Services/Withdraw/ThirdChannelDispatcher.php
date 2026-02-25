@@ -9,7 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\User;
 use App\Repository\FeatureToggleRepository;
-use App\Services\TransactionStatusService;
+use App\Services\Transaction\TransactionStatusService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
