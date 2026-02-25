@@ -83,7 +83,7 @@ class TransactionStatusService
 
         abort_if(
             $shouldLock
-                && !$transaction->locked_by_id == auth()->id()
+                && $transaction->locked_by_id != auth()->id()
                 && !auth()->user()->isAdmin(),
             Response::HTTP_BAD_REQUEST,
             '非锁定人无法操作'
@@ -152,7 +152,7 @@ class TransactionStatusService
 
             abort_if(
                 $shouldLock
-                    && !$transaction->locked_by_id == auth()->id()
+                    && $transaction->locked_by_id != auth()->id()
                     && !auth()->user()->isAdmin(),
                 Response::HTTP_BAD_REQUEST,
                 '非锁定人无法操作'
@@ -667,7 +667,7 @@ class TransactionStatusService
 
             abort_if(
                 $shouldLock
-                    && !$transaction->locked_by_id == auth()->id()
+                    && $transaction->locked_by_id != auth()->id()
                     && !auth()->user()->isAdmin(),
                 Response::HTTP_BAD_REQUEST,
                 '非锁定人无法操作'
