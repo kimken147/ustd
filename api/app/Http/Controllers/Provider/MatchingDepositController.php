@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Models\FeatureToggle;
 use App\Models\UserChannelAccount;
 use App\Utils\AtomicLockUtil;
-use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
@@ -71,7 +71,7 @@ class MatchingDepositController extends Controller
     public function update(
         Request $request,
         Transaction $matchingDeposit,
-        TransactionFactory $transactionFactory,
+        TransactionMutator $transactionMutator,
         AtomicLockUtil $atomicLockUtil,
         FeatureToggleRepository $featureToggleRepository
     ) {
@@ -138,13 +138,13 @@ class MatchingDepositController extends Controller
             __('transaction.Please complete previous deposit')
         );
 
-        $callback = function () use ($transactionFactory, $matchingDeposit, $request) {
+        $callback = function () use ($transactionMutator, $matchingDeposit, $request) {
             try {
                 if ($request->has('account_id')) {
                     $account = UserChannelAccount::find($request->account_id);
-                    $transactionFactory->paufenDepositToAccount($account, $matchingDeposit);
+                    $transactionMutator->paufenDepositToAccount($account, $matchingDeposit);
                 } else {
-                    $transactionFactory->paufenDepositTo(auth()->user(), $matchingDeposit);
+                    $transactionMutator->paufenDepositTo(auth()->user(), $matchingDeposit);
                 }
             } catch (RaceConditionException $raceConditionException) {
                 abort(Response::HTTP_BAD_REQUEST, __('transaction.Updating to matching deposit failed'));

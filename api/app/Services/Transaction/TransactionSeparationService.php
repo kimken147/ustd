@@ -15,6 +15,7 @@ use App\Models\UserChannelAccount;
 use App\Utils\BCMathUtil;
 use App\Utils\BankCardTransferObject;
 use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ class TransactionSeparationService
     public function __construct(
         private BCMathUtil $bcMath,
         private TransactionFactory $transactionFactory,
+        private TransactionMutator $transactionMutator,
         private BankCardTransferObject $bankCardTransferObject
     ) {}
 
@@ -150,7 +152,7 @@ class TransactionSeparationService
                             abort_if(!$provider, Response::HTTP_BAD_REQUEST, '查无使用者');
                             abort_if($provider->role !== User::ROLE_PROVIDER, Response::HTTP_BAD_REQUEST, '仅能指定码商');
 
-                            $this->transactionFactory->paufenDepositTo($provider, $childWithdrawModel, $withdraw);
+                            $this->transactionMutator->paufenDepositTo($provider, $childWithdrawModel, $withdraw);
                         }
 
                         $channelAccountId = data_get($childWithdraw, 'to_channel_account_id');
@@ -160,7 +162,7 @@ class TransactionSeparationService
 
                             abort_if(!$provider, Response::HTTP_BAD_REQUEST, '查无出款帐号');
 
-                            $this->transactionFactory->paufenDepositToAccount($account, $childWithdrawModel, $withdraw);
+                            $this->transactionMutator->paufenDepositToAccount($account, $childWithdrawModel, $withdraw);
                         }
 
                         break;

@@ -23,6 +23,7 @@ use App\Services\Transaction\TransactionLockService;
 use App\DTOs\TransactionParams;
 use App\Services\Transaction\TransactionFeeService;
 use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 use App\Builders\Transaction as TransactionBuilder;
 use DateTimeInterface;
 use App\Models\FeatureToggle;
@@ -159,6 +160,7 @@ class TransactionController extends Controller
         Transaction $transaction,
         TransactionStatusService $statusService,
         TransactionFactory $factory,
+        TransactionMutator $mutator,
         TransactionFeeService $transactionFeeService,
         BCMathUtil $bcMath,
         WalletUtil $wallet,
@@ -204,6 +206,7 @@ class TransactionController extends Controller
             $transaction,
             $statusService,
             $factory,
+            $mutator,
             $transactionFeeService,
             $bcMath,
             $wallet,
@@ -238,7 +241,7 @@ class TransactionController extends Controller
 
             if ($request->has('account') && $request->account) {
                 $userChannelAccount = UserChannelAccount::find($request->account);
-                $factory->paufenTransactionFrom($userChannelAccount, $transaction);
+                $mutator->paufenTransactionFrom($userChannelAccount, $transaction);
             }
 
             // 非免簽模式，才需要扣碼商錢包餘額

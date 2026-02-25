@@ -14,6 +14,7 @@ use App\Services\Transaction\TransactionSeparationService;
 use App\Utils\BCMathUtil;
 use App\Utils\BankCardTransferObject;
 use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 use Illuminate\Support\Collection;
 use Mockery;
 use Tests\TestCase;
@@ -29,11 +30,13 @@ class TransactionSeparationServiceTest extends TestCase
 
         $this->bcMath = new BCMathUtil();
         $transactionFactory = Mockery::mock(TransactionFactory::class);
+        $transactionMutator = Mockery::mock(TransactionMutator::class);
         $bankCardTransferObject = Mockery::mock(BankCardTransferObject::class);
 
         $this->service = new TransactionSeparationService(
             $this->bcMath,
             $transactionFactory,
+            $transactionMutator,
             $bankCardTransferObject
         );
     }

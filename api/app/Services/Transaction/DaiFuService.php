@@ -10,15 +10,15 @@ use App\Models\User;
 use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
-use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 
 class DaiFuService
 {
-    private TransactionFactory $transactionFactory;
+    private TransactionMutator $transactionMutator;
     private FeatureToggleRepository $featureToggleRepository;
-    public function __construct(TransactionFactory $transactionFactory, FeatureToggleRepository $featureToggleRepository)
+    public function __construct(TransactionMutator $transactionMutator, FeatureToggleRepository $featureToggleRepository)
     {
-        $this->transactionFactory = $transactionFactory;
+        $this->transactionMutator = $transactionMutator;
         $this->featureToggleRepository = $featureToggleRepository;
     }
 
@@ -81,7 +81,7 @@ class DaiFuService
                 continue;
             }
             // 分配出款帳號給代付單
-            $this->transactionFactory->paufenDepositToAccount($account, $matchingDeposit);
+            $this->transactionMutator->paufenDepositToAccount($account, $matchingDeposit);
 
             // 用異步Job的方式執行自動代付
             // GcashDaifu::dispatch($matchingDeposit, 'init');

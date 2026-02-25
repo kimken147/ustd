@@ -27,6 +27,7 @@ use App\Services\Withdraw\DTO\ThirdPartyErrorResponse;
 use App\Utils\BCMathUtil;
 use App\DTOs\TransactionParams;
 use App\Utils\TransactionFactory;
+use App\Utils\TransactionMutator;
 use App\Utils\TransactionNoteUtil;
 use App\Models\UsdtDepositMonitor;
 use App\Utils\WalletUtil;
@@ -48,6 +49,7 @@ class CreateTransactionService
         private FeatureToggleRepository $featureToggleRepository,
         private TransactionNoteUtil $transactionNoteUtil,
         private TransactionFactory $transactionFactory,
+        private TransactionMutator $transactionMutator,
         private TransactionFeeService $transactionFeeService,
         private WalletUtil $walletUtil,
         private WhitelistedIpManager $whitelistedIpManager,
@@ -434,7 +436,7 @@ class CreateTransactionService
         UserChannel $merchantUserChannel
     ): ?CreateTransactionResult {
         DB::transaction(function () use ($transaction, $providerUserChannelAccount, $channel) {
-            $this->transactionFactory->paufenTransactionFrom($providerUserChannelAccount, $transaction);
+            $this->transactionMutator->paufenTransactionFrom($providerUserChannelAccount, $transaction);
 
             if (!$this->featureToggleRepository->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
                 $this->walletUtil->withdraw(
