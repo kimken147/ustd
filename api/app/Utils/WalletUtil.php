@@ -21,10 +21,13 @@ class WalletUtil
 
     private WalletBalanceCalculator $calculator;
 
-    public function __construct(BCMathUtil $bcMath, WalletBalanceCalculator $calculator)
+    private WalletHistoryRecorder $recorder;
+
+    public function __construct(BCMathUtil $bcMath, WalletBalanceCalculator $calculator, WalletHistoryRecorder $recorder)
     {
         $this->bcMath = $bcMath;
         $this->calculator = $calculator;
+        $this->recorder = $recorder;
     }
 
     private function walletSnapshot(Wallet $wallet): array
@@ -51,14 +54,14 @@ class WalletUtil
         $walletHistory = WalletHistory::latest()->first();
         $adjustmentNumber = ($walletHistory->id ?? 0) + 1;
 
-        WalletHistory::create([
-            'user_id'     => $wallet->user->getKey(),
-            'operator_id' => auth()->user() ? auth()->user()->realUser()->getKey() : 0,
-            'type'        => $type,
-            'delta'       => $delta,
-            'result'      => $resultAttributes,
-            'note'        => config('wallethistory.system_adjustment_number_prefix') . date('YmdHis') . $adjustmentNumber . " " . $note,
-        ]);
+        $this->recorder->recordWithOperator(
+            $wallet,
+            auth()->user() ? auth()->user()->realUser()->getKey() : 0,
+            $type,
+            $delta,
+            $resultAttributes,
+            config('wallethistory.system_adjustment_number_prefix') . date('YmdHis') . $adjustmentNumber . " " . $note
+        );
 
         return $wallet->refresh();
     }
@@ -83,14 +86,7 @@ class WalletUtil
 
                 $type = $this->calculator->determineDepositHistoryType($delta['balance']);
 
-                WalletHistory::create([
-                    'user_id'     => $wallet->user->getKey(),
-                    'operator_id' => 0, // system
-                    'type'        => $type,
-                    'delta'       => $delta,
-                    'result'      => $result,
-                    'note'        => $note ?? '',
-                ]);
+                $this->recorder->recordSystem($wallet, $type, $delta, $result, $note);
 
                 return $updatedRows;
             }
@@ -111,14 +107,7 @@ class WalletUtil
 
             $updatedRows = $this->updateWallet($wallet, $delta);
 
-            WalletHistory::create([
-                'user_id'     => $wallet->user_id,
-                'operator_id' => 0, // system
-                'type'        => WalletHistory::TYPE_DEPOSIT_ROLLBACK,
-                'delta'       => $delta,
-                'result'      => $result,
-                'note'        => $note ?? '',
-            ]);
+            $this->recorder->recordSystem($wallet, WalletHistory::TYPE_DEPOSIT_ROLLBACK, $delta, $result, $note);
 
             return $updatedRows;
         });
@@ -184,14 +173,7 @@ class WalletUtil
                 $matchingDepositReward->reward_unit
             );
 
-            WalletHistory::create([
-                'user_id'     => $wallet->user->getKey(),
-                'operator_id' => 0, // system
-                'type'        => WalletHistory::TYPE_MATCHING_DEPOSIT_REWARD,
-                'delta'       => $delta,
-                'result'      => $result,
-                'note'        => $orderNumber . ' ' . $note,
-            ]);
+            $this->recorder->recordSystem($wallet, WalletHistory::TYPE_MATCHING_DEPOSIT_REWARD, $delta, $result, $orderNumber . ' ' . $note);
 
             return $updatedRows;
         });
@@ -221,28 +203,28 @@ class WalletUtil
 
             $fromWalletUpdatedRow = $this->updateWallet($from, $fromDelta);
 
-            WalletHistory::create([
-                'user_id'     => $from->user->getKey(),
-                'operator_id' => $operator->realUser()->getKey(),
-                'type'        => WalletHistory::TYPE_TRANSFER,
-                'delta'       => $fromDelta,
-                'result'      => $fromResult,
-                'note'        => $note . " 转出给 {$to->user->name} {$to->user->username}",
-            ]);
+            $this->recorder->recordWithOperator(
+                $from,
+                $operator->realUser()->getKey(),
+                WalletHistory::TYPE_TRANSFER,
+                $fromDelta,
+                $fromResult,
+                $note . " 转出给 {$to->user->name} {$to->user->username}"
+            );
 
             $toDelta = $this->calculator->computeTransferToDelta($amount);
             $toResult = $this->calculator->computeResult($this->walletSnapshot($to), $toDelta);
 
             $toWalletUpdatedRow = $this->updateWallet($to, $toDelta);
 
-            WalletHistory::create([
-                'user_id'     => $to->user->getKey(),
-                'operator_id' => $operator->realUser()->getKey(),
-                'type'        => WalletHistory::TYPE_TRANSFER,
-                'delta'       => $toDelta,
-                'result'      => $toResult,
-                'note'        => $note . " 由 {$from->user->name} {$from->user->username} 转入",
-            ]);
+            $this->recorder->recordWithOperator(
+                $to,
+                $operator->realUser()->getKey(),
+                WalletHistory::TYPE_TRANSFER,
+                $toDelta,
+                $toResult,
+                $note . " 由 {$from->user->name} {$from->user->username} 转入"
+            );
 
             return $fromWalletUpdatedRow + $toWalletUpdatedRow;
         });
@@ -260,14 +242,7 @@ class WalletUtil
 
             $updatedRows = $this->updateWallet($wallet, $delta);
 
-            WalletHistory::create([
-                'user_id'     => $wallet->user->getKey(),
-                'operator_id' => 0, // system
-                'type'        => $this->calculator->determineWithdrawHistoryType($transactionType),
-                'delta'       => $delta,
-                'result'      => $result,
-                'note'        => $note ?? '',
-            ]);
+            $this->recorder->recordSystem($wallet, $this->calculator->determineWithdrawHistoryType($transactionType), $delta, $result, $note);
 
             return $updatedRows;
         });
@@ -285,14 +260,7 @@ class WalletUtil
 
             $updatedRows = $this->updateWallet($wallet, $delta);
 
-            WalletHistory::create([
-                'user_id'     => $wallet->user->getKey(),
-                'operator_id' => 0, // system
-                'type'        => $this->calculator->determineWithdrawRollbackHistoryType($transactionType),
-                'delta'       => $delta,
-                'result'      => $result,
-                'note'        => $note ?? '',
-            ]);
+            $this->recorder->recordSystem($wallet, $this->calculator->determineWithdrawRollbackHistoryType($transactionType), $delta, $result, $note);
 
             return $updatedRows;
         });
