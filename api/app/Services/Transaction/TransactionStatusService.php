@@ -7,7 +7,6 @@ use App\Exceptions\RaceConditionException;
 use App\Exceptions\TransactionRefundedException;
 use App\Jobs\NotifyTransaction;
 use App\Jobs\ProcessUsdtWithdraw;
-use App\Models\Channel;
 use App\Models\DevicePayingTransaction;
 use App\Models\FeatureToggle;
 use App\Models\ThirdChannel;
@@ -69,31 +68,18 @@ class TransactionStatusService
         );
 
         abort_if(
-            !in_array($transaction->type, [Transaction::TYPE_PAUFEN_WITHDRAW, Transaction::TYPE_NORMAL_WITHDRAW]),
+            !in_array($transaction->type, TransactionStatusRules::allowedTypesForWithdrawTypeChange()),
             Response::HTTP_BAD_REQUEST,
             '订单类型不正确'
         );
 
-        abort_if(
-            $shouldLock
-                && !$transaction->locked,
-            Response::HTTP_BAD_REQUEST,
-            '请先锁定'
+        $lockCheck = TransactionStatusRules::validateWithdrawLockOwnership(
+            $shouldLock, $transaction->locked, $transaction->locked_by_id, auth()->id(), auth()->user()->isAdmin()
         );
+        abort_if(!$lockCheck['valid'], Response::HTTP_BAD_REQUEST, $lockCheck['error']);
 
         abort_if(
-            $shouldLock
-                && $transaction->locked_by_id != auth()->id()
-                && !auth()->user()->isAdmin(),
-            Response::HTTP_BAD_REQUEST,
-            '非锁定人无法操作'
-        );
-
-        abort_if(
-            !in_array(
-                $transaction->status,
-                [Transaction::STATUS_PENDING_REVIEW, Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED]
-            ),
+            !TransactionStatusRules::canTransitionTo($transaction->status, 'paufen_withdraw'),
             Response::HTTP_BAD_REQUEST,
             '目前状态无法转为码商出'
         );
@@ -138,31 +124,18 @@ class TransactionStatusService
             $transaction = Transaction::lockForUpdate()->findOrFail($transaction->getKey());
 
             abort_if(
-                !in_array($transaction->type, [Transaction::TYPE_NORMAL_WITHDRAW]) || !$transaction->order_number,
+                !in_array($transaction->type, TransactionStatusRules::allowedTypesForThirdChannelWithdraw()) || !$transaction->order_number,
                 Response::HTTP_BAD_REQUEST,
                 '订单类型不正确'
             );
 
-            abort_if(
-                $shouldLock
-                    && !$transaction->locked,
-                Response::HTTP_BAD_REQUEST,
-                '请先锁定'
+            $lockCheck = TransactionStatusRules::validateWithdrawLockOwnership(
+                $shouldLock, $transaction->locked, $transaction->locked_by_id, auth()->id(), auth()->user()->isAdmin()
             );
+            abort_if(!$lockCheck['valid'], Response::HTTP_BAD_REQUEST, $lockCheck['error']);
 
             abort_if(
-                $shouldLock
-                    && $transaction->locked_by_id != auth()->id()
-                    && !auth()->user()->isAdmin(),
-                Response::HTTP_BAD_REQUEST,
-                '非锁定人无法操作'
-            );
-
-            abort_if(
-                !in_array(
-                    $transaction->status,
-                    [Transaction::STATUS_PENDING_REVIEW, Transaction::STATUS_PAYING]
-                ),
+                !TransactionStatusRules::canTransitionTo($transaction->status, 'third_channel_withdraw'),
                 Response::HTTP_BAD_REQUEST,
                 '目前状态无法转为三方出'
             );
@@ -192,8 +165,8 @@ class TransactionStatusService
     public function markAsReceived(Transaction $transaction, ?User $operator = null)
     {
         return DB::transaction(function () use ($transaction, $operator) {
-            $updatedRow = Transaction::whereIn('status', [Transaction::STATUS_PAYING, Transaction::STATUS_THIRD_PAYING])
-                ->whereIn('type', [Transaction::TYPE_PAUFEN_WITHDRAW, Transaction::TYPE_NORMAL_WITHDRAW])
+            $updatedRow = Transaction::whereIn('status', TransactionStatusRules::allowedStatusesForReceived())
+                ->whereIn('type', TransactionStatusRules::allowedTypesForReceived())
                 ->where('id', $transaction->getKey())
                 ->update([
                     'operator_id' => optional($operator)->getKey(),
@@ -221,9 +194,10 @@ class TransactionStatusService
             return $transaction;
         }
 
-        $statusFilter = ($fromPayingTimedOut ? [Transaction::STATUS_PAYING_TIMED_OUT] : [Transaction::STATUS_MATCHING, Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED, Transaction::STATUS_THIRD_PAYING]);
-
-        throw_if(!in_array($transaction->status, $statusFilter), new InvalidStatusException());
+        throw_if(
+            !TransactionStatusRules::canTransitionTo($transaction->status, 'success', $fromPayingTimedOut),
+            new InvalidStatusException()
+        );
 
         $this->stateValidator->validatePaufenLock($transaction, $operator);
         if ($shouldLock) {
@@ -240,38 +214,33 @@ class TransactionStatusService
                 'operator_id'   => optional($operator)->getKey(),
                 'status'        => $autoSuccess ? Transaction::STATUS_SUCCESS : Transaction::STATUS_MANUAL_SUCCESS,
                 'actual_amount' => $transaction->floating_amount,
-                'notify_status' => $transaction->notify_url ? Transaction::NOTIFY_STATUS_PENDING : Transaction::NOTIFY_STATUS_NONE,
+                'notify_status' => TransactionStatusRules::determineNotifyStatus($transaction->notify_url),
                 'confirmed_at'  => $now = now(),
                 'operated_at'   => $now,
             ]);
 
-            foreach ($transaction->transactionFees as $transactionFee) {
-                $actualFee = $transactionFee->fee;
-                $actualProfit = $transactionFee->profit;
-
+            $actualizedFees = TransactionStatusRules::actualizeFeesForSuccess(
+                $transaction->transactionFees->map(fn ($f) => ['fee' => $f->fee, 'profit' => $f->profit])->all()
+            );
+            foreach ($transaction->transactionFees as $i => $transactionFee) {
                 TransactionFee::where([
                     'user_id'        => $transactionFee->user_id,
                     'transaction_id' => $transactionFee->transaction_id,
                     'thirdchannel_id' => $transactionFee->thirdchannel_id,
-                ])->update([
-                    'actual_fee' => $actualFee,
-                    'actual_profit' => $actualProfit,
-                ]);
+                ])->update($actualizedFees[$i]);
             }
 
             $transaction->load('transactionFees');
 
-            // 交易從支付超時時改為成功
-            if ($transaction->type === Transaction::TYPE_PAUFEN_TRANSACTION && $fromPayingTimedOut) {
-                // 如果已"退還預扣款，需要補扣碼商餘額
-                if (!$transaction->refundYet() && !$this->cancelPaufen) {
-                    $orderNumber = $transaction->to()->first()->role === User::ROLE_MERCHANT ? $transaction->order_number : $transaction->system_order_number;
-                    throw_if(
-                        $this->bcMath->lt($transaction->fromWallet->available_balance, $transaction->floating_amount),
-                        new InsufficientAvailableBalance()
-                    );
-                    $this->wallet->withdraw($transaction->fromWallet, $transaction->floating_amount, $orderNumber, $transactionType = 'transaction');
-                }
+            if (TransactionStatusRules::needsPaufenRedepositionOnSuccess(
+                $transaction->type, $fromPayingTimedOut, $transaction->refundYet(), $this->cancelPaufen
+            )) {
+                $orderNumber = $transaction->to()->first()->role === User::ROLE_MERCHANT ? $transaction->order_number : $transaction->system_order_number;
+                throw_if(
+                    $this->bcMath->lt($transaction->fromWallet->available_balance, $transaction->floating_amount),
+                    new InsufficientAvailableBalance()
+                );
+                $this->wallet->withdraw($transaction->fromWallet, $transaction->floating_amount, $orderNumber, $transactionType = 'transaction');
             }
 
             $this->settlementService->settleProfit($transaction);
@@ -337,17 +306,17 @@ class TransactionStatusService
         if ($transaction->isWithdrawSeparatedChild()) {
             $parentTransaction = Transaction::lockForUpdate()->findOrFail($transaction->parent_id);
 
-            $allChildrenSucceed = ($parentTransaction->children()
+            $successCount = $parentTransaction->children()
                 ->whereIn('status', [Transaction::STATUS_SUCCESS, Transaction::STATUS_MANUAL_SUCCESS])
-                ->count() === $parentTransaction->children()->count()
-            );
+                ->count();
+            $totalCount = $parentTransaction->children()->count();
 
-            if ($allChildrenSucceed) {
+            if (TransactionStatusRules::allChildrenReachedStatus($successCount, $totalCount)) {
                 $parentTransaction->update([
                     'operator_id'   => optional($operator)->getKey(),
                     'status'        => $autoSuccess ? Transaction::STATUS_SUCCESS : Transaction::STATUS_MANUAL_SUCCESS,
                     'actual_amount' => $parentTransaction->floating_amount,
-                    'notify_status' => $parentTransaction->notify_url ? Transaction::NOTIFY_STATUS_PENDING : Transaction::NOTIFY_STATUS_NONE,
+                    'notify_status' => TransactionStatusRules::determineNotifyStatus($parentTransaction->notify_url),
                     'confirmed_at'  => $now = now(),
                     'operated_at'   => $now,
                 ]);
@@ -404,23 +373,14 @@ class TransactionStatusService
         $note = null,
         bool $shouldLock = true
     ) {
-        throw_if(in_array($transaction->status, [Transaction::STATUS_FAILED]), new InvalidStatusException());
+        throw_if(in_array($transaction->status, TransactionStatusRules::alreadyFailedStatuses()), new InvalidStatusException());
 
         $result = DB::transaction(function () use ($transaction, $operator, $note, $shouldLock) {
             $transaction = Transaction::lockForUpdate()->findOrFail($transaction->getKey());
             $originStatus = $transaction->status;
 
             throw_if(
-                !in_array($transaction->status, [
-                    Transaction::STATUS_PENDING_REVIEW,
-                    Transaction::STATUS_PAYING,
-                    Transaction::STATUS_PAYING_TIMED_OUT,
-                    Transaction::STATUS_RECEIVED,
-                    Transaction::STATUS_THIRD_PAYING,
-                    Transaction::STATUS_MATCHING,
-                    Transaction::STATUS_SUCCESS,
-                    Transaction::STATUS_MANUAL_SUCCESS
-                ]),
+                !TransactionStatusRules::canTransitionTo($transaction->status, 'failed'),
                 new InvalidStatusException()
             );
 
@@ -436,19 +396,19 @@ class TransactionStatusService
                 'operator_id'   => optional($operator)->getKey(),
                 'confirmed_at'  => null,
                 'status'        => Transaction::STATUS_FAILED,
-                'notify_status' => $transaction->notify_url ? Transaction::NOTIFY_STATUS_PENDING : Transaction::NOTIFY_STATUS_NONE,
+                'notify_status' => TransactionStatusRules::determineNotifyStatus($transaction->notify_url),
                 'operated_at'   => now(),
             ]);
 
-            foreach ($transaction->transactionFees as $transactionFee) {
+            $zeroFees = TransactionStatusRules::actualizeFeesForFailure(
+                $transaction->transactionFees->map(fn ($f) => ['fee' => $f->fee, 'profit' => $f->profit])->all()
+            );
+            foreach ($transaction->transactionFees as $i => $transactionFee) {
                 TransactionFee::where([
                     'user_id'        => $transactionFee->user_id,
                     'transaction_id' => $transactionFee->transaction_id,
                     'thirdchannel_id' => $transactionFee->thirdchannel_id,
-                ])->update([
-                    'actual_fee' => 0,
-                    'actual_profit' => 0,
-                ]);
+                ])->update($zeroFees[$i]);
             }
 
             if (isset($note) && !empty($note)) {
@@ -461,10 +421,10 @@ class TransactionStatusService
 
             switch ($transaction->type) {
                 case Transaction::TYPE_PAUFEN_TRANSACTION:
-                    $needRefund = $transaction->from && $transaction->refundYet();
-                    // 只有原本是等待支付中的跑分交易且未退款，標記為失敗時需退款
-                    // 且非免签模式
-                    if ($needRefund && !$this->cancelPaufen) {
+                    $needRefund = TransactionStatusRules::needsPaufenRefundOnFailure(
+                        (bool) $transaction->from, $transaction->refundYet(), $this->cancelPaufen
+                    );
+                    if ($needRefund) {
                         $fromWallet = $transaction->fromWallet;
                         $fromUser = User::find($fromWallet->user_id);
                         $orderNumber = $fromUser->role == User::ROLE_MERCHANT ? $transaction->order_number : $transaction->system_order_number;
@@ -572,17 +532,17 @@ class TransactionStatusService
         if ($transaction->isWithdrawSeparatedChild()) {
             $parentTransaction = Transaction::lockForUpdate()->findOrFail($transaction->parent_id);
 
-            $allChildrenFailed = ($parentTransaction->children()
+            $failedCount = $parentTransaction->children()
                 ->where('status', Transaction::STATUS_FAILED)
-                ->count() === $parentTransaction->children()->count()
-            );
+                ->count();
+            $totalCount = $parentTransaction->children()->count();
 
-            if ($allChildrenFailed) {
+            if (TransactionStatusRules::allChildrenReachedStatus($failedCount, $totalCount)) {
                 $parentTransaction->update([
                     'operator_id'   => optional($operator)->getKey(),
                     'confirmed_at'  => null,
                     'status'        => Transaction::STATUS_FAILED,
-                    'notify_status' => $parentTransaction->notify_url ? Transaction::NOTIFY_STATUS_PENDING : Transaction::NOTIFY_STATUS_NONE,
+                    'notify_status' => TransactionStatusRules::determineNotifyStatus($parentTransaction->notify_url),
                     'operated_at'   => now(),
                 ]);
 
@@ -652,32 +612,18 @@ class TransactionStatusService
             $transaction = Transaction::lockForUpdate()->findOrFail($transaction->getKey());
 
             abort_if(
-                !in_array($transaction->type, [Transaction::TYPE_PAUFEN_WITHDRAW, Transaction::TYPE_NORMAL_WITHDRAW]),
+                !in_array($transaction->type, TransactionStatusRules::allowedTypesForWithdrawTypeChange()),
                 Response::HTTP_BAD_REQUEST,
                 '订单类型不正确'
             );
 
-            abort_if(
-                $shouldLock
-                    && !$transaction->locked,
-                Response::HTTP_BAD_REQUEST,
-                '请先锁定'
+            $lockCheck = TransactionStatusRules::validateWithdrawLockOwnership(
+                $shouldLock, $transaction->locked, $transaction->locked_by_id, auth()->id(), auth()->user()->isAdmin()
             );
-
-
-            abort_if(
-                $shouldLock
-                    && $transaction->locked_by_id != auth()->id()
-                    && !auth()->user()->isAdmin(),
-                Response::HTTP_BAD_REQUEST,
-                '非锁定人无法操作'
-            );
+            abort_if(!$lockCheck['valid'], Response::HTTP_BAD_REQUEST, $lockCheck['error']);
 
             abort_if(
-                !in_array(
-                    $transaction->status,
-                    [Transaction::STATUS_PENDING_REVIEW, Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED]
-                ),
+                !TransactionStatusRules::canTransitionTo($transaction->status, 'normal_withdraw'),
                 Response::HTTP_BAD_REQUEST,
                 '目前状态无法转为系统出'
             );
@@ -706,12 +652,9 @@ class TransactionStatusService
         });
 
         // USDT 自營出款：狀態變為 PAYING 後自動發送鏈上交易
-        if (
-            !$keepLock
-            && $transaction->channel_code === Channel::CODE_USDT
-            && !$transaction->thirdchannel_id
-            && $transaction->from_channel_account_id
-        ) {
+        if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
+            $keepLock, $transaction->channel_code, $transaction->thirdchannel_id, $transaction->from_channel_account_id
+        )) {
             ProcessUsdtWithdraw::dispatch($transaction->id);
         }
 
