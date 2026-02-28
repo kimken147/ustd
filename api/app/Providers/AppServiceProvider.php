@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\FeatureToggle;
 use App\Repository\FeatureToggleRepository;
+use App\Services\Transaction\TransactionFeeCalculator;
 use App\Services\Transaction\TransactionFeeService;
 use App\Utils\BCMathUtil;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(BCMathUtil::class),
                 $featureToggleRepo,
                 $featureToggleRepo->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM),
+                $app->make(TransactionFeeCalculator::class),
             );
         });
     }

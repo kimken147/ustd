@@ -19,15 +19,18 @@ class TransactionFeeService
     private $bcMath;
     private $featureToggleRepository;
     private $cancelPaufen;
+    private $calculator;
 
     public function __construct(
         BCMathUtil $bcMath,
         FeatureToggleRepository $featureToggleRepository,
-        bool $cancelPaufen
+        bool $cancelPaufen,
+        TransactionFeeCalculator $calculator
     ) {
         $this->bcMath = $bcMath;
         $this->featureToggleRepository = $featureToggleRepository;
         $this->cancelPaufen = $cancelPaufen;
+        $this->calculator = $calculator;
     }
 
     public function createDepositFees(
@@ -96,8 +99,6 @@ class TransactionFeeService
             $users = collect([$endUser]); // 改成手續費全部給系統
         }
 
-        $lastProviderIdx = count($users) - 1;
-
         $bank = Bank::firstWhere(
             "name",
             $transaction->from_channel_account["bank_name"]
@@ -131,36 +132,22 @@ class TransactionFeeService
             return $fee;
         });
 
-        foreach ($users as $idx => $user) {
-            // agents
-            if ($idx !== $lastProviderIdx) {
-                $withdrawProfit = $this->bcMath->subMinZero(
-                    $withdrawFeeSet[$idx + 1],
-                    $withdrawFeeSet[$idx]
-                );
+        $allocations = $this->calculator->allocateWithdrawFees($withdrawFeeSet->toArray());
 
-                $transaction->transactionFees()->create([
-                    "user_id" => $user->getKey(),
-                    "account_mode" => $user->account_mode,
-                    "profit" => $withdrawProfit,
-                    "actual_profit" => 0,
-                    "fee" => 0,
-                    "actual_fee" => 0,
-                ]);
-            } else {
-                $transaction->transactionFees()->create([
-                    "user_id" => $user->getKey(),
-                    "account_mode" => $user->account_mode,
-                    "profit" => 0,
-                    "actual_profit" => 0,
-                    "fee" => $withdrawFeeSet[$idx],
-                    "actual_fee" => 0,
-                ]);
-            }
+        foreach ($users as $idx => $user) {
+            $transaction->transactionFees()->create([
+                "user_id" => $user->getKey(),
+                "account_mode" => $user->account_mode,
+                "profit" => $allocations[$idx]['profit'],
+                "actual_profit" => 0,
+                "fee" => $allocations[$idx]['fee'],
+                "actual_fee" => 0,
+            ]);
         }
 
         // 系統利潤
         $systemProfit = $withdrawFeeSet->first(); // 總代的提現手續費就是系統利潤
+        $thirdChannelFee = null;
 
         if ($transaction->thirdchannel_id) {
             // 如果是使用三方提現，需要扣除三方手續費
@@ -179,26 +166,22 @@ class TransactionFeeService
                 "请检查三方通道是否设置"
             );
 
-            $thridChannelFee = $this->bcMath->sum([
-                $this->bcMath->mulPercent(
-                    $transaction->amount,
-                    $merchantThirdChannel->daifu_fee_percent
-                ), // 代付手續費為 0.X% + 單筆N元
-                $merchantThirdChannel->withdraw_fee,
-            ]);
+            $thirdChannelFee = $this->calculator->calculateThirdChannelFee(
+                $transaction->amount,
+                $merchantThirdChannel->daifu_fee_percent,
+                $merchantThirdChannel->withdraw_fee
+            );
             $transaction->transactionFees()->create([
                 "user_id" => 0,
                 "thirdchannel_id" => $transaction->thirdChannel->id,
                 "profit" => 0,
                 "actual_profit" => 0,
-                "fee" => $thridChannelFee,
+                "fee" => $thirdChannelFee,
                 "actual_fee" => 0,
             ]);
-            $systemProfit = $this->bcMath->subMinZero(
-                $systemProfit,
-                $thridChannelFee
-            );
         }
+
+        $systemProfit = $this->calculator->calculateWithdrawSystemProfit($systemProfit, $thirdChannelFee);
 
         $transaction->transactionFees()->create([
             "user_id" => 0,
@@ -254,7 +237,6 @@ class TransactionFeeService
         } elseif (!$this->cancelPaufen) {
             // 非免簽模式，才需要計算碼商利潤
             $providers = $this->ancestorsAndSelf($transaction->from);
-            $lastProviderIdx = count($providers) - 1;
 
             $providerFeePercentSet = $providers->map(function (
                 User $provider
@@ -271,59 +253,27 @@ class TransactionFeeService
                 return $providerUserChannel->fee_percent;
             });
 
+            $providerAllocations = $this->calculator->allocateProviderFees(
+                $transaction->floating_amount,
+                $providerFeePercentSet->toArray()
+            );
+
             foreach ($providers as $idx => $provider) {
-                // agents
-                if ($idx !== $lastProviderIdx) {
-                    $profitFeePercent = $this->bcMath->subMinZero(
-                        $providerFeePercentSet[$idx],
-                        $providerFeePercentSet[$idx + 1]
-                    );
-
-                    $transactionFeeValues[] = [
-                        "user_id" => $provider->getKey(),
-                        "account_mode" => $provider->account_mode,
-                        "thirdchannel_id" => null,
-                        "transaction_id" => $transaction->getKey(),
-                        "profit" => $this->bcMath->mulPercent(
-                            $transaction->floating_amount,
-                            $profitFeePercent
-                        ),
-                        "actual_profit" => 0,
-                        "fee" => 0,
-                        "actual_fee" => 0,
-                    ];
-                } else {
-                    $profitFeePercent = $providerFeePercentSet[$idx];
-
-                    $transactionFeeValues[] = [
-                        "user_id" => $provider->getKey(),
-                        "account_mode" => $provider->account_mode,
-                        "thirdchannel_id" => null,
-                        "transaction_id" => $transaction->getKey(),
-                        "profit" => $this->bcMath->mulPercent(
-                            $transaction->floating_amount,
-                            $profitFeePercent
-                        ),
-                        "actual_profit" => 0,
-                        // 信用線手續費為 0
-                        "fee" => $this->bcMath->gtZero($profitFeePercent)
-                            ? $this->bcMath->subMinZero(
-                                $transaction->floating_amount,
-                                $this->bcMath->mulPercent(
-                                    $transaction->floating_amount,
-                                    $profitFeePercent
-                                )
-                            )
-                            : 0,
-                        "actual_fee" => 0,
-                    ];
-                }
+                $transactionFeeValues[] = [
+                    "user_id" => $provider->getKey(),
+                    "account_mode" => $provider->account_mode,
+                    "thirdchannel_id" => null,
+                    "transaction_id" => $transaction->getKey(),
+                    "profit" => $providerAllocations[$idx]['profit'],
+                    "actual_profit" => 0,
+                    "fee" => $providerAllocations[$idx]['fee'],
+                    "actual_fee" => 0,
+                ];
             }
         }
 
         // 計算商戶手續費
         $merchants = $this->ancestorsAndSelf($transaction->to, true);
-        $lastMerchantIdx = count($merchants) - 1;
 
         $merchantFeePercentSet = $merchants->map(function (User $merchant) use (
             $channelGroup
@@ -340,66 +290,35 @@ class TransactionFeeService
             return $merchantUserChannel->fee_percent;
         });
 
+        $merchantAllocations = $this->calculator->allocateMerchantFees(
+            $transaction->amount,
+            $merchantFeePercentSet->toArray()
+        );
+
         foreach ($merchants as $idx => $merchant) {
-            // agents
-            if ($idx !== $lastMerchantIdx) {
-                $profitFeePercent = $this->bcMath->subMinZero(
-                    $merchantFeePercentSet[$idx + 1],
-                    $merchantFeePercentSet[$idx]
-                );
-
-                $transactionFeeValues[] = [
-                    "user_id" => $merchant->getKey(),
-                    "account_mode" => $merchant->account_mode,
-                    "thirdchannel_id" => null,
-                    "transaction_id" => $transaction->getKey(),
-                    "profit" => $this->bcMath->mulPercent(
-                        $transaction->amount,
-                        $profitFeePercent
-                    ),
-                    "actual_profit" => 0,
-                    "fee" => 0,
-                    "actual_fee" => 0,
-                ];
-            } else {
-                $profitFeePercent = $merchantFeePercentSet[$idx];
-
-                $transactionFeeValues[] = [
-                    "user_id" => $merchant->getKey(),
-                    "account_mode" => $merchant->account_mode,
-                    "thirdchannel_id" => null,
-                    "transaction_id" => $transaction->getKey(),
-                    "profit" => 0,
-                    "actual_profit" => 0,
-                    "fee" => $this->bcMath->mulPercent(
-                        $transaction->amount,
-                        $profitFeePercent
-                    ),
-                    "actual_fee" => 0,
-                ];
-            }
+            $transactionFeeValues[] = [
+                "user_id" => $merchant->getKey(),
+                "account_mode" => $merchant->account_mode,
+                "thirdchannel_id" => null,
+                "transaction_id" => $transaction->getKey(),
+                "profit" => $merchantAllocations[$idx]['profit'],
+                "actual_profit" => 0,
+                "fee" => $merchantAllocations[$idx]['fee'],
+                "actual_fee" => 0,
+            ];
         }
 
         // 計算系統手續費
-        $systemProfitFeePercent = $this->bcMath->subMinZero(
-            $merchantFeePercentSet[0],
-            $providerFeePercentSet[0]
-        );
-
         $transactionFeeValues[] = [
             "user_id" => 0, // system
             "account_mode" => null,
             "thirdchannel_id" => null,
             "transaction_id" => $transaction->getKey(),
-            "profit" => $this->bcMath->subMinZero(
-                $this->bcMath->mulPercent(
-                    $transaction->amount,
-                    $systemProfitFeePercent
-                ),
-                $this->bcMath->absDelta(
-                    $transaction->amount,
-                    $transaction->floating_amount
-                )
+            "profit" => $this->calculator->calculatePaufenSystemProfit(
+                $transaction->amount,
+                $transaction->floating_amount,
+                $merchantFeePercentSet[0],
+                $providerFeePercentSet[0]
             ),
             "actual_profit" => 0,
             "fee" => 0,
@@ -414,28 +333,29 @@ class TransactionFeeService
         User $endUser,
         Transaction $parent
     ) {
-        $childRatio = $transaction->amount / $parent->amount;
+        $parentFees = $parent->transactionFees->map(function ($fee) {
+            return [
+                'profit' => $fee->profit,
+                'actual_profit' => $fee->acutal_profit,
+                'fee' => $fee->fee,
+                'actual_fee' => $fee->actual_fee,
+            ];
+        })->toArray();
 
-        foreach ($parent->transactionFees as $parentTransactionFee) {
+        $scaledFees = $this->calculator->scaleFeesProportionally(
+            $parentFees,
+            $transaction->amount,
+            $parent->amount
+        );
+
+        foreach ($parent->transactionFees->values() as $idx => $parentTransactionFee) {
             $transaction->transactionFees()->create([
                 "user_id" => $parentTransactionFee->user_id,
                 "account_mode" => $parentTransactionFee->account_mode,
-                "profit" => $this->bcMath->mul(
-                    $parentTransactionFee->profit,
-                    $childRatio
-                ),
-                "actual_profit" => $this->bcMath->mul(
-                    $parentTransactionFee->acutal_profit,
-                    $childRatio
-                ),
-                "fee" => $this->bcMath->mul(
-                    $parentTransactionFee->fee,
-                    $childRatio
-                ),
-                "actual_fee" => $this->bcMath->mul(
-                    $parentTransactionFee->actual_fee,
-                    $childRatio
-                ),
+                "profit" => $scaledFees[$idx]['profit'],
+                "actual_profit" => $scaledFees[$idx]['actual_profit'],
+                "fee" => $scaledFees[$idx]['fee'],
+                "actual_fee" => $scaledFees[$idx]['actual_fee'],
                 "deleted_at" => $parentTransactionFee->deleted_at,
             ]);
         }
