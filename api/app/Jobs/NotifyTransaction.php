@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Transaction;
 use App\Utils\GuzzleHttpClientTrait;
+use App\Utils\SignatureCalculator;
 use Exception;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Bus\Queueable;
@@ -110,9 +111,7 @@ class NotifyTransaction implements ShouldQueue
 
         $parameters = $data['data'];
 
-        ksort($parameters);
-
-        $data['data']['sign'] = md5(urldecode(http_build_query($parameters) . '&secret_key=' . $targetUser->secret_key));
+        $data['data']['sign'] = SignatureCalculator::calculate($parameters, $targetUser->secret_key);
 
         $responseContents = null;
 

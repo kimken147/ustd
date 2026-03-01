@@ -16,6 +16,7 @@ use App\Services\Withdraw\DTO\ThirdPartyErrorResponse;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use App\Utils\NotificationUtil;
+use App\Utils\SignatureCalculator;
 use App\Utils\WhitelistedIpManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -146,22 +147,11 @@ class TransactionValidationService
             $params['match_last_account'] = $context->matchLastAccount;
         }
 
-        ksort($params);
-
-        $sign = md5(
-            urldecode(
-                http_build_query($params) . "&secret_key=" . $merchant->secret_key
-            )
-        );
+        $sign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
         // 也嘗試不含 real_name 的簽名（向後兼容）
         unset($params["real_name"]);
-        ksort($params);
-        $noRealNameSign = md5(
-            urldecode(
-                http_build_query($params) . "&secret_key=" . $merchant->secret_key
-            )
-        );
+        $noRealNameSign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
         if (!in_array(strtolower($context->sign), [$sign, $noRealNameSign])) {
             throw new TransactionValidationException(ThirdPartyErrorResponse::invalidSign());
@@ -341,10 +331,8 @@ class TransactionValidationService
 
     public function withSign(Collection $postData, User $merchant): Collection
     {
-        $postData = $postData->sortKeys();
-
         return $postData->merge([
-            'sign' => strtolower(md5(urldecode(http_build_query(array_filter($postData->toArray())) . '&secret_key=' . $merchant->secret_key)))
+            'sign' => strtolower(SignatureCalculator::calculate(array_filter($postData->toArray()), $merchant->secret_key))
         ]);
     }
 }

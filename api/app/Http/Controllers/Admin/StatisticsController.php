@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Repository\StatisticsRepository;
 use App\Utils\DateRangeValidator;
 use Carbon\Carbon;
+use App\Utils\SignatureCalculator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -27,12 +28,7 @@ class StatisticsController extends Controller
 
         abort_unless(isset($admin), Response::HTTP_BAD_REQUEST);
 
-        $params = $request->except('sign');
-        ksort($params);
-
-        $sign = md5(urldecode(http_build_query($params) . '&secret_key=' . $admin->secret_key));
-
-        if (!in_array(strtolower($request->sign), [$sign])) {
+        if (!SignatureCalculator::verify($request->except('sign'), $admin->secret_key, $request->sign)) {
             return abort(500);
         }
 
@@ -66,12 +62,7 @@ class StatisticsController extends Controller
 
         abort_unless(isset($admin), Response::HTTP_BAD_REQUEST);
 
-        $params = $request->except('sign');
-        ksort($params);
-
-        $sign = md5(urldecode(http_build_query($params) . '&secret_key=' . $admin->secret_key));
-
-        if (!in_array(strtolower($request->sign), [$sign])) {
+        if (!SignatureCalculator::verify($request->except('sign'), $admin->secret_key, $request->sign)) {
             return abort(500);
         }
 

@@ -17,6 +17,7 @@ use App\DTOs\TransactionParams;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
+use App\Utils\SignatureCalculator;
 use App\Utils\TransactionFactory;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
@@ -191,10 +192,8 @@ abstract class BaseWithdrawService
         }
 
         $parameters = $request->except('sign');
-        ksort($parameters);
-        $sign = md5(urldecode(http_build_query($parameters) . '&secret_key=' . $merchant->secret_key));
 
-        if (strcasecmp($sign, $request->input('sign'))) {
+        if (!SignatureCalculator::verify($parameters, $merchant->secret_key, $request->input('sign'))) {
             throw WithdrawValidationException::fromThirdParty(
                 ThirdPartyErrorResponse::invalidSign()
             );

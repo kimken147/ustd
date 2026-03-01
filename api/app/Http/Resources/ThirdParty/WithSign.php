@@ -5,6 +5,7 @@ namespace App\Http\Resources\ThirdParty;
 
 
 use App\Models\User;
+use App\Utils\SignatureCalculator;
 use RuntimeException;
 use Throwable;
 
@@ -24,10 +25,8 @@ trait WithSign
             new RuntimeException()
         );
 
-        ksort($data);
-
         return array_merge($data, [
-            'sign' => md5(urldecode(http_build_query($data).'&secret_key='.$user->secret_key)),
+            'sign' => SignatureCalculator::calculate($data, $user->secret_key),
         ]);
     }
 }

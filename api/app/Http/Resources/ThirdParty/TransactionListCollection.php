@@ -7,6 +7,7 @@ use App\Models\UserChannel;
 use App\Models\TransactionFee;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Utils\SignatureCalculator;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use RuntimeException;
 
@@ -74,9 +75,7 @@ class TransactionListCollection extends ResourceCollection
             new RuntimeException()
         );
 
-        ksort($data);
-
-        return md5(urldecode(http_build_query($data) . '&secret_key=' . $user->secret_key));
+        return SignatureCalculator::calculate($data, $user->secret_key);
     }
 
     private function filteredByUser(User $user)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ThirdParty\Withdraw;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Utils\SignatureCalculator;
 use App\Utils\ThirdPartyResponseUtil;
 use App\Utils\WhitelistedIpManager;
 use Illuminate\Http\Request;
@@ -46,11 +47,7 @@ class WithdrawQueriesController extends Controller
 
         $parameters = $request->except('sign');
 
-        ksort($parameters);
-
-        $sign = md5(urldecode(http_build_query($parameters).'&secret_key='.$merchant->secret_key));
-
-        if (strcasecmp($sign, $request->sign)) {
+        if (!SignatureCalculator::verify($parameters, $merchant->secret_key, $request->sign)) {
             return response()->json([
                 'http_status_code' => Response::HTTP_BAD_REQUEST,
                 'error_code'       => ThirdPartyResponseUtil::ERROR_CODE_INVALID_SIGN,
