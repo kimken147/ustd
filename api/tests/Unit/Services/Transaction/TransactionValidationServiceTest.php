@@ -1050,4 +1050,141 @@ class TransactionValidationServiceTest extends TestCase
         $this->assertInstanceOf(ChannelAmount::class, $channelAmount);
     }
 
+    public function test_validateAndGetUserChannel_skips_disabled_user_channel(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'UCDIS_CH', 'real_name_enable' => false]);
+        $channel = Channel::find($channelCode);
+
+        $channelGroupId = $this->createChannelGroup($channelCode);
+        $this->createChannelAmount($channelGroupId, $channelCode, [
+            'min_amount' => '10.00',
+            'max_amount' => '500.00',
+        ]);
+
+        $userId = $this->createUser();
+        // Only a disabled UserChannel exists
+        $this->createUserChannel($userId, $channelGroupId, [
+            'status' => UserChannel::STATUS_DISABLED,
+        ]);
+        $merchant = User::find($userId);
+
+        $context = $this->makeContext(['amount' => '100.00']);
+
+        $this->expectException(TransactionValidationException::class);
+        $this->service->validateAndGetUserChannel($context, $merchant, $channel);
+    }
+
+    // ---------------------------------------------------------------
+    //  findSuitableUserChannel()
+    // ---------------------------------------------------------------
+
+    public function test_findSuitableUserChannel_returns_both_when_matched(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'FSUC_OK']);
+        $channel = Channel::find($channelCode);
+
+        $channelGroupId = $this->createChannelGroup($channelCode);
+        $this->createChannelAmount($channelGroupId, $channelCode, [
+            'min_amount' => '50.00',
+            'max_amount' => '500.00',
+        ]);
+
+        $userId = $this->createUser();
+        $this->createUserChannel($userId, $channelGroupId);
+        $merchant = User::find($userId);
+
+        [$userChannel, $channelAmount] = $this->service->findSuitableUserChannel($merchant, $channel, '200.00');
+
+        $this->assertInstanceOf(UserChannel::class, $userChannel);
+        $this->assertInstanceOf(ChannelAmount::class, $channelAmount);
+    }
+
+    public function test_findSuitableUserChannel_returns_nulls_when_no_enabled_user_channel(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'FSUC_NO']);
+        $channel = Channel::find($channelCode);
+
+        $userId = $this->createUser();
+        $merchant = User::find($userId);
+
+        [$userChannel, $channelAmount] = $this->service->findSuitableUserChannel($merchant, $channel, '100.00');
+
+        $this->assertNull($userChannel);
+        $this->assertNull($channelAmount);
+    }
+
+    public function test_findSuitableUserChannel_returns_nulls_when_disabled(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'FSUC_DIS']);
+        $channel = Channel::find($channelCode);
+
+        $channelGroupId = $this->createChannelGroup($channelCode);
+        $this->createChannelAmount($channelGroupId, $channelCode, [
+            'min_amount' => '10.00',
+            'max_amount' => '500.00',
+        ]);
+
+        $userId = $this->createUser();
+        $this->createUserChannel($userId, $channelGroupId, [
+            'status' => UserChannel::STATUS_DISABLED,
+        ]);
+        $merchant = User::find($userId);
+
+        [$userChannel, $channelAmount] = $this->service->findSuitableUserChannel($merchant, $channel, '100.00');
+
+        $this->assertNull($userChannel);
+        $this->assertNull($channelAmount);
+    }
+
+    public function test_findSuitableUserChannel_returns_nulls_when_amount_out_of_range(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'FSUC_OOR']);
+        $channel = Channel::find($channelCode);
+
+        $channelGroupId = $this->createChannelGroup($channelCode);
+        $this->createChannelAmount($channelGroupId, $channelCode, [
+            'min_amount' => '100.00',
+            'max_amount' => '200.00',
+        ]);
+
+        $userId = $this->createUser();
+        $this->createUserChannel($userId, $channelGroupId);
+        $merchant = User::find($userId);
+
+        // Amount 500 is above the range
+        [$userChannel, $channelAmount] = $this->service->findSuitableUserChannel($merchant, $channel, '500.00');
+
+        $this->assertNull($userChannel);
+        $this->assertNull($channelAmount);
+    }
+
+    public function test_findSuitableUserChannel_uses_user_channel_override_amounts(): void
+    {
+        $channelCode = $this->createChannel(['code' => 'FSUC_OVR']);
+        $channel = Channel::find($channelCode);
+
+        $channelGroupId = $this->createChannelGroup($channelCode);
+        $this->createChannelAmount($channelGroupId, $channelCode, [
+            'min_amount' => '10.00',
+            'max_amount' => '1000.00',
+        ]);
+
+        $userId = $this->createUser();
+        // UserChannel narrows range to 100-300
+        $this->createUserChannel($userId, $channelGroupId, [
+            'min_amount' => '100.00',
+            'max_amount' => '300.00',
+        ]);
+        $merchant = User::find($userId);
+
+        // 200 is within user channel override range
+        [$userChannel, $channelAmount] = $this->service->findSuitableUserChannel($merchant, $channel, '200.00');
+        $this->assertNotNull($userChannel);
+        $this->assertNotNull($channelAmount);
+
+        // 50 is within channel range but below user channel override min
+        [$userChannel2, $channelAmount2] = $this->service->findSuitableUserChannel($merchant, $channel, '50.00');
+        $this->assertNull($userChannel2);
+        $this->assertNull($channelAmount2);
+    }
 }
