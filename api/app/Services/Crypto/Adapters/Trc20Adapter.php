@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class Trc20Adapter implements ChainAdapterInterface
 {
-    // USDT TRC-20 合約地址 (Mainnet)
-    private const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+    private const MAINNET_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
     private const FEE_LIMIT = 100000000; // 100 TRX
 
     public function fetchIncomingTransactions(string $address, ?string $sinceTimestamp = null): Collection
@@ -21,7 +20,7 @@ class Trc20Adapter implements ChainAdapterInterface
         try {
             $params = [
                 'only_to' => 'true',
-                'contract_address' => self::USDT_CONTRACT,
+                'contract_address' => $this->getUsdtContract(),
                 'limit' => 20,
                 'order_by' => 'block_timestamp,desc',
             ];
@@ -44,7 +43,7 @@ class Trc20Adapter implements ChainAdapterInterface
             $data = $response->json('data', []);
 
             return collect($data)
-                ->filter(fn ($tx) => ($tx['token_info']['address'] ?? '') === self::USDT_CONTRACT)
+                ->filter(fn ($tx) => ($tx['token_info']['address'] ?? '') === $this->getUsdtContract())
                 ->map(function ($tx) {
                     $decimals = (int) ($tx['token_info']['decimals'] ?? 6);
                     $rawAmount = $tx['value'] ?? '0';
@@ -109,7 +108,7 @@ class Trc20Adapter implements ChainAdapterInterface
 
         $response = $this->buildHttpClient()->post($this->getBaseUrl() . '/wallet/triggersmartcontract', [
             'owner_address' => $fromHex,
-            'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
+            'contract_address' => $this->base58ToHex($this->getUsdtContract()),
             'function_selector' => 'transfer(address,uint256)',
             'parameter' => $parameter,
             'fee_limit' => (int) config('services.trongrid.fee_limit', self::FEE_LIMIT),
@@ -187,7 +186,7 @@ class Trc20Adapter implements ChainAdapterInterface
         $response = $this->buildHttpClient()
             ->post($this->getBaseUrl() . '/wallet/triggerconstantcontract', [
                 'owner_address' => $this->base58ToHex($address),
-                'contract_address' => $this->base58ToHex(self::USDT_CONTRACT),
+                'contract_address' => $this->base58ToHex($this->getUsdtContract()),
                 'function_selector' => 'balanceOf(address)',
                 'parameter' => $addressParam,
                 'visible' => false,
@@ -229,6 +228,11 @@ class Trc20Adapter implements ChainAdapterInterface
             'success'   => ($data['receipt']['result'] ?? '') === 'SUCCESS',
             'fee'       => bcdiv((string) ($data['fee'] ?? 0), '1000000', 6),
         ];
+    }
+
+    private function getUsdtContract(): string
+    {
+        return config('services.trongrid.usdt_contract', self::MAINNET_USDT_CONTRACT);
     }
 
     private function getBaseUrl(): string

@@ -18,6 +18,8 @@ class Trc20AdapterTest extends TestCase
     {
         parent::setUp();
         $this->adapter = new Trc20Adapter();
+        // Ensure tests use mainnet contract address regardless of env
+        config(['services.trongrid.usdt_contract' => self::VALID_ADDRESS]);
     }
 
     // ---------------------------------------------------------------
