@@ -178,6 +178,11 @@ class TransactionFeeServiceTest extends TestCase
             'class' => 'TestClass',
             'status' => ThirdChannel::STATUS_ENABLE,
             'type' => ThirdChannel::TYPE_DEPOSIT_WITHDRAW,
+            'channel_code' => 'BANK',
+            'custom_url' => '',
+            'balance' => '0.00',
+            'notify_balance' => '0.00',
+            'auto_daifu_threshold' => '0.00',
         ];
 
         $id = DB::table('thirdchannel')->insertGetId(array_merge($defaults, $overrides));
@@ -185,17 +190,14 @@ class TransactionFeeServiceTest extends TestCase
         return ThirdChannel::find($id);
     }
 
-    /**
-     * Create MerchantThirdChannel using only columns that exist in the test DB.
-     * Note: deposit_fee_percent, daifu_fee_percent, withdraw_fee columns do not exist
-     * in the test DB schema (pending migrations). Only daifu_min, daifu_max, deposit_min,
-     * deposit_max are available.
-     */
     private function createMerchantThirdChannel(int $thirdChannelId, int $ownerId, array $overrides = []): MerchantThirdChannel
     {
         $defaults = [
             'thirdchannel_id' => $thirdChannelId,
             'owner_id' => $ownerId,
+            'deposit_fee_percent' => '0.00',
+            'daifu_fee_percent' => '0.00',
+            'withdraw_fee' => '0.00',
             'deposit_min' => '0.00',
             'deposit_max' => '999999.00',
             'daifu_min' => '0.00',
@@ -259,14 +261,14 @@ class TransactionFeeServiceTest extends TestCase
         $rootId = $this->createUserWithNestedSet([
             'role' => $rootRole,
             'name' => 'RootUser',
-        ], 1, 4);
+        ], 1001, 1004);
         $this->createWallet($rootId, $rootWalletOverrides);
 
         $childId = $this->createUserWithNestedSet([
             'role' => $childRole,
             'name' => 'ChildUser',
             'parent_id' => $rootId,
-        ], 2, 3);
+        ], 1002, 1003);
         $this->createWallet($childId, $childWalletOverrides);
 
         return [User::find($rootId), User::find($childId)];
@@ -336,7 +338,7 @@ class TransactionFeeServiceTest extends TestCase
         $userId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'SingleUser',
-        ], 1, 2);
+        ], 1011, 1012);
         $this->createWallet($userId);
         $user = User::find($userId);
 
@@ -546,12 +548,12 @@ class TransactionFeeServiceTest extends TestCase
         $bankName = 'TestBank' . mt_rand(100000, 999999);
         $this->createBank($bankName);
 
-        $thirdChannel = $this->createThirdChannel([
+        $thirdChannel = $this->createThirdChannel();
+
+        $this->createMerchantThirdChannel($thirdChannel->id, $user->id, [
             'daifu_fee_percent' => '0.30',
             'withdraw_fee' => '1.50',
         ]);
-
-        $this->createMerchantThirdChannel($thirdChannel->id, $user->id);
 
         $transaction = $this->createTransaction([
             'type' => Transaction::TYPE_NORMAL_WITHDRAW,
@@ -689,7 +691,7 @@ class TransactionFeeServiceTest extends TestCase
         $merchantId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'Merchant',
-        ], 5, 6);
+        ], 1021, 1022);
         $this->createWallet($merchantId);
         $merchant = User::find($merchantId);
 
@@ -756,7 +758,7 @@ class TransactionFeeServiceTest extends TestCase
         $providerId = $this->createUserWithNestedSet([
             'role' => User::ROLE_PROVIDER,
             'name' => 'Provider',
-        ], 1, 2);
+        ], 1031, 1032);
         $this->createWallet($providerId);
         $provider = User::find($providerId);
 
@@ -764,7 +766,7 @@ class TransactionFeeServiceTest extends TestCase
         $merchantId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'Merchant',
-        ], 5, 6);
+        ], 1035, 1036);
         $this->createWallet($merchantId);
         $merchant = User::find($merchantId);
 
@@ -843,7 +845,7 @@ class TransactionFeeServiceTest extends TestCase
         $merchantId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'Merchant',
-        ], 5, 6);
+        ], 1041, 1042);
         $this->createWallet($merchantId);
         $merchant = User::find($merchantId);
 
@@ -909,7 +911,7 @@ class TransactionFeeServiceTest extends TestCase
         $providerId = $this->createUserWithNestedSet([
             'role' => User::ROLE_PROVIDER,
             'name' => 'Provider',
-        ], 1, 2);
+        ], 1051, 1052);
         $this->createWallet($providerId);
         $provider = User::find($providerId);
 
@@ -917,7 +919,7 @@ class TransactionFeeServiceTest extends TestCase
         $merchantId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'Merchant',
-        ], 5, 6);
+        ], 1055, 1056);
         $this->createWallet($merchantId);
         $merchant = User::find($merchantId);
 
@@ -953,7 +955,7 @@ class TransactionFeeServiceTest extends TestCase
         $merchantId = $this->createUserWithNestedSet([
             'role' => User::ROLE_MERCHANT,
             'name' => 'Merchant',
-        ], 5, 6);
+        ], 1061, 1062);
         $this->createWallet($merchantId);
         $merchant = User::find($merchantId);
 

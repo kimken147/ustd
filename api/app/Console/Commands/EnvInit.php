@@ -74,7 +74,7 @@ class EnvInit extends Command
             ]
         );
 
-        if (!$this->confirm('確認執行？')) {
+        if (!$this->confirm('確認執行？', $this->option('no-interaction'))) {
             $this->info('已取消。');
             return 0;
         }

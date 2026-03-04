@@ -144,8 +144,8 @@ class TransactionValidationServiceTest extends TestCase
             'user_id' => $userId,
             'channel_group_id' => $channelGroupId,
             'status' => UserChannel::STATUS_ENABLED,
-            'min_amount' => null,
-            'max_amount' => null,
+            'min_amount' => '0.00',
+            'max_amount' => '999999.00',
             'real_name_enable' => false,
         ];
 
@@ -964,7 +964,7 @@ class TransactionValidationServiceTest extends TestCase
         // UserChannel with min_amount = 200
         $this->createUserChannel($userId, $channelGroupId, [
             'min_amount' => '200.00',
-            'max_amount' => null,
+            'max_amount' => '999999.00',
         ]);
         $merchant = User::find($userId);
 
@@ -989,7 +989,7 @@ class TransactionValidationServiceTest extends TestCase
         $userId = $this->createUser();
         // UserChannel with max_amount = 300
         $this->createUserChannel($userId, $channelGroupId, [
-            'min_amount' => null,
+            'min_amount' => '0.00',
             'max_amount' => '300.00',
         ]);
         $merchant = User::find($userId);
@@ -1148,7 +1148,10 @@ class TransactionValidationServiceTest extends TestCase
         ]);
 
         $userId = $this->createUser();
-        $this->createUserChannel($userId, $channelGroupId);
+        $this->createUserChannel($userId, $channelGroupId, [
+            'min_amount' => '100.00',
+            'max_amount' => '200.00',
+        ]);
         $merchant = User::find($userId);
 
         // Amount 500 is above the range
