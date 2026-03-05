@@ -21,7 +21,7 @@ const DepositList: FC = () => {
   const { t } = useTranslation('transaction');
   const title = t('titles.providerDeposit');
   const apiUrl = useApiUrl();
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const { data: profile } = useGetIdentity<Profile>();
   const [current, setCurrent] = useState<Deposit>();
   const [successModalOpen, setSuccessModalOpen] = useState(false);

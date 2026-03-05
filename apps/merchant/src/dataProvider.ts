@@ -1,6 +1,27 @@
 import { CrudOperators, DataProvider, LogicalFilter } from "@refinedev/core";
-import { axiosInstance, generateSort, stringify } from "@refinedev/simple-rest";
+import { axiosInstance, generateSort } from "@refinedev/simple-rest";
+import dayjs from "dayjs";
 import i18n from "./i18n";
+
+/**
+ * URL-safe query string serializer.
+ * PHP's parse_str treats `+` as space. `encodeURIComponent` encodes `+` as `%2B`,
+ * ensuring date values like `2026-03-05T00:00:00+08:00` survive the round-trip.
+ */
+const stringify = (params: Record<string, any>): string => {
+    const parts: string[] = [];
+    for (const [key, value] of Object.entries(params)) {
+        if (value == null) continue;
+        if (Array.isArray(value)) {
+            for (const v of value) {
+                parts.push(`${key}=${encodeURIComponent(v)}`);
+            }
+        } else {
+            parts.push(`${key}=${encodeURIComponent(value)}`);
+        }
+    }
+    return parts.join('&');
+};
 
 // 將前端語言格式轉換為後端格式 (zh-CN -> zh_CN)
 const convertLocaleToBackendFormat = (locale: string): string => {
@@ -31,6 +52,37 @@ axiosInstance.defaults.headers.put["content-type"] = "application/json;charset=U
 axiosInstance.defaults.headers.delete.accept = "application/json, text/plain, */*";
 axiosInstance.defaults.headers.delete["content-type"] = "application/json;charset=UTF-8";
 
+/**
+ * Serialize filter values for API requests.
+ *
+ * Handles the qs.parse `+` → space corruption:
+ * Refine's syncWithLocation uses qs.stringify({encode:false}) → URL has literal `+`.
+ * On refresh, qs.parse replaces `+` with space (its default decoder behavior).
+ * So "2026-03-05T00:00:00+08:00" becomes "2026-03-05T00:00:00 08:00".
+ *
+ * This function:
+ * 1. dayjs objects → format() (includes timezone like +08:00)
+ * 2. Strings with corrupted timezone (space) → restore `+`
+ * 3. Strings without timezone → parse with dayjs and re-format (adds timezone)
+ */
+const serializeValue = (value: any): string => {
+    if (dayjs.isDayjs(value)) {
+        return value.format();
+    }
+    if (typeof value === 'string') {
+        // Fix timezone corrupted by qs.parse: "...T00:00:00 08:00" → "...T00:00:00+08:00"
+        const fixed = value.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+        if (fixed !== value) return fixed;
+
+        // Date string without timezone → parse and re-format to add timezone
+        if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value)) {
+            const d = dayjs(value);
+            if (d.isValid()) return d.format();
+        }
+    }
+    return value;
+};
+
 export const generateFilter = (filters?: any[]) => {
     const queryFilters: Record<string, string | string[]> = {};
     if (filters) {
@@ -43,10 +95,10 @@ export const generateFilter = (filters?: any[]) => {
                     if (!queryFilters[field]) {
                         queryFilters[field] = [];
                     }
-                    (queryFilters[field] as String[]).push(filter.value);
+                    (queryFilters[field] as String[]).push(serializeValue(filter.value));
                 });
             } else {
-                queryFilters[`${filter.field}${mappedOperator}`] = filter.value;
+                queryFilters[`${filter.field}${mappedOperator}`] = serializeValue(filter.value);
             }
         });
     }

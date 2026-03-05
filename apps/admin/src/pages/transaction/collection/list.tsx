@@ -77,7 +77,7 @@ const CollectionList: FC = () => {
   const isPaufen = Env.isPaufen;
   const groupLabel = isPaufen ? t('fields.group') : t('fields.groupName');
 
-  const defaultStartAt = dayjs().startOf('day').format();
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
 
   // Permissions
   const { data: canEdit } = useCan({ action: '7', resource: 'transactions' });
@@ -253,7 +253,14 @@ const CollectionList: FC = () => {
                 name="started_at"
                 rules={[{ required: true }]}
                 initialValue={dayjs().startOf('day')}
-                getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+                getValueProps={(value: any) => {
+                  if (!value) return { value: undefined };
+                  if (dayjs.isDayjs(value)) return { value };
+                  let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+                  str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+                  const d = dayjs(str);
+                  return { value: d.isValid() ? d : undefined };
+                }}
               >
                 <CustomDatePicker
                   showTime
@@ -271,7 +278,14 @@ const CollectionList: FC = () => {
               <ListPageLayout.Filter.Item
                 label={t('fields.endDate')}
                 name="ended_at"
-                getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+                getValueProps={(value: any) => {
+                  if (!value) return { value: undefined };
+                  if (dayjs.isDayjs(value)) return { value };
+                  let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+                  str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+                  const d = dayjs(str);
+                  return { value: d.isValid() ? d : undefined };
+                }}
               >
                 <DatePicker showTime className="w-full" />
               </ListPageLayout.Filter.Item>

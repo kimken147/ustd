@@ -25,7 +25,14 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
           label={t('filters.startDate')}
           name="started_at"
           trigger="onSelect"
-          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+          getValueProps={(value: any) => {
+            if (!value) return { value: undefined };
+            if (dayjs.isDayjs(value)) return { value };
+            let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+            str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+            const d = dayjs(str);
+            return { value: d.isValid() ? d : undefined };
+          }}
         >
           <CustomDatePicker
             className="w-full"
@@ -42,7 +49,14 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
         <ListPageLayout.Filter.Item
           label={t('filters.endDate')}
           name="ended_at"
-          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+          getValueProps={(value: any) => {
+            if (!value) return { value: undefined };
+            if (dayjs.isDayjs(value)) return { value };
+            let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+            str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+            const d = dayjs(str);
+            return { value: d.isValid() ? d : undefined };
+          }}
         >
           <DatePicker
             className="w-full"

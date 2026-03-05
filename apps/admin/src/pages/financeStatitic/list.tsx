@@ -15,8 +15,8 @@ const FinanceStatisticPage: FC = () => {
   const { t } = useTranslation('financeReport');
   const [form] = Form.useForm();
 
-  const defaultStartAt = dayjs().startOf('days');
-  const defaultEndAt = dayjs().endOf('days');
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultEndAt = dayjs().endOf('day').format('YYYY-MM-DDTHH:mm:ss');
 
   const {
     tableProps,
@@ -27,8 +27,8 @@ const FinanceStatisticPage: FC = () => {
     pagination: { mode: 'off' },
     filters: {
       permanent: [
-        { field: 'started_at', value: defaultStartAt.format(), operator: 'eq' },
-        { field: 'ended_at', value: defaultEndAt.format(), operator: 'eq' },
+        { field: 'started_at', value: defaultStartAt, operator: 'eq' },
+        { field: 'ended_at', value: defaultEndAt, operator: 'eq' },
       ],
     },
   });
@@ -73,8 +73,8 @@ const FinanceStatisticPage: FC = () => {
               ...searchFormProps,
               form,
               initialValues: {
-                started_at: defaultStartAt,
-                ended_at: defaultEndAt,
+                started_at: dayjs().startOf('day'),
+                ended_at: dayjs().endOf('day'),
                 timeType: 'confirmed_at',
               },
             }}

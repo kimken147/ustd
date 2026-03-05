@@ -16,7 +16,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 const ProviderUserWalletHistoryList: FC = () => {
   const { t } = useTranslation('providers');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('days');
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const [searchParams] = useSearchParams();
   const userId = searchParams.get('user_id');
 
@@ -38,7 +38,7 @@ const ProviderUserWalletHistoryList: FC = () => {
         {
           field: 'started_at',
           operator: 'eq',
-          value: defaultStartAt.format(),
+          value: defaultStartAt,
         },
         {
           field: 'user_id',
@@ -94,7 +94,7 @@ const ProviderUserWalletHistoryList: FC = () => {
           <ListPageLayout.Filter
             formProps={{
               ...searchFormProps,
-              initialValues: { started_at: defaultStartAt },
+              initialValues: { started_at: dayjs().startOf('day') },
             }}
           >
             <Col xs={24} md={6}>

@@ -49,7 +49,7 @@ import { apiUrl } from 'index';
 import { generateFilter } from 'dataProvider';
 
 const PayForAnotherList: FC = () => {
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const translate = useTranslate();
   const locale = useGetLocale();
   const title = translate('withdraw.titles.main');

@@ -21,7 +21,7 @@ const CollectionList: FC = () => {
   const apiUrl = useApiUrl();
   const [form] = Form.useForm();
 
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
 
   const { Status: tranStatus, getStatusText: getTranStatusText } = useTransactionStatus();
   const { Status: tranCallbackStatus, getStatusText: getTranCallbackStatus } = useTransactionCallbackStatus();

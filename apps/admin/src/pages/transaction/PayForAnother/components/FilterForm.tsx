@@ -38,7 +38,14 @@ export function FilterForm({
           name="started_at"
           trigger="onSelect"
           rules={[{ required: true }]}
-          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+          getValueProps={(value: any) => {
+            if (!value) return { value: undefined };
+            if (dayjs.isDayjs(value)) return { value };
+            let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+            str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+            const d = dayjs(str);
+            return { value: d.isValid() ? d : undefined };
+          }}
         >
           <CustomDatePicker
             showTime
@@ -56,7 +63,14 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('fields.endDate')}
           name="ended_at"
-          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+          getValueProps={(value: any) => {
+            if (!value) return { value: undefined };
+            if (dayjs.isDayjs(value)) return { value };
+            let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+            str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+            const d = dayjs(str);
+            return { value: d.isValid() ? d : undefined };
+          }}
         >
           <DatePicker
             showTime

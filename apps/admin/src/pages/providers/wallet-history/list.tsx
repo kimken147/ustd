@@ -13,7 +13,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 const ProviderWalletList: FC = () => {
   const { t } = useTranslation('providers');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('days');
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
 
   const {
     tableProps,
@@ -25,7 +25,7 @@ const ProviderWalletList: FC = () => {
       initial: [
         {
           field: 'started_at',
-          value: defaultStartAt.format(),
+          value: defaultStartAt,
           operator: 'eq',
         },
         {
@@ -58,7 +58,7 @@ const ProviderWalletList: FC = () => {
           <ListPageLayout.Filter
             formProps={{
               ...searchFormProps,
-              initialValues: { started_at: defaultStartAt },
+              initialValues: { started_at: dayjs().startOf('day') },
             }}
           >
             <Col xs={24} md={8}>

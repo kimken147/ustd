@@ -26,7 +26,7 @@ const colProps: ColProps = {
 const MerchantWalletList: FC = () => {
   const { t } = useTranslation('merchant');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('day');
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
 
   const { selectProps: merchantSelectProps } = useSelector<Merchant>({
     resource: 'merchants',
@@ -44,7 +44,7 @@ const MerchantWalletList: FC = () => {
       initial: [
         {
           field: 'started_at',
-          value: defaultStartAt.format(),
+          value: defaultStartAt,
           operator: 'eq',
         },
         {
@@ -78,7 +78,7 @@ const MerchantWalletList: FC = () => {
           <ListPageLayout.Filter
             formProps={{
               ...searchFormProps,
-              initialValues: { started_at: defaultStartAt },
+              initialValues: { started_at: dayjs().startOf('day') },
             }}
           >
             <Col xs={24} md={8}>

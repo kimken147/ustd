@@ -17,7 +17,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 
 const FundList: FC = () => {
   const { t } = useTranslation('transaction');
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const { data: profile } = useGetIdentity<Profile>();
   const { Select: TranStatusSelect } = useTransactionStatus();
   const { Status: WithdrawStatus, getStatusText: getWithdrawStatusText } = useWithdrawStatus();

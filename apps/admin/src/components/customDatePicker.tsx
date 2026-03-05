@@ -11,10 +11,25 @@ type Props = DatePickerProps & {
   onFastSelectorChange?: (startAt: Dayjs, endAt: Dayjs) => void;
 };
 
-const CustomDatePicker: FC<Props> = ({ onFastSelectorChange, ...rest }) => {
+const CustomDatePicker: FC<Props> = ({ onFastSelectorChange, value, ...rest }) => {
   const { t } = useTranslation();
+
+  // Normalize value: Refine's syncWithLocation may pass a raw string from URL
+  // qs.parse corrupts "+" to space, so "...T00:00:00+08:00" becomes "...T00:00:00 08:00"
+  const normalizedValue = value
+    ? dayjs.isDayjs(value)
+      ? value
+      : (() => {
+          let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+          str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+          return dayjs(str);
+        })()
+    : undefined;
+  const safeValue = normalizedValue?.isValid() ? normalizedValue : undefined;
+
   return (
     <DatePicker
+      value={safeValue}
       renderExtraFooter={
         onFastSelectorChange
           ? () => {
