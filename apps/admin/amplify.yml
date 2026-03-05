@@ -11,7 +11,7 @@ applications:
             - cd ../.. && CI=true pnpm install --frozen-lockfile
         build:
           commands:
-            - npx @refinedev/cli build
+            - pnpm exec refine build
       artifacts:
         baseDirectory: build
         files:
