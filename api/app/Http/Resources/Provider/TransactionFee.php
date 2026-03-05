@@ -24,10 +24,10 @@ class TransactionFee extends JsonResource
         }
 
         switch ($this->user->role) {
-            case \App\Model\User::ROLE_PROVIDER:
+            case \App\Models\User::ROLE_PROVIDER:
                 $userKeyName = 'provider';
                 break;
-            case \App\Model\User::ROLE_MERCHANT:
+            case \App\Models\User::ROLE_MERCHANT:
                 $userKeyName = 'merchant';
                 break;
             default:

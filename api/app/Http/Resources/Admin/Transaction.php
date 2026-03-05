@@ -86,18 +86,18 @@ class Transaction extends JsonResource
             'merchant_fees'                    => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_MERCHANT));
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_MERCHANT));
                 })),
             'provider_fees'                    => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_PROVIDER));
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_PROVIDER));
                 })),
             'system_profit'                    => $this->whenLoaded('transactionFees', function () {
                 return optional(
                         $this->transactionFees
                             ->whereNull('thirdchannel_id')
-                            ->filter($this->filteredByRole(\App\Model\User::ROLE_ADMIN))
+                            ->filter($this->filteredByRole(\App\Models\User::ROLE_ADMIN))
                             ->first()
                     )->profit ?? 0;
             }),
@@ -172,7 +172,7 @@ class Transaction extends JsonResource
     private function filteredByRole(int $role)
     {
         return function (TransactionFee $transactionFee) use ($role) {
-            if ($role === \App\Model\User::ROLE_ADMIN) {
+            if ($role === \App\Models\User::ROLE_ADMIN) {
                 return $transactionFee->user_id === 0;
             }
 
@@ -183,7 +183,7 @@ class Transaction extends JsonResource
     private function getLockable()
     {
         // 跑分提現只要被碼商搶到，一律從充值管理處理
-        if ($this->type !== \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION) {
+        if ($this->type !== \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION) {
             return false;
         }
 
@@ -192,7 +192,7 @@ class Transaction extends JsonResource
 
     private function getUnlockable()
     {
-        if ($this->type !== \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION) {
+        if ($this->type !== \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION) {
             return false;
         }
 
@@ -221,11 +221,11 @@ class Transaction extends JsonResource
             $this->locked
             && optional($this->lockedBy)->is(auth()->user()->realUser())
             && in_array($this->status, [
-                \App\Model\Transaction::STATUS_PAYING, \App\Model\Transaction::STATUS_PAYING_TIMED_OUT,
-                \App\Model\Transaction::STATUS_SUCCESS, \App\Model\Transaction::STATUS_MANUAL_SUCCESS,
-                \App\Model\Transaction::STATUS_THIRD_PAYING,
+                \App\Models\Transaction::STATUS_PAYING, \App\Models\Transaction::STATUS_PAYING_TIMED_OUT,
+                \App\Models\Transaction::STATUS_SUCCESS, \App\Models\Transaction::STATUS_MANUAL_SUCCESS,
+                \App\Models\Transaction::STATUS_THIRD_PAYING,
             ])
-            && $this->type === \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION
+            && $this->type === \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION
         );
     }
 
@@ -239,9 +239,9 @@ class Transaction extends JsonResource
             $this->locked
             && optional($this->lockedBy)->is(auth()->user()->realUser())
             && in_array($this->status, [
-                \App\Model\Transaction::STATUS_PAYING, \App\Model\Transaction::STATUS_PAYING_TIMED_OUT,
+                \App\Models\Transaction::STATUS_PAYING, \App\Models\Transaction::STATUS_PAYING_TIMED_OUT,
             ])
-            && $this->type === \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION
+            && $this->type === \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION
         );
     }
 

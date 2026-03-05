@@ -49,7 +49,7 @@ class User extends JsonResource
             'agent_enable'                  => $this->agent_enable,
             'google2fa_enable'              => $this->google2fa_enable,
             'deposit_enable'                => $this->when(
-                $this->role === \App\Model\User::ROLE_PROVIDER,
+                $this->role === \App\Models\User::ROLE_PROVIDER,
                 $this->deposit_enable
             ),
             'paufen_deposit_enable'         => $this->paufen_deposit_enable,
@@ -120,19 +120,19 @@ class User extends JsonResource
                 });
 
                 return [
-                    'manage_whitelisted_ip'                   => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_WHITELISTED_IP),
-                    'manage_time_limit_bank'                  => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_TIME_LIMIT_BANK),
-                    'manage_matching_deposit_reward'          => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MATCHING_DEPOSIT_REWARD),
-                    'manage_transaction_reward'               => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_TRANSACTION_REWARD),
-                    'manage_fill_in_order'                    => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_CREATE_FILL_IN_ORDER),
-                    'manage_provider_whitelisted_ip'          => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_PROVIDER_WHITELISTED_IP),
-                    'manage_merchant_login_whitelisted_ip'    => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_LOGIN_WHITELISTED_IP),
-                    'manage_merchant_api_whitelisted_ip'      => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_API_WHITELISTED_IP),
-                    'manage_merchant_blocklist'               => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_BANNED_IP),
-                    'manage_sensitive_data'                   => $this->realUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_SHOW_SENSITIVE_DATA),
-                    'manage_merchant_matching_deposit_groups' => $this->mainUser()->role === \App\Model\User::ROLE_ADMIN,
-                    'manage_merchant_transaction_groups'      => $this->mainUser()->role === \App\Model\User::ROLE_ADMIN,
-                    'manage_merchant_third_channel'           => $this->mainUser()->role === \App\Model\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_THIRD_CHANNEL),
+                    'manage_whitelisted_ip'                   => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_WHITELISTED_IP),
+                    'manage_time_limit_bank'                  => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_TIME_LIMIT_BANK),
+                    'manage_matching_deposit_reward'          => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MATCHING_DEPOSIT_REWARD),
+                    'manage_transaction_reward'               => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_TRANSACTION_REWARD),
+                    'manage_fill_in_order'                    => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_CREATE_FILL_IN_ORDER),
+                    'manage_provider_whitelisted_ip'          => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_PROVIDER_WHITELISTED_IP),
+                    'manage_merchant_login_whitelisted_ip'    => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_LOGIN_WHITELISTED_IP),
+                    'manage_merchant_api_whitelisted_ip'      => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_API_WHITELISTED_IP),
+                    'manage_merchant_blocklist'               => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_BANNED_IP),
+                    'manage_sensitive_data'                   => $this->realUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_SHOW_SENSITIVE_DATA),
+                    'manage_merchant_matching_deposit_groups' => $this->mainUser()->role === \App\Models\User::ROLE_ADMIN,
+                    'manage_merchant_transaction_groups'      => $this->mainUser()->role === \App\Models\User::ROLE_ADMIN,
+                    'manage_merchant_third_channel'           => $this->mainUser()->role === \App\Models\User::ROLE_ADMIN || $permissions->has(Permission::ADMIN_MANAGE_MERCHANT_THIRD_CHANNEL),
                 ];
             }),
             'withdraw_min_amount'           => $this->whenLoaded('wallet', function () {

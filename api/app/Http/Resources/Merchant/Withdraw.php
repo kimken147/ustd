@@ -50,7 +50,7 @@ class Withdraw extends JsonResource
         ];
     }
 
-    private function filteredByUser(\App\Model\User $user)
+    private function filteredByUser(\App\Models\User $user)
     {
         return function (TransactionFee $withdrawFee) use ($user) {
             return optional($withdrawFee->user)->is($user);

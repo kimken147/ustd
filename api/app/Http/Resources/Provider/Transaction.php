@@ -59,7 +59,7 @@ class Transaction extends JsonResource
             'provider_fees'                    => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_PROVIDER))
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_PROVIDER))
                         ->filter($this->filterByDescent());
                 })),
             'real_name'                        => data_get($toChannel, UserChannelAccount::DETAIL_KEY_REAL_NAME),
@@ -134,15 +134,15 @@ class Transaction extends JsonResource
         return (
             !$this->locked
             && $this->from->isSelfOrDescendantOf(auth()->user())
-            && $this->status === \App\Model\Transaction::STATUS_PAYING
-            && $this->type === \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION
+            && $this->status === \App\Models\Transaction::STATUS_PAYING
+            && $this->type === \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION
         );
     }
 
     private function getLockable()
     {
         // 跑分提現只要被碼商搶到，一律從充值管理處理
-        if ($this->type !== \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION) {
+        if ($this->type !== \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION) {
             return false;
         }
 
@@ -151,7 +151,7 @@ class Transaction extends JsonResource
 
     private function getUnlockable()
     {
-        if ($this->type !== \App\Model\Transaction::TYPE_PAUFEN_TRANSACTION) {
+        if ($this->type !== \App\Models\Transaction::TYPE_PAUFEN_TRANSACTION) {
             return false;
         }
 
@@ -173,7 +173,7 @@ class Transaction extends JsonResource
     private function filteredByRole(int $role)
     {
         return function (TransactionFee $transactionFee) use ($role) {
-            if ($role === \App\Model\User::ROLE_ADMIN) {
+            if ($role === \App\Models\User::ROLE_ADMIN) {
                 return $transactionFee->user_id === 0;
             }
 

@@ -59,19 +59,19 @@ class UserChannelAccount extends JsonResource
             'account'             => $this->account,
             'account_name'        => data_get(
                 $this->detail,
-                \App\Model\UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME,
-                data_get($this->detail, \App\Model\UserChannelAccount::DETAIL_KEY_RECEIVER_NAME)
+                \App\Models\UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME,
+                data_get($this->detail, \App\Models\UserChannelAccount::DETAIL_KEY_RECEIVER_NAME)
             ),
             'bank_name'           => data_get(
                 $this->detail,
-                \App\Model\UserChannelAccount::DETAIL_KEY_BANK_NAME,
-                data_get($this->detail, \App\Model\UserChannelAccount::DETAIL_KEY_BANK_NAME)
+                \App\Models\UserChannelAccount::DETAIL_KEY_BANK_NAME,
+                data_get($this->detail, \App\Models\UserChannelAccount::DETAIL_KEY_BANK_NAME)
             ) ?? $bankName,
             'detail'              => $this->transformDetail($this->detail, $bankName),
             'bank_branch'        => data_get(
                 $this->detail,
-                \App\Model\UserChannelAccount::DETAIL_KEY_BANK_CARD_BRANCH,
-                data_get($this->detail, \App\Model\UserChannelAccount::DETAIL_KEY_BANK_CARD_BRANCH)
+                \App\Models\UserChannelAccount::DETAIL_KEY_BANK_CARD_BRANCH,
+                data_get($this->detail, \App\Models\UserChannelAccount::DETAIL_KEY_BANK_CARD_BRANCH)
             ) ?? '',
             'status'              => $this->status,
             'type'                => $this->type,
@@ -128,11 +128,11 @@ class UserChannelAccount extends JsonResource
         try {
             if ($qrCodeFilePath = data_get(
                 $detail,
-                \App\Model\UserChannelAccount::DETAIL_KEY_QR_CODE_FILE_PATH
+                \App\Models\UserChannelAccount::DETAIL_KEY_QR_CODE_FILE_PATH
             )) {
                 data_set(
                     $detail,
-                    \App\Model\UserChannelAccount::DETAIL_KEY_QR_CODE_FILE_PATH,
+                    \App\Models\UserChannelAccount::DETAIL_KEY_QR_CODE_FILE_PATH,
                     Storage::disk('user-channel-accounts-qr-code')->temporaryUrl($qrCodeFilePath, now()->addHour())
                 );
             }

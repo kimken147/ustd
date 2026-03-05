@@ -69,18 +69,18 @@ class Withdraw extends JsonResource
             'merchant_fees'          => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_MERCHANT));
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_MERCHANT));
                 })),
             'provider_fees'          => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_PROVIDER));
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_PROVIDER));
                 })),
             'system_profit'          => $this->whenLoaded('transactionFees', function () {
                 return optional(
                         $this->transactionFees
                             ->whereNull('thirdchannel_id')
-                            ->filter($this->filteredByRole(\App\Model\User::ROLE_ADMIN))
+                            ->filter($this->filteredByRole(\App\Models\User::ROLE_ADMIN))
                             ->first()
                     )->profit ?? 0;
             }),
@@ -125,7 +125,7 @@ class Withdraw extends JsonResource
     private function filteredByRole(int $role)
     {
         return function (TransactionFee $transactionFee) use ($role) {
-            if ($role === \App\Model\User::ROLE_ADMIN) {
+            if ($role === \App\Models\User::ROLE_ADMIN) {
                 return $transactionFee->user_id === 0;
             }
 
@@ -181,15 +181,15 @@ class Withdraw extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
-        if (!$featureToggleRepository->enabled(\App\Model\FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT)) {
+        if (!$featureToggleRepository->enabled(\App\Models\FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT)) {
             return false;
         }
 
-        $paufenWithdrawTimeoutInSeconds = $featureToggleRepository->valueOf(\App\Model\FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT, 0);
+        $paufenWithdrawTimeoutInSeconds = $featureToggleRepository->valueOf(\App\Models\FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT, 0);
 
         if ($this->type === Transaction::TYPE_PAUFEN_WITHDRAW && $this->created_at->diffInSeconds(now()) >= $paufenWithdrawTimeoutInSeconds && $this->status === Transaction::STATUS_MATCHING) {
             return !$this->locked;
@@ -206,7 +206,7 @@ class Withdraw extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
@@ -237,7 +237,7 @@ class Withdraw extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
@@ -255,7 +255,7 @@ class Withdraw extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
@@ -273,20 +273,20 @@ class Withdraw extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
         return $this->locked && optional($this->lockedBy)->is(auth()->user()->realUser()) && in_array($this->status, [
                 Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED
-            ]) && ($this->type === Transaction::TYPE_NORMAL_WITHDRAW) && ($this->from->role === \App\Model\User::ROLE_MERCHANT);
+            ]) && ($this->type === Transaction::TYPE_NORMAL_WITHDRAW) && ($this->from->role === \App\Models\User::ROLE_MERCHANT);
     }
 
     private function getSeparatable()
     {
         return $this->locked && optional($this->lockedBy)->is(auth()->user()->realUser()) && in_array($this->status, [
                 Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED
-            ]) && $this->isParent() && !$this->separated() && ($this->from->role === \App\Model\User::ROLE_MERCHANT)
+            ]) && $this->isParent() && !$this->separated() && ($this->from->role === \App\Models\User::ROLE_MERCHANT)
             && !($this->type === Transaction::TYPE_PAUFEN_WITHDRAW && $this->to_id); # 被码商抢单后不能拆单
     }
 

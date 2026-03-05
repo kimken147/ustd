@@ -55,7 +55,7 @@ class InternalTransfer extends JsonResource
     private function getConfirmable()
     {
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
@@ -72,7 +72,7 @@ class InternalTransfer extends JsonResource
         }
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 
@@ -82,7 +82,7 @@ class InternalTransfer extends JsonResource
     private function getUnlockable()
     {
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        if ($featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
+        if ($featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
             return true;
         }
 

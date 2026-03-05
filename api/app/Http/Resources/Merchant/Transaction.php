@@ -42,7 +42,7 @@ class Transaction extends JsonResource
             'merchant_fees' => TransactionFeeCollection::make($this->whenLoaded('transactionFees',
                 function () {
                     return $this->transactionFees
-                        ->filter($this->filteredByRole(\App\Model\User::ROLE_MERCHANT))
+                        ->filter($this->filteredByRole(\App\Models\User::ROLE_MERCHANT))
                         ->filter($this->filterByDescent());
                 })),
             'status' => $this->status,
@@ -63,7 +63,7 @@ class Transaction extends JsonResource
         ];
     }
 
-    private function filteredByUser(\App\Model\User $merchant)
+    private function filteredByUser(\App\Models\User $merchant)
     {
         return function (TransactionFee $transactionFee) use ($merchant) {
             return optional($transactionFee->user)->is($merchant);
@@ -73,7 +73,7 @@ class Transaction extends JsonResource
     private function filteredByRole(int $role)
     {
         return function (TransactionFee $transactionFee) use ($role) {
-            if ($role === \App\Model\User::ROLE_ADMIN) {
+            if ($role === \App\Models\User::ROLE_ADMIN) {
                 return $transactionFee->user_id === 0;
             }
 
@@ -84,7 +84,7 @@ class Transaction extends JsonResource
     private function filterByDescent()
     {
         return function (TransactionFee $transactionFee) {
-            return in_array($transactionFee->user_id, \App\Model\User::descendantsAndSelf(auth()->id())->pluck('id')->all());
+            return in_array($transactionFee->user_id, \App\Models\User::descendantsAndSelf(auth()->id())->pluck('id')->all());
         };
     }
 }

@@ -142,7 +142,7 @@ class ChannelGroupController extends Controller
         $users = User::whereIn('role', [User::ROLE_PROVIDER, User::ROLE_MERCHANT])->get();
 
         $featureToggleRepository = app(FeatureToggleRepository::class);
-        $cancelPaufen = $featureToggleRepository->enabled(\App\Model\FeatureToggle::CANCEL_PAUFEN_MECHANISM);
+        $cancelPaufen = $featureToggleRepository->enabled(\App\Models\FeatureToggle::CANCEL_PAUFEN_MECHANISM);
         $userChannels = $users->map(function ($user) use ($now, $channelGroup, $cancelPaufen) {
             $channel = [
                 'user_id'          => $user->getKey(),
