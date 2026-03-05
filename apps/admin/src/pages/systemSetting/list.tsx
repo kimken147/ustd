@@ -13,7 +13,7 @@ const SystemSettingList: FC = () => {
   const {
     tableQuery: { data: tableData },
   } = useTable<SystemSetting>({
-    resource: 'system-settings',
+    resource: 'feature-toggles',
     pagination: { mode: 'off' },
   });
 

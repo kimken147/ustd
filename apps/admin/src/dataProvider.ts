@@ -1,5 +1,6 @@
 import { CrudOperators, DataProvider, LogicalFilter } from "@refinedev/core";
 import { axiosInstance, generateSort, stringify } from "@refinedev/simple-rest";
+import dayjs from "dayjs";
 import i18n from "./i18n";
 
 // 將前端語言格式轉換為後端格式 (zh-CN -> zh_CN)
@@ -31,6 +32,13 @@ axiosInstance.defaults.headers.put["content-type"] = "application/json;charset=U
 axiosInstance.defaults.headers.delete.accept = "application/json, text/plain, */*";
 axiosInstance.defaults.headers.delete["content-type"] = "application/json;charset=UTF-8";
 
+const serializeValue = (value: any): string => {
+    if (dayjs.isDayjs(value)) {
+        return value.format();
+    }
+    return value;
+};
+
 export const generateFilter = (filters?: any[]) => {
     const queryFilters: Record<string, string | string[]> = {};
     if (filters) {
@@ -43,10 +51,10 @@ export const generateFilter = (filters?: any[]) => {
                     if (!queryFilters[field]) {
                         queryFilters[field] = [];
                     }
-                    (queryFilters[field] as String[]).push(filter.value);
+                    (queryFilters[field] as String[]).push(serializeValue(filter.value));
                 });
             } else {
-                queryFilters[`${filter.field}${mappedOperator}`] = filter.value;
+                queryFilters[`${filter.field}${mappedOperator}`] = serializeValue(filter.value);
             }
         });
     }

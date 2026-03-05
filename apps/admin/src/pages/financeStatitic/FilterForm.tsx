@@ -3,7 +3,7 @@ import type { FormInstance } from 'antd';
 import CustomDatePicker from 'components/customDatePicker';
 import { useSelector } from '@morgan-ustd/shared';
 import type { Merchant } from '@morgan-ustd/shared';
-import type { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { ListPageLayout } from '@morgan-ustd/shared';
 import { FC } from 'react';
 
@@ -25,6 +25,7 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
           label={t('filters.startDate')}
           name="started_at"
           trigger="onSelect"
+          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
         >
           <CustomDatePicker
             className="w-full"
@@ -38,7 +39,11 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
         </ListPageLayout.Filter.Item>
       </Col>
       <Col xs={24} md={6}>
-        <ListPageLayout.Filter.Item label={t('filters.endDate')} name="ended_at">
+        <ListPageLayout.Filter.Item
+          label={t('filters.endDate')}
+          name="ended_at"
+          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+        >
           <DatePicker
             className="w-full"
             disabledDate={current => {

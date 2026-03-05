@@ -126,8 +126,6 @@ export function createCardHolderColumn(ctx: ColumnContext): WithdrawColumn {
 export function getBankColumns(ctx: ColumnContext): WithdrawColumn[] {
   return [
     createBankNameColumn(ctx),
-    createProvinceColumn(ctx),
-    createCityColumn(ctx),
     createCardNumberColumn(ctx),
     createCardHolderColumn(ctx),
   ];

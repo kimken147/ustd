@@ -411,9 +411,7 @@ class User extends Authenticatable implements JWTSubject
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'user_tags')
-            ->select(['tags.id', 'tags.name'])
-            ->withPivot([]) // 空陣列表示不取得任何 pivot 欄位
-            ->withTimestamps(false); // 不需要
+            ->select(['tags.id', 'tags.name']);
     }
 
     // 新增標籤的方法

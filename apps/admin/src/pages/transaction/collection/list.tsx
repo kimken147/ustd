@@ -77,7 +77,7 @@ const CollectionList: FC = () => {
   const isPaufen = Env.isPaufen;
   const groupLabel = isPaufen ? t('fields.group') : t('fields.groupName');
 
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format();
 
   // Permissions
   const { data: canEdit } = useCan({ action: '7', resource: 'transactions' });
@@ -249,10 +249,11 @@ const CollectionList: FC = () => {
           >
             <Col xs={24} md={6}>
               <ListPageLayout.Filter.Item
-                label={t('fields.date')}
+                label={t('fields.startDate')}
                 name="started_at"
                 rules={[{ required: true }]}
-                initialValue={dayjs().startOf('days')}
+                initialValue={dayjs().startOf('day')}
+                getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
               >
                 <CustomDatePicker
                   showTime
@@ -267,7 +268,11 @@ const CollectionList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.date')} name="ended_at">
+              <ListPageLayout.Filter.Item
+                label={t('fields.endDate')}
+                name="ended_at"
+                getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
+              >
                 <DatePicker showTime className="w-full" />
               </ListPageLayout.Filter.Item>
             </Col>

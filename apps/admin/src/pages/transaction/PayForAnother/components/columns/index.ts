@@ -71,10 +71,8 @@ export function useColumns(props: UseColumnsProps): TableColumnProps<Withdraw>[]
         infoColumns[3],  // user name
         statusColumns[0], // order status
         bankColumns[0],  // bank name
-        bankColumns[1],  // province
-        bankColumns[2],  // city
-        bankColumns[3],  // card number
-        bankColumns[4],  // card holder
+        bankColumns[1],  // card number
+        bankColumns[2],  // card holder
         dataColumns[0],  // amount
         dataColumns[1],  // fee
         dataColumns[2],  // chain network

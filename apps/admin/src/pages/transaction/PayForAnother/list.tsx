@@ -60,7 +60,7 @@ const PayForAnotherList: FC = () => {
   const navigate = useNavigate();
   const apiUrl = useApiUrl();
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('days').format();
+  const defaultStartAt = dayjs().startOf('day').format();
 
   const { data: canEdit } = useCan({ action: '12', resource: 'withdraws' });
 

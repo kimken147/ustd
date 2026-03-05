@@ -1,6 +1,6 @@
 <?php
 
-use App\Model\FeatureToggle;
+use App\Models\FeatureToggle;
 
 return [
     FeatureToggle::FEATURE_MIN_PROVIDER_MATCHING_BALANCE               => '',

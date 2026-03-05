@@ -1,6 +1,6 @@
 import { Col, DatePicker, Input, Radio, Select } from 'antd';
 import type { FormProps, FormInstance } from 'antd';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { ListPageLayout, TransactionSubType } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
@@ -38,6 +38,7 @@ export function FilterForm({
           name="started_at"
           trigger="onSelect"
           rules={[{ required: true }]}
+          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
         >
           <CustomDatePicker
             showTime
@@ -55,6 +56,7 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('fields.endDate')}
           name="ended_at"
+          getValueProps={(value: any) => ({ value: value ? dayjs(value) : undefined })}
         >
           <DatePicker
             showTime
