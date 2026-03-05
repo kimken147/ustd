@@ -8,10 +8,9 @@ applications:
             - corepack enable
             - cd ../.. && pnpm install --frozen-lockfile
             - cd ../.. && pnpm --filter @morgan-ustd/shared build
-            - cp ../../.env/.env.base.prod .env.base.prod
         build:
           commands:
-            - set -a && source .env.base.prod && source .env/.env.prod && set +a && pnpm exec refine build
+            - pnpm exec refine build
       artifacts:
         baseDirectory: build
         files:

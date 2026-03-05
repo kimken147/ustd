@@ -65,10 +65,10 @@
     "typescript": "^5.9.3"
   },
   "scripts": {
-    "local": "dotenv -e ../../.env/.env.base.local -e .env/.env.local -- refine start",
-    "dev": "dotenv -e ../../.env/.env.base.development -e .env/.env.development -- refine start",
-    "build:dev": "dotenv -e ../../.env/.env.base.development -e .env/.env.development -- refine build",
-    "build:prod": "dotenv -e ../../.env/.env.base.prod -e .env/.env.prod -- refine build",
+    "local": "dotenv -e ../../frontend-env/.env.base.local -e env-config/.env.local -- refine start",
+    "dev": "dotenv -e ../../frontend-env/.env.base.development -e env-config/.env.development -- refine start",
+    "build:dev": "dotenv -e ../../frontend-env/.env.base.development -e env-config/.env.development -- refine build",
+    "build:prod": "dotenv -e ../../frontend-env/.env.base.prod -e env-config/.env.prod -- refine build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "refine": "refine"
