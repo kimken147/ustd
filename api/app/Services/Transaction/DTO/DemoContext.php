@@ -9,7 +9,7 @@ class DemoContext
     public function __construct(
         public readonly string $channelCode,
         public readonly string $username,
-        public readonly string $secretKey,
+        public readonly ?string $secretKey,
         public readonly string $amount,
         public readonly string $orderNumber,
         public readonly string $notifyUrl,

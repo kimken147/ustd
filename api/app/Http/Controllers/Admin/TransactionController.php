@@ -444,7 +444,6 @@ class TransactionController extends Controller
         $this->validate($request, [
             'channel_code' => 'required',
             'username'     => 'required',
-            'secret_key'   => 'required',
             'amount'       => 'required|numeric|min:1',
             'notify_url'   => 'required',
             'order_number' => 'required',

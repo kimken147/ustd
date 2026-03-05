@@ -195,10 +195,14 @@ class CreateTransactionService
      */
     public function validateAndGenerateUrl(DemoContext $context): DemoResult
     {
-        $merchant = User::where('username', $context->username)
-            ->where('role', User::ROLE_MERCHANT)
-            ->where('secret_key', $context->secretKey)
-            ->first();
+        $query = User::where('username', $context->username)
+            ->where('role', User::ROLE_MERCHANT);
+
+        if ($context->secretKey) {
+            $query->where('secret_key', $context->secretKey);
+        }
+
+        $merchant = $query->first();
 
         if (!$merchant) {
             throw new TransactionValidationException(
