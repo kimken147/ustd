@@ -10,7 +10,7 @@ applications:
             - cd ../.. && pnpm --filter @morgan-ustd/shared build
         build:
           commands:
-            - npx refine build
+            - pnpm exec refine build
       artifacts:
         baseDirectory: build
         files:
