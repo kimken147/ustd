@@ -1,6 +1,6 @@
 import { Select as AntdSelect } from 'antd';
 import type { SelectProps } from 'antd';
-import { useTranslate } from '@refinedev/core';
+import { useTranslation } from 'react-i18next';
 
 type Options = NonNullable<SelectProps['options']>;
 type Option = Options[0];
@@ -21,7 +21,7 @@ export type WithdrawStatusValue =
   (typeof WithdrawStatus)[keyof typeof WithdrawStatus];
 
 export function useWithdrawStatus() {
-  const t = useTranslate();
+  const { t } = useTranslation();
 
   const getStatusText = (status: number) => {
     switch (status) {

@@ -1,6 +1,6 @@
 import { Select as AntdSelect } from 'antd';
 import type { SelectProps } from 'antd';
-import { useTranslate } from '@refinedev/core';
+import { useTranslation } from 'react-i18next';
 import { SelectOption } from '../interfaces/antd';
 
 export const TransactionCallbackStatus = {
@@ -16,7 +16,7 @@ export type TransactionCallbackStatusValue =
   (typeof TransactionCallbackStatus)[keyof typeof TransactionCallbackStatus];
 
 export function useTransactionCallbackStatus() {
-  const t = useTranslate();
+  const { t } = useTranslation();
 
   const getStatusText = (status: number) => {
     switch (status) {
