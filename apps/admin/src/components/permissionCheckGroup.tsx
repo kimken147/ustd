@@ -16,8 +16,8 @@ const PermissionCheckGroup: FC<Props> = ({ defaultIds = [], onChange }) => {
   const isPaufen = Enviroment.isPaufen;
   const { t } = useTranslation();
   const groupName = isPaufen
-    ? t('common.providerManagement')
-    : t('common.groupManagement');
+    ? t('navigation.providerManagement')
+    : t('navigation.groupManagement');
   const [selectedIds, setSelectedIds] = useState<number[]>(defaultIds);
   const { permissions } = usePermission();
   const groups =
@@ -26,20 +26,20 @@ const PermissionCheckGroup: FC<Props> = ({ defaultIds = [], onChange }) => {
       // 使用翻譯後的 group_name，不需要硬編碼比較
       if (clonCur.id === 26 || clonCur.id === 27) {
         const targetGroupName = isPaufen
-          ? t('common.providerManagement')
-          : t('common.groupManagement');
+          ? t('navigation.providerManagement')
+          : t('navigation.groupManagement');
         if (!prev[targetGroupName]) prev[targetGroupName] = [];
         prev[targetGroupName].push(clonCur);
         return prev;
       }
       if (clonCur.id === 28) {
-        const targetGroupName = t('common.merchantManagement');
+        const targetGroupName = t('navigation.merchantManagement');
         if (!prev[targetGroupName]) prev[targetGroupName] = [];
         prev[targetGroupName].push(clonCur);
         return prev;
       }
       if (clonCur.id === 33) {
-        const targetGroupName = t('common.financeReport');
+        const targetGroupName = t('navigation.financeReport');
         if (!prev[targetGroupName]) prev[targetGroupName] = [];
         prev[targetGroupName].push({
           ...clonCur,

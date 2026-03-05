@@ -52,15 +52,15 @@ const SystemSettingList: FC = () => {
       <List
         title={t('systemSetting.listTitle')}
         headerButtons={
-          <ListButton resource="banks">{t('systemSetting.buttons.systemSupportBanks')}</ListButton>
+          <ListButton resource="feature-toggles/banks">{t('systemSetting.buttons.systemSupportBanks')}</ListButton>
         }
       >
         <Typography.Title level={4}>{t('systemSetting.categories.collection')}</Typography.Title>
-        <Table dataSource={agencyCollection} columns={columns} rowKey="id" pagination={false} />
+        <Table dataSource={agencyCollection} columns={columns} rowKey="id" pagination={false} size="small" />
 
         <Divider />
         <Typography.Title level={4}>{t('systemSetting.categories.payout')}</Typography.Title>
-        <Table dataSource={agencyPayment} columns={columns} rowKey="id" pagination={false} />
+        <Table dataSource={agencyPayment} columns={columns} rowKey="id" pagination={false} size="small" />
 
         <Divider />
         <Typography.Title level={4}>{t('systemSetting.categories.accounts')}</Typography.Title>
@@ -69,19 +69,20 @@ const SystemSettingList: FC = () => {
           columns={columns}
           rowKey="id"
           pagination={false}
+          size="small"
         />
 
         <Divider />
         <Typography.Title level={4}>{t('systemSetting.categories.thirdParty')}</Typography.Title>
-        <Table dataSource={thirdChannel} columns={columns} rowKey="id" pagination={false} />
+        <Table dataSource={thirdChannel} columns={columns} rowKey="id" pagination={false} size="small" />
 
         <Divider />
         <Typography.Title level={4}>{t('systemSetting.categories.admin')}</Typography.Title>
-        <Table dataSource={admin} columns={columns} rowKey="id" pagination={false} />
+        <Table dataSource={admin} columns={columns} rowKey="id" pagination={false} size="small" />
 
         <Divider />
         <Typography.Title level={4}>{t('systemSetting.categories.channel')}</Typography.Title>
-        <Table dataSource={channel} columns={columns} rowKey="id" pagination={false} />
+        <Table dataSource={channel} columns={columns} rowKey="id" pagination={false} size="small" />
       </List>
       <Modal />
     </>
