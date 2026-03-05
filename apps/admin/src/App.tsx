@@ -74,7 +74,6 @@ import './i18n';
 
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
-import thTH from 'antd/locale/th_TH';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Header } from 'components/layout/header';
@@ -109,7 +108,6 @@ function App() {
       const dayjsLocaleMap: Record<string, string> = {
         'zh-CN': 'zh-cn',
         en: 'en',
-        th: 'th',
       };
       dayjs.locale(dayjsLocaleMap[lang] || 'zh-cn');
       return i18n.changeLanguage(lang);
@@ -123,8 +121,6 @@ function App() {
         return zhCN;
       case 'en':
         return enUS;
-      case 'th':
-        return thTH;
       default:
         return zhCN;
     }

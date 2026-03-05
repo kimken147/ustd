@@ -19,8 +19,6 @@ export const Header: React.FC = () => {
         return '🇨🇳 简体中文';
       case 'en':
         return '🇺🇸 English';
-      case 'th':
-        return '🇹🇭 ไทย';
       default:
         return '🇨🇳 简体中文';
     }

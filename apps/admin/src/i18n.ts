@@ -14,7 +14,7 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-    supportedLngs: ['en', 'zh-CN', 'th'],
+    supportedLngs: ['en', 'zh-CN'],
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json', // locale files path
     },

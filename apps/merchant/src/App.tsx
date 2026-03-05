@@ -27,7 +27,6 @@ import customDataProvider from 'dataProvider';
 import dataProvider from '@refinedev/simple-rest';
 import antdCNLocale from 'antd/locale/zh_CN';
 import antdENLocale from 'antd/locale/en_US';
-import antdTHLocale from 'antd/locale/th_TH';
 import CollectionList from 'pages/collection/list';
 import CollectionShow from 'pages/collection/show';
 import PayForAnotherList from 'pages/PayForAnother/list';
@@ -76,7 +75,6 @@ function App() {
       const dayjsLocaleMap: Record<string, string> = {
         'zh-CN': 'zh-cn',
         en: 'en',
-        th: 'th',
       };
       dayjs.locale(dayjsLocaleMap[lang] || 'zh-cn');
       return i18n.changeLanguage(lang);
@@ -88,8 +86,6 @@ function App() {
     switch (currentLocale) {
       case 'zh-CN':
         return antdCNLocale;
-      case 'th':
-        return antdTHLocale;
       default:
         return antdENLocale;
     }
