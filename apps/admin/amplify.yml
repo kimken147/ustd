@@ -11,7 +11,7 @@ applications:
             - cd ../.. && pnpm install
         build:
           commands:
-            - cd ../.. && pnpm --filter @morgan-ustd/admin build:prod
+            - npx @refinedev/cli build
       artifacts:
         baseDirectory: build
         files:
