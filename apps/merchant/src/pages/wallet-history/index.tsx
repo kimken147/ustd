@@ -42,14 +42,14 @@ const WalletHistoryList: FC = () => {
     searchFormProps,
     filters,
     tableQuery: { data: queryData },
-  } = useTable<WalletHistory, unknown, unknown, Meta>({
+  } = useTable<WalletHistory>({
     syncWithLocation: true,
     filters: {
       permanent: [{ field: 'lang', value: locale(), operator: 'eq' }],
     },
   });
 
-  const meta = queryData?.meta;
+  const meta = (queryData as any)?.meta as Meta | undefined;
   const columnDeps: ColumnDependencies = { t };
   const columns = useColumns(columnDeps);
 
@@ -108,7 +108,7 @@ const WalletHistoryList: FC = () => {
           </Col>
         </Row>
         <Divider />
-        <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
+        <ListPageLayout.Table {...tableProps} columns={columns as any} rowKey="id" />
       </List>
     </>
   );

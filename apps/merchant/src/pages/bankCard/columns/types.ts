@@ -5,10 +5,11 @@ export type BankCardColumn = TableColumnProps<BankCard>;
 
 export interface ColumnDependencies {
   t: (key: string) => string;
-  showUpdateModal: (options: {
-    initialValues: BankCard;
-    id: number;
-    filterFormItems: unknown[];
+  showUpdateModal: (config: {
+    initialValues?: any;
+    id?: string | number;
+    filterFormItems?: any[];
     title: string;
+    [key: string]: any;
   }) => void;
 }

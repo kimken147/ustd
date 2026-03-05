@@ -31,7 +31,7 @@ const CollectionList: FC = () => {
     searchFormProps,
     filters,
     tableQuery: { data: queryData },
-  } = useTable<Transaction, unknown, unknown, Meta>({
+  } = useTable<Transaction>({
     resource: 'transactions',
     syncWithLocation: true,
     filters: {
@@ -43,7 +43,7 @@ const CollectionList: FC = () => {
     },
   });
 
-  const meta = queryData?.meta;
+  const meta = (queryData as any)?.meta as Meta | undefined;
 
   const columnDeps: ColumnDependencies = {
     t,
@@ -106,7 +106,7 @@ const CollectionList: FC = () => {
               <Card.Meta
                 title={`${meta?.total_success ?? 0}/${meta?.total ?? 0}`}
                 description={`${t('collection.fields.successRate')} ${numeral(
-                  ((+meta?.total_success || 0) * 100) / (meta?.total ?? 1)
+                  ((+(meta?.total_success ?? 0)) * 100) / (meta?.total ?? 1)
                 ).format('0.00')}%`}
               />
             </Card>
@@ -129,7 +129,7 @@ const CollectionList: FC = () => {
           </Col>
         </Row>
         <Divider />
-        <ListPageLayout.Table {...tableProps} columns={columns} rowKey="id" />
+        <ListPageLayout.Table {...tableProps} columns={columns as any} rowKey="id" />
       </List>
     </>
   );
