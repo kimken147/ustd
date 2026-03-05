@@ -10,12 +10,8 @@ applications:
             - cd ../.. && pnpm --filter @morgan-ustd/shared build
         build:
           commands:
-            - pnpm exec refine build
+            - npx refine build
       artifacts:
         baseDirectory: build
         files:
           - '**/*'
-      cache:
-        paths:
-          - ../../node_modules/**/*
-          - node_modules/**/*
