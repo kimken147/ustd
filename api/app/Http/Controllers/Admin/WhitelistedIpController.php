@@ -79,7 +79,7 @@ class WhitelistedIpController extends Controller
                 }
             }
 
-            WhitelistedIp::insertIgnore($whitelistedIpValues->toArray());
+            WhitelistedIp::insertOrIgnore($whitelistedIpValues->toArray());
         } else {
             // delete
             WhitelistedIp::whereIn('user_id', $userIds)

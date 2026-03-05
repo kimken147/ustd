@@ -251,14 +251,21 @@ class ProviderController extends Controller
 
             foreach ($allChannelGroups as $channelGroupId => $channelGroup) {
                 $thirdExclusive = $channelGroup->channel->third_exclusive_enable;
-                $provider->userChannels()->create([
+                $minAmount = data_get($userChannelMinAmounts, $channelGroupId);
+                $maxAmount = data_get($userChannelMaxAmounts, $channelGroupId);
+                $channelData = [
                     'channel_group_id' => $channelGroupId,
                     'fee_percent'      => $feePercent = $request->set_fee_percent ? 0 : data_get($userChannelFeePercents, $channelGroupId, 0),
-                    'min_amount'       => data_get($userChannelMinAmounts, $channelGroupId, null),
-                    'max_amount'       => data_get($userChannelMaxAmounts, $channelGroupId, null),
                     'status'           => is_null($feePercent) || $thirdExclusive ? Channel::STATUS_DISABLE : Channel::STATUS_ENABLE,
                     'floating_enable'  => false,
-                ]);
+                ];
+                if (!is_null($minAmount)) {
+                    $channelData['min_amount'] = $minAmount;
+                }
+                if (!is_null($maxAmount)) {
+                    $channelData['max_amount'] = $maxAmount;
+                }
+                $provider->userChannels()->create($channelData);
             }
 
             $device = Device::firstOrCreate([

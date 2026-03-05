@@ -78,7 +78,7 @@ class MerchantMatchingDepositGroupController extends Controller
                 }
             }
 
-            TransactionGroup::insertIgnore($transactionGroupValues->toArray());
+            TransactionGroup::insertOrIgnore($transactionGroupValues->toArray());
         } else {
             // delete
             TransactionGroup::whereIn('owner_id', $merchantIds)

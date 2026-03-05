@@ -161,8 +161,8 @@ class ChannelGroupController extends Controller
             return $channel;
         });
 
-        ChannelAmount::insertIgnore($channelAmounts->toArray());
-        UserChannel::insertIgnore($userChannels->toArray());
+        ChannelAmount::insertOrIgnore($channelAmounts->toArray());
+        UserChannel::insertOrIgnore($userChannels->toArray());
     }
 
     private function isDuplicated($currentChannelAmounts, $newChannelAmounts, $isFixed)

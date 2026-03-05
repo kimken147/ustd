@@ -364,7 +364,7 @@ class UserChannelAccountController extends Controller
                     "user_id" => $provider,
                     "name" => $request->device_name,
                 ];
-                Device::insertIgnore($device);
+                Device::insertOrIgnore([$device]);
                 $device = Device::where($device)->first();
                 $updateData["device_id"] = $device->id;
             }

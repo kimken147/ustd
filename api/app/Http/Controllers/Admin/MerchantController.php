@@ -257,14 +257,21 @@ class MerchantController extends Controller
             $allChannelGroups = ChannelGroup::all()->keyBy('id');
 
             foreach ($allChannelGroups as $channelGroupId => $channelGroup) {
-                $merchant->userChannels()->create([
+                $minAmount = data_get($userChannelMinAmounts, $channelGroupId);
+                $maxAmount = data_get($userChannelMaxAmounts, $channelGroupId);
+                $channelData = [
                     'channel_group_id' => $channelGroupId,
                     'fee_percent'      => $feePercent = data_get($userChannelFeePercents, $channelGroupId, null),
-                    'min_amount'       => data_get($userChannelMinAmounts, $channelGroupId, null),
-                    'max_amount'       => data_get($userChannelMaxAmounts, $channelGroupId, null),
                     'status'           => is_null($feePercent) ? Channel::STATUS_DISABLE : Channel::STATUS_ENABLE,
                     'floating_enable'  => false,
-                ]);
+                ];
+                if (!is_null($minAmount)) {
+                    $channelData['min_amount'] = $minAmount;
+                }
+                if (!is_null($maxAmount)) {
+                    $channelData['max_amount'] = $maxAmount;
+                }
+                $merchant->userChannels()->create($channelData);
             }
 
             return $merchant;

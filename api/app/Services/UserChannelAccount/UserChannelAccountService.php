@@ -69,7 +69,7 @@ class UserChannelAccountService
             'name'    => $deviceName,
         ];
 
-        Device::insertIgnore($device);
+        Device::insertOrIgnore([$device]);
 
         return Device::where($device)->firstOrFail();
     }

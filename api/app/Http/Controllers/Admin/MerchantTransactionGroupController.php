@@ -79,7 +79,7 @@ class MerchantTransactionGroupController extends Controller
             }
 
             DB::transaction(function () use ($merchantIds, $providerIds, $transactionGroupValues) {
-                TransactionGroup::insertIgnore($transactionGroupValues->toArray());
+                TransactionGroup::insertOrIgnore($transactionGroupValues->toArray());
 
                 $transactionGroups = TransactionGroup::whereIn('owner_id', $merchantIds)->whereIn('worker_id', $providerIds)->get();
 

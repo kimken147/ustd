@@ -488,7 +488,7 @@ class UserChannelAccountController extends Controller
         ]);
 
         $device = ['user_id' => auth()->user()->getKey(), 'name' => $request->device_name];
-        Device::insertIgnore($device);
+        Device::insertOrIgnore([$device]);
         $device = Device::where($device)->firstOrFail();
 
         $userChannelAccount = null;

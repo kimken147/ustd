@@ -41,7 +41,7 @@ class AddLoginIpCommand extends Command
             return $this->replyWithMessage(['text' => 'IP 格式错误']);
         }
 
-        WhitelistedIp::insertIgnore([
+        WhitelistedIp::insertOrIgnore([
             [
                 'type'       => WhitelistedIp::TYPE_LOGIN,
                 'user_id'    => $user->getKey(),

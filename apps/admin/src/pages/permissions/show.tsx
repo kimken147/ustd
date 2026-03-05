@@ -131,7 +131,7 @@ const SubAccountShow: FC = () => {
                       method: 'post',
                     },
                     onSuccess(data) {
-                      navigate(`/sub-accounts/show/${data?.id}`, {
+                      navigate(`/sub-accounts/${data?.id}`, {
                         state: {
                           ...(state as SubAccount),
                           ...record,
@@ -164,7 +164,7 @@ const SubAccountShow: FC = () => {
                       method: 'post',
                     },
                     onSuccess(data) {
-                      navigate(`/sub-accounts/show/${data?.id}`, {
+                      navigate(`/sub-accounts/${data?.id}`, {
                         state: {
                           ...(state as SubAccount),
                           ...record,
