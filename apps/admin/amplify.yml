@@ -8,7 +8,7 @@ applications:
             - nvm install 18
             - nvm use 18
             - npm install -g pnpm
-            - cd ../.. && pnpm install
+            - cd ../.. && CI=true pnpm install --frozen-lockfile
         build:
           commands:
             - npx @refinedev/cli build
