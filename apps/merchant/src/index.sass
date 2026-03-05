@@ -39,6 +39,31 @@
 
             &:hover
                 @apply bg-blue-800 text-slate-50
-    .form-item
-        label
+    // Login page dark input overrides
+    .login-dark
+        .ant-input,
+        .ant-input-password .ant-input
+            background: rgba(255,255,255,0.08) !important
+            border-color: rgba(255,255,255,0.12) !important
             color: #fff !important
+            &::placeholder
+                color: rgba(255,255,255,0.35) !important
+            &:hover, &:focus
+                border-color: rgba(0,144,229,0.6) !important
+                background: rgba(255,255,255,0.12) !important
+        .ant-input-password
+            background: rgba(255,255,255,0.08) !important
+            border-color: rgba(255,255,255,0.12) !important
+            &:hover, &:focus-within
+                border-color: rgba(0,144,229,0.6) !important
+                background: rgba(255,255,255,0.12) !important
+            .ant-input-suffix
+                color: rgba(255,255,255,0.4)
+        .ant-input-affix-wrapper
+            background: rgba(255,255,255,0.08) !important
+            border-color: rgba(255,255,255,0.12) !important
+            &:hover, &:focus-within
+                border-color: rgba(0,144,229,0.6) !important
+                background: rgba(255,255,255,0.12) !important
+        .ant-form-item-explain-error
+            color: #ff7875
