@@ -1,0 +1,22 @@
+version: 1
+applications:
+  - appRoot: apps/merchant
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm install 18
+            - nvm use 18
+            - npm install -g pnpm
+            - cd ../.. && pnpm install
+        build:
+          commands:
+            - cd ../.. && pnpm --filter @morgan-ustd/merchant build:prod
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - ../../node_modules/**/*
+          - node_modules/**/*

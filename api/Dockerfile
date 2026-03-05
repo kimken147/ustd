@@ -10,7 +10,7 @@ ENV TZ=UTC \
     PHP_OPCACHE_REVALIDATE_FREQ=1 \
     HIGH_PRIORITY_QUEUE=hpq \
     MEDIUM_PRIORITY_QUEUE=mpq \
-    S3_BUCKET=ark-api-env
+    S3_BUCKET=ustd-api-env
 
 # 安裝系統套件
 RUN apt-get update && apt-get install -y \
