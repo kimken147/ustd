@@ -273,5 +273,23 @@
   "ok": "ยืนยัน",
   "errors": {
     "tryLater": "เกิดข้อผิดพลาด กรุณาลองอีกครั้งในภายหลัง"
+  },
+  "buttons": {
+    "save": "ส่ง",
+    "cancel": "ยกเลิก",
+    "clear": "ล้าง",
+    "filter": "กรอง",
+    "logout": "ออกจากระบบ",
+    "delete": "ลบ",
+    "confirm": "ยืนยัน",
+    "refresh": "รีเฟรช"
+  },
+  "notifications": {
+    "success": "สำเร็จ"
+  },
+  "pages": {
+    "error": {
+      "backHome": "กลับหน้าแรก"
+    }
   }
 }

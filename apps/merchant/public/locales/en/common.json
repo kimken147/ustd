@@ -273,5 +273,23 @@
   "ok": "Confirm",
   "errors": {
     "tryLater": "An error occurred. Please try again later"
+  },
+  "buttons": {
+    "save": "Submit",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "filter": "Filter",
+    "logout": "Log Out",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "refresh": "Refresh"
+  },
+  "notifications": {
+    "success": "Success"
+  },
+  "pages": {
+    "error": {
+      "backHome": "Back to Home"
+    }
   }
 }
