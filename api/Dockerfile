@@ -1,5 +1,5 @@
 # Dockerfile
-FROM php:8.0-fpm
+FROM 243776527511.dkr.ecr.ap-southeast-1.amazonaws.com/php-fpm:8.3-fpm
 
 # 設定環境變數
 ENV TZ=UTC \
@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
+    libgmp-dev \
     net-tools \
     iproute2 \
     procps \
@@ -50,6 +51,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     pcntl \
     bcmath \
     gd \
+    gmp \
     zip \
     opcache
 
@@ -57,10 +59,10 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN pecl install redis && docker-php-ext-enable redis
 
 # 安裝 AWS CLI
-RUN pip3 install --no-cache-dir awscli
+RUN pip3 install --no-cache-dir --break-system-packages awscli
 
 # 安裝 Composer
-COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
+COPY --from=243776527511.dkr.ecr.ap-southeast-1.amazonaws.com/composer:2 /usr/bin/composer /usr/bin/composer
 
 # 設定工作目錄
 WORKDIR /var/www
