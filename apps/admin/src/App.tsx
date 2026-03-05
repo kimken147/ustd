@@ -9,7 +9,7 @@ import {
 import '@refinedev/antd/dist/reset.css';
 import routerProvider from '@refinedev/react-router';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router';
-import { ConfigProvider, App as AntdApp } from 'antd';
+import { ConfigProvider, App as AntdApp, theme } from 'antd';
 import { authProvider } from './authProvider';
 import AuthPage from 'components/authPage';
 import HomePage from 'pages/home';
@@ -77,6 +77,7 @@ import zhCN from 'antd/locale/zh_CN';
 import thTH from 'antd/locale/th_TH';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import { Header } from 'components/layout/header';
 
 import 'dayjs/locale/th';
 import 'dayjs/locale/en';
@@ -87,6 +88,8 @@ initDayjs();
 function App() {
   const { t, i18n } = useTranslation();
   const [currentLocale, setCurrentLocale] = useState(i18n.language);
+
+
 
   const i18nProvider = {
     translate: (key: string, options?: any) => {
@@ -283,6 +286,7 @@ function App() {
         }}
         locale={getAntdLocale()}
         theme={{
+          algorithm: theme.defaultAlgorithm,
           components: {
             Layout: {
               colorBgHeader: '#0090e5',
@@ -291,8 +295,8 @@ function App() {
           },
           token: {
             colorPrimary: '#0090e5',
-            colorPrimaryHover: ' #1677ff',
-            colorPrimaryActive: ' #1677ff',
+            colorPrimaryHover: '#1677ff',
+            colorPrimaryActive: '#1677ff',
           },
         }}
       >
@@ -328,6 +332,9 @@ function App() {
                 element={
                   <Authenticated key="authenticated" fallback={<AuthPage />}>
                     <ThemedLayout
+                      Header={() => (
+                        <Header />
+                      )}
                       Title={({ collapsed }) => (
                         <ThemedTitle
                           collapsed={collapsed}
