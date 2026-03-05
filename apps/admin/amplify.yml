@@ -5,13 +5,13 @@ applications:
       phases:
         preBuild:
           commands:
-            - nvm install 18
-            - nvm use 18
-            - npm install -g pnpm
-            - cd ../.. && CI=true pnpm install --frozen-lockfile
+            - corepack enable
+            - cd ../.. && pnpm install --frozen-lockfile
+            - cd ../.. && pnpm --filter @morgan-ustd/shared build
+            - cp ../../.env/.env.base.prod .env.base.prod
         build:
           commands:
-            - pnpm exec refine build
+            - set -a && source .env.base.prod && source .env/.env.prod && set +a && pnpm exec refine build
       artifacts:
         baseDirectory: build
         files:
