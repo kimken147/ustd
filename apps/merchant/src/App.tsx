@@ -46,6 +46,7 @@ import SubAccountList from 'pages/subAccount/list';
 import SubAccountCreate from 'pages/subAccount/create';
 import SubAccountShow from 'pages/subAccount/show';
 import { useState } from 'react';
+import { Header } from 'components/layout/header';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
@@ -202,6 +203,7 @@ function App() {
                 element={
                   <Authenticated key="authenticated" fallback={<AuthPage />}>
                     <ThemedLayout
+                      Header={() => <Header />}
                       Title={({ collapsed }) => (
                         <ThemedTitle
                           collapsed={collapsed}
