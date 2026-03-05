@@ -6,7 +6,7 @@ applications:
         preBuild:
           commands:
             - corepack enable
-            - cd ../.. && pnpm install --frozen-lockfile
+            - cd ../.. && CI=true pnpm install --frozen-lockfile
             - cd ../.. && pnpm --filter @morgan-ustd/shared build
         build:
           commands:
