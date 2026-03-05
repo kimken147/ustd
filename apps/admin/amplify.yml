@@ -6,12 +6,13 @@ applications:
         preBuild:
           commands:
             - corepack enable
-            - cd ../.. && CI=true pnpm install --frozen-lockfile
-            - cd ../.. && pnpm --filter @morgan-ustd/shared build
+            - CI=true pnpm install --frozen-lockfile
+            - pnpm --filter @morgan-ustd/shared build
         build:
           commands:
-            - pnpm exec refine build
+            - pnpm --filter @morgan-ustd/admin exec refine build
       artifacts:
-        baseDirectory: build
+        baseDirectory: apps/admin/build
         files:
           - '**/*'
+      buildPath: /
