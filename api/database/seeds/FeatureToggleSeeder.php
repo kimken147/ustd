@@ -2,6 +2,7 @@
 
 use App\Models\FeatureToggle;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FeatureToggleSeeder extends Seeder
 {
@@ -512,6 +513,6 @@ class FeatureToggleSeeder extends Seeder
             ->values()
             ->toArray();
 
-        FeatureToggle::insertIgnore($featureToggles);
+        DB::table('feature_toggles')->insertOrIgnore($featureToggles);
     }
 }

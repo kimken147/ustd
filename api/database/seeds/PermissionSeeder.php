@@ -3,6 +3,7 @@
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PermissionSeeder extends Seeder
 {
@@ -214,6 +215,6 @@ class PermissionSeeder extends Seeder
             ->values()
             ->toArray();
 
-        Permission::insertOnDuplicateKey($permissions);
+        DB::table('permissions')->insertOrIgnore($permissions);
     }
 }
