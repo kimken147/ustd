@@ -192,9 +192,8 @@ class UserChannelAccountService
         } catch (\Exception $e) {
             Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollBack();
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
-
-        abort_if(!$userChannelAccount, Response::HTTP_INTERNAL_SERVER_ERROR);
 
         return $userChannelAccount;
     }
