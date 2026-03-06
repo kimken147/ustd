@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { SyncOutlined } from '@ant-design/icons';
 import { Button, Modal, Space } from 'antd';
 import { useCustomMutation, useDelete, useNotification } from '@refinedev/core';
@@ -24,7 +24,8 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
   t,
 }) => {
   const { mutateAsync: mutateDeleting } = useDelete();
-  const { mutate: batchSyncMutate, isLoading: isSyncing } = useCustomMutation();
+  const { mutate: batchSyncMutate, mutation: batchSyncMutation } = useCustomMutation();
+  const isSyncing = batchSyncMutation.isPending;
   const { open } = useNotification();
 
   if (!selectedKeys.length) {
