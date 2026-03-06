@@ -174,6 +174,7 @@ const PayForAnotherList: FC = () => {
     showPermissionAlert,
     grantPermission,
     dismissPermissionAlert,
+    requestPermission,
   } = useNewDataNotification({
     data: withdrawData,
     currentPage: pagination?.current,
@@ -230,7 +231,10 @@ const PayForAnotherList: FC = () => {
           <AutoRefetch />
           <Space className="px-4 mb-4">
             <TextField value={t('switches.soundAlert')} />
-            <Switch checked={enableNotice} onChange={setEnableNotice} />
+            <Switch checked={enableNotice} onChange={(checked) => {
+              setEnableNotice(checked);
+              if (checked) requestPermission();
+            }} />
           </Space>
         </Space>
 

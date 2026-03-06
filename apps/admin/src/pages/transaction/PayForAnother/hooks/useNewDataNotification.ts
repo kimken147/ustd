@@ -17,6 +17,7 @@ interface UseNewDataNotificationReturn {
   showPermissionAlert: boolean;
   grantPermission: () => void;
   dismissPermissionAlert: () => void;
+  requestPermission: () => void;
 }
 
 /**
@@ -49,6 +50,7 @@ export function useNewDataNotification<T extends { id: number | string }>({
     grantPermission,
     dismissPermissionAlert,
     playAudio,
+    requestPermission,
   } = useAudioPermission(audioSrc);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function useNewDataNotification<T extends { id: number | string }>({
     showPermissionAlert,
     grantPermission,
     dismissPermissionAlert,
+    requestPermission,
   };
 }
 

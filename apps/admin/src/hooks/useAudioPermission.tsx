@@ -19,24 +19,31 @@ export const useAudioPermission = (audioSrc: string) => {
         return audioRef.current;
     }, [audioSrc]);
 
-    // 頁面載入時，如果之前已授權，嘗試透過用戶互動解鎖 AudioContext
+    // 頁面載入時：從未問過 → 自動彈窗；已授權 → 解鎖 AudioContext；已拒絕 → 不彈窗
     useEffect(() => {
-        if (!permissionGranted) {
+        const stored = localStorage.getItem(AUDIO_PERMISSION_KEY);
+
+        // 從未問過，自動彈窗一次
+        if (stored === null) {
             setShowPermissionAlert(true);
+            return;
+        }
+
+        // 已拒絕，不做任何事
+        if (!permissionGranted) {
             return;
         }
 
         // 已授權過，監聽任意用戶互動來解鎖 AudioContext
         const unlockAudio = () => {
             const audio = getAudio();
-            // 用靜音播放解鎖
             audio.volume = 0;
             audio.play().then(() => {
                 audio.pause();
                 audio.currentTime = 0;
                 audio.volume = 1;
             }).catch(() => {
-                // 如果仍然失敗，需要重新請求權限
+                // 如果仍然失敗，等下次用戶互動
             });
 
             if (audioCtxRef.current?.state === "suspended") {
@@ -94,7 +101,7 @@ export const useAudioPermission = (audioSrc: string) => {
     // 實際播放音訊的函數
     const playAudio = useCallback(async () => {
         if (!permissionGranted) {
-            setShowPermissionAlert(true);
+            // 靜默失敗，不彈窗打擾用戶；用戶可透過提示音開關重新啟用
             return false;
         }
 
@@ -106,10 +113,16 @@ export const useAudioPermission = (audioSrc: string) => {
             return true;
         } catch (error) {
             console.error("播放音訊失敗:", error);
-            // 播放失敗不再彈窗，等下次用戶互動後自動解鎖
             return false;
         }
     }, [permissionGranted, getAudio]);
+
+    // 請求權限（供外部如開關元件呼叫）
+    const requestPermission = useCallback(() => {
+        if (!permissionGranted) {
+            setShowPermissionAlert(true);
+        }
+    }, [permissionGranted]);
 
     return {
         permissionGranted,
@@ -117,5 +130,6 @@ export const useAudioPermission = (audioSrc: string) => {
         grantPermission,
         dismissPermissionAlert,
         playAudio,
+        requestPermission,
     };
 };
