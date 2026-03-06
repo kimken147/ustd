@@ -52,6 +52,7 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         if ($info['confirmed'] && $info['success']) {
             $transaction->update([
                 'status' => Transaction::STATUS_SUCCESS,
+                'chain_fee' => $info['fee'],
             ]);
 
             $this->log($transaction, "鏈上交易已確認成功 (tx_hash: {$transaction->tx_hash})", [

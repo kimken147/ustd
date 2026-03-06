@@ -85,6 +85,20 @@ export function createSystemOrderNumberColumn(ctx: ColumnContext): WithdrawColum
   };
 }
 
+export function createChainFeeColumn(ctx: ColumnContext): WithdrawColumn {
+  const { t } = ctx;
+
+  return {
+    title: t('fields.chainFee'),
+    dataIndex: 'chain_fee',
+    responsive: ['lg', 'xl', 'xxl'] as const,
+    width: 100,
+    render(value: string | null) {
+      return value ?? '-';
+    },
+  };
+}
+
 export function createChainNetworkColumn(ctx: ColumnContext): WithdrawColumn {
   const { t } = ctx;
 
@@ -123,6 +137,7 @@ export function getDataColumns(ctx: ColumnContext): WithdrawColumn[] {
     createAmountColumn(ctx),
     createFeeColumn(ctx),
     createChainNetworkColumn(ctx),
+    createChainFeeColumn(ctx),
     createTxHashColumn(ctx),
     createCreatedAtColumn(ctx),
     createConfirmedAtColumn(ctx),

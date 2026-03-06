@@ -137,7 +137,8 @@
     "rewardCommission": "Amount",
     "agentLine": "Agency Framework",
     "holderName": "Recipient Name",
-    "chainNetwork": "Chain Network"
+    "chainNetwork": "Chain Network",
+    "chainFee": "Chain Fee"
   },
   "types": {
     "withdraw": "Withdrawal",

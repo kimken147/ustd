@@ -85,6 +85,7 @@ class Transaction extends Model
         'usdt_rate',
         'chain_network',
         'tx_hash',
+        'chain_fee',
         'channel_code',
         'from_channel_account_hash_id',
         'note',
