@@ -3,8 +3,10 @@
 namespace App\Services\InternalTransfer;
 
 use App\DTOs\TransactionParams;
+use App\Jobs\ProcessUsdtWithdraw;
 use App\Models\Transaction;
 use App\Models\UserChannelAccount;
+use App\Services\Transaction\TransactionStatusRules;
 use App\Utils\BCMathUtil;
 use App\Utils\BankCardTransferObject;
 use App\Utils\TransactionFactory;
@@ -34,6 +36,8 @@ class InternalTransferService
         abort_if(!$transaction, Response::HTTP_BAD_REQUEST, __('common.Create transfer failed'));
 
         $this->updateAccountTotal($account, $transaction);
+
+        $this->dispatchUsdtWithdrawIfNeeded($transaction, $account);
 
         return $transaction;
     }
@@ -93,5 +97,20 @@ class InternalTransferService
             $transaction->amount,
             true
         );
+    }
+
+    /**
+     * Dispatch USDT on-chain withdrawal if the assigned account is a USDT channel.
+     */
+    private function dispatchUsdtWithdrawIfNeeded(Transaction $transaction, UserChannelAccount $account): void
+    {
+        if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
+            false,
+            $account->channel_code,
+            $transaction->thirdchannel_id,
+            $transaction->to_channel_account_id
+        )) {
+            ProcessUsdtWithdraw::dispatch($transaction->id);
+        }
     }
 }
