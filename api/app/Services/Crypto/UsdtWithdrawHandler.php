@@ -3,6 +3,7 @@
 namespace App\Services\Crypto;
 
 use App\Models\Transaction;
+use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\Trc20Adapter;
@@ -17,8 +18,7 @@ class UsdtWithdrawHandler
     {
         // Idempotency: skip if already broadcast
         if (!empty($transaction->tx_hash)) {
-            Log::info('UsdtWithdrawHandler: 交易已有 tx_hash，跳過', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, '交易已有 tx_hash，跳過', [
                 'tx_hash' => $transaction->tx_hash,
             ]);
             return;
@@ -26,13 +26,15 @@ class UsdtWithdrawHandler
 
         $account = UserChannelAccount::find($transaction->from_channel_account_id);
         if (!$account) {
-            Log::error('UsdtWithdrawHandler: 找不到出款帳號', ['transaction_id' => $transaction->id]);
+            $this->log($transaction, '找不到出款帳號', level: 'error');
             return;
         }
 
         $encryptedKey = data_get($account->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY);
         if (!$encryptedKey) {
-            Log::warning('UsdtWithdrawHandler: 帳號未設定私鑰，跳過自動出款', ['account_id' => $account->id]);
+            $this->log($transaction, '帳號未設定私鑰，跳過自動出款', [
+                'account_id' => $account->id,
+            ], 'warning');
             return;
         }
 
@@ -46,11 +48,10 @@ class UsdtWithdrawHandler
         $trxBalance = $adapter->getNativeBalance($fromAddress);
 
         if (bccomp($trxBalance, $minTrxBalance, 6) < 0) {
-            Log::error('UsdtWithdrawHandler: TRX 餘額不足支付 Gas', [
-                'transaction_id' => $transaction->id,
-                'trx_balance'    => $trxBalance,
-                'min_required'   => $minTrxBalance,
-            ]);
+            $this->log($transaction, "TRX 餘額不足支付 Gas (餘額: {$trxBalance}, 最低: {$minTrxBalance})", [
+                'trx_balance'  => $trxBalance,
+                'min_required' => $minTrxBalance,
+            ], 'error');
             throw new InsufficientBalanceException(
                 "TRX balance {$trxBalance} below minimum {$minTrxBalance} for gas fees"
             );
@@ -60,7 +61,7 @@ class UsdtWithdrawHandler
         $amount = $transaction->floating_amount ?? $transaction->amount;
 
         if (empty($toAddress)) {
-            Log::error('UsdtWithdrawHandler: 目標地址為空', ['transaction_id' => $transaction->id]);
+            $this->log($transaction, '目標地址為空', level: 'error');
             return;
         }
 
@@ -77,25 +78,34 @@ class UsdtWithdrawHandler
             // Dispatch delayed confirmation check
             ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
-            Log::info('UsdtWithdrawHandler: 出款交易已廣播', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, "出款交易已廣播 (tx_hash: {$chainTx->txHash})", [
                 'tx_hash' => $chainTx->txHash,
             ]);
         } catch (InsufficientBalanceException|TransactionBroadcastException $e) {
-            Log::error('UsdtWithdrawHandler: 鏈上出款失敗', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, "鏈上出款失敗: {$e->getMessage()}", [
                 'error' => $e->getMessage(),
-            ]);
+            ], 'error');
             throw $e;
         } catch (\Throwable $e) {
-            Log::error('UsdtWithdrawHandler: 未預期錯誤', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, "未預期錯誤: {$e->getMessage()}", [
                 'error' => $e->getMessage(),
-            ]);
+            ], 'error');
             throw $e;
         } finally {
             $privateKey = null;
         }
+    }
+
+    private function log(Transaction $transaction, string $message, array $context = [], string $level = 'info'): void
+    {
+        $logContext = array_merge(['transaction_id' => $transaction->id], $context);
+        Log::$level("UsdtWithdrawHandler: {$message}", $logContext);
+
+        TransactionNote::create([
+            'transaction_id' => $transaction->id,
+            'user_id' => 0,
+            'note' => "[USDT出款] {$message}",
+        ]);
     }
 
     private function resolveAdapter(string $chainNetwork): ChainAdapterInterface

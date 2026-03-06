@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Jobs\NotifyTransaction;
 use App\Models\Transaction;
+use App\Models\TransactionNote;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\Trc20Adapter;
 use Illuminate\Bus\Queueable;
@@ -53,8 +54,7 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                 'status' => Transaction::STATUS_SUCCESS,
             ]);
 
-            Log::info('ConfirmUsdtWithdraw: 鏈上交易已確認成功', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, "鏈上交易已確認成功 (tx_hash: {$transaction->tx_hash})", [
                 'tx_hash' => $transaction->tx_hash,
                 'fee' => $info['fee'],
             ]);
@@ -63,15 +63,26 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                 'status' => Transaction::STATUS_FAILED,
             ]);
 
-            Log::error('ConfirmUsdtWithdraw: 鏈上交易失敗', [
-                'transaction_id' => $transaction->id,
+            $this->log($transaction, "鏈上交易失敗 (tx_hash: {$transaction->tx_hash})", [
                 'tx_hash' => $transaction->tx_hash,
                 'info' => $info,
-            ]);
+            ], 'error');
         }
 
         // Notify merchant of the final withdrawal result
         NotifyTransaction::dispatch($transaction);
+    }
+
+    private function log(Transaction $transaction, string $message, array $context = [], string $level = 'info'): void
+    {
+        $logContext = array_merge(['transaction_id' => $transaction->id], $context);
+        Log::$level("ConfirmUsdtWithdraw: {$message}", $logContext);
+
+        TransactionNote::create([
+            'transaction_id' => $transaction->id,
+            'user_id' => 0,
+            'note' => "[USDT確認] {$message}",
+        ]);
     }
 
     private function resolveAdapter(string $chainNetwork): ?ChainAdapterInterface
