@@ -56,6 +56,7 @@ const accessControlProvider: RefineProps["accessControlProvider"] = {
         if (resource === "channels") {
             if (action === "15" && !hasPermission(15)) can = false;
         }
+        if (resource === "internal-transfers" && !hasPermission(35)) can = false;
         if (resource === "feature-toggles" && !hasPermission(16)) can = false;
         if (resource === "SI" && !hasPermission(34)) can = false;
 

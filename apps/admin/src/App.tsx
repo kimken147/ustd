@@ -68,6 +68,8 @@ import ThirdChannelSettingList from 'pages/thirdChannel/setting/list';
 import BankList from 'pages/systemSetting/bank/list';
 import TagList from 'pages/tag/list';
 import TagCreate from 'pages/tag/create';
+import FundList from 'pages/transaction/fund/list';
+import FundCreate from 'pages/transaction/fund/create';
 
 import { useTranslation } from 'react-i18next';
 import './i18n';
@@ -193,6 +195,12 @@ function App() {
       list: '/withdraws',
       show: '/withdraws/:id',
       meta: { label: t('navigation.payment'), parent: 'transaction' },
+    },
+    {
+      name: 'internal-transfers',
+      list: '/internal-transfers',
+      create: '/internal-transfers/create',
+      meta: { label: t('navigation.fundManagement'), parent: 'transaction' },
     },
     {
       name: 'child-withdraws',
@@ -391,6 +399,10 @@ function App() {
                 <Route path="/withdraws" element={<PayForAnotherList />} />
                 <Route path="/withdraws/:id" element={<PayForAnotherShow />} />
                 <Route path="/child-withdraws/:id" element={<ChildWithdrawCreate />} />
+
+                {/* Internal Transfers (Fund Management) */}
+                <Route path="/internal-transfers" element={<FundList />} />
+                <Route path="/internal-transfers/create" element={<FundCreate />} />
 
                 {/* User Bank Cards */}
                 <Route path="/user-bank-cards" element={<UserBankCardList />} />

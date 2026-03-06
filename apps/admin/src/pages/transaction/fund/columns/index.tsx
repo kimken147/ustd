@@ -30,11 +30,12 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
     showUpdateModal,
     Modal,
     apiUrl,
+    canEdit,
   } = deps;
 
   return [
     {
-      title: '订单号',
+      title: t('fields.orderNumber'),
       dataIndex: 'order_number',
       render(value, record) {
         return value ? (
@@ -56,7 +57,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                 showUpdateModal({
                   id: record.id,
                   filterFormItems: ['note', 'transaction_id'],
-                  title: '备注',
+                  title: t('fields.note'),
                   initialValues: {
                     transaction_id: record.id,
                   },
@@ -66,7 +67,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                         <Space direction="vertical" key={idx}>
                           <TextField value={note.note} code className="text-[#1677ff]" />
                           <TextField
-                            value={`${note.user ? `${note.user.name}` : '系统'}: ${dayjs(note.created_at).format('YYYY-MM-DD HH:mm:ss')}`}
+                            value={`${note.user ? `${note.user.name}` : t('messages.system')}: ${dayjs(note.created_at).format('YYYY-MM-DD HH:mm:ss')}`}
                           />
                         </Space>
                       ))}
@@ -93,10 +94,24 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: '锁定',
+      title: t('fields.refNo'),
+      dataIndex: '_search1',
+      render(value) {
+        return value ? (
+          <TextField
+            value={value}
+            copyable={{
+              icon: <CopyOutlined style={{ color: Purple }} />,
+            }}
+          />
+        ) : null;
+      },
+    },
+    {
+      title: t('fields.locked'),
       dataIndex: 'locked',
       render(value, record) {
-        const text = value ? '解锁' : '锁定';
+        const text = value ? t('status.unlocked') : t('status.locked');
         const { locked, locked_by } = record;
         const notLocker = locked && profile?.role !== 1 && profile?.name !== locked_by.name;
         const icon = value ? <LockOutlined /> : <UnlockOutlined />;
@@ -106,7 +121,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
         const danger = !value;
         const onClick = () =>
           Modal.confirm({
-            title: `是否确定${text}提现订单？`,
+            title: t('messages.confirmLock', { action: text }),
             id: record.id,
             values: {
               locked: !value,
@@ -118,7 +133,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
               danger={danger}
               icon={icon}
               onClick={onClick}
-              disabled={notLocker}
+              disabled={!canEdit || notLocker}
               className={className}
             >
               {text}
@@ -145,12 +160,12 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: '操作',
+      title: t('actions.operation'),
       dataIndex: 'locked',
       render(value, record) {
         const { locked, locked_by } = record;
         const notLocker = locked && profile?.role !== 1 && profile?.name !== locked_by?.name;
-        return locked && !notLocker ? (
+        return canEdit && locked && !notLocker ? (
           <Popover
             content={
               <Space>
@@ -169,16 +184,20 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                       : '!bg-[#16a34a] !text-slate-50 border-0'
                   }
                   onClick={() =>
-                    Modal.confirm({
-                      title: '是否确定修改状态？',
+                    showUpdateModal({
+                      title: t('messages.confirmModifyStatus'),
                       id: record.id,
-                      values: {
+                      filterFormItems: ['_search1'],
+                      initialValues: {
+                        _search1: record._search1 ?? '',
+                      },
+                      formValues: {
                         status: WithdrawStatus.手动成功,
                       },
                     })
                   }
                 >
-                  成功
+                  {t('actions.changeToSuccess')}
                 </Button>
                 <Button
                   icon={<CloseOutlined />}
@@ -190,7 +209,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                   }
                   onClick={() =>
                     Modal.confirm({
-                      title: '是否确定修改状态？',
+                      title: t('messages.confirmModifyStatus'),
                       id: record.id,
                       values: {
                         status: WithdrawStatus.失败,
@@ -198,25 +217,25 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                     })
                   }
                 >
-                  失败
+                  {t('actions.changeToFail')}
                 </Button>
               </Space>
             }
             trigger="click"
           >
             <Button icon={<SettingOutlined />} type="primary">
-              操作
+              {t('actions.operation')}
             </Button>
           </Popover>
         ) : (
           <Button disabled icon={<SettingOutlined />}>
-            操作
+            {t('actions.operation')}
           </Button>
         );
       },
     },
     {
-      title: '付款账号',
+      title: t('fields.paymentAccountNumber'),
       dataIndex: ['to_channel_account', 'name'],
       render(_, record) {
         return record.to_channel_account ? (
@@ -229,10 +248,10 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
               content={
                 <Space direction="vertical">
                   <TextField
-                    value={`账号编号: ${numeral(record.to_channel_account.id).format('00000')}`}
+                    value={t('info.accountNumber', { number: numeral(record.to_channel_account.id).format('00000') })}
                   />
                   {record.to_channel_account?.note ? (
-                    <TextField value={`备注：${record.to_channel_account?.note}`} />
+                    <TextField value={t('info.note', { note: record.to_channel_account?.note })} />
                   ) : null}
                 </Space>
               }
@@ -244,7 +263,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: '备注',
+      title: t('fields.note'),
       dataIndex: 'note',
       render(value, record) {
         return (
@@ -254,7 +273,7 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
               style={{ color: Purple }}
               onClick={() => {
                 showUpdateModal({
-                  title: '修改备注',
+                  title: t('actions.editNote'),
                   filterFormItems: ['note'],
                   id: record.id,
                   initialValues: {
@@ -268,22 +287,22 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: '收款账号',
+      title: t('fields.collectionAccount'),
       dataIndex: 'bank_card_number',
     },
     {
-      title: '金额',
+      title: t('fields.amount'),
       dataIndex: 'amount',
     },
     {
-      title: '建立时间',
+      title: t('fields.createdAt'),
       dataIndex: 'created_at',
       render(value) {
         return value ? <DateField value={value} format={Format} /> : null;
       },
     },
     {
-      title: '订单状态',
+      title: t('fields.orderStatus'),
       dataIndex: 'status',
       render(value) {
         let color = '';
@@ -302,18 +321,18 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: '成功时间',
+      title: t('fields.successTime'),
       dataIndex: 'confirmed_at',
       render(value) {
         return value ? <DateField value={value} format={Format} /> : null;
       },
     },
     {
-      title: '银行名称',
+      title: t('fields.bankName'),
       dataIndex: 'bank_name',
     },
     {
-      title: '持卡人名称',
+      title: t('fields.cardHolder'),
       dataIndex: 'bank_card_holder_name',
     },
   ];

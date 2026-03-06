@@ -4,19 +4,23 @@ import {
   useForm,
 } from '@refinedev/antd';
 import {
+  Button,
   Col,
   Form,
   Input,
   InputNumber,
   Row,
 } from 'antd';
+import { MinusCircleOutlined } from '@ant-design/icons';
 import { useCreate, useNavigation, useNotification } from "@refinedev/core";
 import useSelector from "hooks/useSelector";
 import { Bank, ProviderUserChannel as UserChannel } from "@morgan-ustd/shared";
 import { FC, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from 'react-i18next';
 
 const FundCreate: FC = () => {
+    const { t } = useTranslation('transaction');
     const { form } = useForm();
     const { list } = useNavigation();
     const { open } = useNotification();
@@ -36,17 +40,17 @@ const FundCreate: FC = () => {
 
     return (
         <Create
-            title="建立转账"
+            title={t('fund.create')}
             footerButtons={() => (
                 <>
                     <SaveButton onClick={form.submit} loading={loading}>
-                        提交
+                        {t('actions.submit')}
                     </SaveButton>
                 </>
             )}
         >
             <Helmet>
-                <title>建立转账</title>
+                <title>{t('fund.create')}</title>
             </Helmet>
             <Form
                 form={form}
@@ -70,7 +74,7 @@ const FundCreate: FC = () => {
                     }
                     open?.({
                         type: "success",
-                        message: "建立转帐账号成功",
+                        message: t('fund.createSuccess'),
                     });
                     list("internal-transfers");
                 }}
@@ -86,7 +90,7 @@ const FundCreate: FC = () => {
                                         </Col>
                                         <Col xs={24} md={12} lg={3}>
                                             <Form.Item
-                                                label="付款账号"
+                                                label={t('fields.paymentAccountNumber')}
                                                 name={[name, "account_id"]}
                                                 rules={[{ required: true }]}
                                             >
@@ -94,13 +98,13 @@ const FundCreate: FC = () => {
                                             </Form.Item>
                                         </Col>
                                         <Col xs={24} md={12} lg={3}>
-                                            <Form.Item label="备注" name={[name, "note"]}>
-                                                <Input placeholder="选填" />
+                                            <Form.Item label={t('fields.note')} name={[name, "note"]}>
+                                                <Input placeholder={t('placeholders.optional')} />
                                             </Form.Item>
                                         </Col>
                                         <Col xs={24} md={12} lg={4}>
                                             <Form.Item
-                                                label="转出金额"
+                                                label={t('fields.transferAmount')}
                                                 name={[name, "amount"]}
                                                 rules={[{ required: true }]}
                                             >
@@ -109,7 +113,7 @@ const FundCreate: FC = () => {
                                         </Col>
                                         <Col xs={24} md={12} lg={4}>
                                             <Form.Item
-                                                label="银行名称"
+                                                label={t('fields.bankName')}
                                                 name={[name, "bank_name"]}
                                                 rules={[{ required: true }]}
                                             >
@@ -118,7 +122,7 @@ const FundCreate: FC = () => {
                                         </Col>
                                         <Col xs={24} md={12} lg={4}>
                                             <Form.Item
-                                                label="收款账号"
+                                                label={t('fields.collectionAccount')}
                                                 name={[name, "bank_card_number"]}
                                                 rules={[{ required: true }]}
                                             >
@@ -127,7 +131,7 @@ const FundCreate: FC = () => {
                                         </Col>
                                         <Col xs={24} md={12} lg={4}>
                                             <Form.Item
-                                                label="持卡人姓名"
+                                                label={t('fields.cardHolderName')}
                                                 name={[name, "bank_card_holder_name"]}
                                                 rules={[{ required: true }]}
                                             >
@@ -135,24 +139,24 @@ const FundCreate: FC = () => {
                                             </Form.Item>
                                         </Col>
 
-                                        {/* <Col xs={24} md={4} lg={1}>
+                                        <Col xs={24} md={4} lg={1}>
                                             <Form.Item label=" ">
                                                 <MinusCircleOutlined
                                                     onClick={() => remove(index)}
                                                     className="text-xl"
                                                 />
                                             </Form.Item>
-                                        </Col> */}
+                                        </Col>
                                     </Row>
                                 ))}
-                                {/* <Row gutter={16} align="middle">
+                                <Row gutter={16} align="middle">
                                     <Form.Item>
                                         <Button type="dashed" onClick={() => add()}>
-                                            建立一笔
+                                            {t('buttons.createOne')}
                                         </Button>
                                         <Form.ErrorList errors={errors} />
                                     </Form.Item>
-                                </Row> */}
+                                </Row>
                             </>
                         );
                     }}

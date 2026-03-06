@@ -1,6 +1,6 @@
 import { CreateButton, List, useTable } from '@refinedev/antd';
-import { useGetIdentity } from '@refinedev/core';
-import { Col, DatePicker, Divider, Input, Modal as AntdModal } from 'antd';
+import { useCan, useGetIdentity } from '@refinedev/core';
+import { Col, DatePicker, Divider, Input, Modal as AntdModal, Radio } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -21,6 +21,7 @@ const FundList: FC = () => {
   const { data: profile } = useGetIdentity<Profile>();
   const { Select: TranStatusSelect } = useTransactionStatus();
   const { Status: WithdrawStatus, getStatusText: getWithdrawStatusText } = useWithdrawStatus();
+  const { data: canEdit } = useCan({ action: '35', resource: 'internal-transfers' });
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
 
   const {
@@ -29,7 +30,8 @@ const FundList: FC = () => {
     Modal,
   } = useUpdateModal({
     formItems: [
-      { label: '备注', name: 'note', children: <Input.TextArea /> },
+      { label: t('fields.note'), name: 'note', children: <Input.TextArea /> },
+      { label: t('fields.refNo'), name: '_search1', children: <Input /> },
       { name: 'transaction_id', hidden: true },
     ],
   });
@@ -54,14 +56,15 @@ const FundList: FC = () => {
     showUpdateModal,
     Modal,
     apiUrl,
+    canEdit: canEdit?.can ?? false,
   };
 
   const columns = useColumns(columnDeps);
 
   return (
-    <List headerButtons={() => <CreateButton>建立转账</CreateButton>}>
+    <List headerButtons={() => <CreateButton>{t('fund.create')}</CreateButton>}>
       <Helmet>
-        <title>资金管理</title>
+        <title>{t('fund.title')}</title>
       </Helmet>
 
       <ListPageLayout>
@@ -70,7 +73,7 @@ const FundList: FC = () => {
         >
           <Col xs={24} md={6}>
             <ListPageLayout.Filter.Item
-              label="开始日期"
+              label={t('fields.startDate')}
               name="started_at"
               trigger="onSelect"
               rules={[{ required: true }]}
@@ -85,7 +88,7 @@ const FundList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={6}>
-            <ListPageLayout.Filter.Item label="结束日期" name="ended_at">
+            <ListPageLayout.Filter.Item label={t('fields.endDate')} name="ended_at">
               <DatePicker
                 showTime
                 className="w-full"
@@ -97,18 +100,31 @@ const FundList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>
-            <ListPageLayout.Filter.Item label="状态" name="status[]">
+            <ListPageLayout.Filter.Item label={t('fields.status')} name="status[]">
               <TranStatusSelect allowClear />
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>
-            <ListPageLayout.Filter.Item label="收款账号" name="bank_card_number">
+            <ListPageLayout.Filter.Item label={t('fields.collectionAccount')} name="bank_card_number">
               <Input allowClear />
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>
-            <ListPageLayout.Filter.Item label="付款账号" name="account">
+            <ListPageLayout.Filter.Item label={t('fields.paymentAccountNumber')} name="account">
               <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+          <Col xs={24} md={4}>
+            <ListPageLayout.Filter.Item label={t('fields.systemOrderNumber')} name="system_order_number">
+              <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+          <Col xs={24} md={4}>
+            <ListPageLayout.Filter.Item label={t('filters.category')} name="confirmed">
+              <Radio.Group>
+                <Radio value="created">{t('filters.byCreateTime')}</Radio>
+                <Radio value="confirmed">{t('filters.bySuccessTime')}</Radio>
+              </Radio.Group>
             </ListPageLayout.Filter.Item>
           </Col>
         </ListPageLayout.Filter>

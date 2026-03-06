@@ -21,6 +21,7 @@ export interface ColumnDependencies {
     title: string;
     filterFormItems?: string[];
     initialValues?: Record<string, unknown>;
+    formValues?: Record<string, unknown>;
     children?: React.ReactNode;
     customMutateConfig?: {
       url: string;
@@ -35,4 +36,5 @@ export interface ColumnDependencies {
     }) => void;
   };
   apiUrl: string;
+  canEdit: boolean;
 }
