@@ -181,11 +181,11 @@ class TransactionStatusRules
         bool $keepLock,
         ?string $channelCode,
         ?int $thirdchannelId,
-        ?int $fromChannelAccountId
+        ?int $toChannelAccountId
     ): bool {
         return !$keepLock
             && $channelCode === Channel::CODE_USDT
             && !$thirdchannelId
-            && (bool) $fromChannelAccountId;
+            && (bool) $toChannelAccountId;
     }
 }

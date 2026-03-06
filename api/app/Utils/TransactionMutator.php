@@ -129,7 +129,7 @@ class TransactionMutator
         // USDT 自營出款：DB transaction 完成後自動發送鏈上交易
         $result->refresh();
         if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            false, $result->channel_code, $result->thirdchannel_id, $result->from_channel_account_id
+            false, $result->toChannelAccount?->channel_code, $result->thirdchannel_id, $result->to_channel_account_id
         )) {
             ProcessUsdtWithdraw::dispatch($result->id);
         }

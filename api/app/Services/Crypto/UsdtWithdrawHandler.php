@@ -24,7 +24,7 @@ class UsdtWithdrawHandler
             return;
         }
 
-        $account = UserChannelAccount::find($transaction->from_channel_account_id);
+        $account = UserChannelAccount::find($transaction->to_channel_account_id);
         if (!$account) {
             $this->log($transaction, '找不到出款帳號', level: 'error');
             return;
@@ -57,7 +57,7 @@ class UsdtWithdrawHandler
             );
         }
 
-        $toAddress = data_get($transaction->to_channel_account, 'bank_card_number', '');
+        $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
         $amount = $transaction->floating_amount ?? $transaction->amount;
 
         if (empty($toAddress)) {

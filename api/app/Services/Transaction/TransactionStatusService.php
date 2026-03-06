@@ -652,7 +652,7 @@ class TransactionStatusService
 
         // USDT 自營出款：狀態變為 PAYING 後自動發送鏈上交易
         if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            $keepLock, $transaction->channel_code, $transaction->thirdchannel_id, $transaction->from_channel_account_id
+            $keepLock, $transaction->toChannelAccount?->channel_code, $transaction->thirdchannel_id, $transaction->to_channel_account_id
         )) {
             ProcessUsdtWithdraw::dispatch($transaction->id);
         }
