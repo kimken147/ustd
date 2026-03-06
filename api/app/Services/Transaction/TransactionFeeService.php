@@ -2,7 +2,6 @@
 
 namespace App\Services\Transaction;
 
-use App\Models\Bank;
 use App\Models\ChannelGroup;
 use App\Models\FeatureToggle;
 use App\Models\MerchantThirdChannel;
@@ -69,7 +68,7 @@ class TransactionFeeService
             ]);
         }
 
-        TransactionFee::insertOnDuplicateKey($transactionFees->toArray());
+        TransactionFee::insert($transactionFees->toArray());
     }
 
     public function createWithdrawFees(
@@ -99,15 +98,9 @@ class TransactionFeeService
             $users = collect([$endUser]); // 改成手續費全部給系統
         }
 
-        $bank = Bank::firstWhere(
-            "name",
-            $transaction->from_channel_account["bank_name"]
-        );
-
         $withdrawFeeSet = $users->map(function (User $endUser) use (
             $transaction,
             $agency,
-            $bank,
             $type
         ) {
             throw_if(
@@ -115,21 +108,15 @@ class TransactionFeeService
                 new RuntimeException("Wallet not found " . $endUser->getKey())
             );
 
-            $fee = 0;
-            $needExtraWithdrawFee = $bank ? $bank->needExtraWithdrawFee : false;
             if ($agency) {
-                $fee = $endUser->wallet->calculateTotalAgencyWithdrawFee(
-                    $transaction->amount,
-                    $needExtraWithdrawFee
+                return $endUser->wallet->calculateTotalAgencyWithdrawFee(
+                    $transaction->amount
                 );
-            } else {
-                $fee = $endUser->wallet->calculateTotalWithdrawFee(
-                    $transaction->amount,
-                    $needExtraWithdrawFee,
-                 );
             }
 
-            return $fee;
+            return $endUser->wallet->calculateTotalWithdrawFee(
+                $transaction->amount,
+            );
         });
 
         $allocations = $this->calculator->allocateWithdrawFees($withdrawFeeSet->toArray());

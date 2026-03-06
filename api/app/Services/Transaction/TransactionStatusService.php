@@ -464,8 +464,7 @@ class TransactionStatusService
 
                     // 扣除出款帳號的日/月限額
                     if ($transaction->toChannelAccount) {
-                        $amount = $this->bcMath->add($transaction->floating_amount, data_get($transaction->from_channel_account, 'extra_withdraw_fee', 0));
-                        $this->userChannelAccountUtil->updateTotalRollback($transaction->to_channel_account_id, $amount, true);
+                        $this->userChannelAccountUtil->updateTotalRollback($transaction->to_channel_account_id, $transaction->floating_amount, true);
                     }
 
                     $this->shouldMarkParentAsFailed($transaction, $operator);

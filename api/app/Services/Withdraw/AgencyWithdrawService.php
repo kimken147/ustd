@@ -28,13 +28,7 @@ class AgencyWithdrawService extends BaseWithdrawService
 
     protected function calculateTotalCost(WithdrawContext $context): string
     {
-        $bank = $context->getBank();
-        $needExtraWithdrawFee = $bank ? $bank->needExtraWithdrawFee : false;
-
-        return $context->wallet->calculateTotalAgencyWithdrawAmount(
-            $context->amount,
-            $needExtraWithdrawFee
-        );
+        return $context->wallet->calculateTotalAgencyWithdrawAmount($context->amount);
     }
 
     protected function validateFeatureEnabled(WithdrawContext $context): void

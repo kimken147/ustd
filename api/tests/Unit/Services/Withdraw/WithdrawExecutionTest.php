@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services\Withdraw;
 
-use App\Models\Bank;
 use App\Models\BankCard;
 use App\Models\BannedRealname;
 use App\Models\FeatureToggle;
@@ -529,22 +528,22 @@ class WithdrawExecutionTest extends TestCase
     {
         $wallet = $this->makeMockWallet();
         $wallet->shouldReceive('calculateTotalWithdrawAmount')
-            ->with('500.00', false)
+            ->with('500.00')
             ->once()
             ->andReturn('505.00');
 
         $merchant = $this->makeMockMerchant();
         $bankCard = $this->bankCardTO->plain('工商银行', '6222000000000001', '张三', '广东省', '深圳市');
 
-        // Use anonymous subclass to override getBank() and avoid DB query on banks table
-        $context = new class(
-            $merchant, $wallet, '500.00', $bankCard, 'ORD' . uniqid(), null, WithdrawContext::SOURCE_THIRD_PARTY
-        ) extends WithdrawContext {
-            public function getBank(): ?Bank
-            {
-                return null;
-            }
-        };
+        $context = new WithdrawContext(
+            merchant: $merchant,
+            wallet: $wallet,
+            amount: '500.00',
+            bankCard: $bankCard,
+            orderNumber: 'ORD' . uniqid(),
+            notifyUrl: null,
+            source: WithdrawContext::SOURCE_THIRD_PARTY,
+        );
 
         $service = $this->makeWithdrawService();
         $result = $this->callProtected($service, 'calculateTotalCost', $context);
@@ -634,22 +633,22 @@ class WithdrawExecutionTest extends TestCase
     {
         $wallet = $this->makeMockWallet();
         $wallet->shouldReceive('calculateTotalAgencyWithdrawAmount')
-            ->with('800.00', false)
+            ->with('800.00')
             ->once()
             ->andReturn('810.00');
 
         $merchant = $this->makeMockMerchant();
         $bankCard = $this->bankCardTO->plain('工商银行', '6222000000000001', '张三', '广东省', '深圳市');
 
-        // Use anonymous subclass to override getBank() and avoid DB query on banks table
-        $context = new class(
-            $merchant, $wallet, '800.00', $bankCard, 'ORD' . uniqid(), null, WithdrawContext::SOURCE_THIRD_PARTY
-        ) extends WithdrawContext {
-            public function getBank(): ?Bank
-            {
-                return null;
-            }
-        };
+        $context = new WithdrawContext(
+            merchant: $merchant,
+            wallet: $wallet,
+            amount: '800.00',
+            bankCard: $bankCard,
+            orderNumber: 'ORD' . uniqid(),
+            notifyUrl: null,
+            source: WithdrawContext::SOURCE_THIRD_PARTY,
+        );
 
         $service = $this->makeAgencyWithdrawService();
         $result = $this->callProtected($service, 'calculateTotalCost', $context);

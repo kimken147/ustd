@@ -219,11 +219,10 @@ class UserChannelAccount extends Model
 
             // 出款
             if ($transaction->to_channel_account_id) {
-                $amount = $math->add($transaction->floating_amount, data_get($transaction->from_channel_account, 'extra_withdraw_fee', 0));
                 if ($rollback) {
-                    $newBalance = $math->add($oldBalance, $amount);
+                    $newBalance = $math->add($oldBalance, $transaction->floating_amount);
                 } else {
-                    $newBalance = $math->subMinZero($oldBalance, $amount);
+                    $newBalance = $math->subMinZero($oldBalance, $transaction->floating_amount);
                 }
             }
 

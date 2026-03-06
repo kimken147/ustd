@@ -43,45 +43,43 @@ class Wallet extends Model
         return $bcMatch->subMinZero($this->balance, $this->frozen_balance);
     }
 
-    public function calculateTotalWithdrawAmount($amount, $hasAdditionalFee = false)
+    public function calculateTotalWithdrawAmount($amount)
     {
         $bcMath = app(BCMathUtil::class);
 
         return $bcMath->sum([
             $amount,
-            $this->calculateTotalWithdrawFee($amount, $hasAdditionalFee)
+            $this->calculateTotalWithdrawFee($amount)
         ]);
     }
 
-    public function calculateTotalWithdrawFee($amount, $hasAdditionalFee = false, $type = "balance")
+    public function calculateTotalWithdrawFee($amount, $type = "balance")
     {
         $bcMath = app(BCMathUtil::class);
 
         return $bcMath->sum([
             $bcMath->mulPercent($amount, $this->withdraw_fee_percent),
             $type == "balance" ? $this->withdraw_fee : $this->withdraw_profit_fee,
-            $hasAdditionalFee ? $this->additional_withdraw_fee : 0
         ]);
     }
 
-    public function calculateTotalAgencyWithdrawAmount($amount, $hasAdditionalFee = false)
+    public function calculateTotalAgencyWithdrawAmount($amount)
     {
         $bcMath = app(BCMathUtil::class);
 
         return $bcMath->sum([
             $amount,
-            $this->calculateTotalAgencyWithdrawFee($amount, $hasAdditionalFee)
+            $this->calculateTotalAgencyWithdrawFee($amount)
         ]);
     }
 
-    public function calculateTotalAgencyWithdrawFee($amount, $hasAdditionalFee = false)
+    public function calculateTotalAgencyWithdrawFee($amount)
     {
         $bcMath = app(BCMathUtil::class);
 
         return $bcMath->sum([
             $bcMath->mulPercent($amount, $this->agency_withdraw_fee),
             $this->agency_withdraw_fee_dollar,
-            $hasAdditionalFee ? $this->additional_agency_withdraw_fee : 0
         ]);
     }
 

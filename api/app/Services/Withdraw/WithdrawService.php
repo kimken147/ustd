@@ -32,13 +32,7 @@ class WithdrawService extends BaseWithdrawService
 
     protected function calculateTotalCost(WithdrawContext $context): string
     {
-        $bank = $context->getBank();
-        $needExtraWithdrawFee = $bank ? $bank->needExtraWithdrawFee : false;
-
-        return $context->wallet->calculateTotalWithdrawAmount(
-            $context->amount,
-            $needExtraWithdrawFee
-        );
+        return $context->wallet->calculateTotalWithdrawAmount($context->amount);
     }
 
     protected function validateFeatureEnabled(WithdrawContext $context): void

@@ -2,7 +2,6 @@
 
 namespace App\Services\Withdraw\DTO;
 
-use App\Models\Bank;
 use App\Models\Channel;
 use App\Models\User;
 use App\Models\Wallet;
@@ -44,10 +43,4 @@ class WithdrawContext
         return $this->bankCard->bankName === Channel::CODE_USDT;
     }
 
-    public function getBank(): ?Bank
-    {
-        return Bank::where('name', $this->bankCard->bankName)
-            ->orWhere('code', $this->bankCard->bankName)
-            ->first();
-    }
 }

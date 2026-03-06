@@ -319,7 +319,6 @@ abstract class BaseWithdrawService
             return;
         }
 
-        $bank = $context->getBank();
         $daifuBanks = Channel::where('type', Channel::TYPE_DEPOSIT_WITHDRAW)
             ->get()
             ->map(fn($channel) => $channel->deposit_account_fields['merchant_can_withdraw_banks'] ?? [])
