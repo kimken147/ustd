@@ -1,6 +1,6 @@
 import { CreateButton, List, ListButton, useModal, useTable } from '@refinedev/antd';
 import { Col, Divider, Input, Modal, Typography } from 'antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import PermissionCheckGroup from 'components/permissionCheckGroup';
 import usePermission from 'hooks/usePermission';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -32,6 +32,7 @@ const PermissionList: FC = () => {
     searchFormProps,
     tableQuery: { refetch },
   } = useTable<SubAccount>({
+    onSearch: formValuesToCrudFilters,
     resource: 'sub-accounts',
     syncWithLocation: true,
     pagination: { mode: 'off' },

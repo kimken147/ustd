@@ -1,6 +1,6 @@
 import { CreateButton, List, ListButton, useTable } from '@refinedev/antd';
 import { Col, Divider, Input, InputNumber, Select } from 'antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import useProvider from 'hooks/useProvider';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { Provider } from 'interfaces/provider';
@@ -12,6 +12,7 @@ const ProviderList: FC = () => {
   const { Select: ProviderSelect } = useProvider();
 
   const { tableProps, searchFormProps } = useTable<Provider>({
+    onSearch: formValuesToCrudFilters,
     resource: 'providers',
     syncWithLocation: true,
   });

@@ -1,7 +1,7 @@
 import { Col, Divider, Input } from 'antd';
 import { useTable } from '@refinedev/antd';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Banned } from 'interfaces/banned';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ const NameTable: FC<NameTableProps> = ({ type, onRefetchChange }) => {
     searchFormProps,
     tableQuery: { refetch },
   } = useTable<Banned>({
+    onSearch: formValuesToCrudFilters,
     resource,
     syncWithLocation: false,
     filters: {

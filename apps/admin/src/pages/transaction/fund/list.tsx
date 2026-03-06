@@ -1,7 +1,7 @@
 import { CreateButton, List, useTable } from '@refinedev/antd';
 import { useGetIdentity } from '@refinedev/core';
 import { Col, DatePicker, Divider, Input, Modal as AntdModal } from 'antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useAutoRefetch from 'hooks/useAutoRefetch';
@@ -35,6 +35,7 @@ const FundList: FC = () => {
   });
 
   const { tableProps, searchFormProps } = useTable<InternalTransfer>({
+    onSearch: formValuesToCrudFilters,
     resource: 'internal-transfers',
     syncWithLocation: true,
     filters: {

@@ -5,7 +5,7 @@ import { useApiUrl, useCreate, useUpdate } from '@refinedev/core';
 import { getToken } from 'authProvider';
 import ContentHeader from 'components/contentHeader';
 import { generateFilter } from 'dataProvider';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Bank } from '@morgan-ustd/shared';
 import queryString from 'query-string';
 import { FC, useState } from 'react';
@@ -24,6 +24,7 @@ const BankList: FC = () => {
   const { mutateAsync: create } = useCreate();
 
   const { tableProps, searchFormProps, filters } = useTable<Bank>({
+    onSearch: formValuesToCrudFilters,
     resource: 'banks',
     syncWithLocation: true,
   });

@@ -18,6 +18,7 @@ import {
   UserChannelStatus,
   UserChannelType,
   Resource,
+  formValuesToCrudFilters,
 } from '@morgan-ustd/shared';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import useBank from 'hooks/useBank';
@@ -63,6 +64,7 @@ const UserChannelAccountList: FC = () => {
     searchFormProps,
     tableQuery: { data: tableData, refetch },
   } = useTable<UserChannel>({
+    onSearch: formValuesToCrudFilters,
     resource: Resource.userChannelAccounts,
     syncWithLocation: true,
     queryOptions: {

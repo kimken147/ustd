@@ -2,7 +2,7 @@ import { Col, Divider, Input } from 'antd';
 import { List, useTable } from '@refinedev/antd';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { User } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
@@ -17,6 +17,7 @@ const ProviderWhiteList: FC = () => {
     searchFormProps,
     tableQuery: { refetch },
   } = useTable<User>({
+    onSearch: formValuesToCrudFilters,
     resource: 'users',
     syncWithLocation: true,
     filters: {

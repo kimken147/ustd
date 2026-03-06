@@ -3,7 +3,7 @@ import { List, useTable } from '@refinedev/antd';
 import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, Channel } from '@morgan-ustd/shared';
+import { ListPageLayout, Channel, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';
 import useSelector from 'hooks/useSelector';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -34,6 +34,7 @@ const ThirdChannelSettingList: FC = () => {
     searchFormProps,
     tableQuery: { refetch },
   } = useTable<MerchantThirdChannel>({
+    onSearch: formValuesToCrudFilters,
     resource: 'merchant-third-channel',
     syncWithLocation: true,
   });

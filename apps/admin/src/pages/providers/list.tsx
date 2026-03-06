@@ -8,7 +8,7 @@ import { CreateButton, List, ListButton, useTable } from '@refinedev/antd';
 import { Col, Divider, FormItemProps, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, Tag as TagModel } from '@morgan-ustd/shared';
+import { ListPageLayout, Tag as TagModel, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import useSelector from 'hooks/useSelector';
 import { useTagEdit } from 'hooks/useTagEdit';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -79,6 +79,7 @@ const ProvidersList: FC = () => {
   });
 
   const { tableProps, searchFormProps } = useTable<Provider>({
+    onSearch: formValuesToCrudFilters,
     resource: 'providers',
     syncWithLocation: true,
   });

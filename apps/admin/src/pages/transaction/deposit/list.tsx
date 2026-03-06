@@ -5,7 +5,7 @@ import { useApiUrl, useGetIdentity, useList } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
-import { ListPageLayout, Merchant } from '@morgan-ustd/shared';
+import { ListPageLayout, Merchant, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import useSelector from 'hooks/useSelector';
@@ -54,6 +54,7 @@ const DepositList: FC = () => {
     searchFormProps,
     tableQuery: { refetch },
   } = useTable<Deposit>({
+    onSearch: formValuesToCrudFilters,
     resource: 'deposits',
     syncWithLocation: true,
     filters: {

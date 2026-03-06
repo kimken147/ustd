@@ -1,6 +1,6 @@
 import { List, useTable } from '@refinedev/antd';
 import { Col, DatePicker, Divider, Input } from 'antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import useAutoRefetch from 'hooks/useAutoRefetch';
@@ -13,6 +13,7 @@ const TransactionMessageList: FC = () => {
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
 
   const { tableProps, searchFormProps } = useTable<MessageRecord>({
+    onSearch: formValuesToCrudFilters,
     resource: 'notifications',
     syncWithLocation: true,
     queryOptions: {

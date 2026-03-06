@@ -1,7 +1,7 @@
 import { List, useTable } from '@refinedev/antd';
 import { Divider, Form, Table } from 'antd';
 import dayjs from 'dayjs';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { FinanceStatistic, Stats, Daiso, Daifu, Xiafa } from 'interfaces/finance';
 import { sumBy } from 'lodash';
 import numeral from 'numeral';
@@ -23,6 +23,7 @@ const FinanceStatisticPage: FC = () => {
     searchFormProps,
     tableQuery: { data: queryData },
   } = useTable<FinanceStatistic>({
+    onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
     pagination: { mode: 'off' },
     filters: {

@@ -3,7 +3,7 @@ import { List, useTable } from '@refinedev/antd';
 import { useCan } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { UserBankCard } from 'interfaces/userBankCard';
 import Enviroment from 'lib/env';
 import { FC } from 'react';
@@ -26,6 +26,7 @@ const UserBankCardList: FC = () => {
   };
 
   const { tableProps, searchFormProps } = useTable<UserBankCard>({
+    onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
   });
 

@@ -4,7 +4,7 @@ import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import { uniqBy } from 'lodash';
-import { ListPageLayout, Channel } from '@morgan-ustd/shared';
+import { ListPageLayout, Channel, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import useSelector from 'hooks/useSelector';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ThirdChannel } from 'interfaces/thirdChannel';
@@ -29,6 +29,7 @@ const ThirdChannelList: FC = () => {
   );
 
   const { tableProps, searchFormProps } = useTable<ThirdChannel>({
+    onSearch: formValuesToCrudFilters,
     resource: 'thirdchannel',
     syncWithLocation: true,
   });

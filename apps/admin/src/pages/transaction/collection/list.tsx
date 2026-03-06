@@ -46,6 +46,7 @@ import {
   useTransactionCallbackStatus,
   useUpdateModal,
   useSelector,
+  formValuesToCrudFilters,
 } from '@morgan-ustd/shared';
 import type {
   Transaction,
@@ -119,6 +120,7 @@ const CollectionList: FC = () => {
     tableQuery: { data, refetch },
     filters,
   } = useTable<Transaction>({
+    onSearch: formValuesToCrudFilters,
     resource: 'transactions',
     syncWithLocation: true,
     filters: {

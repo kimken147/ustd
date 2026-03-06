@@ -1,6 +1,6 @@
 import { List, useTable } from '@refinedev/antd';
 import { Checkbox, Col, Divider, Input, Modal } from 'antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';
 import useProvider from 'hooks/useProvider';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -20,6 +20,7 @@ const TransactionGroupList: FC = () => {
   const { Select: ProviderSelect } = useProvider();
 
   const { tableProps, searchFormProps } = useTable<MatchTransactionGroup>({
+    onSearch: formValuesToCrudFilters,
     resource: 'merchant-transaction-groups',
     syncWithLocation: true,
   });

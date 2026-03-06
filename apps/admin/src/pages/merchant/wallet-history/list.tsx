@@ -10,6 +10,7 @@ import {
   Merchant,
   MerchantWalletHistory,
   MerchantWalletMeta as Meta,
+  formValuesToCrudFilters,
 } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';
 import CustomDatePicker from 'components/customDatePicker';
@@ -38,6 +39,7 @@ const MerchantWalletList: FC = () => {
     searchFormProps,
     tableQuery: { data: tableData },
   } = useTable<MerchantWalletHistory>({
+    onSearch: formValuesToCrudFilters,
     resource: 'wallet-histories',
     syncWithLocation: true,
     filters: {

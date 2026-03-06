@@ -5,7 +5,7 @@ import { useGetIdentity } from '@refinedev/core';
 import dayjs, { Dayjs } from 'dayjs';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, MerchantWalletHistory } from '@morgan-ustd/shared';
+import { ListPageLayout, MerchantWalletHistory, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';
 import CustomDatePicker from 'components/customDatePicker';
 import { useColumns, type ColumnDependencies } from './columns';
@@ -19,6 +19,7 @@ const ProviderWalletList: FC = () => {
     tableProps,
     searchFormProps,
   } = useTable<MerchantWalletHistory>({
+    onSearch: formValuesToCrudFilters,
     resource: 'wallet-histories',
     syncWithLocation: true,
     filters: {

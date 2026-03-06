@@ -13,7 +13,7 @@ import {
   Select,
   Switch,
 } from 'antd';
-import { ListPageLayout, Bank, User } from '@morgan-ustd/shared';
+import { ListPageLayout, Bank, User, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';
 import useSelector from 'hooks/useSelector';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -42,6 +42,7 @@ const SystemBankCardList: FC = () => {
     searchFormProps,
     tableQuery: { data: tableData },
   } = useTable<SystemBankCard>({
+    onSearch: formValuesToCrudFilters,
     resource: 'system-bank-cards',
     syncWithLocation: true,
   });

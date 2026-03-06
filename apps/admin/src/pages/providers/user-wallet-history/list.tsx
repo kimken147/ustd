@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router';
 import dayjs, { Dayjs } from 'dayjs';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, User } from '@morgan-ustd/shared';
+import { ListPageLayout, User, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import useUserWalletStatus from 'hooks/userUserWalletStatus';
 import useUpdateModal from 'hooks/useUpdateModal';
@@ -31,6 +31,7 @@ const ProviderUserWalletHistoryList: FC = () => {
     tableProps,
     searchFormProps,
   } = useTable<UserWalletHistory>({
+    onSearch: formValuesToCrudFilters,
     resource: `users/${userId}/wallet-histories`,
     syncWithLocation: true,
     filters: {
