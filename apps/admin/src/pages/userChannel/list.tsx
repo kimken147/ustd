@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { CreateButton, List, useTable } from '@refinedev/antd';
 import {
@@ -134,8 +134,10 @@ const UserChannelAccountList: FC = () => {
   const { mutateAsync: mutateUpdating } = useUpdate();
   const { mutateAsync: mutateDeleting } = useDelete();
   const { mutate: syncBalance } = useCustomMutation();
+  const [syncingIds, setSyncingIds] = useState<Set<number>>(new Set());
 
-  const handleSync = (id: number) => {
+  const handleSync = useCallback((id: number) => {
+    setSyncingIds(prev => new Set(prev).add(id));
     syncBalance({
       url: `${apiUrl}/user-channel-accounts/sync`,
       method: 'put',
@@ -144,8 +146,15 @@ const UserChannelAccountList: FC = () => {
       onSuccess: () => {
         refetch();
       },
+      onSettled: () => {
+        setSyncingIds(prev => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      },
     });
-  };
+  }, [apiUrl, syncBalance, refetch]);
 
   const mutateUserChannel = ({
     record,
@@ -196,6 +205,7 @@ const UserChannelAccountList: FC = () => {
     mutateUserChannel,
     mutateDeleting: (opts) => mutateDeleting(opts),
     onSync: handleSync,
+    syncingIds,
   };
 
   const columns = useColumns(columnDeps);

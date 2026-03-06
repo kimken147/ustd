@@ -1,23 +1,33 @@
 import { SyncOutlined } from '@ant-design/icons';
-import { Button, Space } from 'antd';
+import { Button, Space, Tag } from 'antd';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
+const chainNetworkLabel: Record<string, string> = {
+  trc20: 'TRC-20',
+  erc20: 'ERC-20',
+  bep20: 'BEP-20',
+};
+
 export function createOnchainUsdtColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { canEdit, onSync } = deps;
+  const { canEdit, onSync, syncingIds } = deps;
 
   return {
     title: 'USDT (鏈上)',
     dataIndex: 'onchain_usdt_balance',
     render(value: string, record) {
       if (record.channel_code !== 'USDT') return '-';
+      const isSyncing = syncingIds?.has(record.id) ?? false;
+      const network = record.chain_network || 'trc20';
       return (
         <Space size={4}>
           <span>{value ?? '-'}</span>
+          <Tag>{chainNetworkLabel[network] ?? network.toUpperCase()}</Tag>
           {canEdit && onSync && (
             <Button
               type="link"
               size="small"
-              icon={<SyncOutlined />}
+              icon={<SyncOutlined spin={isSyncing} />}
+              loading={isSyncing}
               onClick={() => onSync(record.id)}
             />
           )}
@@ -28,13 +38,14 @@ export function createOnchainUsdtColumn(deps: ColumnDependencies): UserChannelCo
 }
 
 export function createOnchainTrxColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { canEdit, onSync } = deps;
+  const { canEdit, onSync, syncingIds } = deps;
 
   return {
     title: 'TRX (Gas)',
     dataIndex: 'onchain_trx_balance',
     render(value: string, record) {
       if (record.channel_code !== 'USDT') return '-';
+      const isSyncing = syncingIds?.has(record.id) ?? false;
       return (
         <Space size={4}>
           <span>{value ?? '-'}</span>
@@ -42,7 +53,8 @@ export function createOnchainTrxColumn(deps: ColumnDependencies): UserChannelCol
             <Button
               type="link"
               size="small"
-              icon={<SyncOutlined />}
+              icon={<SyncOutlined spin={isSyncing} />}
+              loading={isSyncing}
               onClick={() => onSync(record.id)}
             />
           )}

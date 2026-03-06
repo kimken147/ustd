@@ -23,4 +23,5 @@ export interface ColumnDependencies {
   }) => void;
   mutateDeleting: (options: { resource: string; id: number | string }) => void;
   onSync?: (id: number) => void;
+  syncingIds?: Set<number>;
 }
