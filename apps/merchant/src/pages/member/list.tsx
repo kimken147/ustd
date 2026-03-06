@@ -1,6 +1,6 @@
 import { Col, Divider, Input } from 'antd';
 import { CreateButton, List, useTable } from '@refinedev/antd';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Member } from 'interfaces/member';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
@@ -8,6 +8,7 @@ import { useColumns } from './columns';
 
 const MemberList: FC = () => {
   const { tableProps, searchFormProps } = useTable<Member>({
+    onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
   });
 

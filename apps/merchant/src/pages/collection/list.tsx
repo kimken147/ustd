@@ -4,7 +4,7 @@ import { ExportButton, List, useTable } from '@refinedev/antd';
 import dayjs from 'dayjs';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
-import { useTransactionStatus, useTransactionCallbackStatus, ListPageLayout } from '@morgan-ustd/shared';
+import { useTransactionStatus, useTransactionCallbackStatus, ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Meta, Transaction } from 'interfaces/transaction';
 import numeral from 'numeral';
 import { useApiUrl, useGetLocale, useTranslate } from '@refinedev/core';
@@ -32,6 +32,7 @@ const CollectionList: FC = () => {
     filters,
     tableQuery: { data: queryData },
   } = useTable<Transaction>({
+    onSearch: formValuesToCrudFilters,
     resource: 'transactions',
     syncWithLocation: true,
     filters: {

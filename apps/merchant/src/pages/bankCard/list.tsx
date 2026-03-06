@@ -3,7 +3,7 @@ import { CreateButton, List, useTable } from '@refinedev/antd';
 import { useTranslate } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { BankCard } from 'interfaces/bankCard';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
@@ -37,6 +37,7 @@ const BankCardList: FC = () => {
   });
 
   const { tableProps, searchFormProps } = useTable<BankCard>({
+    onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
   });
 

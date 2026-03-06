@@ -5,7 +5,7 @@ import { getToken } from 'authProvider';
 import { generateFilter } from 'dataProvider';
 import dayjs from 'dayjs';
 import useProfile from 'hooks/useProfile';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Meta, WalletHistory } from 'interfaces/wallet-history';
 import queryString from 'query-string';
 import { FC } from 'react';
@@ -43,6 +43,7 @@ const WalletHistoryList: FC = () => {
     filters,
     tableQuery: { data: queryData },
   } = useTable<WalletHistory>({
+    onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
     filters: {
       permanent: [{ field: 'lang', value: locale(), operator: 'eq' }],

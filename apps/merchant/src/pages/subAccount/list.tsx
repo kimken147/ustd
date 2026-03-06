@@ -1,7 +1,7 @@
 import { Col, Divider, Input } from 'antd';
 import { CreateButton, List, useTable } from '@refinedev/antd';
 import { useTranslate } from '@refinedev/core';
-import { ListPageLayout } from '@morgan-ustd/shared';
+import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { SubAccount } from 'interfaces/subAccount';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
@@ -12,6 +12,7 @@ const SubAccountList: FC = () => {
   const title = t('subAccount.titles.list');
 
   const { tableProps, searchFormProps } = useTable<SubAccount>({
+    onSearch: formValuesToCrudFilters,
     resource: 'sub-accounts',
     syncWithLocation: true,
   });

@@ -32,6 +32,7 @@ import {
   useTransactionCallbackStatus,
   useSelector,
   Format,
+  formValuesToCrudFilters,
   TransactionSubType,
 } from '@morgan-ustd/shared';
 import type { CrudFilter } from '@refinedev/core';
@@ -86,6 +87,7 @@ const PayForAnotherList: FC = () => {
     tableQuery: { data },
     filters,
   } = useTable<Withdraw>({
+    onSearch: formValuesToCrudFilters,
     resource: 'withdraws',
     syncWithLocation: true,
     filters: {
