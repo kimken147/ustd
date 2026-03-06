@@ -3,6 +3,8 @@
 namespace App\Utils;
 
 use App\Exceptions\RaceConditionException;
+use App\Jobs\ProcessUsdtWithdraw;
+use App\Models\Channel;
 use App\Models\DevicePayingTransaction;
 use App\Models\FeatureToggle;
 use App\Models\Transaction;
@@ -10,6 +12,7 @@ use App\Models\User;
 use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Services\Transaction\TransactionFeeService;
+use App\Services\Transaction\TransactionStatusRules;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -66,7 +69,7 @@ class TransactionMutator
         Transaction $transaction,
         ?Transaction $parent = null
     ) {
-        return DB::transaction(function () use (
+        $result = DB::transaction(function () use (
             $account,
             $transaction,
             $parent
@@ -84,7 +87,6 @@ class TransactionMutator
             $provider = $account->user;
             $fromChannelAccount = $transaction->from_channel_account;
 
-            $fromChannelAccount["extra_withdraw_fee"] = 0;
             $success =
                 Transaction::where("id", $transaction->getKey())
                 ->whereNull("to_id")
@@ -115,18 +117,24 @@ class TransactionMutator
 
             $this->transactionFeeService->createDepositFees($transaction, $provider, false, $parent);
 
-            $amount = $this->bcMath->add(
-                $transaction->floating_amount,
-                data_get($fromChannelAccount, "extra_withdraw_fee", 0)
-            );
             $this->userChannelAccountUtil->updateTotal(
                 $account->id,
-                $amount,
+                $transaction->floating_amount,
                 true
             );
 
             return $transaction;
         });
+
+        // USDT 自營出款：DB transaction 完成後自動發送鏈上交易
+        $result->refresh();
+        if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
+            false, $result->channel_code, $result->thirdchannel_id, $result->from_channel_account_id
+        )) {
+            ProcessUsdtWithdraw::dispatch($result->id);
+        }
+
+        return $result;
     }
 
     public function paufenTransactionFrom(

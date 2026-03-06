@@ -371,9 +371,8 @@ class TransactionMutatorTest extends TestCase
         $this->assertEquals(Transaction::STATUS_PAYING, $updated->status);
         $this->assertNotNull($updated->matched_at);
 
-        // Verify from_channel_account had extra_withdraw_fee set to 0
-        $fromChannelAccount = $updated->from_channel_account;
-        $this->assertSame(0, $fromChannelAccount['extra_withdraw_fee']);
+        // Verify from_channel_account is preserved
+        $this->assertIsArray($updated->from_channel_account);
     }
 
     public function test_paufenDepositToAccount_throws_insufficient_balance_when_enabled(): void
