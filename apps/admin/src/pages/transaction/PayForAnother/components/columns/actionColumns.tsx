@@ -43,7 +43,7 @@ export function createLockedColumn(ctx: ColumnContext): WithdrawColumn {
         separated ||
         notLocker ||
         record.status === WithdrawStatus.审核中 ||
-        record.provider !== null;
+        (record.provider !== null && profile?.role !== 1);
       let className = '';
       if (canEdit && !separated) {
         className = `${
@@ -165,7 +165,7 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
         canEdit &&
         !record.separated &&
         !notLocker &&
-        record.provider === null &&
+        (record.provider === null || profile?.role === 1) &&
         ![WithdrawStatus.失败].includes(record.status);
 
       if (!canOperate) {
