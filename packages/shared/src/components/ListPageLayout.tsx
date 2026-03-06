@@ -64,17 +64,28 @@ function FilterItem(props: FormItemProps) {
  */
 function Filter({ formProps, children, loading, onSearch }: FilterProps) {
   const { t } = useTranslation();
-  const [form] = Form.useForm();
-  const actualForm = formProps.form || form;
+
+  // Use the form instance from formProps (provided by Refine's searchFormProps).
+  // Only create a fallback form if formProps.form is not provided.
+  const [fallbackForm] = Form.useForm();
+  const form = formProps.form || fallbackForm;
+
+  // Destructure onFinish so we can wrap it, and spread the rest directly to Form.
+  // This preserves Refine's form instance and any other props from searchFormProps.
+  const { onFinish: formOnFinish, initialValues: _initialValues, ...restFormProps } = formProps;
 
   const handleFinish = (values: any) => {
-    formProps.onFinish?.(values);
+    // Inject a timestamp nonce so Refine's setFilters always produces a
+    // different CrudFilter array. This forces React Query's query key to
+    // change on every submit, guaranteeing a fresh API request even when
+    // the user-visible filter values haven't changed.
+    formOnFinish?.({ ...values, _t: Date.now() });
     onSearch?.();
   };
 
   return (
     <Card className="mb-4">
-      <Form {...formProps} form={actualForm} layout="vertical" onFinish={handleFinish}>
+      <Form {...restFormProps} form={form} layout="vertical" onFinish={handleFinish}>
         <Row gutter={[{ xs: 8, sm: 8, md: 16 }, 0]} align="middle">
           {children}
         </Row>
@@ -95,8 +106,8 @@ function Filter({ formProps, children, loading, onSearch }: FilterProps) {
                 <Button
                   block
                   onClick={() => {
-                    actualForm.resetFields();
-                    actualForm.submit();
+                    form.resetFields();
+                    form.submit();
                   }}
                 >
                   {t('clear')}

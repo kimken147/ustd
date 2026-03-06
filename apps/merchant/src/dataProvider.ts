@@ -87,6 +87,8 @@ export const generateFilter = (filters?: any[]) => {
     const queryFilters: Record<string, string | string[]> = {};
     if (filters) {
         filters.forEach((filter) => {
+            // Skip the cache-busting nonce injected by ListPageLayout.Filter
+            if (filter.field === '_t') return;
             const mappedOperator = mapOperator("eq");
             if (Array.isArray(filter.value)) {
                 filter.value.forEach((filter: LogicalFilter) => {
