@@ -121,10 +121,10 @@ class DaiFuServiceTest extends TestCase
             'detail' => json_encode(['bank_name' => 'Test Bank']),
             'balance' => '5000.00',
             'daily_status' => UserChannelAccount::DAILY_STATUS_DISABLE,
-            'daily_limit' => null,
+            'daily_limit' => 0,
             'daily_total' => '0.00',
             'monthly_status' => UserChannelAccount::MONTHLY_STATUS_DISABLE,
-            'monthly_limit' => null,
+            'monthly_limit' => 0,
             'monthly_total' => '0.00',
             'fee_percent' => '0.00',
             'created_at' => now(),
@@ -150,24 +150,6 @@ class DaiFuServiceTest extends TestCase
         $id = DB::table('user_channel_accounts')->insertGetId($data);
 
         return UserChannelAccount::find($id);
-    }
-
-    /**
-     * Verify that execute() requires columns on user_channels that exist on
-     * user_channel_accounts. The service currently queries UserChannel (table: user_channels)
-     * but the needed columns (channel_code, is_auto, type, balance, payingDaifu) reside on
-     * UserChannelAccount (table: user_channel_accounts). When the columns are absent the query
-     * cannot return any rows.
-     */
-    private function skipIfUserChannelsLacksRequiredColumns(): void
-    {
-        if (!Schema::hasColumn('user_channels', 'channel_code')) {
-            $this->markTestSkipped(
-                'user_channels table lacks channel_code column — DaiFuService::execute() queries '
-                . 'UserChannel model but required columns (channel_code, is_auto, type, balance) '
-                . 'only exist on user_channel_accounts. Skipping until model reference is corrected.'
-            );
-        }
     }
 
     // ---------------------------------------------------------------
@@ -198,9 +180,6 @@ class DaiFuServiceTest extends TestCase
     public function test_checkAutoIsValid_returns_false_when_region_mismatch(): void
     {
         config(['app.region' => 'tw']);
-
-        // Region mismatch short-circuits — enabled/valueOf should not be called
-        // (the byDefault mock returning false covers any unexpected calls)
 
         $result = $this->service->checkAutoIsValid('cn');
 
@@ -247,10 +226,8 @@ class DaiFuServiceTest extends TestCase
     //  execute() tests
     // ---------------------------------------------------------------
 
-    public function test_execute_does_nothing_when_no_matching_user_channels(): void
+    public function test_execute_does_nothing_when_no_matching_accounts(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $this->transactionMutator->shouldNotReceive('paufenDepositToAccount');
 
         $this->service->execute('NONEXISTENT_CHANNEL');
@@ -258,21 +235,8 @@ class DaiFuServiceTest extends TestCase
 
     public function test_execute_skips_user_when_deposit_not_enabled(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $user = $this->createUser(['deposit_enable' => false]);
-
-        // Insert a matching row into user_channels (requires columns to exist)
-        DB::table('user_channels')->insert([
-            'user_id' => $user->id,
-            'channel_code' => 'BANK',
-            'status' => UserChannelAccount::STATUS_ONLINE,
-            'type' => UserChannelAccount::TYPE_WITHDRAW,
-            'is_auto' => true,
-            'balance' => '5000.00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->createUserChannelAccount($user->id, ['channel_code' => 'BANK']);
 
         $this->transactionMutator->shouldNotReceive('paufenDepositToAccount');
 
@@ -281,20 +245,8 @@ class DaiFuServiceTest extends TestCase
 
     public function test_execute_skips_user_when_paufen_deposit_not_enabled(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $user = $this->createUser(['paufen_deposit_enable' => false]);
-
-        DB::table('user_channels')->insert([
-            'user_id' => $user->id,
-            'channel_code' => 'BANK',
-            'status' => UserChannelAccount::STATUS_ONLINE,
-            'type' => UserChannelAccount::TYPE_WITHDRAW,
-            'is_auto' => true,
-            'balance' => '5000.00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->createUserChannelAccount($user->id, ['channel_code' => 'BANK']);
 
         $this->transactionMutator->shouldNotReceive('paufenDepositToAccount');
 
@@ -303,24 +255,12 @@ class DaiFuServiceTest extends TestCase
 
     public function test_execute_skips_when_no_matching_transaction(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $user = $this->createUser([
             'deposit_enable' => true,
             'paufen_deposit_enable' => true,
         ]);
         $this->createWallet($user->id);
-
-        DB::table('user_channels')->insert([
-            'user_id' => $user->id,
-            'channel_code' => 'BANK',
-            'status' => UserChannelAccount::STATUS_ONLINE,
-            'type' => UserChannelAccount::TYPE_WITHDRAW,
-            'is_auto' => true,
-            'balance' => '5000.00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->createUserChannelAccount($user->id, ['channel_code' => 'BANK']);
 
         // Bind mock FeatureToggleRepository in container for getRestBalance()
         $this->app->instance(FeatureToggleRepository::class, $this->featureToggleRepo);
@@ -333,32 +273,19 @@ class DaiFuServiceTest extends TestCase
 
     public function test_execute_calls_paufenDepositToAccount_when_match_found(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $user = $this->createUser([
             'deposit_enable' => true,
             'paufen_deposit_enable' => true,
         ]);
-        $wallet = $this->createWallet($user->id, [
+        $this->createWallet($user->id, [
             'agency_withdraw_min_amount' => 0,
             'agency_withdraw_max_amount' => 0,
         ]);
-
-        DB::table('user_channels')->insert([
-            'user_id' => $user->id,
-            'channel_code' => 'BANK',
-            'status' => UserChannelAccount::STATUS_ONLINE,
-            'type' => UserChannelAccount::TYPE_WITHDRAW,
-            'is_auto' => true,
-            'balance' => '5000.00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->createUserChannelAccount($user->id, ['channel_code' => 'BANK']);
 
         // Bind mock FeatureToggleRepository in container for getRestBalance()
         $this->app->instance(FeatureToggleRepository::class, $this->featureToggleRepo);
 
-        // Create a matching transaction (TYPE_PAUFEN_WITHDRAW, STATUS_MATCHING, recent, unlocked, no to_id)
         $transaction = $this->createTransaction([
             'type' => Transaction::TYPE_PAUFEN_WITHDRAW,
             'status' => Transaction::STATUS_MATCHING,
@@ -373,7 +300,7 @@ class DaiFuServiceTest extends TestCase
             ->shouldReceive('paufenDepositToAccount')
             ->once()
             ->withArgs(function ($account, $matchedTransaction) use ($transaction) {
-                return $account instanceof UserChannel
+                return $account instanceof UserChannelAccount
                     && (int) $matchedTransaction->id === (int) $transaction->id;
             });
 
@@ -382,27 +309,15 @@ class DaiFuServiceTest extends TestCase
 
     public function test_execute_skips_locked_transactions(): void
     {
-        $this->skipIfUserChannelsLacksRequiredColumns();
-
         $user = $this->createUser([
             'deposit_enable' => true,
             'paufen_deposit_enable' => true,
         ]);
-        $wallet = $this->createWallet($user->id, [
+        $this->createWallet($user->id, [
             'agency_withdraw_min_amount' => 0,
             'agency_withdraw_max_amount' => 0,
         ]);
-
-        DB::table('user_channels')->insert([
-            'user_id' => $user->id,
-            'channel_code' => 'BANK',
-            'status' => UserChannelAccount::STATUS_ONLINE,
-            'type' => UserChannelAccount::TYPE_WITHDRAW,
-            'is_auto' => true,
-            'balance' => '5000.00',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $this->createUserChannelAccount($user->id, ['channel_code' => 'BANK']);
 
         // Bind mock FeatureToggleRepository in container for getRestBalance()
         $this->app->instance(FeatureToggleRepository::class, $this->featureToggleRepo);

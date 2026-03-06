@@ -525,7 +525,7 @@ class UserChannelAccountController extends Controller
             'detail'       => $detail,
             'balance'      => $request->input('balance'),
             'balance_limit' => $request->balance_limit,
-            'is_auto' => $request->is_auto
+            'is_auto' => $request->is_auto ?? true
         ]);
 
         abort_if(!$userChannelAccount, Response::HTTP_INTERNAL_SERVER_ERROR);

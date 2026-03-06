@@ -24,7 +24,7 @@ class DaiFuService
 
     public function execute(string $channelCode)
     {
-        $accounts = UserChannel::with('user')
+        $accounts = UserChannelAccount::with('user')
             ->where('channel_code', $channelCode)
             ->where('status', UserChannelAccount::STATUS_ONLINE)
             ->where('type', '!=', UserChannelAccount::TYPE_DEPOSIT)
@@ -64,10 +64,10 @@ class DaiFuService
                 });
             })
                 ->where('status', Transaction::STATUS_MATCHING)
-                ->when($user->wallet->agency_withdraw_min_amount, function ($builder) use ($user) {
+                ->when((float) $user->wallet->agency_withdraw_min_amount > 0, function ($builder) use ($user) {
                     $builder->where('amount', '>=', $user->wallet->agency_withdraw_min_amount);
                 })
-                ->when($user->wallet->agency_withdraw_max_amount, function ($builder) use ($user) {
+                ->when((float) $user->wallet->agency_withdraw_max_amount > 0, function ($builder) use ($user) {
                     $builder->where('amount', '<=', $user->wallet->agency_withdraw_max_amount);
                 })
                 ->where('amount', '<=', $account->getRestBalance('withdraw') ?? 0)
@@ -82,9 +82,6 @@ class DaiFuService
             }
             // 分配出款帳號給代付單
             $this->transactionMutator->paufenDepositToAccount($account, $matchingDeposit);
-
-            // 用異步Job的方式執行自動代付
-            // GcashDaifu::dispatch($matchingDeposit, 'init');
         }
     }
 
