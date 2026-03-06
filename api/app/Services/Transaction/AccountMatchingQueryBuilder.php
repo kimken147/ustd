@@ -288,8 +288,8 @@ class AccountMatchingQueryBuilder
     {
         return $providerUserChannelAccounts->filter(function ($userChannelAccount) use ($transaction) {
             $channelAmount = $userChannelAccount->channelAmount;
-            $minAmount = $userChannelAccount->min_amount ?? $channelAmount->min_amount;
-            $maxAmount = $userChannelAccount->max_amount ?? $channelAmount->max_amount;
+            $minAmount = (float) $userChannelAccount->min_amount > 0 ? $userChannelAccount->min_amount : $channelAmount->min_amount;
+            $maxAmount = (float) $userChannelAccount->max_amount > 0 ? $userChannelAccount->max_amount : $channelAmount->max_amount;
 
             if ($minAmount && $maxAmount) {
                 return $transaction->amount >= $minAmount && $transaction->amount <= $maxAmount;
