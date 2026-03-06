@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import {
   ListPageLayout,
+  formValuesToCrudFilters,
   useWithdrawStatus,
   useTransactionCallbackStatus,
   useSelector,
@@ -125,6 +126,7 @@ const PayForAnotherList: FC = () => {
     tableQuery: { data, refetch, isFetching },
     filters,
   } = useTable<Withdraw>({
+    onSearch: formValuesToCrudFilters,
     resource: 'withdraws',
     syncWithLocation: true,
     filters: {
