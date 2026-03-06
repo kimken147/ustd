@@ -137,7 +137,7 @@ const UserChannelAccountList: FC = () => {
 
   const handleSync = (id: number) => {
     syncBalance({
-      url: `${apiUrl}/admin/user-channel-accounts/sync`,
+      url: `${apiUrl}/user-channel-accounts/sync`,
       method: 'put',
       values: { id },
     }, {

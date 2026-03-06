@@ -714,6 +714,51 @@ class UserChannelAccountController extends Controller
         return \App\Http\Resources\UserChannelAccount::make($account->refresh());
     }
 
+    public function batchSync(Request $request)
+    {
+        $this->validate($request, [
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+        ]);
+
+        $accounts = UserChannelAccount::whereIn('id', $request->input('ids'))
+            ->where('channel_code', Channel::CODE_USDT)
+            ->whereNotNull('account')
+            ->where('account', '!=', '')
+            ->get();
+
+        $synced = 0;
+        $errors = [];
+
+        foreach ($accounts as $account) {
+            try {
+                $chainNetwork = data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
+                $adapter = $this->resolveChainAdapter($chainNetwork);
+
+                if (!$adapter) {
+                    $errors[] = "#{$account->id}: unsupported chain network";
+                    continue;
+                }
+
+                $account->update([
+                    'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
+                    'onchain_trx_balance'  => $adapter->getNativeBalance($account->account),
+                    'onchain_synced_at'    => now(),
+                ]);
+
+                $synced++;
+            } catch (\Exception $e) {
+                $errors[] = "#{$account->id}: {$e->getMessage()}";
+            }
+        }
+
+        return response()->json([
+            'synced' => $synced,
+            'total' => count($request->input('ids')),
+            'errors' => $errors,
+        ]);
+    }
+
     private function resolveChainAdapter(string $chainNetwork): ?\App\Services\Crypto\Adapters\ChainAdapterInterface
     {
         return match ($chainNetwork) {

@@ -115,6 +115,10 @@ Route::prefix("admin")
                 "user-channel-accounts/sync",
                 "UserChannelAccountController@sync"
             );
+            Route::put(
+                "user-channel-accounts/batch-sync",
+                "UserChannelAccountController@batchSync"
+            );
             Route::get(
                 "user-channel-accounts/{userChannelAccount}/audits",
                 "UserChannelAccountController@audits"

@@ -1,6 +1,7 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { SyncOutlined } from '@ant-design/icons';
 import { Button, Modal, Space } from 'antd';
-import { useDelete, useNotification } from '@refinedev/core';
+import { useCustomMutation, useDelete, useNotification } from '@refinedev/core';
 import { Resource } from '@morgan-ustd/shared';
 
 interface BatchOperationsBarProps {
@@ -10,7 +11,7 @@ interface BatchOperationsBarProps {
   apiUrl: string;
   showUpdateModal: (options: any) => void;
   refetch: () => void;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, any>) => string;
 }
 
 export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
@@ -23,6 +24,7 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
   t,
 }) => {
   const { mutateAsync: mutateDeleting } = useDelete();
+  const { mutate: batchSyncMutate, isLoading: isSyncing } = useCustomMutation();
   const { open } = useNotification();
 
   if (!selectedKeys.length) {
@@ -93,6 +95,42 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
           }}
         >
           {t('actions.batchEditSingleLimit')}
+        </Button>
+        <Button
+          disabled={!canEdit || isSyncing}
+          loading={isSyncing}
+          icon={<SyncOutlined />}
+          onClick={() =>
+            Modal.confirm({
+              title: t('confirmation.batchSyncBalance'),
+              okText: t('actions.ok'),
+              cancelText: t('actions.cancel'),
+              onOk: () => {
+                batchSyncMutate(
+                  {
+                    url: `${apiUrl}/user-channel-accounts/batch-sync`,
+                    method: 'put',
+                    values: { ids: selectedKeys.map(Number) },
+                  },
+                  {
+                    onSuccess: (response) => {
+                      const data = response?.data as any;
+                      open?.({
+                        message: t('messages.batchSyncSuccess', {
+                          synced: data?.synced ?? 0,
+                          total: data?.total ?? selectedKeys.length,
+                        }),
+                        type: 'success',
+                      });
+                      refetch();
+                    },
+                  },
+                );
+              },
+            })
+          }
+        >
+          {t('actions.batchSyncBalance')}
         </Button>
         <Button
           danger
