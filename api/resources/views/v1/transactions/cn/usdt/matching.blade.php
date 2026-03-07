@@ -6,13 +6,36 @@
     <title>匹配中</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; }
-        .spinner { width: 40px; height: 40px; border: 3px solid #e0e0e0; border-top: 3px solid #1890ff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0d1117;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #30363d;
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        h2 { color: #333; margin-bottom: 10px; font-size: 18px; }
-        p { color: #999; font-size: 14px; }
-        .amount { font-size: 24px; color: #1890ff; font-weight: bold; margin: 15px 0; }
+        h2 { color: #c9d1d9; margin-bottom: 10px; font-size: 18px; }
+        p { color: #8b949e; font-size: 14px; }
+        .amount { font-size: 24px; color: #38bdf8; font-weight: bold; margin: 15px 0; }
     </style>
 </head>
 <body>

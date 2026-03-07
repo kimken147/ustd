@@ -268,6 +268,66 @@ class CryptoMonitorServiceTest extends TestCase
         $this->service->poll();
     }
 
+    public function test_user_tx_hash_matches_by_hash_and_amount(): void
+    {
+        $transaction = $this->createTransaction(['amount' => '100.500000']);
+        $monitor = $this->createMonitor($transaction->id, [
+            'expected_amount' => '100.500000',
+            'user_tx_hash' => 'user_provided_hash',
+        ]);
+
+        $chainTx = new ChainTransaction(
+            txHash: 'user_provided_hash',
+            from: 'TSender',
+            to: 'TMonitorAddress123',
+            amount: '100.500000',
+            timestamp: 1700000000000,
+            confirmations: 1,
+        );
+
+        $this->mockAdapter->shouldReceive('fetchIncomingTransactions')
+            ->once()
+            ->andReturn(collect([$chainTx]));
+
+        $this->mockStatusService->shouldReceive('markAsSuccess')->once();
+
+        $this->service->poll();
+
+        $monitor->refresh();
+        $this->assertEquals(UsdtDepositMonitor::STATUS_CONFIRMED, $monitor->status);
+        $this->assertEquals('user_provided_hash', $monitor->tx_hash);
+    }
+
+    public function test_user_tx_hash_rejects_wrong_hash(): void
+    {
+        $transaction = $this->createTransaction(['amount' => '100.500000']);
+        $monitor = $this->createMonitor($transaction->id, [
+            'expected_amount' => '100.500000',
+            'user_tx_hash' => 'user_provided_hash',
+        ]);
+
+        // Chain tx has different hash but matching amount
+        $chainTx = new ChainTransaction(
+            txHash: 'different_chain_hash',
+            from: 'TSender',
+            to: 'TMonitorAddress123',
+            amount: '100.500000',
+            timestamp: 1700000000000,
+            confirmations: 1,
+        );
+
+        $this->mockAdapter->shouldReceive('fetchIncomingTransactions')
+            ->once()
+            ->andReturn(collect([$chainTx]));
+
+        $this->mockStatusService->shouldNotReceive('markAsSuccess');
+
+        $this->service->poll();
+
+        $monitor->refresh();
+        $this->assertEquals(UsdtDepositMonitor::STATUS_PENDING, $monitor->status);
+    }
+
     public function test_only_matches_status_paying_transactions(): void
     {
         // Transaction in SUCCESS status — should not be matched

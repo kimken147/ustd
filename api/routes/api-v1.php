@@ -7,6 +7,7 @@ Route::get("create-transactions", "CreateTransactionController")->name(
     "api.v1.create-transactions"
 );
 Route::get("cashier/{id}", "CashierController")->name("api.v1.cashier");
+Route::post("cashier/{id}/tx-hash", "CashierTxHashController")->name("api.v1.cashier.tx-hash");
 Route::post(
     "transactions/{transaction}/bug-report",
     "Provider\TransactionController@bugReport"

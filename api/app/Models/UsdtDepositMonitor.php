@@ -19,6 +19,7 @@ class UsdtDepositMonitor extends Model
         'expected_amount',
         'received_amount',
         'tx_hash',
+        'user_tx_hash',
         'status',
         'expires_at',
         'matched_at',

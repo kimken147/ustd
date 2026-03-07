@@ -69,9 +69,19 @@ class CryptoMonitorService
 
         foreach ($monitors as $monitor) {
             foreach ($chainTxs as $chainTx) {
-                // 精確比對金額（6 位小數）
-                if (bccomp($monitor->expected_amount, $chainTx->amount, 6) !== 0) {
-                    continue;
+                // 如果使用者有提供 tx_hash，以 tx_hash + 金額比對
+                if ($monitor->user_tx_hash) {
+                    if ($chainTx->txHash !== $monitor->user_tx_hash) {
+                        continue;
+                    }
+                    if (bccomp($monitor->expected_amount, $chainTx->amount, 6) !== 0) {
+                        continue;
+                    }
+                } else {
+                    // 沒有 user_tx_hash，僅以金額比對
+                    if (bccomp($monitor->expected_amount, $chainTx->amount, 6) !== 0) {
+                        continue;
+                    }
                 }
 
                 // 檢查此 tx_hash 是否已被使用
