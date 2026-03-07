@@ -1,6 +1,7 @@
 .vscode
 .DS_Store
 .idea
+.envrc
 api/env.powerpay
 .worktrees
 node_modules
