@@ -328,12 +328,8 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       },
     },
     {
-      title: t('fields.bankName'),
+      title: t('fields.chainNetwork'),
       dataIndex: 'bank_name',
-    },
-    {
-      title: t('fields.cardHolder'),
-      dataIndex: 'bank_card_holder_name',
     },
   ];
 }

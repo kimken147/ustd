@@ -126,7 +126,7 @@ const FundCreate: FC = () => {
                                                 </Col>
                                                 <Col xs={24} md={12} lg={4}>
                                                     <Form.Item
-                                                        label={t('fields.bankName')}
+                                                        label={t('fields.chainNetwork')}
                                                         name={[name, "bank_name"]}
                                                         rules={[{ required: true }]}
                                                     >
@@ -137,15 +137,6 @@ const FundCreate: FC = () => {
                                                     <Form.Item
                                                         label={t('fields.collectionAccount')}
                                                         name={[name, "bank_card_number"]}
-                                                        rules={[{ required: true }]}
-                                                    >
-                                                        <Input />
-                                                    </Form.Item>
-                                                </Col>
-                                                <Col xs={24} md={12} lg={4}>
-                                                    <Form.Item
-                                                        label={t('fields.cardHolderName')}
-                                                        name={[name, "bank_card_holder_name"]}
                                                         rules={[{ required: true }]}
                                                     >
                                                         <Input />
