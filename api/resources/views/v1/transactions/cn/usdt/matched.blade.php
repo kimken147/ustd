@@ -363,7 +363,7 @@
             var qr = qrcode(0, 'M');
             qr.addData(walletAddress);
             qr.make();
-            document.getElementById('qrcode').innerHTML = qr.createSvgTag(5, 0);
+            document.getElementById('qrcode').innerHTML = qr.createSvgTag(8, 0);
             // Style the SVG
             var svg = document.querySelector('#qrcode svg');
             if (svg) {
