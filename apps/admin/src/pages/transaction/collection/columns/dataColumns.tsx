@@ -1,4 +1,4 @@
-import { Button, Popover, Space } from 'antd';
+import { Button, Popover, Space, Typography } from 'antd';
 import { DateField, TextField } from '@refinedev/antd';
 import { RedoOutlined, StopOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -26,6 +26,22 @@ export function createChainNetworkColumn(deps: ColumnDependencies): CollectionCo
     width: 80,
     render(value: string) {
       return value ? value.toUpperCase() : '-';
+    },
+  };
+}
+
+export function createTxHashColumn(deps: ColumnDependencies): CollectionColumn {
+  return {
+    title: 'Tx Hash',
+    dataIndex: 'tx_hash',
+    responsive: ['xl', 'xxl'],
+    width: 140,
+    render(value: string) {
+      return value ? (
+        <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
+          {value}
+        </Typography.Text>
+      ) : '-';
     },
   };
 }
