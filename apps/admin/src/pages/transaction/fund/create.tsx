@@ -10,6 +10,7 @@ import {
   Input,
   InputNumber,
   Row,
+  Space,
 } from 'antd';
 import { MinusCircleOutlined } from '@ant-design/icons';
 import { useCreate, useNavigation, useNotification } from "@refinedev/core";
@@ -28,7 +29,7 @@ const FundCreate: FC = () => {
         resource: "banks",
         valueField: "name",
     });
-    const { Select: UserChannelAccountSelect } = useSelector<UserChannel>({
+    const { Select: UserChannelAccountSelect, data: userChannelAccounts } = useSelector<UserChannel>({
         resource: "user-channel-accounts",
         labelRender(record) {
             return `${record.account}(${record.name})`;
@@ -37,6 +38,15 @@ const FundCreate: FC = () => {
     const { mutateAsync: create } = useCreate();
 
     const [loading, setLoading] = useState(false);
+
+    const listValues = Form.useWatch("list", form);
+
+    const getSelectedUserChannel = (index: number) => {
+        if (!listValues || !listValues[index]) return undefined;
+        const accountId = listValues[index].account_id;
+        if (!accountId) return undefined;
+        return userChannelAccounts?.find((item) => item.id === accountId);
+    };
 
     return (
         <Create
@@ -83,72 +93,88 @@ const FundCreate: FC = () => {
                     {(fields, { add, remove }, { errors }) => {
                         return (
                             <>
-                                {fields.map(({ key, name }, index) => (
-                                    <Row gutter={16}>
-                                        <Col xs={24} md={24} lg={1}>
-                                            <Form.Item label=" ">{index + 1}</Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={3}>
-                                            <Form.Item
-                                                label={t('fields.paymentAccountNumber')}
-                                                name={[name, "account_id"]}
-                                                rules={[{ required: true }]}
-                                            >
-                                                <UserChannelAccountSelect />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={3}>
-                                            <Form.Item label={t('fields.note')} name={[name, "note"]}>
-                                                <Input placeholder={t('placeholders.optional')} />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={4}>
-                                            <Form.Item
-                                                label={t('fields.transferAmount')}
-                                                name={[name, "amount"]}
-                                                rules={[{ required: true }]}
-                                            >
-                                                <InputNumber className="w-full" />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={4}>
-                                            <Form.Item
-                                                label={t('fields.bankName')}
-                                                name={[name, "bank_name"]}
-                                                rules={[{ required: true }]}
-                                            >
-                                                <BankSelect />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={4}>
-                                            <Form.Item
-                                                label={t('fields.collectionAccount')}
-                                                name={[name, "bank_card_number"]}
-                                                rules={[{ required: true }]}
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col xs={24} md={12} lg={4}>
-                                            <Form.Item
-                                                label={t('fields.cardHolderName')}
-                                                name={[name, "bank_card_holder_name"]}
-                                                rules={[{ required: true }]}
-                                            >
-                                                <Input />
-                                            </Form.Item>
-                                        </Col>
+                                {fields.map(({ key, name }, index) => {
+                                    const selectedUserChannel = getSelectedUserChannel(index);
+                                    return (
+                                        <div key={key}>
+                                            <Row gutter={16}>
+                                                <Col xs={24} md={24} lg={1}>
+                                                    <Form.Item label=" ">{index + 1}</Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={3}>
+                                                    <Form.Item
+                                                        label={t('fields.paymentAccountNumber')}
+                                                        name={[name, "account_id"]}
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <UserChannelAccountSelect />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={3}>
+                                                    <Form.Item label={t('fields.note')} name={[name, "note"]}>
+                                                        <Input placeholder={t('placeholders.optional')} />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={4}>
+                                                    <Form.Item
+                                                        label={t('fields.transferAmount')}
+                                                        name={[name, "amount"]}
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <InputNumber className="w-full" />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={4}>
+                                                    <Form.Item
+                                                        label={t('fields.bankName')}
+                                                        name={[name, "bank_name"]}
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <BankSelect />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={4}>
+                                                    <Form.Item
+                                                        label={t('fields.collectionAccount')}
+                                                        name={[name, "bank_card_number"]}
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col xs={24} md={12} lg={4}>
+                                                    <Form.Item
+                                                        label={t('fields.cardHolderName')}
+                                                        name={[name, "bank_card_holder_name"]}
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
+                                                </Col>
 
-                                        <Col xs={24} md={4} lg={1}>
-                                            <Form.Item label=" ">
-                                                <MinusCircleOutlined
-                                                    onClick={() => remove(index)}
-                                                    className="text-xl"
-                                                />
-                                            </Form.Item>
-                                        </Col>
-                                    </Row>
-                                ))}
+                                                <Col xs={24} md={4} lg={1}>
+                                                    <Form.Item label=" ">
+                                                        <MinusCircleOutlined
+                                                            onClick={() => remove(index)}
+                                                            className="text-xl"
+                                                        />
+                                                    </Form.Item>
+                                                </Col>
+                                            </Row>
+                                            {selectedUserChannel && (
+                                                <Row>
+                                                    <Col offset={1}>
+                                                        <Space className="text-red-500 text-sm mb-4">
+                                                            <span>本站余额：{selectedUserChannel.balance ?? 0}</span>
+                                                            <span>USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}</span>
+                                                            <span>TRX：{selectedUserChannel.onchain_trx_balance ?? '-'}</span>
+                                                        </Space>
+                                                    </Col>
+                                                </Row>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                                 <Row gutter={16} align="middle">
                                     <Form.Item>
                                         <Button type="dashed" onClick={() => add()}>
