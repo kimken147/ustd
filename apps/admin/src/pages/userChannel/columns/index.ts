@@ -9,7 +9,7 @@ import { createAccountColumn } from './accountColumn';
 import { createChannelColumn } from './bankColumns';
 import { createNoteColumn, createAccountNumberColumn } from './infoColumns';
 import { createBalanceColumn, createBalanceLimitColumn } from './balanceColumns';
-import { createOnchainUsdtColumn, createOnchainTrxColumn } from './onchainColumns';
+import { createOnchainUsdtColumn, createOnchainTrxColumn, createOnchainSyncedAtColumn } from './onchainColumns';
 import { createSingleLimitColumn } from './singleLimitColumn';
 import {
   createDailyStatusColumn,
@@ -38,6 +38,7 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createBalanceLimitColumn(deps),
     createOnchainUsdtColumn(deps),
     createOnchainTrxColumn(deps),
+    createOnchainSyncedAtColumn(deps),
     createSingleLimitColumn(deps),
     createDailyStatusColumn(deps),
     createDailyLimitReceiveColumn(deps),

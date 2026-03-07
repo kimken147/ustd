@@ -1,5 +1,6 @@
 import { SyncOutlined } from '@ant-design/icons';
 import { Button, Space, Tag } from 'antd';
+import dayjs from 'dayjs';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 const chainNetworkLabel: Record<string, string> = {
@@ -33,6 +34,17 @@ export function createOnchainUsdtColumn(deps: ColumnDependencies): UserChannelCo
           )}
         </Space>
       );
+    },
+  };
+}
+
+export function createOnchainSyncedAtColumn(_deps: ColumnDependencies): UserChannelColumn {
+  return {
+    title: '同步時間',
+    dataIndex: 'onchain_synced_at',
+    render(value: string, record) {
+      if (record.channel_code !== 'USDT') return '-';
+      return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '-';
     },
   };
 }

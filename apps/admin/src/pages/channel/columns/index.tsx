@@ -219,24 +219,6 @@ export function useColumns(deps: ColumnDependencies): ChannelColumn[] {
       },
     },
     {
-      title: t('fields.noteSwitch'),
-      dataIndex: 'note_enable',
-      render(value, record) {
-        return (
-          <Switch
-            checked={value}
-            onChange={checked =>
-              Modal.confirm({
-                title: t('messages.confirmNoteSwitch'),
-                id: record.code,
-                values: { note_enable: checked },
-              })
-            }
-          />
-        );
-      },
-    },
-    {
       title: t('fields.floatingAmountSwitch'),
       dataIndex: 'floating_enable',
       render(value, record) {
