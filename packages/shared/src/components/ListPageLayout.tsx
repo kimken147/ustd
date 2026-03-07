@@ -12,6 +12,7 @@ export interface FilterProps {
   children: React.ReactNode;
   loading?: boolean;
   onSearch?: () => void;
+  defaultValues?: Record<string, any>;
 }
 
 export interface ListTableProps<T = any> extends TableProps<T> {
@@ -62,7 +63,7 @@ function FilterItem(props: FormItemProps) {
 /**
  * Filter - 篩選表單區塊
  */
-function Filter({ formProps, children, loading, onSearch }: FilterProps) {
+function Filter({ formProps, children, loading, onSearch, defaultValues }: FilterProps) {
   const { t } = useTranslation();
 
   // Use the form instance from formProps (provided by Refine's searchFormProps).
@@ -107,6 +108,9 @@ function Filter({ formProps, children, loading, onSearch }: FilterProps) {
                   block
                   onClick={() => {
                     form.resetFields();
+                    if (defaultValues) {
+                      form.setFieldsValue(defaultValues);
+                    }
                     form.submit();
                   }}
                 >

@@ -138,6 +138,7 @@ const DepositList: FC = () => {
           <ListPageLayout.Filter
             formProps={searchFormProps}
             loading={tableProps.loading as boolean}
+            defaultValues={{ started_at: dayjs().startOf('day') }}
           >
             <Col xs={24} md={6}>
               <ListPageLayout.Filter.Item

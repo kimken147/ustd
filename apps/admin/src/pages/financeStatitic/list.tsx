@@ -79,6 +79,11 @@ const FinanceStatisticPage: FC = () => {
                 timeType: 'confirmed_at',
               },
             }}
+            defaultValues={{
+              started_at: dayjs().startOf('day'),
+              ended_at: dayjs().endOf('day'),
+              timeType: 'confirmed_at',
+            }}
           >
             <FilterForm form={form} t={t} />
           </ListPageLayout.Filter>

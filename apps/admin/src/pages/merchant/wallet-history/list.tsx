@@ -82,6 +82,7 @@ const MerchantWalletList: FC = () => {
               ...searchFormProps,
               initialValues: { started_at: dayjs().startOf('day') },
             }}
+            defaultValues={{ started_at: dayjs().startOf('day') }}
           >
             <Col xs={24} md={8}>
               <ListPageLayout.Filter.Item

@@ -32,6 +32,7 @@ const TransactionMessageList: FC = () => {
       <ListPageLayout>
         <ListPageLayout.Filter
           formProps={{ ...searchFormProps, initialValues: { started_at: dayjs().startOf('days') } }}
+          defaultValues={{ started_at: dayjs().startOf('day') }}
         >
           <Col xs={24} md={6}>
             <ListPageLayout.Filter.Item
