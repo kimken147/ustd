@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import { DateField, TextField } from '@refinedev/antd';
 import { axiosInstance } from '@refinedev/simple-rest';
-import { Button, Popover, Space } from 'antd';
+import { Button, Popover, Space, Typography } from 'antd';
 import Badge from 'components/badge';
 import dayjs from 'dayjs';
 import { TransactionNote, Purple, Format } from '@morgan-ustd/shared';
@@ -90,20 +90,6 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
               />
             ) : null}
           </Space>
-        ) : null;
-      },
-    },
-    {
-      title: t('fields.refNo'),
-      dataIndex: '_search1',
-      render(value) {
-        return value ? (
-          <TextField
-            value={value}
-            copyable={{
-              icon: <CopyOutlined style={{ color: Purple }} />,
-            }}
-          />
         ) : null;
       },
     },
@@ -187,10 +173,6 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                     showUpdateModal({
                       title: t('messages.confirmModifyStatus'),
                       id: record.id,
-                      filterFormItems: ['_search1'],
-                      initialValues: {
-                        _search1: record._search1 ?? '',
-                      },
                       formValues: {
                         status: WithdrawStatus.手动成功,
                       },
@@ -330,6 +312,17 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
     {
       title: t('fields.chainNetwork'),
       dataIndex: 'bank_name',
+    },
+    {
+      title: 'Tx Hash',
+      dataIndex: 'tx_hash',
+      render(value) {
+        return value ? (
+          <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
+            {value}
+          </Typography.Text>
+        ) : '-';
+      },
     },
   ];
 }

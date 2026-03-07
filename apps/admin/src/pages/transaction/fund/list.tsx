@@ -31,7 +31,6 @@ const FundList: FC = () => {
   } = useUpdateModal({
     formItems: [
       { label: t('fields.note'), name: 'note', children: <Input.TextArea /> },
-      { label: t('fields.refNo'), name: '_search1', children: <Input /> },
       { name: 'transaction_id', hidden: true },
     ],
   });

@@ -73,7 +73,7 @@ function Filter({ formProps, children, loading, onSearch, defaultValues }: Filte
 
   // Destructure onFinish so we can wrap it, and spread the rest directly to Form.
   // This preserves Refine's form instance and any other props from searchFormProps.
-  const { onFinish: formOnFinish, initialValues: _initialValues, ...restFormProps } = formProps;
+  const { onFinish: formOnFinish, ...restFormProps } = formProps;
 
   const handleFinish = (values: any) => {
     // Inject a timestamp nonce so Refine's setFilters always produces a
