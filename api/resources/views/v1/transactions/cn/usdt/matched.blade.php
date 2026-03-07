@@ -68,8 +68,9 @@
             border-top: 1px solid #30363d;
             border-bottom: 1px solid #30363d;
         }
-        .qr-section img {
+        .qr-section svg {
             border-radius: 8px;
+            display: inline-block;
         }
 
         /* Address */
@@ -287,7 +288,7 @@
         <!-- QR Code & Address -->
         <div class="card">
             <div class="qr-section">
-                <img id="qrcode" alt="QR Code" />
+                <div id="qrcode"></div>
             </div>
 
             <div class="address-section">
@@ -353,21 +354,23 @@
         </div>
     </div>
 
-    <!-- QR Code library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+    <!-- QR Code library (qrcode-generator - reliable browser lib) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script>
         // Generate QR code
         const walletAddress = '{{ $transaction->fromChannelAccount->account ?? '' }}';
         if (walletAddress) {
-            QRCode.toDataURL(walletAddress, {
-                width: 200,
-                margin: 1,
-                color: { dark: '#000000', light: '#ffffff' }
-            }).then(function(url) {
-                document.getElementById('qrcode').src = url;
-            }).catch(function() {
-                document.getElementById('qrcode').alt = '二维码生成失败';
-            });
+            var qr = qrcode(0, 'M');
+            qr.addData(walletAddress);
+            qr.make();
+            document.getElementById('qrcode').innerHTML = qr.createSvgTag(5, 0);
+            // Style the SVG
+            var svg = document.querySelector('#qrcode svg');
+            if (svg) {
+                svg.style.borderRadius = '8px';
+                svg.style.background = '#fff';
+                svg.style.padding = '8px';
+            }
         }
 
         // Copy function
