@@ -89,7 +89,6 @@ const MerchantWalletList: FC = () => {
                 label={t('filters.startDate')}
                 name="started_at"
                 rules={[{ required: true }]}
-                trigger="onSelect"
               >
                 <CustomDatePicker
                   showTime
@@ -107,7 +106,6 @@ const MerchantWalletList: FC = () => {
               <ListPageLayout.Filter.Item
                 label={t('filters.endDate')}
                 name="ended_at"
-                trigger="onSelect"
               >
                 <DatePicker
                   showTime

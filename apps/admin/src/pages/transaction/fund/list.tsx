@@ -76,7 +76,6 @@ const FundList: FC = () => {
             <ListPageLayout.Filter.Item
               label={t('fields.startDate')}
               name="started_at"
-              trigger="onSelect"
               rules={[{ required: true }]}
             >
               <CustomDatePicker

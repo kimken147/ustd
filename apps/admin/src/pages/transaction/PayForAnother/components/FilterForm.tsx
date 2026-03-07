@@ -36,7 +36,6 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('fields.startDate')}
           name="started_at"
-          trigger="onSelect"
           rules={[{ required: true }]}
           getValueProps={(value: any) => {
             if (!value) return { value: undefined };

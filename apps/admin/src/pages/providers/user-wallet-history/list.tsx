@@ -104,7 +104,6 @@ const ProviderUserWalletHistoryList: FC = () => {
                 label={t('walletHistory.startDate')}
                 name="started_at"
                 rules={[{ required: true }]}
-                trigger="onSelect"
               >
                 <CustomDatePicker
                   showTime
@@ -122,7 +121,6 @@ const ProviderUserWalletHistoryList: FC = () => {
               <ListPageLayout.Filter.Item
                 label={t('walletHistory.endDate')}
                 name="ended_at"
-                trigger="onSelect"
               >
                 <DatePicker
                   showTime

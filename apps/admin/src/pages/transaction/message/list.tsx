@@ -38,7 +38,6 @@ const TransactionMessageList: FC = () => {
             <ListPageLayout.Filter.Item
               label="开始日期"
               name="started_at"
-              trigger="onSelect"
               rules={[{ required: true }]}
             >
               <CustomDatePicker
@@ -51,7 +50,7 @@ const TransactionMessageList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={6}>
-            <ListPageLayout.Filter.Item label="结束日期" name="ended_at" trigger="onSelect">
+            <ListPageLayout.Filter.Item label="结束日期" name="ended_at">
               <DatePicker
                 showTime
                 className="w-full"
