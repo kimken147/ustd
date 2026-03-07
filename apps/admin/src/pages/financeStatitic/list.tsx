@@ -27,7 +27,7 @@ const FinanceStatisticPage: FC = () => {
     syncWithLocation: true,
     pagination: { mode: 'off' },
     filters: {
-      permanent: [
+      initial: [
         { field: 'started_at', value: defaultStartAt, operator: 'eq' },
         { field: 'ended_at', value: defaultEndAt, operator: 'eq' },
       ],

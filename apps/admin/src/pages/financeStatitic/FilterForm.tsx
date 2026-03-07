@@ -24,7 +24,6 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
         <ListPageLayout.Filter.Item
           label={t('filters.startDate')}
           name="started_at"
-          trigger="onSelect"
           getValueProps={(value: any) => {
             if (!value) return { value: undefined };
             if (dayjs.isDayjs(value)) return { value };
@@ -35,6 +34,7 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
           }}
         >
           <CustomDatePicker
+            showTime
             className="w-full"
             onFastSelectorChange={(startAt, endAt) =>
               form.setFieldsValue({
@@ -59,6 +59,7 @@ const FilterForm: FC<FilterFormProps> = ({ form, t }) => {
           }}
         >
           <DatePicker
+            showTime
             className="w-full"
             disabledDate={current => {
               const startAt = form.getFieldValue('started_at') as Dayjs;
