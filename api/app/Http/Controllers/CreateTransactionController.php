@@ -88,6 +88,7 @@ class CreateTransactionController extends Controller
             "transaction" => $transaction,
             "qrCodePath" => $this->qrCodeS3Path($transaction),
             "note" => $transaction->note,
+            "noteEnabled" => $channel->note_enable,
             "payingLimitEnabled" => $channel->transaction_timeout_enable,
             "payingLimitSeconds" => $channel->transaction_timeout,
             "redirectUrl" => data_get(
@@ -137,6 +138,7 @@ class CreateTransactionController extends Controller
             "transaction" => $transaction,
             "qrCodePath" => "",
             "note" => $transaction->note,
+            "noteEnabled" => $channel->note_enable,
             "payingLimitEnabled" => $channel->transaction_timeout_enable,
             "payingLimitSeconds" => $channel->transaction_timeout,
             "redirectUrl" => '',

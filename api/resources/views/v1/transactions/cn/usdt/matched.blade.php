@@ -68,15 +68,8 @@
             border-top: 1px solid #30363d;
             border-bottom: 1px solid #30363d;
         }
-        .qr-section canvas {
+        .qr-section img {
             border-radius: 8px;
-            background: #fff;
-            padding: 8px;
-        }
-        .qr-label {
-            font-size: 12px;
-            color: #8b949e;
-            margin-top: 8px;
         }
 
         /* Address */
@@ -294,8 +287,7 @@
         <!-- QR Code & Address -->
         <div class="card">
             <div class="qr-section">
-                <canvas id="qrcode"></canvas>
-                <div class="qr-label">扫码获取收款地址</div>
+                <img id="qrcode" alt="QR Code" />
             </div>
 
             <div class="address-section">
@@ -329,7 +321,7 @@
         </div>
 
         <!-- Note -->
-        @if($note)
+        @if($noteEnabled && $note)
         <div class="card">
             <div class="order-note">备注：{{ $note }}</div>
         </div>
@@ -367,10 +359,14 @@
         // Generate QR code
         const walletAddress = '{{ $transaction->fromChannelAccount->account ?? '' }}';
         if (walletAddress) {
-            QRCode.toCanvas(document.getElementById('qrcode'), walletAddress, {
+            QRCode.toDataURL(walletAddress, {
                 width: 200,
                 margin: 1,
                 color: { dark: '#000000', light: '#ffffff' }
+            }).then(function(url) {
+                document.getElementById('qrcode').src = url;
+            }).catch(function() {
+                document.getElementById('qrcode').alt = '二维码生成失败';
             });
         }
 
