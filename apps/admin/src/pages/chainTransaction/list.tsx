@@ -38,7 +38,8 @@ const ChainTransactionList: FC = () => {
     syncWithLocation: true,
   });
 
-  const { mutate: customMutate, isLoading: isSyncing } = useCustomMutation();
+  const { mutate: customMutate, mutation } = useCustomMutation();
+  const isSyncing = mutation.isPending;
 
   // 手動同步所有帳號的鏈上交易
   const handleSync = useCallback(() => {

@@ -19,7 +19,7 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   // 依據訂單號搜尋交易記錄
-  const { data, isLoading } = useCustom({
+  const { query } = useCustom({
     url: `${apiUrl}/transactions`,
     method: 'get',
     config: {
@@ -34,7 +34,8 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
     },
   });
 
-  const transactions = (data?.data as any)?.data ?? [];
+  const transactions = (query.data?.data as any)?.data ?? [];
+  const isLoading = query.isLoading;
 
   return (
     <Modal
