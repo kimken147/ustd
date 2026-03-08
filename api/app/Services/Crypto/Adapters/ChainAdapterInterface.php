@@ -44,4 +44,20 @@ interface ChainAdapterInterface
      * Returns ['confirmed' => bool, 'success' => bool, 'fee' => string] or null if not found yet.
      */
     public function getTransactionInfo(string $txHash): ?array;
+
+    /**
+     * 取得指定地址的 USDT 交易歷史（含收款和付款）
+     *
+     * @param string $address 錢包地址
+     * @param int $limit 每頁筆數 (max 200)
+     * @param string|null $fingerprint 分頁游標
+     * @param string|null $minTimestamp 最早時間戳 (毫秒)
+     * @return array{data: \Illuminate\Support\Collection, fingerprint: string|null}
+     */
+    public function fetchTransactionHistory(
+        string $address,
+        int $limit = 200,
+        ?string $fingerprint = null,
+        ?string $minTimestamp = null,
+    ): array;
 }

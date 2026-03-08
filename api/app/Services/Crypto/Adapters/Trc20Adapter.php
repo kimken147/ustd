@@ -67,6 +67,71 @@ class Trc20Adapter implements ChainAdapterInterface
         }
     }
 
+    public function fetchTransactionHistory(
+        string $address,
+        int $limit = 200,
+        ?string $fingerprint = null,
+        ?string $minTimestamp = null,
+    ): array {
+        try {
+            $params = [
+                'contract_address' => $this->getUsdtContract(),
+                'limit' => min($limit, 200),
+                'order_by' => 'block_timestamp,desc',
+            ];
+
+            if ($fingerprint) {
+                $params['fingerprint'] = $fingerprint;
+            }
+
+            if ($minTimestamp) {
+                $params['min_timestamp'] = $minTimestamp;
+            }
+
+            $response = $this->buildHttpClient()
+                ->get($this->getBaseUrl() . "/v1/accounts/{$address}/transactions/trc20", $params);
+
+            if (!$response->successful()) {
+                Log::warning('Trc20Adapter: fetchTransactionHistory API 請求失敗', [
+                    'address' => $address,
+                    'status' => $response->status(),
+                ]);
+                return ['data' => collect(), 'fingerprint' => null];
+            }
+
+            $json = $response->json();
+            $data = $json['data'] ?? [];
+            $nextFingerprint = $json['meta']['fingerprint'] ?? null;
+
+            $transactions = collect($data)
+                ->filter(fn ($tx) => ($tx['token_info']['address'] ?? '') === $this->getUsdtContract())
+                ->map(function ($tx) {
+                    $decimals = (int) ($tx['token_info']['decimals'] ?? 6);
+                    $rawAmount = $tx['value'] ?? '0';
+                    $amount = bcdiv($rawAmount, bcpow('10', (string) $decimals), 6);
+
+                    return [
+                        'tx_hash' => $tx['transaction_id'],
+                        'from' => $tx['from'],
+                        'to' => $tx['to'],
+                        'amount' => $amount,
+                        'block_timestamp' => (int) ($tx['block_timestamp'] ?? 0),
+                        'block_number' => (int) ($tx['block_number'] ?? 0),
+                        'type' => $tx['type'] ?? 'Transfer',
+                        'raw' => $tx,
+                    ];
+                });
+
+            return ['data' => $transactions, 'fingerprint' => $nextFingerprint];
+        } catch (\Exception $e) {
+            Log::error('Trc20Adapter: fetchTransactionHistory 發生例外', [
+                'address' => $address,
+                'exception' => $e->getMessage(),
+            ]);
+            return ['data' => collect(), 'fingerprint' => null];
+        }
+    }
+
     public function sendTransaction(
         string $fromAddress,
         string $toAddress,
