@@ -10,6 +10,8 @@ use App\Models\TransactionGroup;
 use App\Models\User;
 use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
+use App\Models\Channel;
+use App\Jobs\BackfillChainTransactions;
 use App\Services\QrCodeService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
@@ -189,6 +191,10 @@ class UserChannelAccountService
             $this->syncTransactionGroups($userChannelAccount, $provider);
 
             DB::commit();
+
+            if ($userChannelAccount->channel_code === Channel::CODE_USDT) {
+                BackfillChainTransactions::dispatch($userChannelAccount->id);
+            }
         } catch (\Exception $e) {
             Log::error(__METHOD__ . ': ' . $e->getMessage(), ['exception' => $e]);
             DB::rollBack();
@@ -241,6 +247,10 @@ class UserChannelAccountService
         $userChannelAccount->save();
 
         $this->syncTransactionGroups($userChannelAccount, $provider);
+
+        if ($userChannelAccount->channel_code === Channel::CODE_USDT) {
+            BackfillChainTransactions::dispatch($userChannelAccount->id)->afterCommit();
+        }
 
         return $userChannelAccount;
     }
