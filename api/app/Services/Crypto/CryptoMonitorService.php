@@ -14,6 +14,7 @@ class CryptoMonitorService
 {
     public function __construct(
         private readonly TransactionStatusService $transactionStatusService,
+        private readonly ChainTransactionSyncService $chainTransactionSyncService,
     ) {}
 
     /**
@@ -57,6 +58,19 @@ class CryptoMonitorService
     private function pollAddress(ChainAdapterInterface $adapter, string $address, $monitors): void
     {
         $chainTxs = $adapter->fetchIncomingTransactions($address);
+
+        // 順便同步鏈上交易到 chain_transactions 表
+        $account = $monitors->first()->userChannelAccount;
+        if ($account && $chainTxs->isNotEmpty()) {
+            try {
+                $this->chainTransactionSyncService->processFromPolling($chainTxs, $account);
+            } catch (\Exception $e) {
+                Log::warning('CryptoMonitorService: 同步鏈上交易失敗', [
+                    'address' => $address,
+                    'exception' => $e->getMessage(),
+                ]);
+            }
+        }
 
         // 更新最後輪詢時間
         UsdtDepositMonitor::where('address', $address)
