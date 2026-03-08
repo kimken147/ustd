@@ -107,7 +107,11 @@ function Filter({ formProps, children, loading, onSearch, defaultValues }: Filte
                 <Button
                   block
                   onClick={() => {
-                    form.resetFields();
+                    const fields = form.getFieldsValue();
+                    const emptyFields = Object.fromEntries(
+                      Object.keys(fields).map(key => [key, undefined])
+                    );
+                    form.setFieldsValue(emptyFields);
                     if (defaultValues) {
                       form.setFieldsValue(defaultValues);
                     }

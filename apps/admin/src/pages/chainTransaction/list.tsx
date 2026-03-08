@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from 'react';
-import { Button, Col, Input, Modal, Select, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Col, Input, InputNumber, Modal, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import { List, TextField, useTable } from '@refinedev/antd';
 import { useApiUrl, useCan, useCustomMutation } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
@@ -128,7 +128,7 @@ const ChainTransactionList: FC = () => {
       width: 160,
       ellipsis: true,
       render: (v: string) => v ? (
-        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 140 }}>
+        <Typography.Text copyable={{ text: v }}>
           <a href={`${TRONSCAN_BASE}${v}`} target="_blank" rel="noopener noreferrer">
             {v.slice(0, 8)}...{v.slice(-6)}
           </a>
@@ -157,7 +157,7 @@ const ChainTransactionList: FC = () => {
       width: 140,
       ellipsis: true,
       render: (v: string) => v ? (
-        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 120 }}>
+        <Typography.Text copyable={{ text: v }}>
           {v.slice(0, 6)}...{v.slice(-4)}
         </Typography.Text>
       ) : '-',
@@ -168,7 +168,7 @@ const ChainTransactionList: FC = () => {
       width: 140,
       ellipsis: true,
       render: (v: string) => v ? (
-        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 120 }}>
+        <Typography.Text copyable={{ text: v }}>
           {v.slice(0, 6)}...{v.slice(-4)}
         </Typography.Text>
       ) : '-',
@@ -312,6 +312,16 @@ const ChainTransactionList: FC = () => {
             <Col xs={24} md={6}>
               <ListPageLayout.Filter.Item label={t('filters.address')} name="address">
                 <Input allowClear placeholder={t('placeholders.address')} />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={3}>
+              <ListPageLayout.Filter.Item label={t('filters.amountRange')} name="amount_min">
+                <InputNumber style={{ width: '100%' }} min={0} placeholder="Min" />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={3}>
+              <ListPageLayout.Filter.Item label=" " name="amount_max">
+                <InputNumber style={{ width: '100%' }} min={0} placeholder="Max" />
               </ListPageLayout.Filter.Item>
             </Col>
           </ListPageLayout.Filter>

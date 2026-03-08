@@ -5,7 +5,7 @@
     "pageTitle": "链上交易管理"
   },
   "fields": {
-    "txHash": "交易哈希",
+    "txHash": "TX Hash",
     "direction": "方向",
     "fromAddress": "发送地址",
     "toAddress": "接收地址",
@@ -52,13 +52,13 @@
   },
   "placeholders": {
     "selectTransaction": "搜索并选择订单",
-    "txHash": "输入交易哈希",
+    "txHash": "输入 TX Hash",
     "address": "输入地址"
   },
   "filters": {
     "matchStatus": "比对状态",
     "direction": "方向",
-    "txHash": "交易哈希",
+    "txHash": "TX Hash",
     "address": "地址",
     "amountRange": "金额范围",
     "dateRange": "时间范围"
