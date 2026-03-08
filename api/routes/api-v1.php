@@ -351,6 +351,27 @@ Route::prefix("admin")
             );
 
             Route::apiResource('tags', 'TagController');
+
+            Route::apiResource(
+                'chain-transactions',
+                'ChainTransactionController'
+            )->only(['index', 'show']);
+            Route::put(
+                'chain-transactions/{chainTransaction}/match',
+                'ChainTransactionController@match'
+            );
+            Route::put(
+                'chain-transactions/{chainTransaction}/ignore',
+                'ChainTransactionController@ignore'
+            );
+            Route::put(
+                'chain-transactions/{chainTransaction}/restore',
+                'ChainTransactionController@restore'
+            );
+            Route::post(
+                'chain-transactions/sync',
+                'ChainTransactionController@sync'
+            );
         });
 
         Route::prefix("statistics")->group(function () {

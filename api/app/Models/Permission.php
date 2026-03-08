@@ -46,6 +46,8 @@ class Permission extends Model
     const ADMIN_FINANCIAL_REPORT = 33;
     const ADMIN_SHOW_SENSITIVE_DATA = 34;
     const ADMIN_INTERNAL_TRANSFER = 35;
+    const ADMIN_VIEW_CHAIN_TRANSACTION = 36;
+    const ADMIN_UPDATE_CHAIN_TRANSACTION = 37;
 
     protected $fillable = ['role', 'group_name', 'name'];
 }

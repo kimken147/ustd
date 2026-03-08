@@ -22,6 +22,7 @@ class PermissionSeeder extends Seeder
     const GROUP_NAME_FEATURE_TOGGLE = '系统设置';
     const GROUP_NAME_THIRD_CHANNEL = '三方管理';
     const GROUP_NAME_AUTHORITY_MANAGE = '权限管理';
+    const GROUP_NAME_CHAIN_TRANSACTION = '鏈上交易管理';
 
     private $permissions = [
         Permission::ADMIN_CREATE_PROVIDER                         => [
@@ -193,6 +194,16 @@ class PermissionSeeder extends Seeder
             'role'       => User::ROLE_ADMIN,
             'group_name' => self::GROUP_NAME_WITHDRAW,
             'name'       => '显示敏感资料',
+        ],
+        Permission::ADMIN_VIEW_CHAIN_TRANSACTION => [
+            'role'       => User::ROLE_ADMIN,
+            'group_name' => self::GROUP_NAME_CHAIN_TRANSACTION,
+            'name'       => '查看鏈上交易',
+        ],
+        Permission::ADMIN_UPDATE_CHAIN_TRANSACTION => [
+            'role'       => User::ROLE_ADMIN,
+            'group_name' => self::GROUP_NAME_CHAIN_TRANSACTION,
+            'name'       => '管理鏈上交易',
         ],
     ];
 
