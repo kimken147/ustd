@@ -15,7 +15,7 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '1000',
                 "unit" => "元"
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::FEATURE_PAUFEN_WITHDRAW_MATCHING_TIMED_OUT          => [
             'enabled' => true,
@@ -69,7 +69,7 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '0',
                 "unit" => "元"
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::NOTIFY_ADMIN_UPDATE_BALANCE                         => [
             'enabled' => true,
@@ -109,7 +109,7 @@ class FeatureToggleSeeder extends Seeder
                 'type'  => 'boolean',
                 'value' => '0'
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::MIN_PROVIDER_NORMAL_DEPOSIT_AMOUNT                  => [
             'enabled' => false,
@@ -118,7 +118,7 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '1000',
                 "unit" => "元"
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::DISABLE_PROVIDER_CREATE_NEW_MEMBER                  => [
             'enabled' => false,
@@ -126,7 +126,7 @@ class FeatureToggleSeeder extends Seeder
                 'type'  => 'boolean',
                 'value' => '0'
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::TRANSACTION_CREATION_RATE_LIMIT                     => [
             'enabled' => false,
@@ -144,7 +144,7 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '50000',
                 "unit" => "元"
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::LATE_NIGHT_BANK_LIMIT                               => [
             'enabled' => false,
@@ -176,7 +176,7 @@ class FeatureToggleSeeder extends Seeder
                 'type'  => 'boolean',
                 'value' => '0'
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::DISABLE_SHOWING_QR_CODE_ON_ALIPAY_BANK_MATCHED_PAGE => [
             'enabled' => false,
@@ -200,7 +200,7 @@ class FeatureToggleSeeder extends Seeder
                 'type'  => 'boolean',
                 'value' => '0'
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::PAYING_TIMEOUT_JS_COUNTDOWN                         => [
             'enabled' => false,
@@ -242,7 +242,7 @@ class FeatureToggleSeeder extends Seeder
                 'type'  => 'boolean',
                 'value' => ''
             ],
-            "hidden" => false
+            "hidden" => true
         ],
         FeatureToggle::NOTIFY_NON_SUCCESS_USER_CHANNEL_ACCOUNT             => [
             'enabled' => true,
@@ -296,7 +296,7 @@ class FeatureToggleSeeder extends Seeder
             ],
         ],
         FeatureToggle::MAX_PROVIDER_HIGH_QUALITY_DEPOSIT_COUNT             => [
-            'hidden'  => false,
+            'hidden'  => true,
             'enabled' => false,
             'input'   => [
                 'type'  => 'text',
@@ -339,7 +339,7 @@ class FeatureToggleSeeder extends Seeder
             ]
         ],
         FeatureToggle::VISIABLE_DAYS_OF_PROVIDER_TRANSACTIONS              => [
-            'hidden'  => false,
+            'hidden'  => true,
             'enabled' => false,
             'input'   => [
                 'type'  => 'text',
