@@ -13,7 +13,7 @@ export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencie
       return (
         <Space>
           <TextField
-            value={`${numeral(record.monthly_total).format('0,0.00')} / ${record.monthly_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.monthly_total).format('0,0.00')} / ${record.monthly_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}
@@ -56,7 +56,7 @@ export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies
       return (
         <Space>
           <TextField
-            value={`${numeral(record.withdraw_monthly_total).format('0,0.00')} / ${record.withdraw_monthly_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.withdraw_monthly_total).format('0,0.00')} / ${record.withdraw_monthly_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}

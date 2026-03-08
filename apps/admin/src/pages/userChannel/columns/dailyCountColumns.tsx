@@ -13,7 +13,7 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
       return (
         <Space>
           <TextField
-            value={`${numeral(record.daily_total).format('0,0.00')} / ${record.daily_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.daily_total).format('0,0.00')} / ${record.daily_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}
@@ -56,7 +56,7 @@ export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies):
       return (
         <Space>
           <TextField
-            value={`${numeral(record.withdraw_daily_total).format('0,0.00')} / ${record.withdraw_daily_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.withdraw_daily_total).format('0,0.00')} / ${record.withdraw_daily_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}
