@@ -4,16 +4,16 @@ import { Button, Space } from 'antd';
 import numeral from 'numeral';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
-export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
   const { t, canEdit, mutateUserChannel } = deps;
 
   return {
-    title: t('fields.dailyReceiveAmountAndCount'),
+    title: t('fields.monthlyReceiveAmountAndCount'),
     render(_, record) {
       return (
         <Space>
           <TextField
-            value={`${numeral(record.daily_total).format('0,0.00')} / ${record.daily_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.monthly_total).format('0,0.00')} / ${record.monthly_transaction_count_total ?? 0} 笔`}
           />
           <Button
             disabled={!canEdit}
@@ -21,8 +21,8 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { daily_total: 0, daily_transaction_count_total: 0 },
-                title: t('confirmation.resetDailyReceiveAmountAndCount'),
+                values: { monthly_total: 0, monthly_transaction_count_total: 0 },
+                title: t('confirmation.resetMonthlyReceiveAmountAndCount'),
               });
             }}
           />
@@ -32,16 +32,16 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
   };
 }
 
-export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
   const { t, canEdit, mutateUserChannel } = deps;
 
   return {
-    title: t('fields.dailyPayoutAmountAndCount'),
+    title: t('fields.monthlyPayoutAmountAndCount'),
     render(_, record) {
       return (
         <Space>
           <TextField
-            value={`${numeral(record.withdraw_daily_total).format('0,0.00')} / ${record.withdraw_daily_transaction_count_total ?? 0} 笔`}
+            value={`${numeral(record.withdraw_monthly_total).format('0,0.00')} / ${record.withdraw_monthly_transaction_count_total ?? 0} 笔`}
           />
           <Button
             disabled={!canEdit}
@@ -49,8 +49,8 @@ export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies):
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { withdraw_daily_total: 0, withdraw_daily_transaction_count_total: 0 },
-                title: t('confirmation.resetDailyPayoutAmountAndCount'),
+                values: { withdraw_monthly_total: 0, withdraw_monthly_transaction_count_total: 0 },
+                title: t('confirmation.resetMonthlyPayoutAmountAndCount'),
               });
             }}
           />
@@ -60,26 +60,26 @@ export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies):
   };
 }
 
-export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
-    title: t('fields.dailyReceiveCountLimit'),
+    title: t('fields.monthlyReceiveCountLimit'),
     render(_, record) {
       return (
         <Space>
           <TextField
-            value={`${record.daily_transaction_count_limit ?? '-'} / ${record.daily_transaction_count_total ?? 0}`}
+            value={`${record.monthly_transaction_count_limit ?? '-'} / ${record.monthly_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}
             icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
             onClick={() => {
               showUpdateModal({
-                title: t('actions.editDailyReceiveCountLimit'),
+                title: t('actions.editMonthlyReceiveCountLimit'),
                 id: record.id,
-                initialValues: { daily_transaction_count_limit: record.daily_transaction_count_limit },
-                filterFormItems: ['daily_transaction_count_limit'],
+                initialValues: { monthly_transaction_count_limit: record.monthly_transaction_count_limit },
+                filterFormItems: ['monthly_transaction_count_limit'],
               });
             }}
           />
@@ -89,8 +89,8 @@ export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): Us
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { daily_transaction_count_total: 0 },
-                title: t('confirmation.resetDailyReceiveCount'),
+                values: { monthly_transaction_count_total: 0 },
+                title: t('confirmation.resetMonthlyReceiveCount'),
               });
             }}
           />
@@ -100,8 +100,8 @@ export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): Us
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { daily_transaction_count_limit: null },
-                title: t('confirmation.resetDailyReceiveCountDefault'),
+                values: { monthly_transaction_count_limit: null },
+                title: t('confirmation.resetMonthlyReceiveCountDefault'),
               });
             }}
           />
@@ -111,26 +111,26 @@ export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): Us
   };
 }
 
-export function createDailyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
-    title: t('fields.dailyPayoutCountLimit'),
+    title: t('fields.monthlyPayoutCountLimit'),
     render(_, record) {
       return (
         <Space>
           <TextField
-            value={`${record.withdraw_daily_transaction_count_limit ?? '-'} / ${record.withdraw_daily_transaction_count_total ?? 0}`}
+            value={`${record.withdraw_monthly_transaction_count_limit ?? '-'} / ${record.withdraw_monthly_transaction_count_total ?? 0}`}
           />
           <Button
             disabled={!canEdit}
             icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
             onClick={() => {
               showUpdateModal({
-                title: t('actions.editDailyPayoutCountLimit'),
+                title: t('actions.editMonthlyPayoutCountLimit'),
                 id: record.id,
-                initialValues: { withdraw_daily_transaction_count_limit: record.withdraw_daily_transaction_count_limit },
-                filterFormItems: ['withdraw_daily_transaction_count_limit'],
+                initialValues: { withdraw_monthly_transaction_count_limit: record.withdraw_monthly_transaction_count_limit },
+                filterFormItems: ['withdraw_monthly_transaction_count_limit'],
               });
             }}
           />
@@ -140,8 +140,8 @@ export function createDailyPayoutCountLimitColumn(deps: ColumnDependencies): Use
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { withdraw_daily_transaction_count_total: 0 },
-                title: t('confirmation.resetDailyPayoutCount'),
+                values: { withdraw_monthly_transaction_count_total: 0 },
+                title: t('confirmation.resetMonthlyPayoutCount'),
               });
             }}
           />
@@ -151,8 +151,8 @@ export function createDailyPayoutCountLimitColumn(deps: ColumnDependencies): Use
             onClick={() => {
               mutateUserChannel({
                 record,
-                values: { withdraw_daily_transaction_count_limit: null },
-                title: t('confirmation.resetDailyPayoutCountDefault'),
+                values: { withdraw_monthly_transaction_count_limit: null },
+                title: t('confirmation.resetMonthlyPayoutCountDefault'),
               });
             }}
           />

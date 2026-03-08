@@ -27,6 +27,12 @@ import {
   createMonthlyLimitReceiveColumn,
   createMonthlyLimitPayoutColumn,
 } from './monthlyLimitColumns';
+import {
+  createMonthlyReceiveAmountAndCountColumn,
+  createMonthlyPayoutAmountAndCountColumn,
+  createMonthlyReceiveCountLimitColumn,
+  createMonthlyPayoutCountLimitColumn,
+} from './monthlyCountColumns';
 import { createOperationColumn } from './operationColumn';
 
 export type { ColumnDependencies } from './types';
@@ -53,6 +59,10 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createDailyStatusColumn(deps),
     createDailyLimitReceiveColumn(deps),
     createDailyLimitPayoutColumn(deps),
+    createMonthlyReceiveAmountAndCountColumn(deps),
+    createMonthlyPayoutAmountAndCountColumn(deps),
+    createMonthlyReceiveCountLimitColumn(deps),
+    createMonthlyPayoutCountLimitColumn(deps),
     createMonthlyStatusColumn(deps),
     createMonthlyLimitReceiveColumn(deps),
     createMonthlyLimitPayoutColumn(deps),

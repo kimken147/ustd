@@ -56,7 +56,11 @@
     "dailyReceiveCountLimit": "Daily Money-In Count Limit / Used",
     "dailyPayoutCountLimit": "Daily Money-Out Count Limit / Used",
     "dailyReceiveAmountAndCount": "Daily Money-In Amount / Count",
-    "dailyPayoutAmountAndCount": "Daily Money-Out Amount / Count"
+    "dailyPayoutAmountAndCount": "Daily Money-Out Amount / Count",
+    "monthlyReceiveAmountAndCount": "Monthly Money-In Amount / Count",
+    "monthlyPayoutAmountAndCount": "Monthly Money-Out Amount / Count",
+    "monthlyReceiveCountLimit": "Monthly Money-In Count Limit / Used",
+    "monthlyPayoutCountLimit": "Monthly Money-Out Count Limit / Used"
   },
   "switches": {
     "dailyLimit": "Daily Limit Switch",
@@ -88,6 +92,8 @@
     "resetMonthlyLimitDefaultPayout": "Reset Monthly Money-Out Limit to Default?",
     "editDailyReceiveCountLimit": "Edit Daily Money-In Count Limit",
     "editDailyPayoutCountLimit": "Edit Daily Money-Out Count Limit",
+    "editMonthlyReceiveCountLimit": "Edit Monthly Money-In Count Limit",
+    "editMonthlyPayoutCountLimit": "Edit Monthly Money-Out Count Limit",
     "editSingleLimit": "Edit Single Transaction Limit",
     "editNote": "Edit Memo",
     "editMpin": "Edit MPIN",
@@ -149,10 +155,18 @@
     "resetDailyUsedPayout": "Reset Daily Money-Out Amount?",
     "resetDailyLimitDefaultReceive": "Reset Daily Money-In Limit to Default?",
     "resetDailyLimitDefaultPayout": "Reset Daily Money-Out Limit to Default?",
+    "resetDailyReceiveAmountAndCount": "Reset Daily Money-In Amount and Count?",
+    "resetDailyPayoutAmountAndCount": "Reset Daily Money-Out Amount and Count?",
     "resetDailyReceiveCount": "Reset Daily Money-In Count?",
     "resetDailyPayoutCount": "Reset Daily Money-Out Count?",
     "resetDailyReceiveCountDefault": "Reset Daily Money-In Count Limit to Default?",
-    "resetDailyPayoutCountDefault": "Reset Daily Money-Out Count Limit to Default?"
+    "resetDailyPayoutCountDefault": "Reset Daily Money-Out Count Limit to Default?",
+    "resetMonthlyReceiveAmountAndCount": "Reset Monthly Money-In Amount and Count?",
+    "resetMonthlyPayoutAmountAndCount": "Reset Monthly Money-Out Amount and Count?",
+    "resetMonthlyReceiveCount": "Reset Monthly Money-In Count?",
+    "resetMonthlyPayoutCount": "Reset Monthly Money-Out Count?",
+    "resetMonthlyReceiveCountDefault": "Reset Monthly Money-In Count Limit to Default?",
+    "resetMonthlyPayoutCountDefault": "Reset Monthly Money-Out Count Limit to Default?"
   },
   "placeholders": {
     "qrcode": "QR Code",

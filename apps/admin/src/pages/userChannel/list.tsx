@@ -86,6 +86,8 @@ const UserChannelAccountList: FC = () => {
       { label: t('fields.dailyPayoutCountLimit'), name: 'withdraw_daily_transaction_count_limit', children: <InputNumber className="w-full" min={0} precision={0} /> },
       { label: t('fields.monthlyLimitReceive'), name: 'monthly_limit', children: <InputNumber className="w-full" /> },
       { label: t('fields.monthlyLimitPayout'), name: 'withdraw_monthly_limit', children: <InputNumber className="w-full" /> },
+      { label: t('fields.monthlyReceiveCountLimit'), name: 'monthly_transaction_count_limit', children: <InputNumber className="w-full" min={0} precision={0} /> },
+      { label: t('fields.monthlyPayoutCountLimit'), name: 'withdraw_monthly_transaction_count_limit', children: <InputNumber className="w-full" min={0} precision={0} /> },
       { label: t('fields.singleMinLimit'), name: 'single_min_limit', children: <InputNumber className="w-full" /> },
       { label: t('fields.singleMaxLimit'), name: 'single_max_limit', children: <InputNumber className="w-full" /> },
       { name: 'allow_unlimited' },
