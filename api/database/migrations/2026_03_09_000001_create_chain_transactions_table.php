@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('chain_transactions')) {
+            return;
+        }
+
         Schema::create('chain_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('tx_hash', 66)->unique();
