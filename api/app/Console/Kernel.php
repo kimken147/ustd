@@ -9,7 +9,8 @@ use App\Console\Commands\UpdateTransactionSearchFields;
 use App\Console\Commands\SyncThirdchannelDaifuOrder;
 use App\Console\Commands\CheckThirdchannelBalance;
 use App\Console\Commands\SyncThirdchannelBalance;
-
+use App\Console\Commands\SyncChainTransactions;
+use App\Console\Commands\MarkUnmatchedChainTransactions;
 
 use App\Console\Commands\CheckDelayedProviderDeposit;
 use App\Console\Commands\DisableNonLoginUser;
@@ -66,7 +67,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command(ClearUserChannelAccountMonthlyTotal::class)->monthly()->onOneServer();
 
-
+        // 鏈上交易同步與清理排程
+        $schedule->command(SyncChainTransactions::class)->hourly()->onOneServer();
+        $schedule->command(MarkUnmatchedChainTransactions::class)->daily()->onOneServer();
     }
 
     protected function shortSchedule(ShortSchedule $shortSchedule)
