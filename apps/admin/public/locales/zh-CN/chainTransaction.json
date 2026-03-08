@@ -1,0 +1,66 @@
+{
+  "titles": {
+    "list": "链上交易明细",
+    "show": "链上交易详情",
+    "pageTitle": "链上交易管理"
+  },
+  "fields": {
+    "txHash": "交易哈希",
+    "direction": "方向",
+    "fromAddress": "发送地址",
+    "toAddress": "接收地址",
+    "amount": "金额",
+    "blockNumber": "区块号",
+    "blockTimestamp": "交易时间",
+    "matchStatus": "比对状态",
+    "matchedTransaction": "关联订单",
+    "matchedAt": "匹配时间",
+    "matchedBy": "操作人",
+    "userChannelAccount": "所属帐号",
+    "note": "备注",
+    "createdAt": "建立时间"
+  },
+  "direction": {
+    "in": "收款",
+    "out": "付款"
+  },
+  "matchStatus": {
+    "pending": "待比对",
+    "matched": "已匹配",
+    "unmatched": "未匹配",
+    "ignored": "已忽略"
+  },
+  "actions": {
+    "match": "关联",
+    "ignore": "忽略",
+    "restore": "恢复",
+    "viewTransaction": "查看订单",
+    "sync": "手动同步",
+    "ok": "确定",
+    "cancel": "取消"
+  },
+  "confirmation": {
+    "ignore": "确定要忽略此交易吗？",
+    "restore": "确定要恢复此交易吗？",
+    "sync": "确定要手动同步所有帐号的链上交易吗？"
+  },
+  "messages": {
+    "matchSuccess": "关联成功",
+    "ignoreSuccess": "已标记为忽略",
+    "restoreSuccess": "已恢复",
+    "syncSuccess": "同步完成"
+  },
+  "placeholders": {
+    "selectTransaction": "搜索并选择订单",
+    "txHash": "输入交易哈希",
+    "address": "输入地址"
+  },
+  "filters": {
+    "matchStatus": "比对状态",
+    "direction": "方向",
+    "txHash": "交易哈希",
+    "address": "地址",
+    "amountRange": "金额范围",
+    "dateRange": "时间范围"
+  }
+}

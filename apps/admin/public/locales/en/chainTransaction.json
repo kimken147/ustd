@@ -1,0 +1,66 @@
+{
+  "titles": {
+    "list": "On-Chain Transactions",
+    "show": "Transaction Details",
+    "pageTitle": "On-Chain Transaction Management"
+  },
+  "fields": {
+    "txHash": "TX Hash",
+    "direction": "Direction",
+    "fromAddress": "From Address",
+    "toAddress": "To Address",
+    "amount": "Amount",
+    "blockNumber": "Block Number",
+    "blockTimestamp": "Transaction Time",
+    "matchStatus": "Match Status",
+    "matchedTransaction": "Matched Order",
+    "matchedAt": "Matched At",
+    "matchedBy": "Matched By",
+    "userChannelAccount": "Account",
+    "note": "Note",
+    "createdAt": "Created At"
+  },
+  "direction": {
+    "in": "Money-In",
+    "out": "Money-Out"
+  },
+  "matchStatus": {
+    "pending": "Pending",
+    "matched": "Matched",
+    "unmatched": "Unmatched",
+    "ignored": "Ignored"
+  },
+  "actions": {
+    "match": "Match",
+    "ignore": "Ignore",
+    "restore": "Restore",
+    "viewTransaction": "View Order",
+    "sync": "Manual Sync",
+    "ok": "Confirm",
+    "cancel": "Cancel"
+  },
+  "confirmation": {
+    "ignore": "Are you sure you want to ignore this transaction?",
+    "restore": "Are you sure you want to restore this transaction?",
+    "sync": "Are you sure you want to sync all accounts?"
+  },
+  "messages": {
+    "matchSuccess": "Match Successful",
+    "ignoreSuccess": "Marked as Ignored",
+    "restoreSuccess": "Restored",
+    "syncSuccess": "Sync Complete"
+  },
+  "placeholders": {
+    "selectTransaction": "Search and select an order",
+    "txHash": "Enter TX Hash",
+    "address": "Enter address"
+  },
+  "filters": {
+    "matchStatus": "Match Status",
+    "direction": "Direction",
+    "txHash": "TX Hash",
+    "address": "Address",
+    "amountRange": "Amount Range",
+    "dateRange": "Date Range"
+  }
+}

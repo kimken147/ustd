@@ -3,4 +3,5 @@ export const Resource = {
     banks: "banks",
     channelAmounts: "channel-amounts",
     providers: "providers",
+    chainTransactions: "chain-transactions",
 };

@@ -113,3 +113,11 @@ export type {
     Provider2,
     CertificateFile,
 } from './withdraw';
+
+// ChainTransaction types
+export type {
+    ChainTransaction,
+    ChainTransactionAccount,
+    ChainTransactionMatchedTx,
+    ChainTransactionMatchedByUser,
+} from './chainTransaction';

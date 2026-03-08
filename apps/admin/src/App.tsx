@@ -70,6 +70,7 @@ import TagList from 'pages/tag/list';
 import TagCreate from 'pages/tag/create';
 import FundList from 'pages/transaction/fund/list';
 import FundCreate from 'pages/transaction/fund/create';
+import ChainTransactionList from 'pages/chainTransaction/list';
 
 import { useTranslation } from 'react-i18next';
 import './i18n';
@@ -178,6 +179,11 @@ function App() {
       show: '/user-channel-accounts/:id',
       create: '/user-channel-accounts/create',
       meta: { label: t('navigation.paymentAccountManagement'), icon: <WalletOutlined /> },
+    },
+    {
+      name: 'chain-transactions',
+      list: '/chain-transactions',
+      meta: { label: t('navigation.chainTransactions'), icon: <SwapOutlined /> },
     },
     {
       name: 'transaction',
@@ -389,6 +395,9 @@ function App() {
                 <Route path="/user-channel-accounts" element={<UserChannelAccountList />} />
                 <Route path="/user-channel-accounts/create" element={<UserChannelCreate />} />
                 <Route path="/user-channel-accounts/:id" element={<UserChannelShow />} />
+
+                {/* Chain Transactions */}
+                <Route path="/chain-transactions" element={<ChainTransactionList />} />
 
                 {/* Transactions */}
                 <Route path="/transactions" element={<CollectionList />} />

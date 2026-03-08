@@ -485,6 +485,7 @@
     "thirdPartyManagement": "Third-Party Management",
     "systemSettings": "System Settings",
     "supportedBanks": "Supported Banks",
+    "chainTransactions": "On-Chain Transactions",
     "permissionManagement": "Permission Management",
     "adminLoginWhiteList": "Administrator Login IP Allowlist"
   },

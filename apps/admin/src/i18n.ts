@@ -31,6 +31,7 @@ i18n
       'thirdParty',
       'systemSettings',
       'permission',
+      'chainTransaction',
     ],
     defaultNS: 'common',
   });
