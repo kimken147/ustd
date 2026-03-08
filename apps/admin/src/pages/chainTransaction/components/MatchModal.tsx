@@ -26,7 +26,7 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
       query: {
         order_number: search || undefined,
         per_page: 10,
-        channel_code: 'USDT',
+        'channel_code[]': 'USDT',
       },
     },
     queryOptions: {

@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from 'react';
-import { Button, Col, Input, Modal, Select, Space, Tag, Tooltip } from 'antd';
+import { Button, Col, Input, Modal, Select, Space, Tag, Tooltip, Typography } from 'antd';
 import { List, TextField, useTable } from '@refinedev/antd';
 import { useApiUrl, useCan, useCustomMutation } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
@@ -127,13 +127,13 @@ const ChainTransactionList: FC = () => {
       dataIndex: 'tx_hash',
       width: 160,
       ellipsis: true,
-      render: (v: string) => (
-        <Tooltip title={v}>
+      render: (v: string) => v ? (
+        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 140 }}>
           <a href={`${TRONSCAN_BASE}${v}`} target="_blank" rel="noopener noreferrer">
-            {v?.slice(0, 8)}...{v?.slice(-6)}
+            {v.slice(0, 8)}...{v.slice(-6)}
           </a>
-        </Tooltip>
-      ),
+        </Typography.Text>
+      ) : '-',
     },
     {
       title: t('fields.direction'),
@@ -156,14 +156,22 @@ const ChainTransactionList: FC = () => {
       dataIndex: 'from_address',
       width: 140,
       ellipsis: true,
-      render: (v: string) => <Tooltip title={v}>{v?.slice(0, 6)}...{v?.slice(-4)}</Tooltip>,
+      render: (v: string) => v ? (
+        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 120 }}>
+          {v.slice(0, 6)}...{v.slice(-4)}
+        </Typography.Text>
+      ) : '-',
     },
     {
       title: t('fields.toAddress'),
       dataIndex: 'to_address',
       width: 140,
       ellipsis: true,
-      render: (v: string) => <Tooltip title={v}>{v?.slice(0, 6)}...{v?.slice(-4)}</Tooltip>,
+      render: (v: string) => v ? (
+        <Typography.Text copyable={{ text: v }} ellipsis style={{ maxWidth: 120 }}>
+          {v.slice(0, 6)}...{v.slice(-4)}
+        </Typography.Text>
+      ) : '-',
     },
     {
       title: t('fields.userChannelAccount'),
