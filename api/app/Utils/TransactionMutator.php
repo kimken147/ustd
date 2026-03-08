@@ -122,6 +122,7 @@ class TransactionMutator
                 $transaction->floating_amount,
                 true
             );
+            $this->userChannelAccountUtil->updatePaymentCount($account->id, 1, true);
 
             return $transaction;
         });

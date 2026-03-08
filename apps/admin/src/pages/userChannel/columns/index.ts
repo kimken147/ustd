@@ -17,6 +17,12 @@ import {
   createDailyLimitPayoutColumn,
 } from './dailyLimitColumns';
 import {
+  createDailyReceiveAmountAndCountColumn,
+  createDailyPayoutAmountAndCountColumn,
+  createDailyReceiveCountLimitColumn,
+  createDailyPayoutCountLimitColumn,
+} from './dailyCountColumns';
+import {
   createMonthlyStatusColumn,
   createMonthlyLimitReceiveColumn,
   createMonthlyLimitPayoutColumn,
@@ -40,6 +46,10 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createOnchainTrxColumn(deps),
     createOnchainSyncedAtColumn(deps),
     createSingleLimitColumn(deps),
+    createDailyReceiveAmountAndCountColumn(deps),
+    createDailyPayoutAmountAndCountColumn(deps),
+    createDailyReceiveCountLimitColumn(deps),
+    createDailyPayoutCountLimitColumn(deps),
     createDailyStatusColumn(deps),
     createDailyLimitReceiveColumn(deps),
     createDailyLimitPayoutColumn(deps),

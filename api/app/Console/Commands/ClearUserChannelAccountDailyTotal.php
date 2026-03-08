@@ -37,6 +37,11 @@ class ClearUserChannelAccountDailyTotal extends Command
      */
     public function handle()
     {
-        \DB::table('user_channel_accounts')->update(['daily_total' => 0, 'withdraw_daily_total' => 0]);
+        \DB::table('user_channel_accounts')->update([
+            'daily_total' => 0,
+            'withdraw_daily_total' => 0,
+            'daily_transaction_count_total' => 0,
+            'withdraw_daily_transaction_count_total' => 0,
+        ]);
     }
 }

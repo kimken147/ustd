@@ -90,6 +90,7 @@ class TransactionStatusService
             // 扣除出款帳號的日/月限額
             if ($transaction->to_channel_account_id) {
                 $this->userChannelAccountUtil->updateTotalRollback($transaction->to_channel_account_id, $transaction->floating_amount, true);
+                $this->userChannelAccountUtil->rollbackPaymentCount($transaction->to_channel_account_id, 1, true);
             }
 
             $transaction->update([
@@ -263,6 +264,7 @@ class TransactionStatusService
             // 累積日/月限額
             if ($transaction->from_channel_account_id) {
                 $this->userChannelAccountUtil->updateTotal($transaction->from_channel_account_id, $transaction->floating_amount);
+                $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
             }
         }
         // 如果有出款帳號，成功話 出款帳號扣除額度
@@ -355,6 +357,7 @@ class TransactionStatusService
 
             if ($transaction->from_channel_account_id) {
                 $this->userChannelAccountUtil->updateTotal($transaction->from_channel_account_id, $transaction->floating_amount);
+                $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
             }
 
             return $transaction->refresh();
@@ -465,6 +468,7 @@ class TransactionStatusService
                     // 扣除出款帳號的日/月限額
                     if ($transaction->toChannelAccount) {
                         $this->userChannelAccountUtil->updateTotalRollback($transaction->to_channel_account_id, $transaction->floating_amount, true);
+                        $this->userChannelAccountUtil->rollbackPaymentCount($transaction->to_channel_account_id, 1, true);
                     }
 
                     $this->shouldMarkParentAsFailed($transaction, $operator);

@@ -97,6 +97,7 @@ class InternalTransferService
             $transaction->amount,
             true
         );
+        $this->userChannelAccountUtil->updatePaymentCount($account->id, 1, true);
     }
 
     /**

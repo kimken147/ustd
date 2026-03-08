@@ -38,6 +38,11 @@ class ClearUserChannelAccountMonthlyTotal extends Command
      */
     public function handle()
     {
-        \DB::table('user_channel_accounts')->update(['monthly_total' => 0, 'withdraw_monthly_total' => 0]);
+        \DB::table('user_channel_accounts')->update([
+            'monthly_total' => 0,
+            'withdraw_monthly_total' => 0,
+            'monthly_transaction_count_total' => 0,
+            'withdraw_monthly_transaction_count_total' => 0,
+        ]);
     }
 }

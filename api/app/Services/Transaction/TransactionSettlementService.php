@@ -275,6 +275,7 @@ class TransactionSettlementService
         // 要扣除收款的 日/月限額
         if ($transaction->from_channel_account_id) {
             $this->userChannelAccountUtil->updateTotalRollback($transaction->from_channel_account_id, $transaction->floating_amount);
+            $this->userChannelAccountUtil->rollbackPaymentCount($transaction->from_channel_account_id);
         }
     }
 
