@@ -143,6 +143,7 @@ const UserWalletHistoryList: FC = () => {
               >
                 <DatePicker
                   showTime
+                  needConfirm={false}
                   className="w-full"
                   disabledDate={current => {
                     const startAt = form?.getFieldValue('started_at') as Dayjs;

@@ -53,6 +53,7 @@ const TransactionMessageList: FC = () => {
             <ListPageLayout.Filter.Item label="结束日期" name="ended_at">
               <DatePicker
                 showTime
+                needConfirm={false}
                 className="w-full"
                 disabledDate={current => {
                   const startAt = searchFormProps.form?.getFieldValue('started_at') as Dayjs;

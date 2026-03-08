@@ -155,8 +155,8 @@ const FundCreate: FC = () => {
                                             {selectedUserChannel && (
                                                 <Row>
                                                     <Col offset={1}>
-                                                        <Space className="text-red-500 text-sm mb-4">
-                                                            <span>本站余额：{selectedUserChannel.balance ?? 0}</span>
+                                                        <Space className="text-sm mb-4">
+                                                            <span>后台余额：{selectedUserChannel.balance ?? 0}</span>
                                                             <span>USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}</span>
                                                             <span>TRX：{selectedUserChannel.onchain_trx_balance ?? '-'}</span>
                                                         </Space>
