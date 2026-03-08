@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, mutateUserChannel } = deps;
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.dailyReceiveAmountAndCount'),
@@ -14,6 +14,21 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
         <Space>
           <TextField
             value={`${numeral(record.daily_total).format('0,0.00')} / ${record.daily_transaction_count_total ?? 0} 笔`}
+          />
+          <Button
+            disabled={!canEdit}
+            icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
+            onClick={() => {
+              showUpdateModal({
+                title: t('actions.editDailyReceiveAmountAndCount'),
+                id: record.id,
+                initialValues: {
+                  daily_total: record.daily_total,
+                  daily_transaction_count_total: record.daily_transaction_count_total,
+                },
+                filterFormItems: ['daily_total', 'daily_transaction_count_total'],
+              });
+            }}
           />
           <Button
             disabled={!canEdit}
@@ -33,7 +48,7 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
 }
 
 export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, mutateUserChannel } = deps;
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.dailyPayoutAmountAndCount'),
@@ -42,6 +57,21 @@ export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies):
         <Space>
           <TextField
             value={`${numeral(record.withdraw_daily_total).format('0,0.00')} / ${record.withdraw_daily_transaction_count_total ?? 0} 笔`}
+          />
+          <Button
+            disabled={!canEdit}
+            icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
+            onClick={() => {
+              showUpdateModal({
+                title: t('actions.editDailyPayoutAmountAndCount'),
+                id: record.id,
+                initialValues: {
+                  withdraw_daily_total: record.withdraw_daily_total,
+                  withdraw_daily_transaction_count_total: record.withdraw_daily_transaction_count_total,
+                },
+                filterFormItems: ['withdraw_daily_total', 'withdraw_daily_transaction_count_total'],
+              });
+            }}
           />
           <Button
             disabled={!canEdit}

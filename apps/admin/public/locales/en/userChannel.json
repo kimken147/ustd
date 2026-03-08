@@ -60,7 +60,15 @@
     "monthlyReceiveAmountAndCount": "Monthly Money-In Amount / Count",
     "monthlyPayoutAmountAndCount": "Monthly Money-Out Amount / Count",
     "monthlyReceiveCountLimit": "Monthly Money-In Count Limit / Used",
-    "monthlyPayoutCountLimit": "Monthly Money-Out Count Limit / Used"
+    "monthlyPayoutCountLimit": "Monthly Money-Out Count Limit / Used",
+    "dailyTotal": "Daily Money-In Amount",
+    "dailyTransactionCountTotal": "Daily Money-In Count",
+    "withdrawDailyTotal": "Daily Money-Out Amount",
+    "withdrawDailyTransactionCountTotal": "Daily Money-Out Count",
+    "monthlyTotal": "Monthly Money-In Amount",
+    "monthlyTransactionCountTotal": "Monthly Money-In Count",
+    "withdrawMonthlyTotal": "Monthly Money-Out Amount",
+    "withdrawMonthlyTransactionCountTotal": "Monthly Money-Out Count"
   },
   "switches": {
     "dailyLimit": "Daily Limit Switch",
@@ -92,6 +100,10 @@
     "resetMonthlyLimitDefaultPayout": "Reset Monthly Money-Out Limit to Default?",
     "editDailyReceiveCountLimit": "Edit Daily Money-In Count Limit",
     "editDailyPayoutCountLimit": "Edit Daily Money-Out Count Limit",
+    "editDailyReceiveAmountAndCount": "Edit Daily Money-In Amount and Count",
+    "editDailyPayoutAmountAndCount": "Edit Daily Money-Out Amount and Count",
+    "editMonthlyReceiveAmountAndCount": "Edit Monthly Money-In Amount and Count",
+    "editMonthlyPayoutAmountAndCount": "Edit Monthly Money-Out Amount and Count",
     "editMonthlyReceiveCountLimit": "Edit Monthly Money-In Count Limit",
     "editMonthlyPayoutCountLimit": "Edit Monthly Money-Out Count Limit",
     "editSingleLimit": "Edit Single Transaction Limit",

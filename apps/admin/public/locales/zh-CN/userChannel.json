@@ -60,7 +60,15 @@
     "monthlyReceiveAmountAndCount": "每月已收额度 / 笔数",
     "monthlyPayoutAmountAndCount": "每月已出额度 / 笔数",
     "monthlyReceiveCountLimit": "每月收款笔数限制 / 已收笔数",
-    "monthlyPayoutCountLimit": "每月出款笔数限制 / 已出笔数"
+    "monthlyPayoutCountLimit": "每月出款笔数限制 / 已出笔数",
+    "dailyTotal": "每日已收额度",
+    "dailyTransactionCountTotal": "每日已收笔数",
+    "withdrawDailyTotal": "每日已出额度",
+    "withdrawDailyTransactionCountTotal": "每日已出笔数",
+    "monthlyTotal": "每月已收额度",
+    "monthlyTransactionCountTotal": "每月已收笔数",
+    "withdrawMonthlyTotal": "每月已出额度",
+    "withdrawMonthlyTransactionCountTotal": "每月已出笔数"
   },
   "switches": {
     "dailyLimit": "每日收/付限额开关",
@@ -92,6 +100,10 @@
     "resetMonthlyLimitDefaultPayout": "是否还原每月出款额度为默认值",
     "editDailyReceiveCountLimit": "修改每日收款笔数限制",
     "editDailyPayoutCountLimit": "修改每日出款笔数限制",
+    "editDailyReceiveAmountAndCount": "修改每日已收额度和笔数",
+    "editDailyPayoutAmountAndCount": "修改每日已出额度和笔数",
+    "editMonthlyReceiveAmountAndCount": "修改每月已收额度和笔数",
+    "editMonthlyPayoutAmountAndCount": "修改每月已出额度和笔数",
     "editMonthlyReceiveCountLimit": "修改每月收款笔数限制",
     "editMonthlyPayoutCountLimit": "修改每月出款笔数限制",
     "editSingleLimit": "修改单笔限额",

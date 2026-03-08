@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, mutateUserChannel } = deps;
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.monthlyReceiveAmountAndCount'),
@@ -14,6 +14,21 @@ export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencie
         <Space>
           <TextField
             value={`${numeral(record.monthly_total).format('0,0.00')} / ${record.monthly_transaction_count_total ?? 0} 笔`}
+          />
+          <Button
+            disabled={!canEdit}
+            icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
+            onClick={() => {
+              showUpdateModal({
+                title: t('actions.editMonthlyReceiveAmountAndCount'),
+                id: record.id,
+                initialValues: {
+                  monthly_total: record.monthly_total,
+                  monthly_transaction_count_total: record.monthly_transaction_count_total,
+                },
+                filterFormItems: ['monthly_total', 'monthly_transaction_count_total'],
+              });
+            }}
           />
           <Button
             disabled={!canEdit}
@@ -33,7 +48,7 @@ export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencie
 }
 
 export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, mutateUserChannel } = deps;
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.monthlyPayoutAmountAndCount'),
@@ -42,6 +57,21 @@ export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies
         <Space>
           <TextField
             value={`${numeral(record.withdraw_monthly_total).format('0,0.00')} / ${record.withdraw_monthly_transaction_count_total ?? 0} 笔`}
+          />
+          <Button
+            disabled={!canEdit}
+            icon={<EditOutlined className={canEdit ? 'text-[#6eb9ff]' : ''} />}
+            onClick={() => {
+              showUpdateModal({
+                title: t('actions.editMonthlyPayoutAmountAndCount'),
+                id: record.id,
+                initialValues: {
+                  withdraw_monthly_total: record.withdraw_monthly_total,
+                  withdraw_monthly_transaction_count_total: record.withdraw_monthly_transaction_count_total,
+                },
+                filterFormItems: ['withdraw_monthly_total', 'withdraw_monthly_transaction_count_total'],
+              });
+            }}
           />
           <Button
             disabled={!canEdit}
