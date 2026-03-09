@@ -115,6 +115,8 @@
     "batchEditBalanceLimit": "Batch Edit Balance Limit",
     "batchEditStatus": "Batch Edit Connection Status",
     "batchEditSingleLimit": "Batch Edit Single Transaction Limit",
+    "batchEditQuota": "Batch Edit Quota",
+    "batchEditCountLimit": "Batch Edit Count Limit",
     "batchSyncBalance": "Batch Sync Balance",
     "clearAll": "Clear",
     "upload": "Upload",

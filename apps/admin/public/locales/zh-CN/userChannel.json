@@ -115,6 +115,8 @@
     "batchEditBalanceLimit": "批量修改余额上限",
     "batchEditStatus": "批量修改连线状态",
     "batchEditSingleLimit": "批量修改单笔限额",
+    "batchEditQuota": "批量修改额度",
+    "batchEditCountLimit": "批量修改笔数限制",
     "batchSyncBalance": "批量同步余额",
     "clearAll": "全部清除",
     "upload": "上传",

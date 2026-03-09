@@ -98,6 +98,54 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
           {t('actions.batchEditSingleLimit')}
         </Button>
         <Button
+          disabled={!canEdit}
+          onClick={() => {
+            showUpdateModal({
+              title: t('actions.batchEditQuota'),
+              filterFormItems: [
+                'daily_limit',
+                'withdraw_daily_limit',
+                'monthly_limit',
+                'withdraw_monthly_limit',
+              ],
+              customMutateConfig: {
+                mutiple: selectedKeys.map(key => ({
+                  url: `${apiUrl}/user-channel-accounts/${key}`,
+                  id: key as string | number,
+                })),
+                method: 'put',
+              },
+              onSuccess: () => refetch(),
+            });
+          }}
+        >
+          {t('actions.batchEditQuota')}
+        </Button>
+        <Button
+          disabled={!canEdit}
+          onClick={() => {
+            showUpdateModal({
+              title: t('actions.batchEditCountLimit'),
+              filterFormItems: [
+                'daily_transaction_count_limit',
+                'withdraw_daily_transaction_count_limit',
+                'monthly_transaction_count_limit',
+                'withdraw_monthly_transaction_count_limit',
+              ],
+              customMutateConfig: {
+                mutiple: selectedKeys.map(key => ({
+                  url: `${apiUrl}/user-channel-accounts/${key}`,
+                  id: key as string | number,
+                })),
+                method: 'put',
+              },
+              onSuccess: () => refetch(),
+            });
+          }}
+        >
+          {t('actions.batchEditCountLimit')}
+        </Button>
+        <Button
           disabled={!canEdit || isSyncing}
           loading={isSyncing}
           icon={<SyncOutlined />}
