@@ -35,6 +35,7 @@ const PayForAnotherShow: FC = () => {
     const { mutateAsync } = useUpdate();
     const { getStatusText: getWithdrawStatusText } = useWithdrawStatus();
     const { getStatusText: getCallbackStatusText } = useTransactionCallbackStatus();
+    const { groupLabel } = useTerminology();
 
     if (!query.data) return <Spin />;
     const {
@@ -71,8 +72,6 @@ const PayForAnotherShow: FC = () => {
             dataIndex: "profit",
         },
     ];
-
-    const { groupLabel } = useTerminology();
 
     return (
         <>

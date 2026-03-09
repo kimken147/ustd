@@ -36,6 +36,7 @@ const CollectionShow: FC = () => {
     const { mutateAsync } = useUpdate();
     const { getStatusText: getTranStatusText } = useTransactionStatus();
     const { getStatusText: getCallbackStatusText } = useTransactionCallbackStatus();
+    const { groupLabel } = useTerminology();
 
     if (!query.data) return <Spin />;
     const {
@@ -72,8 +73,6 @@ const CollectionShow: FC = () => {
             dataIndex: "profit",
         },
     ];
-
-    const { groupLabel } = useTerminology();
 
     return (
         <>
