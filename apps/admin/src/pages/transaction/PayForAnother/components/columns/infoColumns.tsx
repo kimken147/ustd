@@ -29,7 +29,6 @@ export function createOrderNumberColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.merchantOrderNumber'),
     dataIndex: 'order_number',
-    fixed: 'left' as const,
     width: 180,
     render(value, record) {
       if (!value) return null;

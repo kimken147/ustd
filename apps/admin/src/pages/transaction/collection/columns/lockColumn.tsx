@@ -9,7 +9,6 @@ export function createLockColumn(deps: ColumnDependencies): CollectionColumn {
 
   return {
     width: 80,
-    fixed: 'left' as const,
     render(_value, record) {
       const { locked, locked_by } = record;
       const notLocker =

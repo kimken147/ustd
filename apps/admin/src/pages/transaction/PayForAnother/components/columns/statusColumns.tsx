@@ -12,7 +12,6 @@ export function createOrderStatusColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.orderStatus'),
     dataIndex: 'status',
-    fixed: 'right' as const,
     width: 100,
     render(value) {
       let color = '';

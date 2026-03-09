@@ -129,7 +129,6 @@ export function createStatusColumn(deps: ColumnDependencies): CollectionColumn {
     title: t('fields.status'),
     dataIndex: 'status',
     width: 120,
-    fixed: 'right' as const,
     render(value, record): JSX.Element {
       let color = '';
       if ([tranStatus.成功, tranStatus.手动成功].includes(value)) {

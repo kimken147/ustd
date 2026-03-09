@@ -13,7 +13,6 @@ export function createSystemOrderColumn(deps: ColumnDependencies): CollectionCol
     title: t('fields.systemOrderNumber'),
     dataIndex: 'system_order_number',
     width: 200,
-    fixed: 'left' as const,
     render(value, record) {
       return (
         <Space>

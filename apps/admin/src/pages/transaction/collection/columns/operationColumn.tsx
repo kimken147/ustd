@@ -16,7 +16,6 @@ export function createOperationColumn(deps: ColumnDependencies): CollectionColum
     title: t('actions.operation'),
     dataIndex: 'locked',
     width: 80,
-    fixed: 'left' as const,
     render(value, record) {
       const { status } = record;
       const { locked, locked_by } = record;
