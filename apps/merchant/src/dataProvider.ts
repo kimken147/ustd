@@ -89,6 +89,8 @@ export const generateFilter = (filters?: any[]) => {
         filters.forEach((filter) => {
             // Skip the cache-busting nonce injected by ListPageLayout.Filter
             if (filter.field === '_t') return;
+            // Skip filters with empty values (cleared by user)
+            if (filter.value == null || filter.value === '') return;
             const mappedOperator = mapOperator("eq");
             if (Array.isArray(filter.value)) {
                 filter.value.forEach((filter: LogicalFilter) => {
