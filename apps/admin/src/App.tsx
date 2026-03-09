@@ -96,6 +96,16 @@ import 'dayjs/locale/zh-cn';
 initDayjs();
 
 function App() {
+  return (
+    <BrowserRouter>
+      <AppModeProvider>
+        <AppContent />
+      </AppModeProvider>
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
   const { t, i18n } = useTranslation();
   const { isPaufen } = useAppMode();
   const { providerManagement } = useTerminology();
@@ -315,8 +325,7 @@ function App() {
   ];
 
   return (
-    <BrowserRouter>
-      <AppModeProvider>
+    <>
       <Helmet>
         <link rel="icon" href={process.env.REACT_APP_FAVICON_SRC} sizes="16x16" />
       </Helmet>
@@ -503,8 +512,7 @@ function App() {
           </Refine>
         </AntdApp>
       </ConfigProvider>
-      </AppModeProvider>
-    </BrowserRouter>
+    </>
   );
 }
 
