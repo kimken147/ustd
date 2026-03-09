@@ -251,7 +251,6 @@ export function createCallbackColumn(ctx: ColumnContext): WithdrawColumn {
 
   return {
     title: t('actions.callback'),
-    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
     width: 60,
     render: (_, record) => {
       const { status, notify_url } = record;
@@ -292,7 +291,6 @@ export function createThirdPartyPayoutColumn(ctx: ColumnContext): WithdrawColumn
 
   return {
     title: t('actions.thirdPartyPayout'),
-    responsive: ['lg', 'xl', 'xxl'] as const,
     width: 60,
     render(_, record) {
       const isDisabled =

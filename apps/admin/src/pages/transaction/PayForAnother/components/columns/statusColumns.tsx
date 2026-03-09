@@ -40,7 +40,6 @@ export function createCallbackStatusColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.callbackStatus'),
     dataIndex: 'notify_status',
-    responsive: ['lg', 'xl', 'xxl'] as const,
     width: 100,
     render(value) {
       let color = '';

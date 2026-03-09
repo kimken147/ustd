@@ -62,7 +62,7 @@ import TransactionGroupList from 'pages/provider/transaction/list';
 import DepositGroupList from 'pages/provider/deposit/list';
 import { Helmet } from 'react-helmet';
 import { initDayjs } from '@morgan-ustd/shared';
-import { AppModeProvider } from 'contexts/AppModeContext';
+import { AppModeProvider, useTerminology } from 'contexts/AppModeContext';
 import TransitionDemoCreate from 'pages/transaction/collection/create';
 import ThirdChannelList from 'pages/thirdChannel/list';
 import ThirdChannelSettingList from 'pages/thirdChannel/setting/list';
@@ -90,6 +90,7 @@ initDayjs();
 
 function App() {
   const { t, i18n } = useTranslation();
+  const { providerManagement } = useTerminology();
   const [currentLocale, setCurrentLocale] = useState(i18n.language);
 
 
@@ -233,7 +234,7 @@ function App() {
       name: 'providers',
       list: '/providers',
       create: '/providers/create',
-      meta: { label: t('navigation.groupManagement'), icon: <QrcodeOutlined /> },
+      meta: { label: providerManagement, icon: <QrcodeOutlined /> },
     },
     {
       name: 'providers/merchant-transaction-groups',
@@ -286,6 +287,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <AppModeProvider>
       <Helmet>
         <link rel="icon" href={process.env.REACT_APP_FAVICON_SRC} sizes="16x16" />
       </Helmet>
@@ -342,7 +344,6 @@ function App() {
               <Route
                 element={
                   <Authenticated key="authenticated" fallback={<AuthPage />}>
-                    <AppModeProvider>
                     <ThemedLayout
                       Header={() => (
                         <Header />
@@ -373,7 +374,6 @@ function App() {
                     >
                       <Outlet />
                     </ThemedLayout>
-                    </AppModeProvider>
                   </Authenticated>
                 }
               >
@@ -467,6 +467,7 @@ function App() {
           </Refine>
         </AntdApp>
       </ConfigProvider>
+      </AppModeProvider>
     </BrowserRouter>
   );
 }

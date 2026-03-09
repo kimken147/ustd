@@ -152,7 +152,6 @@ export function createPaymentTypeColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.paymentType'),
     dataIndex: 'sub_type',
-    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
     render(value) {
       if (value === TransactionSubType.SUB_TYPE_WITHDRAW) return '下发';
       if (value === TransactionSubType.SUB_TYPE_AGENCY_WITHDRAW)
@@ -169,7 +168,6 @@ export function createPayerInfoColumn(ctx: ColumnContext): WithdrawColumn {
 
   return {
     title: t('fields.payerInfo'),
-    responsive: ['lg', 'xl', 'xxl'] as const,
     render(_, record) {
       if (record.to_channel_account) {
         const payer = `${record.to_channel_account.channel_code} - ${record.to_channel_account.account}`;
@@ -220,7 +218,6 @@ export function createUserNameColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.userName'),
     dataIndex: 'user',
-    responsive: ['sm', 'md', 'lg', 'xl', 'xxl'] as const,
     render(value: User) {
       const resource = value.role === 3 ? 'merchants' : 'providers';
       return (

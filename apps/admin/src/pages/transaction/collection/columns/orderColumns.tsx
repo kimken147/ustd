@@ -130,7 +130,6 @@ export function createMerchantOrderColumn(deps: ColumnDependencies): CollectionC
   return {
     title: t('fields.merchantOrderNumber'),
     dataIndex: 'order_number',
-    responsive: ['md', 'lg', 'xl', 'xxl'],
     render(value) {
       return value ? (
         <Typography.Paragraph

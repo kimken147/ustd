@@ -19,7 +19,6 @@ export function createBankNameColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.bankName'),
     dataIndex: 'bank_name',
-    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
   };
 }
 
@@ -29,7 +28,6 @@ export function createProvinceColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.province'),
     dataIndex: 'bank_province',
-    responsive: ['xl', 'xxl'] as const,
   };
 }
 
@@ -39,7 +37,6 @@ export function createCityColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.city'),
     dataIndex: 'bank_city',
-    responsive: ['xl', 'xxl'] as const,
   };
 }
 
@@ -49,7 +46,6 @@ export function createCardNumberColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.cardNumber'),
     dataIndex: 'bank_card_number',
-    responsive: ['md', 'lg', 'xl', 'xxl'] as const,
     render(value, record) {
       let show = false;
       if (
@@ -74,7 +70,6 @@ export function createCardHolderColumn(ctx: ColumnContext): WithdrawColumn {
   return {
     title: t('fields.cardHolder'),
     dataIndex: 'bank_card_holder_name',
-    responsive: ['sm', 'md', 'lg', 'xl', 'xxl'] as const,
     render(value, record) {
       const isBanned = meta?.banned_realnames?.includes(value);
       return value ? (

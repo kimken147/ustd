@@ -8,7 +8,6 @@ export function createCallbackColumn(deps: ColumnDependencies): CollectionColumn
   return {
     title: t('actions.reCallback'),
     width: 80,
-    responsive: ['lg', 'xl', 'xxl'],
     render: (_, record) => {
       const { status, notify_url } = record;
       return notify_url ? (

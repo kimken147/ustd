@@ -10,7 +10,6 @@ export function createProviderColumn(deps: ColumnDependencies): CollectionColumn
   return {
     title: t('fields.providerAccountTitle', { groupLabel }),
     dataIndex: ['provider', 'name'],
-    responsive: ['md', 'lg', 'xl', 'xxl'],
     render(value, record) {
       return isPaufen && record.provider ? (
         <ShowButton recordItemId={record.provider?.id} icon={null} resource="providers">
@@ -29,7 +28,6 @@ export function createThirdChannelColumn(deps: ColumnDependencies): CollectionCo
   return {
     title: t('fields.thirdPartyAccount'),
     dataIndex: 'thirdchannel',
-    responsive: ['lg', 'xl', 'xxl'],
     render(value: Thirdchannel) {
       return value ? `${value.name}(${value.merchant_id ?? ''})` : '';
     },
@@ -42,7 +40,6 @@ export function createAccountNumberColumn(deps: ColumnDependencies): CollectionC
   return {
     title: t('fields.accountNumber'),
     dataIndex: 'provider_channel_account_hash_id',
-    responsive: ['lg', 'xl', 'xxl'],
     render(value, record) {
       if (!value) return null;
       return (
@@ -80,7 +77,6 @@ export function createMerchantColumn(deps: ColumnDependencies): CollectionColumn
 
   return {
     title: t('fields.merchantName'),
-    responsive: ['md', 'lg', 'xl', 'xxl'],
     render(_value, record) {
       return (
         <ShowButton recordItemId={record.merchant.id} resource="merchants" icon={false}>

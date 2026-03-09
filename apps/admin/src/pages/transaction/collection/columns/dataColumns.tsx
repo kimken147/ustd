@@ -12,7 +12,6 @@ export function createChannelColumn(deps: ColumnDependencies): CollectionColumn 
   return {
     title: t('fields.channel'),
     dataIndex: 'channel_name',
-    responsive: ['md', 'lg', 'xl', 'xxl'],
   };
 }
 
@@ -22,7 +21,6 @@ export function createChainNetworkColumn(deps: ColumnDependencies): CollectionCo
   return {
     title: t('fields.chainNetwork'),
     dataIndex: 'chain_network',
-    responsive: ['lg', 'xl', 'xxl'],
     width: 80,
     render(value: string) {
       return value ? value.toUpperCase() : '-';
@@ -34,7 +32,6 @@ export function createTxHashColumn(deps: ColumnDependencies): CollectionColumn {
   return {
     title: 'Tx Hash',
     dataIndex: 'tx_hash',
-    responsive: ['xl', 'xxl'],
     width: 140,
     render(value: string) {
       return value ? (
@@ -51,7 +48,6 @@ export function createAmountColumn(deps: ColumnDependencies): CollectionColumn {
 
   return {
     title: t('fields.orderAmount'),
-    responsive: ['sm', 'md', 'lg', 'xl', 'xxl'],
     render(_value, record) {
       if (record.amount !== record.floating_amount) {
         return (
@@ -72,7 +68,6 @@ export function createTransferNameColumn(deps: ColumnDependencies): CollectionCo
   return {
     title: t('fields.transferName'),
     dataIndex: 'real_name',
-    responsive: ['md', 'lg', 'xl', 'xxl'],
     render(value, record) {
       let name = '';
       if (value) {
@@ -167,7 +162,6 @@ export function createFeeColumn(deps: ColumnDependencies): CollectionColumn {
   return {
     title: t('fields.fee'),
     dataIndex: 'fee',
-    responsive: ['lg', 'xl', 'xxl'],
   };
 }
 
@@ -177,7 +171,6 @@ export function createRemarkColumn(deps: ColumnDependencies): CollectionColumn {
   return {
     title: t('fields.remark'),
     dataIndex: 'note',
-    responsive: ['xl', 'xxl'],
   };
 }
 
@@ -187,7 +180,6 @@ export function createCallbackStatusColumn(deps: ColumnDependencies): Collection
   return {
     title: t('fields.callbackStatus'),
     dataIndex: 'notify_status',
-    responsive: ['lg', 'xl', 'xxl'],
     render(value) {
       let color = '';
       if ([tranCallbackStatus.成功].includes(value)) {
@@ -213,7 +205,6 @@ export function createMemberIpColumn(deps: ColumnDependencies): CollectionColumn
   return {
     title: t('fields.memberIp'),
     dataIndex: 'client_ip',
-    responsive: ['xl', 'xxl'],
     render(value) {
       if (!value) return '';
       const isBanned = meta.banned_ips.includes(value);
@@ -271,7 +262,6 @@ export function createCreatedAtColumn(deps: ColumnDependencies): CollectionColum
     title: t('fields.createdAt'),
     dataIndex: 'created_at',
     width: 160,
-    responsive: ['md', 'lg', 'xl', 'xxl'],
     render(value) {
       return value ? <DateField value={value} format={Format} /> : null;
     },
@@ -285,7 +275,6 @@ export function createConfirmedAtColumn(deps: ColumnDependencies): CollectionCol
     title: t('fields.successTime'),
     dataIndex: 'confirmed_at',
     width: 160,
-    responsive: ['lg', 'xl', 'xxl'],
     render(value) {
       return value ? <DateField value={value} format={Format} /> : null;
     },
@@ -297,7 +286,6 @@ export function createRefundInfoColumn(deps: ColumnDependencies): CollectionColu
 
   return {
     title: t('fields.refundInfo'),
-    responsive: ['xl', 'xxl'],
     render(_value, record) {
       return record.refunded_at !== null ? (
         <Popover
