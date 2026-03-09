@@ -155,9 +155,11 @@ class ChainTransactionSyncService
         }
 
         $chainTx = ChainTransaction::updateOrCreate(
-            ['tx_hash' => $txData['tx_hash']],
             [
+                'tx_hash' => $txData['tx_hash'],
                 'user_channel_account_id' => $account->id,
+            ],
+            [
                 'direction' => $direction,
                 'from_address' => $fromAddress,
                 'to_address' => $toAddress,

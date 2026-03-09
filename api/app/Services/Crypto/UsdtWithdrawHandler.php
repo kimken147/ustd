@@ -2,6 +2,8 @@
 
 namespace App\Services\Crypto;
 
+use App\Models\ChainTransaction;
+use App\Models\Channel;
 use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
@@ -78,6 +80,11 @@ class UsdtWithdrawHandler
             // Dispatch delayed confirmation check
             ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
+            // 主動建立鏈上交易記錄並標記匹配，避免 sync→match 非同步流程誤匹配
+            $this->createMatchedChainTransactions(
+                $transaction, $chainTx->txHash, $account, $fromAddress, $toAddress, $amount
+            );
+
             $this->log($transaction, "出款交易已廣播 (tx_hash: {$chainTx->txHash})", [
                 'tx_hash' => $chainTx->txHash,
             ]);
@@ -93,6 +100,69 @@ class UsdtWithdrawHandler
             throw $e;
         } finally {
             $privateKey = null;
+        }
+    }
+
+    /**
+     * 廣播成功後主動建立 ChainTransaction 記錄並標記為已匹配。
+     * 出金方建立 OUT 記錄；若收款方也是平台帳號（內轉），建立 IN 記錄。
+     * 這樣後續 ChainTransactionSyncService 同步時會 updateOrCreate 命中已有記錄，
+     * 不會再觸發 ChainTransactionMatchService 的自動比對。
+     */
+    private function createMatchedChainTransactions(
+        Transaction $transaction,
+        string $txHash,
+        UserChannelAccount $senderAccount,
+        string $fromAddress,
+        string $toAddress,
+        string $amount,
+    ): void {
+        try {
+            // OUT record for sender
+            ChainTransaction::updateOrCreate(
+                ['tx_hash' => $txHash, 'user_channel_account_id' => $senderAccount->id],
+                [
+                    'direction' => ChainTransaction::DIRECTION_OUT,
+                    'from_address' => $fromAddress,
+                    'to_address' => $toAddress,
+                    'amount' => $amount,
+                    'block_timestamp' => now(),
+                    'confirmations' => 0,
+                    'match_status' => ChainTransaction::STATUS_MATCHED,
+                    'matched_transaction_id' => $transaction->id,
+                    'matched_at' => now(),
+                ]
+            );
+
+            // IN record for receiver (only if address belongs to a platform account)
+            $receiverAccount = UserChannelAccount::where('channel_code', Channel::CODE_USDT)
+                ->where('account', $toAddress)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if ($receiverAccount) {
+                ChainTransaction::updateOrCreate(
+                    ['tx_hash' => $txHash, 'user_channel_account_id' => $receiverAccount->id],
+                    [
+                        'direction' => ChainTransaction::DIRECTION_IN,
+                        'from_address' => $fromAddress,
+                        'to_address' => $toAddress,
+                        'amount' => $amount,
+                        'block_timestamp' => now(),
+                        'confirmations' => 0,
+                        'match_status' => ChainTransaction::STATUS_MATCHED,
+                        'matched_transaction_id' => $transaction->id,
+                        'matched_at' => now(),
+                    ]
+                );
+            }
+        } catch (\Throwable $e) {
+            // 不影響主流程，僅記錄錯誤
+            Log::warning('UsdtWithdrawHandler: 建立匹配鏈上交易記錄失敗', [
+                'transaction_id' => $transaction->id,
+                'tx_hash' => $txHash,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
