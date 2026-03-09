@@ -20,8 +20,8 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const dateRange = useMemo(() => ({
-    started_at: dayjs().subtract(3, 'month').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-    ended_at: dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    started_at: dayjs().subtract(3, 'month').startOf('day').format(),
+    ended_at: dayjs().endOf('day').format(),
   }), []);
 
   // 依據訂單號搜尋交易記錄
