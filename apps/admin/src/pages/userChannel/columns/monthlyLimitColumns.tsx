@@ -31,10 +31,8 @@ export function createMonthlyStatusColumn(deps: ColumnDependencies): UserChannel
 
 export function createMonthlyLimitReceiveColumn(
   deps: ColumnDependencies
-): UserChannelColumn | null {
-  const { t, monthEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
-
-  if (!monthEnable) return null;
+): UserChannelColumn {
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.monthlyLimitReceiveUsed'),
@@ -42,7 +40,7 @@ export function createMonthlyLimitReceiveColumn(
       return (
         <Space>
           <TextField
-            value={`${numeral(record.monthly_limit).format('0,0.00')} / ${record.monthly_total}`}
+            value={`${numeral(record.monthly_limit).format('0,0.00')} / ${numeral(record.monthly_total).format('0,0.00')}`}
           />
           <Button
             disabled={!canEdit}
@@ -86,10 +84,8 @@ export function createMonthlyLimitReceiveColumn(
 
 export function createMonthlyLimitPayoutColumn(
   deps: ColumnDependencies
-): UserChannelColumn | null {
-  const { t, monthEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
-
-  if (!monthEnable) return null;
+): UserChannelColumn {
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.monthlyLimitPayoutUsed'),
@@ -97,7 +93,7 @@ export function createMonthlyLimitPayoutColumn(
       return (
         <Space>
           <TextField
-            value={`${numeral(record.withdraw_monthly_limit).format('0,0.00')} / ${record.withdraw_monthly_total}`}
+            value={`${numeral(record.withdraw_monthly_limit).format('0,0.00')} / ${numeral(record.withdraw_monthly_total).format('0,0.00')}`}
           />
           <Button
             disabled={!canEdit}

@@ -17,8 +17,6 @@ import {
   createDailyLimitPayoutColumn,
 } from './dailyLimitColumns';
 import {
-  createDailyReceiveAmountAndCountColumn,
-  createDailyPayoutAmountAndCountColumn,
   createDailyReceiveCountLimitColumn,
   createDailyPayoutCountLimitColumn,
 } from './dailyCountColumns';
@@ -28,8 +26,6 @@ import {
   createMonthlyLimitPayoutColumn,
 } from './monthlyLimitColumns';
 import {
-  createMonthlyReceiveAmountAndCountColumn,
-  createMonthlyPayoutAmountAndCountColumn,
   createMonthlyReceiveCountLimitColumn,
   createMonthlyPayoutCountLimitColumn,
 } from './monthlyCountColumns';
@@ -52,20 +48,18 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createOnchainTrxColumn(deps),
     createOnchainSyncedAtColumn(deps),
     createSingleLimitColumn(deps),
-    createDailyReceiveAmountAndCountColumn(deps),
-    createDailyPayoutAmountAndCountColumn(deps),
-    createDailyReceiveCountLimitColumn(deps),
-    createDailyPayoutCountLimitColumn(deps),
+    // 額度 group
     createDailyStatusColumn(deps),
     createDailyLimitReceiveColumn(deps),
     createDailyLimitPayoutColumn(deps),
-    createMonthlyReceiveAmountAndCountColumn(deps),
-    createMonthlyPayoutAmountAndCountColumn(deps),
-    createMonthlyReceiveCountLimitColumn(deps),
-    createMonthlyPayoutCountLimitColumn(deps),
     createMonthlyStatusColumn(deps),
     createMonthlyLimitReceiveColumn(deps),
     createMonthlyLimitPayoutColumn(deps),
+    // 筆數 group
+    createDailyReceiveCountLimitColumn(deps),
+    createDailyPayoutCountLimitColumn(deps),
+    createMonthlyReceiveCountLimitColumn(deps),
+    createMonthlyPayoutCountLimitColumn(deps),
     createOperationColumn(deps),
   ];
 

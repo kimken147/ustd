@@ -29,10 +29,8 @@ export function createDailyStatusColumn(deps: ColumnDependencies): UserChannelCo
   };
 }
 
-export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserChannelColumn | null {
-  const { t, dayEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
-
-  if (!dayEnable) return null;
+export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserChannelColumn {
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.dailyLimitReceiveUsed'),
@@ -40,7 +38,7 @@ export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserCha
       return (
         <Space>
           <TextField
-            value={`${numeral(record.daily_limit).format('0,0.00')} / ${record.daily_total}`}
+            value={`${numeral(record.daily_limit).format('0,0.00')} / ${numeral(record.daily_total).format('0,0.00')}`}
           />
           <Button
             disabled={!canEdit}
@@ -82,10 +80,8 @@ export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserCha
   };
 }
 
-export function createDailyLimitPayoutColumn(deps: ColumnDependencies): UserChannelColumn | null {
-  const { t, dayEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
-
-  if (!dayEnable) return null;
+export function createDailyLimitPayoutColumn(deps: ColumnDependencies): UserChannelColumn {
+  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
     title: t('fields.dailyLimitPayoutUsed'),
@@ -93,7 +89,7 @@ export function createDailyLimitPayoutColumn(deps: ColumnDependencies): UserChan
       return (
         <Space>
           <TextField
-            value={`${numeral(record.withdraw_daily_limit).format('0,0.00')} / ${record.withdraw_daily_total}`}
+            value={`${numeral(record.withdraw_daily_limit).format('0,0.00')} / ${numeral(record.withdraw_daily_total).format('0,0.00')}`}
           />
           <Button
             disabled={!canEdit}

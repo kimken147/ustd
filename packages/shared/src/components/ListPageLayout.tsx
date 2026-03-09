@@ -57,7 +57,10 @@ function ListPageLayout({ children }: ListPageLayoutProps) {
  * FilterItem - 篩選表單項目（封裝 Form.Item）
  */
 function FilterItem(props: FormItemProps) {
-  return <Form.Item {...props} />;
+  // When a field is cleared (e.g. Select allowClear), Ant Design produces `undefined`.
+  // With syncWithLocation, `undefined` resets to initialValues (the URL param value).
+  // Normalizing to `null` actually clears the field.
+  return <Form.Item normalize={(value) => value === undefined ? null : value} {...props} />;
 }
 
 /**
@@ -109,7 +112,7 @@ function Filter({ formProps, children, loading, onSearch, defaultValues }: Filte
                   onClick={() => {
                     const fields = form.getFieldsValue();
                     const emptyFields = Object.fromEntries(
-                      Object.keys(fields).map(key => [key, undefined])
+                      Object.keys(fields).map(key => [key, null])
                     );
                     form.setFieldsValue(emptyFields);
                     if (defaultValues) {
