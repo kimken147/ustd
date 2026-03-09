@@ -5,7 +5,7 @@ import ContentHeader from 'components/contentHeader';
 import useProvider from 'hooks/useProvider';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { DepositGroup } from 'interfaces/matchDepositGroup';
-import Enviroment from 'lib/env';
+import { useTerminology } from 'contexts/AppModeContext';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 const DepositGroupList: FC = () => {
   const { t } = useTranslation('providers');
   const { t: tc } = useTranslation();
-  const isPaufen = Enviroment.isPaufen;
-  const name = isPaufen ? t('transactionGroup.provider') : t('transactionGroup.group');
+  const { transactionGroup: name } = useTerminology();
 
   const { Select: ProviderSelect } = useProvider();
 

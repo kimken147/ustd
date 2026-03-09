@@ -40,6 +40,7 @@ declare interface Profile {
     phone?: any;
     contact?: any;
     permissions?: Permission[];
+    is_paufen?: boolean;
 }
 
 declare interface IPreLoginRes {

@@ -16,12 +16,13 @@ import {
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import useSelector from 'hooks/useSelector';
+import { useTerminology } from 'contexts/AppModeContext';
 import { useUserChannelForm } from './hooks/useUserChannelForm';
 import { FormColumn } from './components/FormColumn';
 
 export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
   const { t } = useTranslation('userChannel');
-  const isPaufen = process.env.REACT_APP_IS_PAUFEN;
+  const { providerName: providerLabel } = useTerminology();
   const title = t('titles.create');
 
   const { form, isCreateLoading, handleSubmit } = useUserChannelForm();
@@ -66,9 +67,7 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
           <Row gutter={16}>
             <FormColumn>
               <Form.Item
-                label={
-                  isPaufen ? t('fields.providerName') : t('fields.groupName')
-                }
+                label={providerLabel}
                 name="provider"
                 rules={[{ required: true }]}
               >

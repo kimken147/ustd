@@ -62,6 +62,7 @@ import TransactionGroupList from 'pages/provider/transaction/list';
 import DepositGroupList from 'pages/provider/deposit/list';
 import { Helmet } from 'react-helmet';
 import { initDayjs } from '@morgan-ustd/shared';
+import { AppModeProvider } from 'contexts/AppModeContext';
 import TransitionDemoCreate from 'pages/transaction/collection/create';
 import ThirdChannelList from 'pages/thirdChannel/list';
 import ThirdChannelSettingList from 'pages/thirdChannel/setting/list';
@@ -341,6 +342,7 @@ function App() {
               <Route
                 element={
                   <Authenticated key="authenticated" fallback={<AuthPage />}>
+                    <AppModeProvider>
                     <ThemedLayout
                       Header={() => (
                         <Header />
@@ -371,6 +373,7 @@ function App() {
                     >
                       <Outlet />
                     </ThemedLayout>
+                    </AppModeProvider>
                   </Authenticated>
                 }
               >

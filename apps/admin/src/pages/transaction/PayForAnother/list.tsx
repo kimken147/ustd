@@ -47,7 +47,7 @@ import { getToken } from 'authProvider';
 import { MerchantThirdChannel } from 'interfaces/merchantThirdChannel';
 import { ThirdChannel } from 'interfaces/thirdChannel';
 import { Provider } from 'interfaces/provider';
-import Enviroment from 'lib/env';
+import { useAppMode } from 'contexts/AppModeContext';
 import NoticeAudio from 'assets/notice.mp3';
 import AudioPermissionAlert from 'components/AudioPermissionAlert';
 
@@ -57,7 +57,7 @@ import { useNewDataNotification, useUpdateModalConfig } from './hooks';
 
 const PayForAnotherList: FC = () => {
   const { t } = useTranslation('transaction');
-  const isPaufen = Enviroment.isPaufen;
+  const { isPaufen } = useAppMode();
   const navigate = useNavigate();
   const apiUrl = useApiUrl();
   const { data: profile } = useGetIdentity<Profile>();

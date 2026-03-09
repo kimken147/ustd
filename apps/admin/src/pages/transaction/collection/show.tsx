@@ -20,7 +20,7 @@ import {
   useTransactionStatus,
   useTransactionCallbackStatus,
 } from "@morgan-ustd/shared";
-import Enviroment from "lib/env";
+import { useAppMode, useTerminology } from "contexts/AppModeContext";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from 'react-i18next';
@@ -30,7 +30,7 @@ import numeral from 'numeral';
 const TRONSCAN_BASE = 'https://tronscan.org/#/transaction/';
 
 const CollectionShow: FC = () => {
-    const isPaufen = Enviroment.isPaufen;
+    const { isPaufen } = useAppMode();
     const { t } = useTranslation('transaction');
     const { query } = useShow<Transaction>();
     const { mutateAsync } = useUpdate();
@@ -73,7 +73,7 @@ const CollectionShow: FC = () => {
         },
     ];
 
-    const groupLabel = isPaufen ? t('fields.group') : t('fields.groupName');
+    const { groupLabel } = useTerminology();
 
     return (
         <>

@@ -2,7 +2,7 @@ import { Divider, Row, Col, Checkbox } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import usePermission from 'hooks/usePermission';
 import { Permission } from 'interfaces/subAccount';
-import Enviroment from 'lib/env';
+import { useTerminology } from 'contexts/AppModeContext';
 import { cloneDeep } from 'lodash';
 import { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,11 +13,8 @@ type Props = {
 };
 
 const PermissionCheckGroup: FC<Props> = ({ defaultIds = [], onChange }) => {
-  const isPaufen = Enviroment.isPaufen;
+  const { providerManagement: groupName } = useTerminology();
   const { t } = useTranslation();
-  const groupName = isPaufen
-    ? t('navigation.providerManagement')
-    : t('navigation.groupManagement');
   const [selectedIds, setSelectedIds] = useState<number[]>(defaultIds);
   const { permissions } = usePermission();
   const groups =
@@ -25,9 +22,7 @@ const PermissionCheckGroup: FC<Props> = ({ defaultIds = [], onChange }) => {
       const clonCur = cloneDeep(cur);
       // 使用翻譯後的 group_name，不需要硬編碼比較
       if (clonCur.id === 26 || clonCur.id === 27) {
-        const targetGroupName = isPaufen
-          ? t('navigation.providerManagement')
-          : t('navigation.groupManagement');
+        const targetGroupName = groupName;
         if (!prev[targetGroupName]) prev[targetGroupName] = [];
         prev[targetGroupName].push(clonCur);
         return prev;

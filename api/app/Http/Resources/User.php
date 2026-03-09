@@ -6,6 +6,7 @@ use App\Http\Resources\Admin\PermissionCollection;
 use App\Http\Resources\Admin\WhitelistedIpCollection;
 use App\Models\Permission;
 use App\Models\FeatureToggle;
+use App\Repository\FeatureToggleRepository;
 use App\Utils\AmountDisplayTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -163,6 +164,7 @@ class User extends JsonResource
             'tags' => $this->whenLoaded('tags', function () {
                 return $this->tags->makeHidden('pivot')->toArray();
             }),
+            'is_paufen' => !app(FeatureToggleRepository::class)->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM),
         ];
 
         foreach ($this->withCredentials as $credentialKey => $credential) {

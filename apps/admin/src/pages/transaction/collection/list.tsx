@@ -65,7 +65,7 @@ import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';
 import { ThirdChannel } from 'interfaces/thirdChannel';
 import { SystemSetting } from 'interfaces/systemSetting';
-import Env from 'lib/env';
+import { useAppMode, useTerminology } from 'contexts/AppModeContext';
 
 import { useColumns } from './columns';
 import type { ColumnDependencies } from './columns';
@@ -75,8 +75,8 @@ import CreateTransactionModal from './CreateTransactionModal';
 const CollectionList: FC = () => {
   const { t } = useTranslation('transaction');
   const apiUrl = useApiUrl();
-  const isPaufen = Env.isPaufen;
-  const groupLabel = isPaufen ? t('fields.group') : t('fields.groupName');
+  const { isPaufen } = useAppMode();
+  const { groupLabel } = useTerminology();
 
   const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
 

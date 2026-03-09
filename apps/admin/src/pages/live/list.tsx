@@ -21,13 +21,13 @@ import type { OnlinMatchingUser } from 'interfaces/onlineMatchingForUser';
 import useUpdateModal from 'hooks/useUpdateModal';
 import useSystemSetting from 'hooks/useSystemSetting';
 import { ListPageLayout } from '@morgan-ustd/shared';
-import Enviroment from 'lib/env';
+import { useAppMode } from 'contexts/AppModeContext';
 import { useTranslation } from 'react-i18next';
 import { useColumns, type ColumnDependencies } from './columns';
 
 const LiveList: FC = () => {
   const { t } = useTranslation('live');
-  const isPaufen = Enviroment.isPaufen;
+  const { isPaufen } = useAppMode();
   const { channels } = useChannel();
   const [autoRefetch, setAutoRefetch] = useState(false);
   const [refetchFreq, setRefetchFreq] = useState(10);

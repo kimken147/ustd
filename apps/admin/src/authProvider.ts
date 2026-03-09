@@ -99,6 +99,7 @@ export const authProvider: AuthProvider = {
             role: profile.role,
             permissions: profile.permissions || null,
             id: profile.id,
+            is_paufen: profile.is_paufen ?? true,
           })
         );
         return {

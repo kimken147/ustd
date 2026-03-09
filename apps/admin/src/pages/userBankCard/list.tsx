@@ -5,7 +5,7 @@ import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { UserBankCard } from 'interfaces/userBankCard';
-import Enviroment from 'lib/env';
+import { useAppMode } from 'contexts/AppModeContext';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 
 const UserBankCardList: FC = () => {
   const { t } = useTranslation();
-  const isPaufen = Enviroment.isPaufen;
+  const { isPaufen } = useAppMode();
   const title = isPaufen ? t('bankCard.titles.merchantProviderList') : t('bankCard.titles.merchantList');
 
   const { data: canDelete } = useCan({ action: '14', resource: 'user-bank-cards' });
