@@ -14,6 +14,9 @@ class ChainTransaction extends Model
     const DIRECTION_IN = 'in';
     const DIRECTION_OUT = 'out';
 
+    const SOURCE_SYNC = 'sync';
+    const SOURCE_INTERNAL = 'internal';
+
     protected $fillable = [
         'tx_hash',
         'user_channel_account_id',
@@ -24,6 +27,7 @@ class ChainTransaction extends Model
         'block_number',
         'block_timestamp',
         'confirmations',
+        'source',
         'match_status',
         'matched_transaction_id',
         'matched_at',
