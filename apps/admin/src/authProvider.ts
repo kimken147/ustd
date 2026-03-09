@@ -102,6 +102,7 @@ export const authProvider: AuthProvider = {
             is_paufen: profile.is_paufen ?? true,
           })
         );
+        window.dispatchEvent(new Event('auth-profile-updated'));
         return {
           authenticated: true,
         };

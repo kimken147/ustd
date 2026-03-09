@@ -1,4 +1,4 @@
-import { createContext, useContext, FC, PropsWithChildren, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState, FC, PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface AppMode {
@@ -30,7 +30,14 @@ function getStoredIsPaufen(): boolean {
 }
 
 export const AppModeProvider: FC<PropsWithChildren> = ({ children }) => {
-  const isPaufen = getStoredIsPaufen();
+  const [isPaufen, setIsPaufen] = useState(getStoredIsPaufen);
+
+  useEffect(() => {
+    const handler = () => setIsPaufen(getStoredIsPaufen());
+    window.addEventListener('auth-profile-updated', handler);
+    return () => window.removeEventListener('auth-profile-updated', handler);
+  }, []);
+
   const value = useMemo(() => ({ isPaufen }), [isPaufen]);
 
   return (
