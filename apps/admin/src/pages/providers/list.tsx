@@ -133,16 +133,16 @@ const ProvidersList: FC = () => {
         title={t('titles.list')}
         headerButtons={() => (
           <>
-            <ListButton resource="white-list" icon={<LoginOutlined />}>
+            <ListButton resource="providers/white-list" icon={<LoginOutlined />}>
               {t('titles.whiteList')}
             </ListButton>
-            <ListButton resource="wallet-histories" icon={<WalletOutlined />}>
+            <ListButton resource="providers/wallet-histories" icon={<WalletOutlined />}>
               {t('titles.balanceHistory')}
             </ListButton>
-            <ListButton resource="merchant-transaction-groups">
+            <ListButton resource="providers/merchant-transaction-groups">
               {t('titles.moneyInDirectLine')}
             </ListButton>
-            <ListButton resource="merchant-matching-deposit-groups">
+            <ListButton resource="providers/merchant-matching-deposit-groups">
               {t('titles.moneyOutDirectLine')}
             </ListButton>
             <CreateButton icon={<PlusSquareOutlined />}>

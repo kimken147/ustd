@@ -62,7 +62,7 @@ import TransactionGroupList from 'pages/provider/transaction/list';
 import DepositGroupList from 'pages/provider/deposit/list';
 import { Helmet } from 'react-helmet';
 import { initDayjs } from '@morgan-ustd/shared';
-import { AppModeProvider, useTerminology } from 'contexts/AppModeContext';
+import { AppModeProvider, useAppMode, useTerminology } from 'contexts/AppModeContext';
 import TransitionDemoCreate from 'pages/transaction/collection/create';
 import ThirdChannelList from 'pages/thirdChannel/list';
 import ThirdChannelSettingList from 'pages/thirdChannel/setting/list';
@@ -72,6 +72,13 @@ import TagCreate from 'pages/tag/create';
 import FundList from 'pages/transaction/fund/list';
 import FundCreate from 'pages/transaction/fund/create';
 import ChainTransactionList from 'pages/chainTransaction/list';
+import DepositList from 'pages/transaction/deposit/list';
+import ProvidersList from 'pages/providers/list';
+import ProvidersCreate from 'pages/providers/create';
+import ProviderShow from 'pages/providers/show';
+import ProviderWalletList from 'pages/providers/wallet-history/list';
+import ProviderUserWalletHistoryList from 'pages/providers/user-wallet-history/list';
+import ProviderWhiteList from 'pages/providers/whiteList/list';
 
 import { useTranslation } from 'react-i18next';
 import './i18n';
@@ -90,6 +97,7 @@ initDayjs();
 
 function App() {
   const { t, i18n } = useTranslation();
+  const { isPaufen } = useAppMode();
   const { providerManagement } = useTerminology();
   const [currentLocale, setCurrentLocale] = useState(i18n.language);
 
@@ -211,6 +219,11 @@ function App() {
       meta: { label: t('navigation.fundManagement'), parent: 'transaction' },
     },
     {
+      name: 'provider-deposits',
+      list: '/provider-deposits',
+      meta: { label: t('navigation.providerDeposit'), parent: 'transaction', hide: !isPaufen },
+    },
+    {
       name: 'child-withdraws',
       show: '/child-withdraws/:id',
       meta: { label: t('navigation.childWithdrawSplit'), hide: true },
@@ -234,6 +247,7 @@ function App() {
       name: 'providers',
       list: '/providers',
       create: '/providers/create',
+      show: '/providers/:id',
       meta: { label: providerManagement, icon: <QrcodeOutlined /> },
     },
     {
@@ -245,6 +259,21 @@ function App() {
       name: 'providers/merchant-matching-deposit-groups',
       list: '/providers/merchant-matching-deposit-groups',
       meta: { label: t('navigation.collectionLine'), parent: 'providers', hide: true },
+    },
+    {
+      name: 'providers/white-list',
+      list: '/providers/white-list',
+      meta: { label: t('navigation.whiteList'), parent: 'providers', hide: true },
+    },
+    {
+      name: 'providers/wallet-histories',
+      list: '/providers/wallet-histories',
+      meta: { label: t('navigation.providerBalanceAdjustment'), parent: 'providers', hide: true },
+    },
+    {
+      name: 'providers/user-wallet-history',
+      list: '/providers/user-wallet-history',
+      meta: { label: t('navigation.providerWalletHistory'), parent: 'providers', hide: true },
     },
     {
       name: 'channels',
@@ -425,9 +454,13 @@ function App() {
                 {/* Finance Statistics */}
                 <Route path="/finance-statistics" element={<FinanceStatisticPage />} />
 
-                {/* Providers (Group Management) */}
-                <Route path="/providers" element={<ProviderList />} />
-                <Route path="/providers/create" element={<ProviderCreate />} />
+                {/* Providers / 碼商管理 */}
+                <Route path="/providers" element={isPaufen ? <ProvidersList /> : <ProviderList />} />
+                <Route path="/providers/create" element={isPaufen ? <ProvidersCreate /> : <ProviderCreate />} />
+                <Route path="/providers/:id" element={<ProviderShow />} />
+                <Route path="/providers/white-list" element={<ProviderWhiteList />} />
+                <Route path="/providers/wallet-histories" element={<ProviderWalletList />} />
+                <Route path="/providers/user-wallet-history" element={<ProviderUserWalletHistoryList />} />
                 <Route
                   path="/providers/merchant-transaction-groups"
                   element={<TransactionGroupList />}
@@ -436,6 +469,9 @@ function App() {
                   path="/providers/merchant-matching-deposit-groups"
                   element={<DepositGroupList />}
                 />
+
+                {/* Provider Deposits */}
+                <Route path="/provider-deposits" element={<DepositList />} />
 
                 {/* Channels */}
                 <Route path="/channels" element={<ChannelList />} />
