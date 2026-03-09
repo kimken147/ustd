@@ -1,8 +1,9 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Input, Modal, Table } from 'antd';
 import { useApiUrl, useCustom } from '@refinedev/core';
 import { useTranslation } from 'react-i18next';
 import numeral from 'numeral';
+import dayjs from 'dayjs';
 
 interface MatchModalProps {
   open: boolean;
@@ -18,6 +19,11 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
   const [search, setSearch] = useState('');
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  const dateRange = useMemo(() => ({
+    started_at: dayjs().subtract(3, 'month').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    ended_at: dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+  }), []);
+
   // 依據訂單號搜尋交易記錄
   const { query } = useCustom({
     url: `${apiUrl}/transactions`,
@@ -27,6 +33,7 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
         order_number: search || undefined,
         per_page: 10,
         'channel_code[]': 'USDT',
+        ...dateRange,
       },
     },
     queryOptions: {

@@ -120,7 +120,7 @@ const ChainTransactionList: FC = () => {
       title: t('fields.blockTimestamp'),
       dataIndex: 'block_timestamp',
       width: 160,
-      render: (v: string) => v ? dayjs(v).format('YYYY-MM-DD HH:mm:ss') : '-',
+      render: (v: string) => v ? dayjs(new Date(v)).format('YYYY-MM-DD HH:mm:ss') : '-',
     },
     {
       title: t('fields.txHash'),
