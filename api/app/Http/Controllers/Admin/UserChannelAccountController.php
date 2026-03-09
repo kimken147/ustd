@@ -312,32 +312,43 @@ class UserChannelAccountController extends Controller
             ) {
                 $updateData["auto_sync"] = false;
             }
+            // 還原默認值：用系統設置的值覆蓋，而非設為 null
+            $featureToggleRepository = app(FeatureToggleRepository::class);
+
             if (
                 $request->has("daily_limit_null") &&
                 $request->daily_limit_null
             ) {
-                $updateData["daily_limit"] = null;
+                $updateData["daily_limit"] = $featureToggleRepository->valueOf(
+                    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_LIMIT
+                );
             }
 
             if (
                 $request->has("monthly_limit_null") &&
                 $request->monthly_limit_null
             ) {
-                $updateData["monthly_limit"] = null;
+                $updateData["monthly_limit"] = $featureToggleRepository->valueOf(
+                    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_LIMIT
+                );
             }
 
             if (
                 $request->has("daily_withdraw_limit_null") &&
                 $request->daily_withdraw_limit_null
             ) {
-                $updateData["withdraw_daily_limit"] = null;
+                $updateData["withdraw_daily_limit"] = $featureToggleRepository->valueOf(
+                    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_LIMIT
+                );
             }
 
             if (
                 $request->has("monthly_withdraw_limit_null") &&
                 $request->monthly_withdraw_limit_null
             ) {
-                $updateData["withdraw_monthly_limit"] = null;
+                $updateData["withdraw_monthly_limit"] = $featureToggleRepository->valueOf(
+                    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_LIMIT
+                );
             }
 
             # 批量更新-單筆限額

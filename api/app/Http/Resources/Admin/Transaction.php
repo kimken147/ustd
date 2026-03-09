@@ -53,7 +53,7 @@ class Transaction extends JsonResource
             'child_id'                         => optional($this->child)->getKey(),
             'is_partial_success'               => !empty($this->parent) || !empty($this->child),
             'order_number'                     => $this->order_number,
-            'channel_name'                     => $this->channel->name,
+            'channel_name'                     => $this->channel?->name,
             'channel_code'                     => $this->channel_code,
             'amount'                           => AmountDisplayTransformer::transform($this->amount),
             'status'                           => $this->status,
@@ -104,7 +104,7 @@ class Transaction extends JsonResource
             'notify_url'                       => $this->notify_url,
             'client_ip'                        => $this->client_ipv4,
             'note'                             => $this->whenLoaded('channel', function () {
-                return ($this->channel->note_enable && $this->note) ? $this->note : null;
+                return ($this->channel?->note_enable && $this->note) ? $this->note : null;
             }),
             'currency' => $this->currency,
             'lockable'                         => $this->getLockable(),

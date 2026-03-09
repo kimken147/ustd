@@ -12,13 +12,30 @@ import {
   Typography,
 } from 'antd';
 import { useShow, useUpdate } from "@refinedev/core";
-import { MerchantFee, Withdraw } from "@morgan-ustd/shared";
+import {
+  MerchantFee,
+  Withdraw,
+  ProviderFee,
+  useWithdrawStatus,
+  useTransactionCallbackStatus,
+} from "@morgan-ustd/shared";
+import Enviroment from "lib/env";
 import { FC } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import numeral from 'numeral';
+
+const TRONSCAN_BASE = 'https://tronscan.org/#/transaction/';
 
 const PayForAnotherShow: FC = () => {
+    const isPaufen = Enviroment.isPaufen;
+    const { t } = useTranslation('transaction');
     const { query } = useShow<Withdraw>();
     const { mutateAsync } = useUpdate();
+    const { getStatusText: getWithdrawStatusText } = useWithdrawStatus();
+    const { getStatusText: getCallbackStatusText } = useTransactionCallbackStatus();
+
     if (!query.data) return <Spin />;
     const {
         data: { data },
@@ -27,38 +44,145 @@ const PayForAnotherShow: FC = () => {
 
     const columns: TableColumnProps<MerchantFee>[] = [
         {
-            title: "商戶名稱",
+            title: t('fields.merchantName'),
             dataIndex: ["merchant", "name"],
         },
         {
-            title: "手續費",
+            title: t('fields.fee'),
             dataIndex: "fee",
         },
         {
-            title: "利潤",
+            title: t('fields.profit'),
             dataIndex: "profit",
         },
     ];
+
+    const providerColumns: TableColumnProps<ProviderFee>[] = [
+        {
+            title: "码商名称",
+            dataIndex: ["provider", "name"],
+        },
+        {
+            title: t('fields.fee'),
+            dataIndex: "fee",
+        },
+        {
+            title: t('fields.profit'),
+            dataIndex: "profit",
+        },
+    ];
+
+    const groupLabel = isPaufen ? t('fields.group') : t('fields.groupName');
+
     return (
         <>
             <Helmet>
-                <title>代付資訊</title>
+                <title>{t('withdraw.info')}</title>
             </Helmet>
             <Show
-                title="代付資訊"
+                title={t('withdraw.info')}
                 headerButtons={() => (
                     <>
-                        <ListButton>代付列表</ListButton>
-                        <RefreshButton>刷新</RefreshButton>
+                        <ListButton>{t('withdraw.list')}</ListButton>
+                        <RefreshButton>{t('actions.refresh')}</RefreshButton>
                     </>
                 )}
             >
-                <Descriptions column={{ xs: 1, md: 2, lg: 3 }} bordered>
-                    <Descriptions.Item label="群組名稱">{data.provider?.name ?? "无"}</Descriptions.Item>
-                    <Descriptions.Item label="實付金額">{data.actual_amount}</Descriptions.Item>
-                    <Descriptions.Item label="浮动金额">{data.floating_amount}</Descriptions.Item>
-                    <Descriptions.Item label="系統利潤">{data.system_profit}</Descriptions.Item>
-                    <Descriptions.Item label="備註">
+                <Descriptions column={{ xs: 1, md: 2, lg: 3 }} bordered size="small">
+                    <Descriptions.Item label={t('fields.systemOrderNumber')}>
+                        {data.system_order_number}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.merchantOrderNumber')}>
+                        {data.order_number}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.status')}>
+                        {getWithdrawStatusText(data.status)}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.callbackStatus')}>
+                        {getCallbackStatusText(data.notify_status)}
+                    </Descriptions.Item>
+                    {data.chain_network && (
+                        <Descriptions.Item label={t('fields.chainNetwork')}>
+                            {data.chain_network}
+                        </Descriptions.Item>
+                    )}
+                    {data.tx_hash && (
+                        <Descriptions.Item label="TX Hash">
+                            <Typography.Text copyable={{ text: data.tx_hash }}>
+                                <a href={`${TRONSCAN_BASE}${data.tx_hash}`} target="_blank" rel="noopener noreferrer">
+                                    {data.tx_hash.slice(0, 10)}...{data.tx_hash.slice(-6)}
+                                </a>
+                            </Typography.Text>
+                        </Descriptions.Item>
+                    )}
+                    <Descriptions.Item label={t('fields.merchantName')}>
+                        {data.user?.name ?? '-'}
+                    </Descriptions.Item>
+                    {data.provider && (
+                        <Descriptions.Item label={groupLabel + '名称'}>
+                            {data.provider.name}
+                        </Descriptions.Item>
+                    )}
+                    {data.thirdchannel && (
+                        <Descriptions.Item label={t('fields.thirdPartyName')}>
+                            {data.thirdchannel.name}
+                        </Descriptions.Item>
+                    )}
+                    {data.to_channel_account_hash_id && (
+                        <Descriptions.Item label={t('fields.accountNumber')}>
+                            {data.to_channel_account_hash_id}
+                        </Descriptions.Item>
+                    )}
+                    <Descriptions.Item label={t('fields.amount')}>
+                        {numeral(data.amount).format('0,0.00')}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.actualAmount')}>
+                        {numeral(data.actual_amount).format('0,0.00')}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.floatingAmount')}>
+                        {numeral(data.floating_amount).format('0,0.00')}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.systemProfit')}>
+                        {data.system_profit ?? '-'}
+                    </Descriptions.Item>
+                    {data.bank_name && (
+                        <Descriptions.Item label={t('fields.bankName')}>
+                            {data.bank_name}
+                        </Descriptions.Item>
+                    )}
+                    {data.bank_card_number && (
+                        <Descriptions.Item label={t('fields.cardNumber')}>
+                            {data.bank_card_number}
+                        </Descriptions.Item>
+                    )}
+                    {data.bank_card_holder_name && (
+                        <Descriptions.Item label={t('fields.cardHolderName')}>
+                            {data.bank_card_holder_name}
+                        </Descriptions.Item>
+                    )}
+                    {(data.bank_province || data.bank_city) && (
+                        <Descriptions.Item label={t('fields.province') + ' / ' + t('fields.city')}>
+                            {[data.bank_province, data.bank_city].filter(Boolean).join(' / ')}
+                        </Descriptions.Item>
+                    )}
+                    <Descriptions.Item label={t('fields.locked')}>
+                        {data.locked ? t('status.locked') : t('status.unlocked')}
+                        {data.locked_by && ` (${data.locked_by.name})`}
+                    </Descriptions.Item>
+                    <Descriptions.Item label={t('fields.createdAt')}>
+                        {data.created_at ? dayjs(data.created_at).format('YYYY-MM-DD HH:mm:ss') : '-'}
+                    </Descriptions.Item>
+                    {data.confirmed_at && (
+                        <Descriptions.Item label={t('fields.successTime')}>
+                            {dayjs(data.confirmed_at).format('YYYY-MM-DD HH:mm:ss')}
+                        </Descriptions.Item>
+                    )}
+                    {data.notified_at && (
+                        <Descriptions.Item label="通知时间">
+                            {dayjs(data.notified_at).format('YYYY-MM-DD HH:mm:ss')}
+                        </Descriptions.Item>
+                    )}
+                    <Descriptions.Item label={t('fields.note')} span={3}>
                         <TextField
                             editable={{
                                 onChange: async (value) => {
@@ -70,7 +194,7 @@ const PayForAnotherShow: FC = () => {
                                         },
                                         resource: "withdraws",
                                         successNotification: {
-                                            message: "更新備註成功",
+                                            message: t('messages.updateNoteSuccess'),
                                             type: "success",
                                         },
                                     });
@@ -81,6 +205,7 @@ const PayForAnotherShow: FC = () => {
                         />
                     </Descriptions.Item>
                 </Descriptions>
+
                 <Typography.Title level={5} className="mt-4">
                     商户及商户代理手续费、利润列表
                 </Typography.Title>
@@ -89,7 +214,20 @@ const PayForAnotherShow: FC = () => {
                     rowKey={(record: MerchantFee) => record.merchant.id}
                     columns={columns}
                     pagination={false}
-                ></Table>
+                />
+                {isPaufen && data.provider_fees?.length > 0 && (
+                    <>
+                        <Typography.Title level={5} className="mt-4">
+                            码商及码商代理手续费、利润列表
+                        </Typography.Title>
+                        <Table
+                            dataSource={data.provider_fees}
+                            rowKey={(record: ProviderFee) => record.provider.id}
+                            columns={providerColumns}
+                            pagination={false}
+                        />
+                    </>
+                )}
             </Show>
         </>
     );
