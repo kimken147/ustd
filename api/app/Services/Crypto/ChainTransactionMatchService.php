@@ -77,6 +77,11 @@ class ChainTransactionMatchService
             'matched_by' => $userId,
         ]);
 
+        // 將鏈上交易的 tx_hash 回填到系統訂單
+        Transaction::where('id', $transactionId)
+            ->whereNull('tx_hash')
+            ->update(['tx_hash' => $chainTx->tx_hash]);
+
         Log::info('ChainTransaction: 手動關聯', [
             'chain_tx_id' => $chainTx->id,
             'transaction_id' => $transactionId,
@@ -102,5 +107,10 @@ class ChainTransactionMatchService
             'matched_at' => now(),
             'matched_by' => null,
         ]);
+
+        // 將鏈上交易的 tx_hash 回填到系統訂單（僅限尚未有 tx_hash 的收款單）
+        Transaction::where('id', $transactionId)
+            ->whereNull('tx_hash')
+            ->update(['tx_hash' => $chainTx->tx_hash]);
     }
 }
