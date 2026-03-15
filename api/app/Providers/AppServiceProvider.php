@@ -28,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
                 $app->make(TransactionFeeCalculator::class),
             );
         });
+
+        $this->app->bind('evm.adapter.erc20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('ethereum'));
+        $this->app->bind('evm.adapter.bep20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('bsc'));
     }
 
     /**
