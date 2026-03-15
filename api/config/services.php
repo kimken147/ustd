@@ -44,4 +44,32 @@ return [
         'usdt_contract'   => env('TRONGRID_USDT_CONTRACT', 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'),
     ],
 
+    'ethereum' => [
+        'rpc_url'         => env('ETHEREUM_RPC_URL', 'https://eth-mainnet.g.alchemy.com/v2'),
+        'rpc_api_key'     => env('ETHEREUM_RPC_API_KEY', ''),
+        'explorer_url'    => env('ETHEREUM_EXPLORER_URL', 'https://api.etherscan.io'),
+        'explorer_api_key' => env('ETHEREUM_EXPLORER_API_KEY', ''),
+        'usdt_contract'   => env('ETHEREUM_USDT_CONTRACT', '0xdAC17F958D2ee523a2206206994597C13D831ec7'),
+        'token_decimals'  => (int) env('ETHEREUM_TOKEN_DECIMALS', 6),
+        'chain_id'        => (int) env('ETHEREUM_CHAIN_ID', 1),
+        'min_native_balance' => env('ETHEREUM_MIN_ETH_BALANCE', '0.005'),
+        'max_gas_price'   => env('ETHEREUM_MAX_GAS_PRICE', '50000000000'),
+        'gas_limit_token_transfer' => (int) env('ETHEREUM_GAS_LIMIT_TOKEN', 80000),
+        'gas_limit_native_transfer' => (int) env('ETHEREUM_GAS_LIMIT_NATIVE', 21000),
+    ],
+
+    'bsc' => [
+        'rpc_url'         => env('BSC_RPC_URL', 'https://bnb-mainnet.g.alchemy.com/v2'),
+        'rpc_api_key'     => env('BSC_RPC_API_KEY', ''),
+        'explorer_url'    => env('BSC_EXPLORER_URL', 'https://api.bscscan.com'),
+        'explorer_api_key' => env('BSC_EXPLORER_API_KEY', ''),
+        'usdt_contract'   => env('BSC_USDT_CONTRACT', '0x55d398326f99059fF775485246999027B3197955'),
+        'token_decimals'  => (int) env('BSC_TOKEN_DECIMALS', 18),
+        'chain_id'        => (int) env('BSC_CHAIN_ID', 56),
+        'min_native_balance' => env('BSC_MIN_BNB_BALANCE', '0.005'),
+        'max_gas_price'   => env('BSC_MAX_GAS_PRICE', '10000000000'),
+        'gas_limit_token_transfer' => (int) env('BSC_GAS_LIMIT_TOKEN', 80000),
+        'gas_limit_native_transfer' => (int) env('BSC_GAS_LIMIT_NATIVE', 21000),
+    ],
+
 ];
