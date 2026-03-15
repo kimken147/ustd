@@ -41,6 +41,7 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
   )?.channel_code as string;
   // 監聽地址類型切換，用於條件顯示母地址選擇器
   const curAddressType = Form.useWatch('address_type', form);
+  const curChainNetwork = Form.useWatch('chain_network', form);
 
   return (
     <>
@@ -93,10 +94,11 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                   name="bank_card_number"
                   rules={[
                     { required: true },
-                    ...(curChannelCode === 'USDT' ? [{
-                      pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
-                      message: t('validation.invalidTronAddress'),
-                    }] : []),
+                    ...(curChannelCode === 'USDT'
+                      ? (curChainNetwork === 'erc20' || curChainNetwork === 'bep20')
+                        ? [{ pattern: /^0x[0-9a-fA-F]{40}$/, message: t('validation.invalidEvmAddress') }]
+                        : [{ pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/, message: t('validation.invalidTronAddress') }]
+                      : []),
                   ]}
                 >
                   <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />

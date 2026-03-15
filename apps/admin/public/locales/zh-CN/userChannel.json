@@ -201,7 +201,8 @@
   },
   "validation": {
     "required": "必填",
-    "invalidTronAddress": "無效的 TRON 地址格式（T 開頭，34 字元）"
+    "invalidTronAddress": "無效的 TRON 地址格式（T 開頭，34 字元）",
+    "invalidEvmAddress": "無效的 Ethereum/BSC 地址格式（需以 0x 開頭，40 位十六進位）"
   },
   "syncStatus": {
     "handshake_fail": "初始失败请重试",

@@ -198,7 +198,11 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
               <Descriptions.Item label="USDT (鏈上)">
                 {record?.onchain_usdt_balance ?? '-'}
               </Descriptions.Item>
-              <Descriptions.Item label="TRX (Gas)">
+              <Descriptions.Item label={
+                record?.detail?.chain_network === 'erc20' ? 'ETH (Gas)'
+                : record?.detail?.chain_network === 'bep20' ? 'BNB (Gas)'
+                : 'TRX (Gas)'
+              }>
                 {record?.onchain_trx_balance ?? '-'}
               </Descriptions.Item>
               <Descriptions.Item label="上次同步">

@@ -201,7 +201,8 @@
   },
   "validation": {
     "required": "Required",
-    "invalidTronAddress": "Invalid TRON address format (must start with T, 34 characters)"
+    "invalidTronAddress": "Invalid TRON address format (must start with T, 34 characters)",
+    "invalidEvmAddress": "Invalid Ethereum/BSC address (must start with 0x, 40 hex chars)"
   },
   "syncStatus": {
     "handshake_fail": "Access Denied, Please Try Again",
