@@ -45,17 +45,26 @@ class UsdtWithdrawHandler
 
         $fromAddress = $account->account;
 
-        // Pre-flight: check TRX balance for gas fees
-        $minTrxBalance = config('services.trongrid.min_trx_balance', '30');
-        $trxBalance = $adapter->getNativeBalance($fromAddress);
+        // Pre-flight: check native token balance for gas fees
+        $minNativeBalance = match ($chainNetwork) {
+            'trc20' => config('services.trongrid.min_trx_balance', '30'),
+            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
+            'bep20' => config('services.bsc.min_native_balance', '0.005'),
+            default => '0',
+        };
+        $gasTokenName = match ($chainNetwork) {
+            'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
+        };
+        $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
-        if (bccomp($trxBalance, $minTrxBalance, 6) < 0) {
-            $this->log($transaction, "TRX 餘額不足支付 Gas (餘額: {$trxBalance}, 最低: {$minTrxBalance})", [
-                'trx_balance'  => $trxBalance,
-                'min_required' => $minTrxBalance,
+        if (bccomp($nativeBalance, $minNativeBalance, 6) < 0) {
+            $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
+                'native_balance' => $nativeBalance,
+                'min_required'   => $minNativeBalance,
+                'gas_token'      => $gasTokenName,
             ], 'error');
             throw new InsufficientBalanceException(
-                "TRX balance {$trxBalance} below minimum {$minTrxBalance} for gas fees"
+                "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance} for gas fees"
             );
         }
 
