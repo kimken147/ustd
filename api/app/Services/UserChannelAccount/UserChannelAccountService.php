@@ -12,6 +12,7 @@ use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
 use App\Models\Channel;
 use App\Jobs\BackfillChainTransactions;
+use App\Services\Crypto\EthAddressService;
 use App\Services\Crypto\TronAddressService;
 use App\Services\QrCodeService;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +28,7 @@ class UserChannelAccountService
     public function __construct(
         private readonly QrCodeService $qrCodeService,
         private readonly TronAddressService $tronAddressService,
+        private readonly EthAddressService $ethAddressService,
     ) {
     }
 
@@ -277,8 +279,13 @@ class UserChannelAccountService
             ->exists();
         abort_if($exists, Response::HTTP_BAD_REQUEST, "derivation_index {$derivationIndex} 已存在");
 
+        $chainNetwork = data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $masterKey = decrypt($encryptedKey);
-        $child = $this->tronAddressService->deriveChildAccount($masterKey, $derivationIndex);
+        $child = match ($chainNetwork) {
+            'trc20' => $this->tronAddressService->deriveChildAccount($masterKey, $derivationIndex),
+            'erc20', 'bep20' => $this->ethAddressService->deriveChildAccount($masterKey, $derivationIndex),
+            default => throw new \InvalidArgumentException("不支援的鏈網路: {$chainNetwork}"),
+        };
         $masterKey = null;
 
         $this->validateAccountUniqueness(Channel::CODE_USDT, $child['address']);
