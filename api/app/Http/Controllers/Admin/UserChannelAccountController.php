@@ -498,6 +498,12 @@ class UserChannelAccountController extends Controller
             ]);
         }
 
+        // 若指定為子地址，帶入 address_type 和 parent_account_id
+        if ($request->input('address_type') === UserChannelAccount::ADDRESS_TYPE_CHILD) {
+            $data['address_type'] = UserChannelAccount::ADDRESS_TYPE_CHILD;
+            $data['parent_account_id'] = $request->input('parent_account_id');
+        }
+
         // Validate TRON address for USDT channels
         $channelAmount = ChannelAmount::find($request->input('channel_amount_id'));
         if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
@@ -513,6 +519,38 @@ class UserChannelAccountController extends Controller
         return \App\Http\Resources\UserChannelAccount::make(
             $userChannelAccount
         );
+    }
+
+    /**
+     * 從母地址自動衍生子地址（單筆或批量）
+     */
+    public function createChild(Request $request)
+    {
+        $this->validate($request, [
+            'parent_account_id' => 'required|integer',
+            'count' => 'nullable|integer|min:1|max:50',
+        ]);
+
+        $parentAccount = UserChannelAccount::findOrFail($request->input('parent_account_id'));
+
+        abort_if(
+            $parentAccount->channel_code !== Channel::CODE_USDT,
+            Response::HTTP_BAD_REQUEST,
+            '僅支援 USDT 帳號'
+        );
+
+        $count = $request->input('count', 1);
+
+        if ($count === 1) {
+            $child = $this->userChannelAccountService->createChildAccount($parentAccount);
+            return \App\Http\Resources\UserChannelAccount::make($child);
+        }
+
+        $children = DB::transaction(function () use ($parentAccount, $count) {
+            return $this->userChannelAccountService->batchCreateChildAccounts($parentAccount, $count);
+        });
+
+        return \App\Http\Resources\UserChannelAccount::collection(collect($children));
     }
 
     public function massiveStore(Request $request)

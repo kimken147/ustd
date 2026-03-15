@@ -128,6 +128,10 @@ Route::prefix("admin")
                 "user-channel-accounts/massive-create",
                 "UserChannelAccountController@massiveStore"
             );
+            Route::post(
+                "user-channel-accounts/create-child",
+                "UserChannelAccountController@createChild"
+            );
             Route::apiResource(
                 "user-channel-accounts",
                 "UserChannelAccountController"

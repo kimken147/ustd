@@ -12,6 +12,7 @@ use App\Models\UserChannel;
 use App\Models\UserChannelAccount;
 use App\Models\Channel;
 use App\Jobs\BackfillChainTransactions;
+use App\Services\Crypto\TronAddressService;
 use App\Services\QrCodeService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
@@ -24,7 +25,8 @@ use Illuminate\Support\Str;
 class UserChannelAccountService
 {
     public function __construct(
-        private readonly QrCodeService $qrCodeService
+        private readonly QrCodeService $qrCodeService,
+        private readonly TronAddressService $tronAddressService,
     ) {
     }
 
@@ -183,6 +185,8 @@ class UserChannelAccountService
                 'single_max_limit'          => $data['single_max_limit'] ?? null,
                 'withdraw_single_min_limit' => $data['withdraw_single_min_limit'] ?? null,
                 'withdraw_single_max_limit' => $data['withdraw_single_max_limit'] ?? null,
+                'address_type'              => $data['address_type'] ?? UserChannelAccount::ADDRESS_TYPE_MASTER,
+                'parent_account_id'         => $data['parent_account_id'] ?? null,
             ]);
 
             $userChannelAccount->name = $data['name'] ?? Str::padLeft($userChannelAccount->id, 5, '0');
@@ -253,6 +257,92 @@ class UserChannelAccountService
         }
 
         return $userChannelAccount;
+    }
+
+    /**
+     * 從母地址自動衍生子地址
+     */
+    public function createChildAccount(UserChannelAccount $parentAccount, ?int $derivationIndex = null): UserChannelAccount
+    {
+        $encryptedKey = data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY);
+        abort_if(!$encryptedKey, Response::HTTP_BAD_REQUEST, '母地址未設定私鑰，無法自動衍生');
+
+        if ($derivationIndex === null) {
+            $derivationIndex = ($parentAccount->childAccounts()->max('derivation_index') ?? -1) + 1;
+        }
+
+        // 檢查 derivation_index 唯一性
+        $exists = UserChannelAccount::where('parent_account_id', $parentAccount->id)
+            ->where('derivation_index', $derivationIndex)
+            ->exists();
+        abort_if($exists, Response::HTTP_BAD_REQUEST, "derivation_index {$derivationIndex} 已存在");
+
+        $masterKey = decrypt($encryptedKey);
+        $child = $this->tronAddressService->deriveChildAccount($masterKey, $derivationIndex);
+        $masterKey = null;
+
+        $this->validateAccountUniqueness(Channel::CODE_USDT, $child['address']);
+
+        $detail = [
+            UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK => data_get(
+                $parentAccount->detail,
+                UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK,
+                'trc20'
+            ),
+            UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY => encrypt($child['private_key']),
+        ];
+        $child['private_key'] = null;
+
+        $provider = User::findOrFail($parentAccount->user_id);
+        $channelAmount = $parentAccount->channelAmount;
+        $userChannel = $this->validateUserChannel($provider, $channelAmount);
+        $device = $this->resolveDevice($provider, $provider->name);
+        $wallet = $this->resolveWallet($provider);
+
+        $childAccount = $channelAmount->userChannelAccounts()->create([
+            'user_id' => $provider->getKey(),
+            'device_id' => $device->getKey(),
+            'wallet_id' => $wallet->getKey(),
+            'bank_id' => 0,
+            'channel_code' => Channel::CODE_USDT,
+            'status' => UserChannelAccount::STATUS_DISABLE,
+            'type' => $parentAccount->type,
+            'fee_percent' => $userChannel->fee_percent,
+            'min_amount' => $userChannel->min_amount,
+            'max_amount' => $userChannel->max_amount,
+            'account' => $child['address'],
+            'detail' => $detail,
+            'address_type' => UserChannelAccount::ADDRESS_TYPE_CHILD,
+            'parent_account_id' => $parentAccount->id,
+            'derivation_index' => $derivationIndex,
+            'is_auto' => true,
+        ]);
+
+        $childAccount->name = Str::padLeft($childAccount->id, 5, '0');
+        $childAccount->save();
+
+        $this->syncTransactionGroups($childAccount, $provider);
+
+        if ($childAccount->channel_code === Channel::CODE_USDT) {
+            BackfillChainTransactions::dispatch($childAccount->id);
+        }
+
+        return $childAccount;
+    }
+
+    /**
+     * 批量衍生子地址
+     */
+    public function batchCreateChildAccounts(UserChannelAccount $parentAccount, int $count): array
+    {
+        $created = [];
+        $startIndex = ($parentAccount->childAccounts()->max('derivation_index') ?? -1) + 1;
+
+        for ($i = 0; $i < $count; $i++) {
+            $created[] = $this->createChildAccount($parentAccount, $startIndex + $i);
+        }
+
+        return $created;
     }
 
     private function syncTransactionGroups(UserChannelAccount $userChannelAccount, User $provider): void
