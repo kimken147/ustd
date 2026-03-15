@@ -60,4 +60,16 @@ interface ChainAdapterInterface
         ?string $fingerprint = null,
         ?string $minTimestamp = null,
     ): array;
+
+    /**
+     * 發送原生代幣（如 TRX）到指定地址
+     *
+     * @return string tx_hash
+     */
+    public function sendNativeToken(
+        string $fromAddress,
+        string $toAddress,
+        string $amount,
+        string $privateKey
+    ): string;
 }

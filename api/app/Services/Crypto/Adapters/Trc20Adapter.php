@@ -295,6 +295,35 @@ class Trc20Adapter implements ChainAdapterInterface
         ];
     }
 
+    public function sendNativeToken(
+        string $fromAddress,
+        string $toAddress,
+        string $amount,
+        string $privateKey
+    ): string {
+        $rawAmount = (int) bcmul($amount, '1000000', 0);
+
+        $fromHex = $this->base58ToHex($fromAddress);
+        $toHex = $this->base58ToHex($toAddress);
+
+        // 建立 TRX 轉帳交易
+        $response = $this->buildHttpClient()->post($this->getBaseUrl() . '/wallet/createtransaction', [
+            'owner_address' => $fromHex,
+            'to_address' => $toHex,
+            'amount' => $rawAmount,
+            'visible' => false,
+        ]);
+
+        $data = $response->json();
+        if (!$response->successful() || !isset($data['txID'])) {
+            throw new TransactionBroadcastException('建立 TRX 轉帳失敗: ' . json_encode($data));
+        }
+
+        // 簽名並廣播
+        $signedTx = $this->signTransaction($data, $privateKey);
+        return $this->broadcastTransaction($signedTx);
+    }
+
     private function getUsdtContract(): string
     {
         return config('services.trongrid.usdt_contract', self::MAINNET_USDT_CONTRACT);

@@ -132,6 +132,10 @@ Route::prefix("admin")
                 "user-channel-accounts/create-child",
                 "UserChannelAccountController@createChild"
             );
+            Route::post(
+                "user-channel-accounts/consolidate",
+                "UserChannelAccountController@consolidate"
+            );
             Route::apiResource(
                 "user-channel-accounts",
                 "UserChannelAccountController"

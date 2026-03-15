@@ -824,6 +824,40 @@ class UserChannelAccountController extends Controller
         ]);
     }
 
+    /**
+     * 歸集子地址 USDT 回母地址（單一或批量）
+     */
+    public function consolidate(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|integer',
+        ]);
+
+        $account = UserChannelAccount::findOrFail($request->input('id'));
+
+        abort_if(
+            $account->channel_code !== Channel::CODE_USDT,
+            Response::HTTP_BAD_REQUEST,
+            '僅支援 USDT 帳號'
+        );
+
+        $service = app(\App\Services\Crypto\ConsolidationService::class);
+
+        if ($account->address_type === UserChannelAccount::ADDRESS_TYPE_MASTER) {
+            // 歸集所有子地址
+            $results = $service->consolidateAll($account);
+            return response()->json(['results' => $results]);
+        }
+
+        if ($account->parent_account_id) {
+            // 歸集單一子地址
+            $result = $service->consolidate($account);
+            return response()->json($result);
+        }
+
+        return response()->json(['error' => '此帳號無母地址，無法歸集'], Response::HTTP_BAD_REQUEST);
+    }
+
     private function resolveChainAdapter(string $chainNetwork): ?\App\Services\Crypto\Adapters\ChainAdapterInterface
     {
         return match ($chainNetwork) {
