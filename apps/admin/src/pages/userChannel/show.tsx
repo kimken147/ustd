@@ -45,7 +45,8 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
   // 批量建立子地址 Modal 狀態
   const [batchModalOpen, setBatchModalOpen] = useState(false);
   // 歸集功能
-  const { mutate: consolidate, isLoading: isConsolidating } = useCustomMutation();
+  const { mutate: consolidate, mutation: consolidateMutation } = useCustomMutation();
+  const isConsolidating = consolidateMutation.isPending;
 
   const handleConsolidate = () => {
     AntdModal.confirm({

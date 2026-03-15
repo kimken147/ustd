@@ -152,10 +152,10 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                     allowClear
                     showSearch
                     filterOption={(input, option) =>
-                      (option?.label as string)?.toLowerCase().includes(input.toLowerCase())
+                      String(option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                     }
                     placeholder={t('placeholders.selectParentAccount')}
-                    options={[]}
+                    options={[] as { label: string; value: number }[]}
                   />
                 </Form.Item>
               </FormColumn>

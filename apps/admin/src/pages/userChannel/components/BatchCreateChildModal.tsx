@@ -20,7 +20,7 @@ export const BatchCreateChildModal: FC<Props> = ({
 }) => {
   const { t } = useTranslation('userChannel');
   const [form] = Form.useForm();
-  const { mutate, isLoading } = useCustomMutation();
+  const { mutate, mutation } = useCustomMutation();
 
   const handleOk = () => {
     form.validateFields().then(values => {
@@ -48,7 +48,7 @@ export const BatchCreateChildModal: FC<Props> = ({
       open={open}
       onOk={handleOk}
       onCancel={onClose}
-      confirmLoading={isLoading}
+      confirmLoading={mutation.isPending}
       destroyOnClose
     >
       <Form form={form} layout="vertical">
