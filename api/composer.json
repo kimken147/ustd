@@ -20,6 +20,7 @@
         "irazasyed/telegram-bot-sdk": "^3.8",
         "kalnoy/nestedset": "^6.0",
         "khanamiryan/qrcode-detector-decoder": "1.0.5.2",
+        "kornrunner/keccak": "^1.1",
         "laravel-notification-channels/telegram": "^5.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
