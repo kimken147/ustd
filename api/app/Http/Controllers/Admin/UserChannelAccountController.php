@@ -302,7 +302,14 @@ class UserChannelAccountController extends Controller
             if ($request->has('account') || $request->has('bank_card_number')) {
                 $channelAmount = $userChannelAccount->channelAmount;
                 if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
-                    $this->validateTronAddress($request->input('account') ?? $request->input('bank_card_number'));
+                    $chainNetwork = data_get($userChannelAccount->detail, \App\Models\UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
+                    if ($request->filled('chain_network')) {
+                        $chainNetwork = $request->input('chain_network');
+                    }
+                    $this->validateCryptoAddress(
+                        $request->input('account') ?? $request->input('bank_card_number'),
+                        $chainNetwork
+                    );
                 }
             }
 
@@ -507,7 +514,8 @@ class UserChannelAccountController extends Controller
         // Validate TRON address for USDT channels
         $channelAmount = ChannelAmount::find($request->input('channel_amount_id'));
         if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
-            $this->validateTronAddress($request->input('bank_card_number'));
+            $chainNetwork = $request->input('chain_network', 'trc20');
+            $this->validateCryptoAddress($request->input('bank_card_number'), $chainNetwork);
         }
 
         $userChannelAccount = $this->userChannelAccountService->createAccount($data, $provider);
@@ -876,6 +884,26 @@ class UserChannelAccountController extends Controller
 
         if (!preg_match('/^T[1-9A-HJ-NP-Za-km-z]{33}$/', $address)) {
             abort(Response::HTTP_BAD_REQUEST, __('common.Invalid TRON address format'));
+        }
+    }
+
+    private function validateEvmAddress(?string $address): void
+    {
+        if ($address === null) {
+            return;
+        }
+
+        if (!preg_match('/^0x[0-9a-fA-F]{40}$/', $address)) {
+            abort(Response::HTTP_BAD_REQUEST, __('common.Invalid Ethereum address format'));
+        }
+    }
+
+    private function validateCryptoAddress(?string $address, string $chainNetwork): void
+    {
+        if ($chainNetwork === 'trc20') {
+            $this->validateTronAddress($address);
+        } else {
+            $this->validateEvmAddress($address);
         }
     }
 }
