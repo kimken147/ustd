@@ -57,6 +57,17 @@ class UserChannelAccount extends JsonResource
             'channel_code'        => $this->channel_code,
             'channel_name'        => $channelName,
             'account'             => $this->account,
+            'address_type'        => $this->address_type,
+            'parent_account_id'   => $this->parent_account_id,
+            'parent_account'      => $this->when($this->parent_account_id, function () {
+                return [
+                    'id'      => $this->parentAccount?->id,
+                    'account' => $this->parentAccount?->account,
+                    'name'    => $this->parentAccount?->name,
+                ];
+            }),
+            'derivation_index'    => $this->derivation_index,
+            'child_count'         => $this->when($this->address_type === 'master', fn () => $this->childAccounts()->count()),
             'account_name'        => data_get(
                 $this->detail,
                 \App\Models\UserChannelAccount::DETAIL_KEY_BANK_CARD_HOLDER_NAME,

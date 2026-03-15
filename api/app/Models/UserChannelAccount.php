@@ -54,6 +54,10 @@ class UserChannelAccount extends Model
 
     const DETAIL_KEY_CHAIN_NETWORK = 'chain_network';   // 鏈網絡：trc20, erc20, bep20
     const DETAIL_KEY_ENCRYPTED_PRIVATE_KEY = 'encrypted_private_key'; // USDT 出款私鑰（加密儲存）
+
+    const ADDRESS_TYPE_MASTER = 'master';
+    const ADDRESS_TYPE_CHILD = 'child';
+
     protected $casts = [
         'regular_customer_first' => 'boolean',
         'time_limit_disabled' => 'boolean',
@@ -127,6 +131,9 @@ class UserChannelAccount extends Model
         'single_max_limit',
         'withdraw_single_min_limit',
         'withdraw_single_max_limit',
+        'address_type',
+        'parent_account_id',
+        'derivation_index',
     ];
 
     public function channel()
@@ -162,6 +169,22 @@ class UserChannelAccount extends Model
     public function bank()
     {
         return $this->belongsTo(Bank::class);
+    }
+
+    /**
+     * 母地址關聯（子地址 belongsTo 母地址）
+     */
+    public function parentAccount()
+    {
+        return $this->belongsTo(self::class, 'parent_account_id');
+    }
+
+    /**
+     * 子地址關聯（母地址 hasMany 子地址）
+     */
+    public function childAccounts()
+    {
+        return $this->hasMany(self::class, 'parent_account_id');
     }
 
     public function transactionGroups()

@@ -170,7 +170,7 @@ class UserChannelAccountController extends Controller
         );
 
         return \App\Http\Resources\UserChannelAccount::make(
-            $userChannelAccount->load("user.parent", "channelAmount.channel")
+            $userChannelAccount->load("user.parent", "channelAmount.channel", "parentAccount")
         );
     }
 
