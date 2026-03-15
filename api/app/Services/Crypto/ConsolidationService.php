@@ -21,9 +21,8 @@ class ConsolidationService
             return ['status' => 'error', 'error' => '無母地址'];
         }
 
-        $adapter = $this->resolveAdapter(
-            data_get($childAccount->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20')
-        );
+        $chainNetwork = data_get($childAccount->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
+        $adapter = $this->resolveAdapter($chainNetwork);
 
         // 1. 查詢子地址 USDT 餘額
         $usdtBalance = $adapter->getTokenBalance($childAccount->account);
@@ -31,29 +30,34 @@ class ConsolidationService
             return ['status' => 'skip', 'error' => 'USDT 餘額不足'];
         }
 
-        // 2. 查詢子地址 TRX 餘額，不夠則從主地址送
-        $trxBalance = $adapter->getNativeBalance($childAccount->account);
-        $minTrx = config('services.trongrid.min_trx_balance', '30');
+        // 2. 查詢子地址原生代幣餘額，不夠則從主地址送
+        $nativeBalance = $adapter->getNativeBalance($childAccount->account);
+        $minNative = $this->getMinNativeBalance($chainNetwork);
+        $gasTokenName = $this->getGasTokenName($chainNetwork);
         $gasTxHash = null;
 
-        if (bccomp($trxBalance, $minTrx, 6) < 0) {
+        if (bccomp($nativeBalance, $minNative, 6) < 0) {
             $parentKey = $this->getPrivateKey($parentAccount);
             if (!$parentKey) {
                 return ['status' => 'error', 'error' => '母地址無私鑰'];
             }
 
             try {
-                $sendTrx = bcadd($minTrx, '5', 6); // 多送一點確保夠用
+                $extra = match ($chainNetwork) {
+                    'trc20' => '5',
+                    default => '0.001',
+                };
+                $sendAmount = bcadd($minNative, $extra, 6); // 多送一點確保夠用
                 $gasTxHash = $adapter->sendNativeToken(
                     $parentAccount->account,
                     $childAccount->account,
-                    $sendTrx,
+                    $sendAmount,
                     $parentKey
                 );
                 $parentKey = null;
             } catch (\Throwable $e) {
                 $parentKey = null;
-                return ['status' => 'error', 'error' => '送 TRX 失敗: ' . $e->getMessage()];
+                return ['status' => 'error', 'error' => "送 {$gasTokenName} 失敗: " . $e->getMessage()];
             }
         }
 
@@ -111,6 +115,26 @@ class ConsolidationService
             return null;
         }
         return decrypt($encrypted);
+    }
+
+    private function getGasTokenName(string $network): string
+    {
+        return match ($network) {
+            'trc20' => 'TRX',
+            'erc20' => 'ETH',
+            'bep20' => 'BNB',
+            default => 'Native',
+        };
+    }
+
+    private function getMinNativeBalance(string $network): string
+    {
+        return match ($network) {
+            'trc20' => config('services.trongrid.min_trx_balance', '30'),
+            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
+            'bep20' => config('services.bsc.min_native_balance', '0.005'),
+            default => '0',
+        };
     }
 
     /**
