@@ -22,6 +22,14 @@ export const useUserChannelForm = () => {
       }
     });
 
+    // 附加 USDT 地址類型相關欄位
+    if (values.address_type) {
+      formData.append('address_type', values.address_type);
+    }
+    if (values.parent_account_id) {
+      formData.append('parent_account_id', String(values.parent_account_id));
+    }
+
     formData.append('device_name', 'default');
     formData.append('type', '2'); // UserChannelType.收款
 

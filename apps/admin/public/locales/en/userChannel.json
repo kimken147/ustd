@@ -68,7 +68,12 @@
     "monthlyTotal": "Monthly Money-In Amount",
     "monthlyTransactionCountTotal": "Monthly Money-In Count",
     "withdrawMonthlyTotal": "Monthly Money-Out Amount",
-    "withdrawMonthlyTransactionCountTotal": "Monthly Money-Out Count"
+    "withdrawMonthlyTransactionCountTotal": "Monthly Money-Out Count",
+    "addressType": "Address Type",
+    "parentAccount": "Parent Address",
+    "masterAddress": "Master",
+    "childAddress": "Child",
+    "childCount": "Child Count"
   },
   "switches": {
     "dailyLimit": "Daily Limit Switch",
@@ -124,7 +129,9 @@
     "submit": "Submit",
     "ok": "Confirm",
     "cancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "batchCreateChild": "Batch Create Child Addresses",
+    "consolidateAll": "Consolidate All"
   },
   "status": {
     "none": "N/A",
@@ -145,7 +152,10 @@
     "batchDeleteSuccess": "Batch Deletion Successful",
     "syncTime": "System Last Run At: {{time}}",
     "passwordStatus": "Password Change Status: ",
-    "emailStatus": "Email Change Status: "
+    "emailStatus": "Email Change Status: ",
+    "batchCreateSuccess": "Child addresses created",
+    "consolidateSuccess": "Consolidation request sent",
+    "consolidateConfirm": "Consolidate all child address USDT to the master address?"
   },
   "confirmation": {
     "changeStatus": "Confirm Modification of Status?",
@@ -186,7 +196,8 @@
     "qrcode": "QR Code",
     "viewQrcode": "View QR Code",
     "walletAddress": "Enter USDT wallet address",
-    "privateKey": "Only needed for payouts, leave blank to skip"
+    "privateKey": "Only needed for payouts, leave blank to skip",
+    "selectParentAccount": "Select parent address (optional)"
   },
   "validation": {
     "required": "Required",

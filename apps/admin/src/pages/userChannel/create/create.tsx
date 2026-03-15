@@ -39,6 +39,8 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
   const curChannelCode = channelAmounts?.find(
     item => item.id === curChannelAmountId
   )?.channel_code as string;
+  // 監聽地址類型切換，用於條件顯示母地址選擇器
+  const curAddressType = Form.useWatch('address_type', form);
 
   return (
     <>
@@ -116,6 +118,44 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                       { label: 'ERC-20', value: 'erc20' },
                       { label: 'BEP-20', value: 'bep20' },
                     ]}
+                  />
+                </Form.Item>
+              </FormColumn>
+            )}
+
+            {/* USDT 地址類型選擇：主地址或子地址 */}
+            {curChannelCode === 'USDT' && (
+              <FormColumn>
+                <Form.Item
+                  label={t('fields.addressType')}
+                  name="address_type"
+                  initialValue="master"
+                >
+                  <Select
+                    options={[
+                      { label: t('fields.masterAddress'), value: 'master' },
+                      { label: t('fields.childAddress'), value: 'child' },
+                    ]}
+                  />
+                </Form.Item>
+              </FormColumn>
+            )}
+
+            {/* 子地址時顯示母地址選擇器 */}
+            {curChannelCode === 'USDT' && curAddressType === 'child' && (
+              <FormColumn>
+                <Form.Item
+                  label={t('fields.parentAccount')}
+                  name="parent_account_id"
+                >
+                  <Select
+                    allowClear
+                    showSearch
+                    filterOption={(input, option) =>
+                      (option?.label as string)?.toLowerCase().includes(input.toLowerCase())
+                    }
+                    placeholder={t('placeholders.selectParentAccount')}
+                    options={[]}
                   />
                 </Form.Item>
               </FormColumn>

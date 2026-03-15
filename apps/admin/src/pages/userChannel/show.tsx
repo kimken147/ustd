@@ -5,26 +5,34 @@ import {
 import {
   Button,
   Descriptions,
+  Modal as AntdModal,
+  Space,
   Switch,
+  Tag,
   Typography,
+  message,
 } from 'antd';
 import {
   IResourceComponentsProps,
+  useCustomMutation,
   useNavigation,
   useShow,
 } from '@refinedev/core';
 import dayjs from 'dayjs';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
+import { apiUrl } from 'index';
 import { ChannelStatusChanger } from './component';
+import { BatchCreateChildModal } from './components/BatchCreateChildModal';
 
 const UserChannelShow: FC<IResourceComponentsProps> = props => {
   const { t } = useTranslation('userChannel');
   const { query } = useShow<UserChannel>();
-  const { data, isLoading } = query;
+  const { data, isLoading, refetch } = query;
   const record = data?.data;
   const { list } = useNavigation();
   const goBack = () => {
@@ -33,6 +41,31 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
 
   const { Modal } = useUpdateModal();
   // const { mutateAsync: deleteUserChannel } = useDelete();
+
+  // 批量建立子地址 Modal 狀態
+  const [batchModalOpen, setBatchModalOpen] = useState(false);
+  // 歸集功能
+  const { mutate: consolidate, isLoading: isConsolidating } = useCustomMutation();
+
+  const handleConsolidate = () => {
+    AntdModal.confirm({
+      title: t('messages.consolidateConfirm'),
+      onOk: () => {
+        consolidate({
+          url: `${apiUrl}/user-channel-accounts/${record?.id}/consolidate`,
+          method: 'post',
+          values: {},
+        }, {
+          onSuccess: () => {
+            message.success(t('messages.consolidateSuccess'));
+          },
+        });
+      },
+    });
+  };
+
+  // 判斷是否為 USDT 主地址
+  const isUsdtMaster = record?.channel_code === 'USDT' && record?.address_type === 'master';
 
   return (
     <>
@@ -139,6 +172,28 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
               <Descriptions.Item label={t('fields.chainNetwork')}>
                 {record?.detail?.chain_network?.toUpperCase() ?? '-'}
               </Descriptions.Item>
+              {/* 地址類型標籤 */}
+              <Descriptions.Item label={t('fields.addressType')}>
+                <Tag color={record?.address_type === 'master' ? 'blue' : 'green'}>
+                  {record?.address_type === 'master'
+                    ? t('fields.masterAddress')
+                    : t('fields.childAddress')}
+                </Tag>
+              </Descriptions.Item>
+              {/* 子地址顯示母地址連結 */}
+              {record?.address_type === 'child' && record?.parent_account && (
+                <Descriptions.Item label={t('fields.parentAccount')}>
+                  <Link to={`/user-channel-accounts/show/${record.parent_account.id}`}>
+                    {record.parent_account.account} ({record.parent_account.name})
+                  </Link>
+                </Descriptions.Item>
+              )}
+              {/* 主地址顯示子地址數量 */}
+              {record?.address_type === 'master' && (
+                <Descriptions.Item label={t('fields.childCount')}>
+                  {record?.child_count ?? 0}
+                </Descriptions.Item>
+              )}
               <Descriptions.Item label="USDT (鏈上)">
                 {record?.onchain_usdt_balance ?? '-'}
               </Descriptions.Item>
@@ -151,6 +206,28 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
             </>
           )}
         </Descriptions>
+
+        {/* USDT 主地址操作按鈕：批量建立子地址、歸集 */}
+        {isUsdtMaster && record && (
+          <Space style={{ marginTop: 16 }}>
+            <Button type="primary" onClick={() => setBatchModalOpen(true)}>
+              {t('actions.batchCreateChild')}
+            </Button>
+            <Button onClick={handleConsolidate} loading={isConsolidating}>
+              {t('actions.consolidateAll')}
+            </Button>
+          </Space>
+        )}
+
+        {/* 批量建立子地址 Modal */}
+        {record && (
+          <BatchCreateChildModal
+            parentAccountId={record.id}
+            open={batchModalOpen}
+            onClose={() => setBatchModalOpen(false)}
+            onSuccess={() => refetch()}
+          />
+        )}
       </Show>
     </>
   );

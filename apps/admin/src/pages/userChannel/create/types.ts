@@ -8,4 +8,7 @@ export interface FormValues {
     single_min_limit?: number;
     single_max_limit?: number;
     note?: string;
+    // USDT 子地址相關欄位
+    address_type?: 'master' | 'child';
+    parent_account_id?: number;
 }

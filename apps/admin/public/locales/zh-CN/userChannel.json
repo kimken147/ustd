@@ -68,7 +68,12 @@
     "monthlyTotal": "每月已收额度",
     "monthlyTransactionCountTotal": "每月已收笔数",
     "withdrawMonthlyTotal": "每月已出额度",
-    "withdrawMonthlyTransactionCountTotal": "每月已出笔数"
+    "withdrawMonthlyTransactionCountTotal": "每月已出笔数",
+    "addressType": "地址类型",
+    "parentAccount": "母地址",
+    "masterAddress": "主地址",
+    "childAddress": "子地址",
+    "childCount": "子地址数量"
   },
   "switches": {
     "dailyLimit": "每日收/付限额开关",
@@ -124,7 +129,9 @@
     "submit": "提交",
     "ok": "确定",
     "cancel": "取消",
-    "back": "返回"
+    "back": "返回",
+    "batchCreateChild": "批量生成子地址",
+    "consolidateAll": "归集所有子地址"
   },
   "status": {
     "none": "无",
@@ -145,7 +152,10 @@
     "batchDeleteSuccess": "批量删除成功",
     "syncTime": "同步时间: {{time}}",
     "passwordStatus": "修改密码状态: ",
-    "emailStatus": "修改Email状态: "
+    "emailStatus": "修改Email状态: ",
+    "batchCreateSuccess": "子地址创建成功",
+    "consolidateSuccess": "归集请求已发送",
+    "consolidateConfirm": "确定要归集所有子地址的 USDT 到主地址吗？"
   },
   "confirmation": {
     "changeStatus": "确定要更改连线状态？",
@@ -186,7 +196,8 @@
     "qrcode": "二维码",
     "viewQrcode": "查看二维码",
     "walletAddress": "輸入 USDT 錢包地址",
-    "privateKey": "僅出款時需要，留空則不設定"
+    "privateKey": "僅出款時需要，留空則不設定",
+    "selectParentAccount": "选择母地址（可选）"
   },
   "validation": {
     "required": "必填",

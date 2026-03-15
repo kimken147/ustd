@@ -6,6 +6,7 @@ import { createProviderColumn } from './providerColumn';
 import { createStatusColumn } from './statusColumn';
 import { createTypeColumn } from './typeColumn';
 import { createAccountColumn } from './accountColumn';
+import { createAddressTypeColumn } from './addressTypeColumn';
 import { createChannelColumn } from './bankColumns';
 import { createNoteColumn, createAccountNumberColumn } from './infoColumns';
 import { createBalanceColumn, createBalanceLimitColumn } from './balanceColumns';
@@ -40,6 +41,7 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createStatusColumn(deps),
     createTypeColumn(deps),
     createAccountColumn(deps),
+    createAddressTypeColumn(deps),
     createNoteColumn(deps),
     createAccountNumberColumn(deps),
     createBalanceColumn(deps),
