@@ -120,6 +120,8 @@ class ConsolidationService
     {
         return match ($network) {
             'trc20' => app(Trc20Adapter::class),
+            'erc20' => app('evm.adapter.erc20'),
+            'bep20' => app('evm.adapter.bep20'),
             default => throw new \InvalidArgumentException("不支援的鏈網路: {$network}"),
         };
     }

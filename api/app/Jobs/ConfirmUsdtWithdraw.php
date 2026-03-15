@@ -90,6 +90,8 @@ class ConfirmUsdtWithdraw implements ShouldQueue
     {
         return match ($chainNetwork) {
             'trc20' => app(Trc20Adapter::class),
+            'erc20' => app('evm.adapter.erc20'),
+            'bep20' => app('evm.adapter.bep20'),
             default => null,
         };
     }
