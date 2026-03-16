@@ -158,7 +158,7 @@ class EvmAdapter implements ChainAdapterInterface
             $result = $this->rpcCall('eth_getBalance', [$address, 'latest']);
             $wei = gmp_strval(gmp_init($result, 16));
 
-            return bcdiv($wei, bcpow('10', '18'), 18);
+            return bcdiv($wei, bcpow('10', '18'), 6);
         } catch (\Exception $e) {
             Log::error("EvmAdapter[{$this->configKey}]: getNativeBalance failed", [
                 'address'   => $address,

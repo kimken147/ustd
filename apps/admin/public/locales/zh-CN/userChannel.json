@@ -73,7 +73,9 @@
     "parentAccount": "母地址",
     "masterAddress": "主地址",
     "childAddress": "子地址",
-    "childCount": "子地址数量"
+    "childCount": "子地址数量",
+    "onchainUsdtBalance": "USDT (链上)",
+    "lastSyncedAt": "上次同步"
   },
   "switches": {
     "dailyLimit": "每日收/付限额开关",

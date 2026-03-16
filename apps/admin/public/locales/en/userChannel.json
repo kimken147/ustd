@@ -73,7 +73,9 @@
     "parentAccount": "Parent Address",
     "masterAddress": "Master",
     "childAddress": "Child",
-    "childCount": "Child Count"
+    "childCount": "Child Count",
+    "onchainUsdtBalance": "USDT (On-chain)",
+    "lastSyncedAt": "Last Synced"
   },
   "switches": {
     "dailyLimit": "Daily Limit Switch",

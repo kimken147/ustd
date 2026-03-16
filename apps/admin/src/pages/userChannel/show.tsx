@@ -195,7 +195,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
                   {record?.child_count ?? 0}
                 </Descriptions.Item>
               )}
-              <Descriptions.Item label="USDT (鏈上)">
+              <Descriptions.Item label={t('fields.onchainUsdtBalance')}>
                 {record?.onchain_usdt_balance ?? '-'}
               </Descriptions.Item>
               <Descriptions.Item label={
@@ -205,7 +205,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
               }>
                 {record?.onchain_trx_balance ?? '-'}
               </Descriptions.Item>
-              <Descriptions.Item label="上次同步">
+              <Descriptions.Item label={t('fields.lastSyncedAt')}>
                 {record?.onchain_synced_at ? dayjs(record.onchain_synced_at).format('YYYY-MM-DD HH:mm:ss') : '-'}
               </Descriptions.Item>
             </>
