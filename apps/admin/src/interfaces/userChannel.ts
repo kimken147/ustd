@@ -104,7 +104,7 @@ export interface UserChannel extends BaseRecord {
     balance_limit: string;
     is_auto: boolean;
     onchain_usdt_balance?: string;
-    onchain_trx_balance?: string;
+    onchain_native_balance?: string;
     onchain_synced_at?: string;
 }
 

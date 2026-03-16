@@ -6,7 +6,7 @@ use App\Models\ChainTransaction;
 use App\Models\Channel;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
-use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -190,11 +190,6 @@ class ChainTransactionSyncService
 
     private function resolveAdapter(string $network): ?ChainAdapterInterface
     {
-        return match ($network) {
-            'trc20' => app(Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => null,
-        };
+        return ChainAdapterFactory::make($network);
     }
 }

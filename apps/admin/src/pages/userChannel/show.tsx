@@ -203,7 +203,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
                 : record?.detail?.chain_network === 'bep20' ? 'BNB (Gas)'
                 : 'TRX (Gas)'
               }>
-                {record?.onchain_trx_balance ?? '-'}
+                {record?.onchain_native_balance ?? '-'}
               </Descriptions.Item>
               <Descriptions.Item label={t('fields.lastSyncedAt')}>
                 {record?.onchain_synced_at ? dayjs(record.onchain_synced_at).format('YYYY-MM-DD HH:mm:ss') : '-'}

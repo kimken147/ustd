@@ -6,7 +6,7 @@ use App\Jobs\NotifyTransaction;
 use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
-use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -88,11 +88,6 @@ class ConfirmUsdtWithdraw implements ShouldQueue
 
     private function resolveAdapter(string $chainNetwork): ?ChainAdapterInterface
     {
-        return match ($chainNetwork) {
-            'trc20' => app(Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => null,
-        };
+        return ChainAdapterFactory::make($chainNetwork);
     }
 }

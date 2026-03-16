@@ -53,8 +53,8 @@ export function createOnchainTrxColumn(deps: ColumnDependencies): UserChannelCol
   const { canEdit, onSync, syncingIds } = deps;
 
   return {
-    title: 'TRX (Gas)',
-    dataIndex: 'onchain_trx_balance',
+    title: 'Gas',
+    dataIndex: 'onchain_native_balance',
     render(value: string, record) {
       if (record.channel_code !== 'USDT') return '-';
       const isSyncing = syncingIds?.has(record.id) ?? false;

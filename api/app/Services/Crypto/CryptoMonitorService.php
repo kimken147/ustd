@@ -5,7 +5,7 @@ namespace App\Services\Crypto;
 use App\Models\Transaction;
 use App\Models\UsdtDepositMonitor;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
-use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use App\Services\Transaction\TransactionStatusService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -154,16 +154,8 @@ class CryptoMonitorService
             ->update(['status' => UsdtDepositMonitor::STATUS_EXPIRED]);
     }
 
-    /**
-     * 根據鏈網絡取得對應的 Adapter
-     */
     private function resolveAdapter(string $network): ?ChainAdapterInterface
     {
-        return match ($network) {
-            'trc20' => app(Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => null,
-        };
+        return ChainAdapterFactory::make($network);
     }
 }

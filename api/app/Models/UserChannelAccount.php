@@ -122,7 +122,7 @@ class UserChannelAccount extends Model
         'balance',
         'balance_limit',
         'onchain_usdt_balance',
-        'onchain_trx_balance',
+        'onchain_native_balance',
         'onchain_synced_at',
         'is_auto',
         'auto_sync',

@@ -123,7 +123,7 @@ class UserChannelAccount extends JsonResource
             'balance'             => $this->balance,
             'balance_limit'       => $this->balance_limit,
             'onchain_usdt_balance' => $this->onchain_usdt_balance,
-            'onchain_trx_balance'  => $this->onchain_trx_balance,
+            'onchain_native_balance' => $this->onchain_native_balance,
             'onchain_synced_at'    => optional($this->onchain_synced_at)->toIso8601String(),
             'is_auto'             => $this->is_auto,
             'auto_sync'           => $this->auto_sync,

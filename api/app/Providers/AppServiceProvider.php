@@ -29,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind('evm.adapter.erc20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('ethereum'));
-        $this->app->bind('evm.adapter.bep20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('bsc'));
+        $this->app->singleton('evm.adapter.erc20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('ethereum'));
+        $this->app->singleton('evm.adapter.bep20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('bsc'));
     }
 
     /**

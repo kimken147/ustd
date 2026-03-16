@@ -780,7 +780,7 @@ class UserChannelAccountController extends Controller
 
         $account->update([
             'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-            'onchain_trx_balance'  => $adapter->getNativeBalance($account->account),
+            'onchain_native_balance' => $adapter->getNativeBalance($account->account),
             'onchain_synced_at'    => now(),
         ]);
 
@@ -815,7 +815,7 @@ class UserChannelAccountController extends Controller
 
                 $account->update([
                     'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-                    'onchain_trx_balance'  => $adapter->getNativeBalance($account->account),
+                    'onchain_native_balance' => $adapter->getNativeBalance($account->account),
                     'onchain_synced_at'    => now(),
                 ]);
 
@@ -868,12 +868,7 @@ class UserChannelAccountController extends Controller
 
     private function resolveChainAdapter(string $chainNetwork): ?\App\Services\Crypto\Adapters\ChainAdapterInterface
     {
-        return match ($chainNetwork) {
-            'trc20' => app(\App\Services\Crypto\Adapters\Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => null,
-        };
+        return \App\Services\Crypto\Adapters\ChainAdapterFactory::make($chainNetwork);
     }
 
     private function validateTronAddress(?string $address): void
@@ -895,6 +890,15 @@ class UserChannelAccountController extends Controller
 
         if (!preg_match('/^0x[0-9a-fA-F]{40}$/', $address)) {
             abort(Response::HTTP_BAD_REQUEST, __('common.Invalid Ethereum address format'));
+        }
+
+        // EIP-55 checksum 驗證（僅當地址包含混合大小寫時檢查）
+        $hex = substr($address, 2);
+        if ($hex !== strtolower($hex) && $hex !== strtoupper($hex)) {
+            $ethService = app(\App\Services\Crypto\EthAddressService::class);
+            if (!$ethService->isValidChecksumAddress($address)) {
+                abort(Response::HTTP_BAD_REQUEST, __('common.Invalid Ethereum address checksum'));
+            }
         }
     }
 

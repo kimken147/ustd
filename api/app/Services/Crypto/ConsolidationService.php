@@ -4,7 +4,7 @@ namespace App\Services\Crypto;
 
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
-use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use Illuminate\Support\Facades\Log;
 
 class ConsolidationService
@@ -137,16 +137,8 @@ class ConsolidationService
         };
     }
 
-    /**
-     * 根據鏈網路解析對應的 Adapter
-     */
     private function resolveAdapter(string $network): ChainAdapterInterface
     {
-        return match ($network) {
-            'trc20' => app(Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => throw new \InvalidArgumentException("不支援的鏈網路: {$network}"),
-        };
+        return ChainAdapterFactory::makeOrFail($network);
     }
 }

@@ -8,7 +8,7 @@ use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
-use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use App\Jobs\ConfirmUsdtWithdraw;
 use App\Services\Crypto\Exceptions\InsufficientBalanceException;
 use App\Services\Crypto\Exceptions\TransactionBroadcastException;
@@ -191,11 +191,6 @@ class UsdtWithdrawHandler
 
     private function resolveAdapter(string $chainNetwork): ChainAdapterInterface
     {
-        return match ($chainNetwork) {
-            'trc20' => app(Trc20Adapter::class),
-            'erc20' => app('evm.adapter.erc20'),
-            'bep20' => app('evm.adapter.bep20'),
-            default => throw new \InvalidArgumentException("不支援的鏈網路: {$chainNetwork}"),
-        };
+        return ChainAdapterFactory::makeOrFail($chainNetwork);
     }
 }

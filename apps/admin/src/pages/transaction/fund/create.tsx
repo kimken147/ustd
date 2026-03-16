@@ -158,7 +158,7 @@ const FundCreate: FC = () => {
                                                         <Space className="text-sm mb-4">
                                                             <span>后台余额：{selectedUserChannel.balance ?? 0}</span>
                                                             <span>USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}</span>
-                                                            <span>TRX：{selectedUserChannel.onchain_trx_balance ?? '-'}</span>
+                                                            <span>Gas：{selectedUserChannel.onchain_native_balance ?? '-'}</span>
                                                         </Space>
                                                     </Col>
                                                 </Row>
