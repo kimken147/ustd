@@ -331,7 +331,8 @@ class UserChannelAccountService
 
         $this->syncTransactionGroups($childAccount, $provider);
 
-        if ($childAccount->channel_code === Channel::CODE_USDT) {
+        // 一次性子地址為全新地址，無需回填鏈上交易歷史
+        if ($childAccount->channel_code === Channel::CODE_USDT && !($extraAttributes['is_one_time'] ?? false)) {
             BackfillChainTransactions::dispatch($childAccount->id);
         }
 

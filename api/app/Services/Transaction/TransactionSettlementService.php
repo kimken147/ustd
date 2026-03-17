@@ -11,6 +11,7 @@ use App\Models\MatchingDepositReward;
 use App\Models\Transaction;
 use App\Models\TransactionFee;
 use App\Models\User;
+use App\Models\UserChannelAccount;
 use App\Models\Wallet;
 use App\Models\WalletHistory;
 use App\Repository\FeatureToggleRepository;
@@ -270,12 +271,25 @@ class TransactionSettlementService
         $account = $transaction->fromChannelAccount;
         if ($account) { // 防止突然被刪卡後出現 Error
             $account->updateBalanceByTransaction($transaction, true);
+
+            // 子地址時也要回滾母地址的餘額
+            if ($account->parent_account_id) {
+                $parentAccount = UserChannelAccount::find($account->parent_account_id);
+                if ($parentAccount) {
+                    $parentAccount->updateBalanceByTransaction($transaction, true);
+                }
+            }
         }
 
-        // 要扣除收款的 日/月限額
+        // 要扣除收款的 日/月限額（子地址時指向母地址）
         if ($transaction->from_channel_account_id) {
-            $this->userChannelAccountUtil->updateTotalRollback($transaction->from_channel_account_id, $transaction->floating_amount);
-            $this->userChannelAccountUtil->rollbackPaymentCount($transaction->from_channel_account_id);
+            $rollbackFromAccount = UserChannelAccount::find($transaction->from_channel_account_id);
+            $rollbackLimitAccountId = ($rollbackFromAccount && $rollbackFromAccount->parent_account_id)
+                ? $rollbackFromAccount->parent_account_id
+                : $transaction->from_channel_account_id;
+
+            $this->userChannelAccountUtil->updateTotalRollback($rollbackLimitAccountId, $transaction->floating_amount);
+            $this->userChannelAccountUtil->rollbackPaymentCount($rollbackLimitAccountId);
         }
     }
 

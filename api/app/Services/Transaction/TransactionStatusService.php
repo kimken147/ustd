@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Models\TransactionFee;
 use App\Models\TransactionNote;
 use App\Models\User;
+use App\Models\UserChannelAccount;
 use App\Repository\FeatureToggleRepository;
 use App\Utils\BCMathUtil;
 use App\Utils\InsufficientAvailableBalance;
@@ -263,8 +264,14 @@ class TransactionStatusService
         if ($transaction->type === Transaction::TYPE_PAUFEN_TRANSACTION) {
             // 累積日/月限額
             if ($transaction->from_channel_account_id) {
-                $this->userChannelAccountUtil->updateTotal($transaction->from_channel_account_id, $transaction->floating_amount);
-                $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
+                // 解析實際的限額帳號（子地址時指向母地址）
+                $fromAccount = UserChannelAccount::find($transaction->from_channel_account_id);
+                $limitAccountId = ($fromAccount && $fromAccount->parent_account_id)
+                    ? $fromAccount->parent_account_id
+                    : $transaction->from_channel_account_id;
+
+                $this->userChannelAccountUtil->updateTotal($limitAccountId, $transaction->floating_amount);
+                $this->userChannelAccountUtil->updatePaymentCount($limitAccountId);
             }
         }
         // 如果有出款帳號，成功話 出款帳號扣除額度
@@ -274,11 +281,19 @@ class TransactionStatusService
                 $account->updateBalanceByTransaction($transaction);
             }
         }
-        // 如果有收款帳號，成功話 收款帳號累加額度
+        // 如果有收款帳號，成功話 收款帳號累加額度（子地址時同時更新母地址餘額）
         if ($transaction->from_channel_account_id) {
             $account = $transaction->fromChannelAccount;
             if ($account) { // 防止突然被刪卡後出現 Error
                 $account->updateBalanceByTransaction($transaction);
+
+                // 子地址時也要更新母地址的餘額
+                if ($account->parent_account_id) {
+                    $parentAccount = UserChannelAccount::find($account->parent_account_id);
+                    if ($parentAccount) {
+                        $parentAccount->updateBalanceByTransaction($transaction);
+                    }
+                }
             }
         }
 
@@ -356,8 +371,14 @@ class TransactionStatusService
             $this->settleToWallet($transaction);
 
             if ($transaction->from_channel_account_id) {
-                $this->userChannelAccountUtil->updateTotal($transaction->from_channel_account_id, $transaction->floating_amount);
-                $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
+                // 解析實際的限額帳號（子地址時指向母地址）
+                $partialFromAccount = UserChannelAccount::find($transaction->from_channel_account_id);
+                $partialLimitAccountId = ($partialFromAccount && $partialFromAccount->parent_account_id)
+                    ? $partialFromAccount->parent_account_id
+                    : $transaction->from_channel_account_id;
+
+                $this->userChannelAccountUtil->updateTotal($partialLimitAccountId, $transaction->floating_amount);
+                $this->userChannelAccountUtil->updatePaymentCount($partialLimitAccountId);
             }
 
             return $transaction->refresh();
