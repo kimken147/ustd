@@ -75,7 +75,8 @@
     "childAddress": "子地址",
     "childCount": "子地址数量",
     "onchainUsdtBalance": "USDT (链上)",
-    "lastSyncedAt": "上次同步"
+    "lastSyncedAt": "上次同步",
+    "receiveStatus": "收款状态"
   },
   "switches": {
     "dailyLimit": "每日收/付限额开关",
@@ -84,6 +85,7 @@
     "monthlyLimitSwitch": "月限额开关"
   },
   "actions": {
+    "show": "查看",
     "create": "建立收付款账号",
     "editBalance": "修改余额",
     "editBalanceLimit": "修改余额上限",
@@ -139,7 +141,9 @@
     "none": "无",
     "online": "上线",
     "offline": "下线",
-    "forcedOffline": "强制下线"
+    "forcedOffline": "强制下线",
+    "unused": "待收款",
+    "used": "已收款"
   },
   "type": {
     "collectionAndPayout": "收出款",

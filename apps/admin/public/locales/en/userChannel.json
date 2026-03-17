@@ -75,7 +75,8 @@
     "childAddress": "Child",
     "childCount": "Child Count",
     "onchainUsdtBalance": "USDT (On-chain)",
-    "lastSyncedAt": "Last Synced"
+    "lastSyncedAt": "Last Synced",
+    "receiveStatus": "Receive Status"
   },
   "switches": {
     "dailyLimit": "Daily Limit Switch",
@@ -84,6 +85,7 @@
     "monthlyLimitSwitch": "Monthly Amount Limits"
   },
   "actions": {
+    "show": "View",
     "create": "Create Transaction Account",
     "editBalance": "Edit Balance",
     "editBalanceLimit": "Edit Balance Limit",
@@ -139,7 +141,9 @@
     "none": "N/A",
     "online": "On",
     "offline": "Off",
-    "forcedOffline": "Disabled"
+    "forcedOffline": "Disabled",
+    "unused": "Pending",
+    "used": "Received"
   },
   "type": {
     "collectionAndPayout": "Money-In / Money-Out",

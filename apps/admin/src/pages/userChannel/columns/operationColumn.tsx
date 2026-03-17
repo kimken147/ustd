@@ -1,37 +1,43 @@
 import { Button, Modal, Space } from 'antd';
 import { Resource } from '@morgan-ustd/shared';
+import { Link } from 'react-router';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
-export function createOperationColumn(deps: ColumnDependencies): UserChannelColumn | null {
+export function createOperationColumn(deps: ColumnDependencies): UserChannelColumn {
   const { t, monthEnable, canDelete, mutateDeleting } = deps;
-
-  if (!monthEnable) return null;
 
   return {
     title: t('fields.operation'),
     render(_, record) {
       return (
         <Space>
-          <Button
-            disabled={!canDelete}
-            danger
-            className={canDelete ? '!text-[#ff4d4f]' : ''}
-            onClick={() => {
-              Modal.confirm({
-                title: t('confirmation.deleteAccount'),
-                okText: t('actions.ok'),
-                cancelText: t('actions.cancel'),
-                onOk: () => {
-                  mutateDeleting({
-                    resource: Resource.userChannelAccounts,
-                    id: record.id,
-                  });
-                },
-              });
-            }}
-          >
-            {t('actions.delete')}
-          </Button>
+          <Link to={`/user-channel-accounts/show/${record.id}`}>
+            <Button type="link" size="small">
+              {t('actions.show')}
+            </Button>
+          </Link>
+          {monthEnable && (
+            <Button
+              disabled={!canDelete}
+              danger
+              className={canDelete ? '!text-[#ff4d4f]' : ''}
+              onClick={() => {
+                Modal.confirm({
+                  title: t('confirmation.deleteAccount'),
+                  okText: t('actions.ok'),
+                  cancelText: t('actions.cancel'),
+                  onOk: () => {
+                    mutateDeleting({
+                      resource: Resource.userChannelAccounts,
+                      id: record.id,
+                    });
+                  },
+                });
+              }}
+            >
+              {t('actions.delete')}
+            </Button>
+          )}
         </Space>
       );
     },

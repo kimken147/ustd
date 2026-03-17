@@ -7,6 +7,8 @@ import { createStatusColumn } from './statusColumn';
 import { createTypeColumn } from './typeColumn';
 import { createAccountColumn } from './accountColumn';
 import { createAddressTypeColumn } from './addressTypeColumn';
+import { createReceiveStatusColumn } from './receiveStatusColumn';
+import { createParentAccountColumn } from './parentAccountColumn';
 import { createChannelColumn } from './bankColumns';
 import { createNoteColumn, createAccountNumberColumn } from './infoColumns';
 import { createBalanceColumn, createBalanceLimitColumn } from './balanceColumns';
@@ -42,6 +44,8 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createTypeColumn(deps),
     createAccountColumn(deps),
     createAddressTypeColumn(deps),
+    createReceiveStatusColumn(deps),
+    createParentAccountColumn(deps),
     createNoteColumn(deps),
     createAccountNumberColumn(deps),
     createBalanceColumn(deps),

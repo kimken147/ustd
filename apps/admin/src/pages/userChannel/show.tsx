@@ -21,13 +21,12 @@ import {
 import dayjs from 'dayjs';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { apiUrl } from 'index';
 import { ChannelStatusChanger } from './component';
-import { BatchCreateChildModal } from './components/BatchCreateChildModal';
 
 const UserChannelShow: FC<IResourceComponentsProps> = props => {
   const { t } = useTranslation('userChannel');
@@ -42,8 +41,6 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
   const { Modal } = useUpdateModal();
   // const { mutateAsync: deleteUserChannel } = useDelete();
 
-  // 批量建立子地址 Modal 狀態
-  const [batchModalOpen, setBatchModalOpen] = useState(false);
   // 歸集功能
   const { mutate: consolidate, mutation: consolidateMutation } = useCustomMutation();
   const isConsolidating = consolidateMutation.isPending;
@@ -212,26 +209,13 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
           )}
         </Descriptions>
 
-        {/* USDT 主地址操作按鈕：批量建立子地址、歸集 */}
+        {/* USDT 主地址操作按鈕：歸集 */}
         {isUsdtMaster && record && (
           <Space style={{ marginTop: 16 }}>
-            <Button type="primary" onClick={() => setBatchModalOpen(true)}>
-              {t('actions.batchCreateChild')}
-            </Button>
             <Button onClick={handleConsolidate} loading={isConsolidating}>
               {t('actions.consolidateAll')}
             </Button>
           </Space>
-        )}
-
-        {/* 批量建立子地址 Modal */}
-        {record && (
-          <BatchCreateChildModal
-            parentAccountId={record.id}
-            open={batchModalOpen}
-            onClose={() => setBatchModalOpen(false)}
-            onSuccess={() => refetch()}
-          />
         )}
       </Show>
     </>
