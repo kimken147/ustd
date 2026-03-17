@@ -390,6 +390,11 @@ function AppContent() {
                         <ThemedTitle
                           collapsed={collapsed}
                           text={process.env.REACT_APP_TITLE || 'Admin'}
+                          wrapperStyles={{
+                            fontFamily: "'Ubuntu', sans-serif",
+                            fontWeight: 700,
+                            fontSize: '1.4rem',
+                          }}
                           icon={
                             collapsed ? (
                               process.env.REACT_APP_LOGO_MINI_SRC ? (

@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import { useTransactionStatus, useTransactionCallbackStatus, ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Meta, Transaction } from 'interfaces/transaction';
 import numeral from 'numeral';
-import { useApiUrl, useGetLocale, useTranslate } from '@refinedev/core';
+import { useApiUrl, useTranslate } from '@refinedev/core';
 import queryString from 'query-string';
 import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';
@@ -16,7 +16,6 @@ import FilterForm from './FilterForm';
 
 const CollectionList: FC = () => {
   const t = useTranslate();
-  const locale = useGetLocale();
   const title = t('collection.titles.list');
   const apiUrl = useApiUrl();
   const [form] = Form.useForm();
@@ -39,7 +38,6 @@ const CollectionList: FC = () => {
       permanent: [
         { field: 'started_at', value: defaultStartAt, operator: 'eq' },
         { field: 'confirmed', value: 'created', operator: 'eq' },
-        { field: 'lang', value: locale(), operator: 'eq' },
       ],
     },
   });

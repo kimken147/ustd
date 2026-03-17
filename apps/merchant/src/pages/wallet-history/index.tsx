@@ -1,6 +1,6 @@
 import { Card, Col, Descriptions, Divider, Form, Row, Statistic } from 'antd';
 import { ExportButton, List, useTable } from '@refinedev/antd';
-import { useApiUrl, useGetLocale, useTranslate } from '@refinedev/core';
+import { useApiUrl, useTranslate } from '@refinedev/core';
 import { getToken } from 'authProvider';
 import { generateFilter } from 'dataProvider';
 import dayjs from 'dayjs';
@@ -30,7 +30,6 @@ const Status = {
 
 const WalletHistoryList: FC = () => {
   const t = useTranslate();
-  const locale = useGetLocale();
   const title = t('walletHistory.titles.list');
   const apiUrl = useApiUrl();
   const [form] = Form.useForm();
@@ -46,7 +45,7 @@ const WalletHistoryList: FC = () => {
     onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
     filters: {
-      permanent: [{ field: 'lang', value: locale(), operator: 'eq' }],
+      permanent: [],
     },
   });
 

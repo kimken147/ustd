@@ -36,7 +36,7 @@ import {
   TransactionSubType,
 } from '@morgan-ustd/shared';
 import type { CrudFilter } from '@refinedev/core';
-import { useGetLocale, useTranslate } from '@refinedev/core';
+import { useTranslate } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import dayjs from 'dayjs';
 import { PlusSquareOutlined } from '@ant-design/icons';
@@ -52,7 +52,6 @@ import { generateFilter } from 'dataProvider';
 const PayForAnotherList: FC = () => {
   const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const translate = useTranslate();
-  const locale = useGetLocale();
   const title = translate('withdraw.titles.main');
 
   const colProps: ColProps = {
@@ -94,7 +93,6 @@ const PayForAnotherList: FC = () => {
       initial: [
         { field: 'started_at', value: defaultStartAt, operator: 'eq' },
         { field: 'confirmed', value: 'created', operator: 'eq' },
-        { field: 'lang', value: locale(), operator: 'eq' },
       ],
     },
   });

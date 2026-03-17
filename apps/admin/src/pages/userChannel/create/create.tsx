@@ -106,6 +106,24 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
               </FormColumn>
             )}
 
+            {/* USDT 地址類型選擇：主地址或子地址 */}
+            {curChannelCode === 'USDT' && (
+              <FormColumn>
+                <Form.Item
+                  label={t('fields.addressType')}
+                  name="address_type"
+                  initialValue="master"
+                >
+                  <Select
+                    options={[
+                      { label: t('fields.masterAddress'), value: 'master' },
+                      { label: t('fields.childAddress'), value: 'child' },
+                    ]}
+                  />
+                </Form.Item>
+              </FormColumn>
+            )}
+
             {curChannelCode && (
               <FormColumn>
                 <Form.Item
@@ -122,24 +140,6 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                   ]}
                 >
                   <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
-                </Form.Item>
-              </FormColumn>
-            )}
-
-            {/* USDT 地址類型選擇：主地址或子地址 */}
-            {curChannelCode === 'USDT' && (
-              <FormColumn>
-                <Form.Item
-                  label={t('fields.addressType')}
-                  name="address_type"
-                  initialValue="master"
-                >
-                  <Select
-                    options={[
-                      { label: t('fields.masterAddress'), value: 'master' },
-                      { label: t('fields.childAddress'), value: 'child' },
-                    ]}
-                  />
                 </Form.Item>
               </FormColumn>
             )}
