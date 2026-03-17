@@ -43,6 +43,7 @@ class AccountMatchingQueryBuilder
         $this->applyPayingTransactionsRestriction($query, $transaction, $channel);
         $this->applyUserAndAccountStatus($query);
         $this->applyAccountType($query);
+        $this->applyAddressTypeFilter($query);
         $this->applyChannelAmountAndFee($query, $channelAmount, $merchantUserChannel);
         $this->applyReadyForMatching($query);
         $this->applyTimeLimit($query);
@@ -180,6 +181,18 @@ class AccountMatchingQueryBuilder
     private function applyAccountType($query): void
     {
         $query->where('user_channel_accounts.type', '!=', UserChannelAccount::TYPE_WITHDRAW);
+    }
+
+    private function applyAddressTypeFilter($query): void
+    {
+        // USDT 收款只匹配母地址，子地址由系統自動衍生
+        $query->where(function ($q) {
+            $q->where('user_channel_accounts.channel_code', '!=', 'USDT')
+              ->orWhere(function ($q2) {
+                  $q2->where('user_channel_accounts.channel_code', 'USDT')
+                     ->where('user_channel_accounts.address_type', UserChannelAccount::ADDRESS_TYPE_MASTER);
+              });
+        });
     }
 
     private function applyChannelAmountAndFee($query, ChannelAmount $channelAmount, UserChannel $merchantUserChannel): void
