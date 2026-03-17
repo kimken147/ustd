@@ -24,15 +24,41 @@ class DaiFuService
 
     public function execute(string $channelCode)
     {
-        $accounts = UserChannelAccount::with('user')
-            ->where('channel_code', $channelCode)
-            ->where('status', UserChannelAccount::STATUS_ONLINE)
-            ->where('type', '!=', UserChannelAccount::TYPE_DEPOSIT)
-            ->where('is_auto', true)
-            ->whereDoesntHave('payingDaifu')
-            ->orderByDesc('type')
-            ->orderBy('balance')
-            ->get();
+        // USDT：優先找鏈上餘額足夠的地址直接出款，含子地址
+        if ($channelCode === Channel::CODE_USDT) {
+            $accounts = UserChannelAccount::with('user')
+                ->where('channel_code', Channel::CODE_USDT)
+                ->where('status', UserChannelAccount::STATUS_ONLINE)
+                ->where('is_auto', true)
+                ->whereDoesntHave('payingDaifu')
+                ->where(function ($q) {
+                    // 母地址（非收款專用）
+                    $q->where(function ($q2) {
+                        $q2->where('address_type', UserChannelAccount::ADDRESS_TYPE_MASTER)
+                           ->where('type', '!=', UserChannelAccount::TYPE_DEPOSIT);
+                    })
+                    // 或已收款的一次性子地址
+                    ->orWhere(function ($q2) {
+                        $q2->where('address_type', UserChannelAccount::ADDRESS_TYPE_CHILD)
+                           ->where('receive_status', UserChannelAccount::RECEIVE_STATUS_USED);
+                    });
+                })
+                ->orderByDesc('onchain_usdt_balance')
+                ->get();
+        } else {
+            // 非 USDT：保持原有邏輯
+            $accounts = UserChannelAccount::with('user')
+                ->where('channel_code', $channelCode)
+                ->where('status', UserChannelAccount::STATUS_ONLINE)
+                ->where('type', '!=', UserChannelAccount::TYPE_DEPOSIT)
+                ->where('is_auto', true)
+                ->whereDoesntHave('payingDaifu')
+                ->orderByDesc('type')
+                ->orderBy('balance')
+                ->get();
+        }
+
+        $isUsdt = $channelCode === Channel::CODE_USDT;
 
         foreach ($accounts as $account) {
             $user = $account->user;
@@ -48,6 +74,11 @@ class DaiFuService
                 });
 
             $transactionGroupExists = $transactionGroups->exists();
+
+            // USDT 用鏈上餘額，非 USDT 用系統餘額
+            $availableBalance = $isUsdt
+                ? (float) $account->onchain_usdt_balance
+                : ($account->getRestBalance('withdraw') ?? 0);
 
             // 查出該出款帳號，目前可以代付的代付單
             $matchingDeposit = Transaction::where(function ($builder) use ($transactionGroups) {
@@ -70,7 +101,7 @@ class DaiFuService
                 ->when((float) $user->wallet->agency_withdraw_max_amount > 0, function ($builder) use ($user) {
                     $builder->where('amount', '<=', $user->wallet->agency_withdraw_max_amount);
                 })
-                ->where('amount', '<=', $account->getRestBalance('withdraw') ?? 0)
+                ->where('amount', '<=', $availableBalance)
                 ->whereNull('locked_at')
                 ->whereNull('to_id')
                 ->where('created_at', '>=', now()->subDay())
