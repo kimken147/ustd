@@ -18,13 +18,12 @@ import { useTranslation } from 'react-i18next';
 import { SyncOutlined } from '@ant-design/icons';
 import numeral from 'numeral';
 import { apiUrl } from 'index';
-import type { ProviderUserChannel as UserChannel } from '@morgan-ustd/shared';
-
 // 帳號資料介面（後端回傳格式）
-interface AccountRecord extends UserChannel {
+interface AccountRecord {
   id: number;
   account: string;
   name: string;
+  channel_code: string;
   address_type?: 'master' | 'child';
   onchain_usdt_balance?: string;
   onchain_native_balance?: string;
@@ -50,14 +49,11 @@ const FundManagementList: FC = () => {
   const [targetAccountId, setTargetAccountId] = useState<number | null>(null);
 
   // 取得所有 USDT 帳號
-  const {
-    data: accountsData,
-    isLoading,
-    refetch,
-  } = useCustom<AccountRecord[]>({
+  const { query } = useCustom<AccountRecord[]>({
     url: `${apiUrl}/fund-management/accounts`,
     method: 'get',
   });
+  const { data: accountsData, isLoading, refetch } = query;
 
   const accounts: AccountRecord[] = useMemo(
     () => (accountsData?.data as any)?.data ?? accountsData?.data ?? [],
@@ -65,7 +61,8 @@ const FundManagementList: FC = () => {
   );
 
   // 批量轉帳 mutation
-  const { mutate: batchTransfer, isLoading: isTransferring } = useCustomMutation();
+  const { mutate: batchTransfer, mutation } = useCustomMutation();
+  const isTransferring = mutation.isPending;
 
   // 主地址清單（用於目標帳號下拉）
   const masterAccounts = useMemo(
