@@ -79,6 +79,7 @@ import ProviderShow from 'pages/providers/show';
 import ProviderWalletList from 'pages/providers/wallet-history/list';
 import ProviderUserWalletHistoryList from 'pages/providers/user-wallet-history/list';
 import ProviderWhiteList from 'pages/providers/whiteList/list';
+import FundManagementList from 'pages/fundManagement';
 
 import { useTranslation } from 'react-i18next';
 import './i18n';
@@ -204,6 +205,14 @@ function AppContent() {
       name: 'chain-transactions',
       list: '/chain-transactions',
       meta: { label: t('navigation.chainTransactions'), icon: <SwapOutlined /> },
+    },
+    {
+      name: 'fund-management',
+      list: '/fund-management',
+      meta: {
+        label: t('navigation.fundManagementUsdt', { defaultValue: '资金管理' }),
+        icon: <WalletOutlined />,
+      },
     },
     {
       name: 'transaction',
@@ -444,6 +453,9 @@ function AppContent() {
 
                 {/* Chain Transactions */}
                 <Route path="/chain-transactions" element={<ChainTransactionList />} />
+
+                {/* Fund Management (USDT) */}
+                <Route path="/fund-management" element={<FundManagementList />} />
 
                 {/* Transactions */}
                 <Route path="/transactions" element={<CollectionList />} />

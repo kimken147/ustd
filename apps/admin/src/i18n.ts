@@ -32,6 +32,7 @@ i18n
       'systemSettings',
       'permission',
       'chainTransaction',
+      'fundManagement',
     ],
     defaultNS: 'common',
   });

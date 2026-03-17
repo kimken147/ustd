@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "list": "USDT Fund Management"
+  },
+  "fields": {
+    "address": "Address",
+    "addressType": "Type",
+    "masterAddress": "Master",
+    "childAddress": "Child",
+    "merchantName": "Merchant",
+    "parentAddress": "Parent Address",
+    "usdtBalance": "USDT Balance",
+    "nativeBalance": "Gas Balance",
+    "chainNetwork": "Chain",
+    "receiveStatus": "Receive Status",
+    "targetAccount": "Target Account",
+    "currentBalance": "Current Balance",
+    "afterBalance": "Est. After Transfer",
+    "selectedCount": "Selected",
+    "selectedTotal": "Total"
+  },
+  "actions": {
+    "batchTransfer": "Confirm Transfer",
+    "refreshBalances": "Refresh Balances"
+  },
+  "messages": {
+    "transferSubmitted": "Submitted {{count}} transfer tasks",
+    "confirmTransfer": "Transfer USDT from {{count}} accounts to the target address?",
+    "noSelection": "Please select source accounts first",
+    "noTarget": "Please select a target account first"
+  },
+  "status": {
+    "none": "-",
+    "unused": "Pending",
+    "used": "Received"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "list": "USDT 资金管理"
+  },
+  "fields": {
+    "address": "链上地址",
+    "addressType": "地址类型",
+    "masterAddress": "主地址",
+    "childAddress": "子地址",
+    "merchantName": "商户",
+    "parentAddress": "母地址",
+    "usdtBalance": "USDT 余额",
+    "nativeBalance": "Gas 余额",
+    "chainNetwork": "链网络",
+    "receiveStatus": "收款状态",
+    "targetAccount": "接收帐号",
+    "currentBalance": "当前余额",
+    "afterBalance": "转入后预估",
+    "selectedCount": "已选",
+    "selectedTotal": "合计"
+  },
+  "actions": {
+    "batchTransfer": "确认转帐",
+    "refreshBalances": "刷新余额"
+  },
+  "messages": {
+    "transferSubmitted": "已提交 {{count}} 笔转帐任务",
+    "confirmTransfer": "确认将 {{count}} 笔帐号的 USDT 转入目标地址？",
+    "noSelection": "请先勾选来源帐号",
+    "noTarget": "请先选择接收帐号"
+  },
+  "status": {
+    "none": "-",
+    "unused": "待收款",
+    "used": "已收款"
+  }
+}
