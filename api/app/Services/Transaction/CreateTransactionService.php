@@ -30,6 +30,7 @@ use App\Utils\TransactionFactory;
 use App\Utils\TransactionMutator;
 use App\Utils\TransactionNoteUtil;
 use App\Models\UsdtDepositMonitor;
+use App\Services\UserChannelAccount\UserChannelAccountService;
 use App\Utils\WalletUtil;
 use App\Utils\WhitelistedIpManager;
 use Exception;
@@ -439,8 +440,35 @@ class CreateTransactionService
         Channel $channel,
         UserChannel $merchantUserChannel
     ): ?CreateTransactionResult {
-        DB::transaction(function () use ($transaction, $providerUserChannelAccount, $channel) {
-            $this->transactionMutator->paufenTransactionFrom($providerUserChannelAccount, $transaction);
+        // USDT 母地址匹配時，自動衍生一次性子地址作為實際收款地址
+        $depositAccount = $providerUserChannelAccount;
+        if (
+            $providerUserChannelAccount->channel_code === Channel::CODE_USDT
+            && $providerUserChannelAccount->address_type === UserChannelAccount::ADDRESS_TYPE_MASTER
+        ) {
+            try {
+                $childAccount = app(UserChannelAccountService::class)->createChildAccount(
+                    $providerUserChannelAccount,
+                    [
+                        'is_one_time' => true,
+                        'receive_status' => UserChannelAccount::RECEIVE_STATUS_UNUSED,
+                        'linked_transaction_id' => $transaction->id,
+                        'status' => UserChannelAccount::STATUS_ENABLE,
+                    ]
+                );
+                $depositAccount = $childAccount;
+            } catch (\Exception $e) {
+                // 衍生失敗時 fallback 到母地址
+                Log::warning('Failed to derive child address, falling back to master', [
+                    'master_account_id' => $providerUserChannelAccount->id,
+                    'transaction_id' => $transaction->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        DB::transaction(function () use ($transaction, $depositAccount, $providerUserChannelAccount, $channel) {
+            $this->transactionMutator->paufenTransactionFrom($depositAccount, $transaction);
 
             if (!$this->featureToggleRepository->enabled(FeatureToggle::CANCEL_PAUFEN_MECHANISM)) {
                 $this->walletUtil->withdraw(

@@ -171,53 +171,59 @@ class TransactionMutator
             $account = UserChannelAccount::find(
                 $providerUserChannelAccount->id
             );
+
+            // 限額/餘額檢查指向母地址（如果傳入的是子地址）
+            $limitAccount = $account->parent_account_id
+                ? $account->parentAccount
+                : $account;
+
             $amount = Transaction::where(
                 "from_channel_account_id",
-                $account->id
+                $limitAccount->id
             )
                 ->where("status", Transaction::STATUS_PAYING)
                 ->where("created_at", ">=", now()->subMinutes(15))
                 ->sum("amount");
 
             if (
-                $account->balance_limit != 0 &&
+                $limitAccount->balance_limit != 0 &&
                 $bcMath->sum([
-                    $account->balance,
+                    $limitAccount->balance,
                     $amount,
                     $transaction->amount,
-                ]) > $account->balance_limit
+                ]) > $limitAccount->balance_limit
             ) {
-                throw new RuntimeException("{$account->account}餘度不足");
+                throw new RuntimeException("{$limitAccount->account}餘度不足");
             }
 
             $dailyLimit =
-                $dailyLimitEnabled && $account->daily_status
-                ? $account->daily_limit
+                $dailyLimitEnabled && $limitAccount->daily_status
+                ? $limitAccount->daily_limit
                 : $defaultDailyLimit;
             if (
                 $dailyLimit &&
                 $bcMath->sum([
-                    $account->daily_total,
+                    $limitAccount->daily_total,
                     $amount,
                     $transaction->amount,
                 ]) > $dailyLimit
             ) {
-                throw new RuntimeException("{$account->account}日收餘度不足");
+                throw new RuntimeException("{$limitAccount->account}日收餘度不足");
             }
 
             $monthlyLimit =
-                $monthlyLimitEnabled && $account->monthly_status
-                ? $account->monthly_limit
+                $monthlyLimitEnabled && $limitAccount->monthly_status
+                ? $limitAccount->monthly_limit
                 : $defaultMonthlyLimit;
             if (
                 $monthlyLimit &&
                 $bcMath->sum([
-                    $account->monthly_total,
+                    $limitAccount->monthly_total,
                     $amount,
                     $transaction->amount,
                 ]) > $monthlyLimit
             ) {
-                throw new RuntimeException("{$account->account}月收餘度不足");
+                throw new RuntimeException("{$limitAccount->account}月收餘度不足");
             }
 
             $updatedRow = Transaction::where([

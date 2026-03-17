@@ -264,7 +264,7 @@ class UserChannelAccountService
     /**
      * 從母地址自動衍生子地址
      */
-    public function createChildAccount(UserChannelAccount $parentAccount, ?int $derivationIndex = null): UserChannelAccount
+    public function createChildAccount(UserChannelAccount $parentAccount, array $extraAttributes = [], ?int $derivationIndex = null): UserChannelAccount
     {
         $encryptedKey = data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY);
         abort_if(!$encryptedKey, Response::HTTP_BAD_REQUEST, '母地址未設定私鑰，無法自動衍生');
@@ -306,7 +306,8 @@ class UserChannelAccountService
         $device = $this->resolveDevice($provider, $provider->name);
         $wallet = $this->resolveWallet($provider);
 
-        $childAccount = $channelAmount->userChannelAccounts()->create([
+        // 建立子地址，合併呼叫方傳入的額外屬性（如 is_one_time、receive_status 等）
+        $childAccount = $channelAmount->userChannelAccounts()->create(array_merge([
             'user_id' => $provider->getKey(),
             'device_id' => $device->getKey(),
             'wallet_id' => $wallet->getKey(),
@@ -323,7 +324,7 @@ class UserChannelAccountService
             'parent_account_id' => $parentAccount->id,
             'derivation_index' => $derivationIndex,
             'is_auto' => true,
-        ]);
+        ], $extraAttributes));
 
         $childAccount->name = Str::padLeft($childAccount->id, 5, '0');
         $childAccount->save();
@@ -346,7 +347,7 @@ class UserChannelAccountService
         $startIndex = ($parentAccount->childAccounts()->max('derivation_index') ?? -1) + 1;
 
         for ($i = 0; $i < $count; $i++) {
-            $created[] = $this->createChildAccount($parentAccount, $startIndex + $i);
+            $created[] = $this->createChildAccount($parentAccount, [], $startIndex + $i);
         }
 
         return $created;
