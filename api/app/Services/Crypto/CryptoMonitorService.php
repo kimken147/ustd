@@ -3,6 +3,7 @@
 namespace App\Services\Crypto;
 
 use App\Models\Transaction;
+use App\Models\UserChannelAccount;
 use App\Models\UsdtDepositMonitor;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
@@ -138,6 +139,15 @@ class CryptoMonitorService
                     'transaction_id' => $transaction->id,
                     'tx_hash' => $chainTx->txHash,
                     'amount' => $chainTx->amount,
+                ]);
+            }
+
+            // 標記一次性子地址為已收款，並設為上線以參與出款匹配
+            $account = UserChannelAccount::find($monitor->user_channel_account_id);
+            if ($account && $account->is_one_time && $account->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
+                $account->update([
+                    'receive_status' => UserChannelAccount::RECEIVE_STATUS_USED,
+                    'status' => UserChannelAccount::STATUS_ONLINE, // 允許參與出款匹配
                 ]);
             }
         });
