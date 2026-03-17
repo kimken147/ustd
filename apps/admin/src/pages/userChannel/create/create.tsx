@@ -87,25 +87,6 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
               </Form.Item>
             </FormColumn>
 
-            {curChannelCode && (
-              <FormColumn>
-                <Form.Item
-                  label={t('fields.account')}
-                  name="bank_card_number"
-                  rules={[
-                    { required: true },
-                    ...(curChannelCode === 'USDT'
-                      ? (curChainNetwork === 'erc20' || curChainNetwork === 'bep20')
-                        ? [{ pattern: /^0x[0-9a-fA-F]{40}$/, message: t('validation.invalidEvmAddress') }]
-                        : [{ pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/, message: t('validation.invalidTronAddress') }]
-                      : []),
-                  ]}
-                >
-                  <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
-                </Form.Item>
-              </FormColumn>
-            )}
-
             {curChannelCode === 'USDT' && (
               <FormColumn>
                 <Form.Item
@@ -121,6 +102,26 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                       { label: 'BEP-20', value: 'bep20' },
                     ]}
                   />
+                </Form.Item>
+              </FormColumn>
+            )}
+
+            {curChannelCode && (
+              <FormColumn>
+                <Form.Item
+                  label={t('fields.account')}
+                  name="bank_card_number"
+                  dependencies={['chain_network']}
+                  rules={[
+                    { required: true },
+                    ...(curChannelCode === 'USDT'
+                      ? (curChainNetwork === 'erc20' || curChainNetwork === 'bep20')
+                        ? [{ pattern: /^0x[0-9a-fA-F]{40}$/, message: t('validation.invalidEvmAddress') }]
+                        : [{ pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/, message: t('validation.invalidTronAddress') }]
+                      : []),
+                  ]}
+                >
+                  <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
                 </Form.Item>
               </FormColumn>
             )}
