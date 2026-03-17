@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Models\FundTransferLog;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
-use App\Services\Crypto\Adapters\Trc20Adapter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,14 +20,15 @@ class BatchTransferUsdt implements ShouldQueue
     public int $backoff = 60;
 
     public function __construct(
-        public readonly int    $sourceAccountId,
-        public readonly string $targetAddress,
-        public readonly string $amount,
+        public readonly int $logId,
     ) {}
 
     public function handle(): void
     {
-        $source = UserChannelAccount::findOrFail($this->sourceAccountId);
+        $log = FundTransferLog::findOrFail($this->logId);
+        $log->update(['status' => FundTransferLog::STATUS_PROCESSING]);
+
+        $source = UserChannelAccount::findOrFail($log->source_account_id);
         $chainNetwork = data_get($source->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $adapter = ChainAdapterFactory::makeOrFail($chainNetwork);
 
@@ -64,18 +65,11 @@ class BatchTransferUsdt implements ShouldQueue
                     ]);
                 } catch (\Throwable $e) {
                     $parentKey = null;
-                    Log::error('BatchTransfer: 補充 gas 失敗', [
-                        'account' => $source->account,
-                        'error'   => $e->getMessage(),
-                    ]);
+                    $this->markFailed($log, "補充 gas 失敗: {$e->getMessage()}");
                     throw $e;
                 }
             } else {
-                Log::warning('BatchTransfer: gas 不足且無母地址可補充', [
-                    'account'        => $source->account,
-                    'native_balance' => $nativeBalance,
-                    'min_required'   => $minNative,
-                ]);
+                $this->markFailed($log, "Gas 不足且無母地址可補充 (餘額: {$nativeBalance})");
                 throw new \RuntimeException("Gas 不足: {$source->account}");
             }
         }
@@ -84,24 +78,41 @@ class BatchTransferUsdt implements ShouldQueue
         $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
 
         try {
-            $chainTx = $adapter->sendTransaction($source->account, $this->targetAddress, $this->amount, $privateKey);
+            $chainTx = $adapter->sendTransaction($source->account, $log->target_address, $log->amount, $privateKey);
             $privateKey = null;
 
+            $log->update([
+                'status'  => FundTransferLog::STATUS_SUCCESS,
+                'tx_hash' => $chainTx->txHash,
+            ]);
+
             Log::info('BatchTransfer: 轉帳完成', [
+                'log_id'  => $log->id,
                 'source'  => $source->account,
-                'target'  => $this->targetAddress,
-                'amount'  => $this->amount,
+                'target'  => $log->target_address,
+                'amount'  => $log->amount,
                 'tx_hash' => $chainTx->txHash,
             ]);
         } catch (\Throwable $e) {
             $privateKey = null;
-            Log::error('BatchTransfer: USDT 轉帳失敗', [
-                'source' => $source->account,
-                'target' => $this->targetAddress,
-                'amount' => $this->amount,
-                'error'  => $e->getMessage(),
-            ]);
+            $this->markFailed($log, $e->getMessage());
             throw $e;
         }
+    }
+
+    private function markFailed(FundTransferLog $log, string $message): void
+    {
+        $log->update([
+            'status'        => FundTransferLog::STATUS_FAILED,
+            'error_message' => $message,
+        ]);
+
+        Log::error('BatchTransfer: 轉帳失敗', [
+            'log_id'  => $log->id,
+            'source'  => $log->source_address,
+            'target'  => $log->target_address,
+            'amount'  => $log->amount,
+            'error'   => $message,
+        ]);
     }
 }

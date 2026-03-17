@@ -2,6 +2,10 @@
   "titles": {
     "list": "USDT Fund Management"
   },
+  "tabs": {
+    "transfer": "Batch Transfer",
+    "logs": "Transfer Logs"
+  },
   "fields": {
     "address": "Address",
     "addressType": "Type",
@@ -21,7 +25,8 @@
   },
   "actions": {
     "batchTransfer": "Confirm Transfer",
-    "refreshBalances": "Refresh Balances"
+    "refreshBalances": "Refresh Balances",
+    "refreshLogs": "Refresh Logs"
   },
   "messages": {
     "transferSubmitted": "Submitted {{count}} transfer tasks",
@@ -33,5 +38,25 @@
     "none": "-",
     "unused": "Pending",
     "used": "Received"
+  },
+  "logs": {
+    "fields": {
+      "createdAt": "Time",
+      "sourceAddress": "Source",
+      "targetAddress": "Target",
+      "amount": "Amount",
+      "chain": "Chain",
+      "status": "Status",
+      "txHash": "Tx Hash",
+      "operator": "Operator",
+      "errorMessage": "Error"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "success": "Success",
+      "failed": "Failed"
+    },
+    "total": "Total {{total}}"
   }
 }
