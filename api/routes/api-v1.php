@@ -380,6 +380,12 @@ Route::prefix("admin")
                 'chain-transactions/sync',
                 'ChainTransactionController@sync'
             );
+
+            // 資金管理
+            Route::prefix('fund-management')->group(function () {
+                Route::get('/accounts', 'FundManagementController@index');
+                Route::post('/batch-transfer', 'FundManagementController@batchTransfer');
+            });
         });
 
         Route::prefix("statistics")->group(function () {
