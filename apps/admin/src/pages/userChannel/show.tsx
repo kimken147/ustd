@@ -171,7 +171,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
                 <Typography.Text copyable>{record?.account}</Typography.Text>
               </Descriptions.Item>
               <Descriptions.Item label={t('fields.chainNetwork')}>
-                {record?.detail?.chain_network?.toUpperCase() ?? '-'}
+                {record?.chain_network?.toUpperCase() ?? '-'}
               </Descriptions.Item>
               {/* 地址類型標籤 */}
               <Descriptions.Item label={t('fields.addressType')}>
@@ -199,8 +199,8 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
                 {record?.onchain_usdt_balance ?? '-'}
               </Descriptions.Item>
               <Descriptions.Item label={
-                record?.detail?.chain_network === 'erc20' ? 'ETH (Gas)'
-                : record?.detail?.chain_network === 'bep20' ? 'BNB (Gas)'
+                record?.chain_network === 'erc20' ? 'ETH (Gas)'
+                : record?.chain_network === 'bep20' ? 'BNB (Gas)'
                 : 'TRX (Gas)'
               }>
                 {record?.onchain_native_balance ?? '-'}

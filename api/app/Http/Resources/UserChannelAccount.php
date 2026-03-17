@@ -55,6 +55,7 @@ class UserChannelAccount extends JsonResource
             'hash_id'             => (new Hashids())->encode($this->getKey()),
             'user'                => $this->user->only(['id', 'name', 'username']),
             'channel_code'        => $this->channel_code,
+            'chain_network'       => data_get($this->detail, ModelUserChannelAccount::DETAIL_KEY_CHAIN_NETWORK),
             'channel_name'        => $channelName,
             'account'             => $this->account,
             'address_type'        => $this->address_type,
