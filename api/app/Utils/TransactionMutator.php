@@ -177,9 +177,16 @@ class TransactionMutator
                 ? $account->parentAccount
                 : $account;
 
-            $amount = Transaction::where(
+            // 計算進行中交易金額（含母地址和所有子地址的交易）
+            $accountIds = collect([$limitAccount->id]);
+            if ($limitAccount->address_type === UserChannelAccount::ADDRESS_TYPE_MASTER) {
+                $childIds = $limitAccount->childAccounts()->pluck('id');
+                $accountIds = $accountIds->merge($childIds);
+            }
+
+            $amount = Transaction::whereIn(
                 "from_channel_account_id",
-                $limitAccount->id
+                $accountIds
             )
                 ->where("status", Transaction::STATUS_PAYING)
                 ->where("created_at", ">=", now()->subMinutes(15))
