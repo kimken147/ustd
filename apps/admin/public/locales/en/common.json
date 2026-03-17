@@ -476,6 +476,7 @@
     "quickDepositReward": "Deposit Reward",
     "sms": "SMS",
     "fundManagement": "Internal Transfer Management",
+    "fundManagementUsdt": "USDT Fund Management",
     "childWithdrawSplit": "Money-Out Order Split",
     "merchantBankCardList": "Withdrawal Bank Card List",
     "liveStatus": "Live Transaction Status",
