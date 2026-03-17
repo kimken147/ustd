@@ -68,6 +68,9 @@ class UserChannelAccount extends JsonResource
                 ];
             }),
             'derivation_index'    => $this->derivation_index,
+            'is_one_time'         => $this->is_one_time,
+            'receive_status'      => $this->receive_status,
+            'linked_transaction_id' => $this->linked_transaction_id,
             'child_count'         => $this->when($this->address_type === 'master', fn () => $this->childAccounts()->count()),
             'account_name'        => data_get(
                 $this->detail,

@@ -127,6 +127,9 @@ export interface UserChannel extends BaseRecord {
         name: string;
     } | null;
     derivation_index?: number | null;
+    is_one_time: boolean;
+    receive_status: 'none' | 'unused' | 'used';
+    linked_transaction_id: number | null;
     child_count?: number;
 }
 

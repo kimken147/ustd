@@ -58,6 +58,11 @@ class UserChannelAccount extends Model
     const ADDRESS_TYPE_MASTER = 'master';
     const ADDRESS_TYPE_CHILD = 'child';
 
+    // 一次性子地址收款狀態
+    const RECEIVE_STATUS_NONE = 'none';
+    const RECEIVE_STATUS_UNUSED = 'unused';
+    const RECEIVE_STATUS_USED = 'used';
+
     protected $casts = [
         'regular_customer_first' => 'boolean',
         'time_limit_disabled' => 'boolean',
@@ -65,6 +70,7 @@ class UserChannelAccount extends Model
         'monthly_status' => 'boolean',
         'detail' => 'array',
         'is_auto' => 'boolean',
+        'is_one_time' => 'boolean',
         'auto_sync' => 'boolean',
         'onchain_synced_at' => 'datetime',
         'daily_transaction_count_limit' => 'integer',
@@ -134,6 +140,9 @@ class UserChannelAccount extends Model
         'address_type',
         'parent_account_id',
         'derivation_index',
+        'is_one_time',
+        'receive_status',
+        'linked_transaction_id',
     ];
 
     public function channel()
@@ -185,6 +194,14 @@ class UserChannelAccount extends Model
     public function childAccounts()
     {
         return $this->hasMany(self::class, 'parent_account_id');
+    }
+
+    /**
+     * 綁定的收款交易（一次性子地址收款後關聯的交易）
+     */
+    public function linkedTransaction()
+    {
+        return $this->belongsTo(\App\Models\Transaction::class, 'linked_transaction_id');
     }
 
     public function transactionGroups()
@@ -323,6 +340,17 @@ class UserChannelAccount extends Model
             \Log::error(__METHOD__, compact('e'));
             DB::rollback();
         }
+    }
+
+    /**
+     * 查詢可用於歸集出款的一次性子地址（已收款且有餘額）
+     */
+    public function scopeAvailableForPayout($query, string $minBalance = '0')
+    {
+        return $query->where('address_type', self::ADDRESS_TYPE_CHILD)
+            ->where('receive_status', self::RECEIVE_STATUS_USED)
+            ->where('onchain_usdt_balance', '>', $minBalance)
+            ->whereNotNull('parent_account_id');
     }
 
     public function scopeSelectTotalBalance($query)
