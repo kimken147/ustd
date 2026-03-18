@@ -8,7 +8,7 @@
     "addressType": "地址类型",
     "masterAddress": "主地址",
     "childAddress": "子地址",
-    "merchantName": "商户",
+    "merchantName": "群组",
     "parentAddress": "母地址",
     "usdtBalance": "USDT 余额",
     "nativeBalance": "Gas 余额",

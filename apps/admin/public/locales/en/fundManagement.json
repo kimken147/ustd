@@ -8,7 +8,7 @@
     "addressType": "Type",
     "masterAddress": "Master",
     "childAddress": "Child",
-    "merchantName": "Merchant",
+    "merchantName": "Group",
     "parentAddress": "Parent Address",
     "usdtBalance": "USDT Balance",
     "nativeBalance": "Gas Balance",
