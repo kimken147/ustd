@@ -53,6 +53,7 @@
     "operation": "Execute",
     "chainNetwork": "Chain Network",
     "privateKey": "Private Key (for Payout)",
+    "noPrivateKey": "No Key",
     "dailyReceiveCountLimit": "Daily Money-In Count Limit / Used",
     "dailyPayoutCountLimit": "Daily Money-Out Count Limit / Used",
     "dailyReceiveAmountAndCount": "Daily Money-In Amount / Count",

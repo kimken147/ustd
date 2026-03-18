@@ -53,6 +53,7 @@
     "operation": "操作",
     "chainNetwork": "鏈網路",
     "privateKey": "私鑰（出款用）",
+    "noPrivateKey": "无密钥",
     "dailyReceiveCountLimit": "每日收款笔数限制 / 已收笔数",
     "dailyPayoutCountLimit": "每日出款笔数限制 / 已出笔数",
     "dailyReceiveAmountAndCount": "每日收款额度 / 已收额度",
