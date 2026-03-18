@@ -126,6 +126,7 @@ class UserChannelAccount extends JsonResource
             'record_user_channeL_account_balance' => $recordBalance,
             'balance'             => $this->balance,
             'balance_limit'       => $this->balance_limit,
+            'has_private_key'      => !empty(data_get($this->detail, ModelUserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY)),
             'onchain_usdt_balance' => $this->onchain_usdt_balance,
             'onchain_native_balance' => $this->onchain_native_balance,
             'onchain_synced_at'    => optional($this->onchain_synced_at)->toIso8601String(),

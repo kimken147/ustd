@@ -27,6 +27,7 @@ interface AccountRecord {
   name: string;
   channel_code: string;
   address_type?: 'master' | 'child';
+  has_private_key?: boolean;
   onchain_usdt_balance?: string;
   onchain_native_balance?: string;
   detail?: {
@@ -144,13 +145,18 @@ const FundManagementBatchTransfer: FC = () => {
     {
       title: t('fields.address'),
       dataIndex: 'account',
-      width: 180,
+      width: 220,
       ellipsis: true,
-      render: (v: string) =>
+      render: (v: string, record: AccountRecord) =>
         v ? (
-          <Typography.Text copyable={{ text: v }}>
-            {v.slice(0, 8)}...{v.slice(-6)}
-          </Typography.Text>
+          <Space size={4}>
+            <Typography.Text copyable={{ text: v }}>
+              {v.slice(0, 8)}...{v.slice(-6)}
+            </Typography.Text>
+            {!record.has_private_key && (
+              <Tag color="red">{t('fields.noPrivateKey')}</Tag>
+            )}
+          </Space>
         ) : (
           '-'
         ),
@@ -304,7 +310,7 @@ const FundManagementBatchTransfer: FC = () => {
             selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
             getCheckboxProps: (record: AccountRecord) => ({
-              disabled: record.id === targetAccountId,
+              disabled: record.id === targetAccountId || !record.has_private_key,
             }),
           }}
         />

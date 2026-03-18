@@ -207,11 +207,6 @@ function AppContent() {
       meta: { label: t('navigation.chainTransactions'), icon: <SwapOutlined /> },
     },
     {
-      name: 'internal-transfers/batch-transfer',
-      list: '/internal-transfers/batch-transfer',
-      meta: { parent: 'internal-transfers', hide: true },
-    },
-    {
       name: 'transaction',
       meta: { label: t('navigation.transactionManagement'), icon: <SwapOutlined /> },
     },

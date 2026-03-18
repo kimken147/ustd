@@ -18,7 +18,8 @@
     "currentBalance": "当前余额",
     "afterBalance": "转入后预估",
     "selectedCount": "已选",
-    "selectedTotal": "合计"
+    "selectedTotal": "合计",
+    "noPrivateKey": "无密钥"
   },
   "actions": {
     "batchTransfer": "确认转帐",

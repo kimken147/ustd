@@ -18,7 +18,8 @@
     "currentBalance": "Current Balance",
     "afterBalance": "Est. After Transfer",
     "selectedCount": "Selected",
-    "selectedTotal": "Total"
+    "selectedTotal": "Total",
+    "noPrivateKey": "No Key"
   },
   "actions": {
     "batchTransfer": "Confirm Transfer",
