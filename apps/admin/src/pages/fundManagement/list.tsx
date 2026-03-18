@@ -153,6 +153,9 @@ const FundManagementBatchTransfer: FC = () => {
             <Typography.Text copyable={{ text: v }}>
               {v.slice(0, 8)}...{v.slice(-6)}
             </Typography.Text>
+            {record.id === targetAccountId && (
+              <Tag color="orange">{t('fields.targetAccount')}</Tag>
+            )}
             {!record.has_private_key && (
               <Tag color="red">{t('fields.noPrivateKey')}</Tag>
             )}
