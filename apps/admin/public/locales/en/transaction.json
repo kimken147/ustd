@@ -373,7 +373,8 @@
     "title": "Internal Transfer Management",
     "list": "Internal Transfer List",
     "create": "Order Creation Successful",
-    "createSuccess": "Account Creation Successful"
+    "createSuccess": "Account Creation Successful",
+    "batchTransfer": "Batch Transfer"
   },
   "mailbox": {
     "title": "Mailbox",

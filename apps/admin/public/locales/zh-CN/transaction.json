@@ -373,7 +373,8 @@
     "title": "转账",
     "list": "转账列表",
     "create": "建立转账",
-    "createSuccess": "建立转帐账号成功"
+    "createSuccess": "建立转帐账号成功",
+    "batchTransfer": "批量转帐"
   },
   "mailbox": {
     "title": "讯息",

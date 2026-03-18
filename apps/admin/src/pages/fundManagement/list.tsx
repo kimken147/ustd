@@ -7,7 +7,6 @@ import {
   Select,
   Space,
   Table,
-  Tabs,
   Tag,
   Typography,
   message,
@@ -16,9 +15,9 @@ import { useCustom, useCustomMutation } from '@refinedev/core';
 import { List } from '@refinedev/antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { SyncOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SyncOutlined } from '@ant-design/icons';
 import numeral from 'numeral';
-import dayjs from 'dayjs';
+import { useNavigate } from 'react-router';
 import { apiUrl } from 'index';
 
 // 帳號資料介面（後端回傳格式）
@@ -46,30 +45,11 @@ interface AccountRecord {
   } | null;
 }
 
-// 轉帳紀錄介面
-interface TransferLogRecord {
-  id: number;
-  batch_id: string;
-  source_address: string;
-  target_address: string;
-  amount: string;
-  chain_network: string;
-  tx_hash: string | null;
-  status: 'pending' | 'processing' | 'success' | 'failed';
-  error_message: string | null;
-  source_merchant: string | null;
-  target_merchant: string | null;
-  operator_name: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-const FundManagementList: FC = () => {
+const FundManagementBatchTransfer: FC = () => {
   const { t } = useTranslation('fundManagement');
+  const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [targetAccountId, setTargetAccountId] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState('transfer');
-  const [logPage, setLogPage] = useState(1);
 
   // 取得所有 USDT 帳號
   const { query } = useCustom<AccountRecord[]>({
@@ -81,27 +61,6 @@ const FundManagementList: FC = () => {
   const accounts: AccountRecord[] = useMemo(
     () => (accountsData?.data as any)?.data ?? accountsData?.data ?? [],
     [accountsData],
-  );
-
-  // 轉帳紀錄
-  const { query: logsQuery } = useCustom<any>({
-    url: `${apiUrl}/fund-management/logs`,
-    method: 'get',
-    config: {
-      query: { page: logPage, per_page: 15 },
-    },
-    queryOptions: {
-      enabled: activeTab === 'logs',
-    },
-  });
-  const logsData = logsQuery.data?.data as any;
-  const logs: TransferLogRecord[] = useMemo(
-    () => logsData?.data ?? [],
-    [logsData],
-  );
-  const logsMeta = useMemo(
-    () => logsData?.meta ?? { total: 0 },
-    [logsData],
   );
 
   // 批量轉帳 mutation
@@ -173,18 +132,15 @@ const FundManagementList: FC = () => {
               );
               setSelectedRowKeys([]);
               refetch();
-              // 切到紀錄 tab 並刷新
-              setActiveTab('logs');
-              logsQuery.refetch();
             },
           },
         );
       },
     });
-  }, [selectedRowKeys, targetAccountId, batchTransfer, refetch, logsQuery, t]);
+  }, [selectedRowKeys, targetAccountId, batchTransfer, refetch, t]);
 
   // 帳號表格欄位
-  const accountColumns = [
+  const columns = [
     {
       title: t('fields.address'),
       dataIndex: 'account',
@@ -279,259 +235,111 @@ const FundManagementList: FC = () => {
     },
   ];
 
-  // 轉帳紀錄欄位
-  const logColumns = [
-    {
-      title: t('logs.fields.createdAt'),
-      dataIndex: 'created_at',
-      width: 160,
-      render: (v: string) => (v ? dayjs(v).format('YYYY-MM-DD HH:mm:ss') : '-'),
-    },
-    {
-      title: t('logs.fields.sourceAddress'),
-      dataIndex: 'source_address',
-      width: 180,
-      ellipsis: true,
-      render: (v: string) =>
-        v ? (
-          <Typography.Text copyable={{ text: v }}>
-            {v.slice(0, 8)}...{v.slice(-6)}
-          </Typography.Text>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: t('logs.fields.targetAddress'),
-      dataIndex: 'target_address',
-      width: 180,
-      ellipsis: true,
-      render: (v: string) =>
-        v ? (
-          <Typography.Text copyable={{ text: v }}>
-            {v.slice(0, 8)}...{v.slice(-6)}
-          </Typography.Text>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: t('logs.fields.amount'),
-      dataIndex: 'amount',
-      width: 130,
-      render: (v: string) => (
-        <Typography.Text strong>{numeral(v).format('0,0.00')} USDT</Typography.Text>
-      ),
-    },
-    {
-      title: t('logs.fields.chain'),
-      dataIndex: 'chain_network',
-      width: 90,
-      render: (v: string) => {
-        const labelMap: Record<string, string> = {
-          trc20: 'TRC-20',
-          erc20: 'ERC-20',
-          bep20: 'BEP-20',
-        };
-        return <Tag>{labelMap[v] ?? v?.toUpperCase()}</Tag>;
-      },
-    },
-    {
-      title: t('logs.fields.status'),
-      dataIndex: 'status',
-      width: 100,
-      render: (v: string) => {
-        const colorMap: Record<string, string> = {
-          pending: 'default',
-          processing: 'processing',
-          success: 'success',
-          failed: 'error',
-        };
-        return <Tag color={colorMap[v] ?? 'default'}>{t(`logs.status.${v}`)}</Tag>;
-      },
-    },
-    {
-      title: t('logs.fields.txHash'),
-      dataIndex: 'tx_hash',
-      width: 160,
-      ellipsis: true,
-      render: (v: string | null) =>
-        v ? (
-          <Typography.Text copyable={{ text: v }}>
-            {v.slice(0, 10)}...{v.slice(-6)}
-          </Typography.Text>
-        ) : (
-          '-'
-        ),
-    },
-    {
-      title: t('logs.fields.operator'),
-      dataIndex: 'operator_name',
-      width: 100,
-      render: (v: string | null) => v ?? '-',
-    },
-    {
-      title: t('logs.fields.errorMessage'),
-      dataIndex: 'error_message',
-      width: 200,
-      ellipsis: true,
-      render: (v: string | null) =>
-        v ? <Typography.Text type="danger">{v}</Typography.Text> : '-',
-    },
-  ];
-
   return (
     <>
       <Helmet>
-        <title>{t('titles.list')}</title>
+        <title>{t('titles.batchTransfer')}</title>
       </Helmet>
       <List
-        title={t('titles.list')}
+        title={t('titles.batchTransfer')}
         headerButtons={() => (
           <Space>
-            {activeTab === 'logs' && (
-              <Button
-                icon={<SyncOutlined spin={logsQuery.isLoading} />}
-                onClick={() => logsQuery.refetch()}
-              >
-                {t('actions.refreshLogs')}
-              </Button>
-            )}
-            {activeTab === 'transfer' && (
-              <Button
-                icon={<SyncOutlined spin={isLoading} />}
-                onClick={() => refetch()}
-              >
-                {t('actions.refreshBalances')}
-              </Button>
-            )}
+            <Button
+              icon={<SyncOutlined spin={isLoading} />}
+              onClick={() => refetch()}
+            >
+              {t('actions.refreshBalances')}
+            </Button>
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/internal-transfers')}
+            >
+              {t('actions.back')}
+            </Button>
           </Space>
         )}
       >
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          items={[
-            {
-              key: 'transfer',
-              label: t('tabs.transfer'),
-              children: (
-                <>
-                  {/* 目標帳號選擇區 */}
-                  <Card size="small" style={{ marginBottom: 16 }}>
-                    <Descriptions column={{ xs: 1, sm: 3 }} size="small">
-                      <Descriptions.Item label={t('fields.targetAccount')}>
-                        <Select
-                          style={{ width: 320 }}
-                          placeholder={t('fields.targetAccount')}
-                          allowClear
-                          showSearch
-                          optionFilterProp="label"
-                          value={targetAccountId}
-                          onChange={(val) => setTargetAccountId(val)}
-                          options={masterAccounts.map((acc) => ({
-                            label: `${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
-                            value: acc.id,
-                          }))}
-                        />
-                      </Descriptions.Item>
-                      <Descriptions.Item label={t('fields.currentBalance')}>
-                        <Typography.Text strong>
-                          {targetAccount
-                            ? numeral(targetAccount.onchain_usdt_balance).format(
-                                '0,0.00',
-                              )
-                            : '-'}
-                        </Typography.Text>
-                      </Descriptions.Item>
-                      <Descriptions.Item label={t('fields.afterBalance')}>
-                        <Typography.Text strong type="success">
-                          {targetAccount
-                            ? numeral(afterBalance).format('0,0.00')
-                            : '-'}
-                        </Typography.Text>
-                      </Descriptions.Item>
-                    </Descriptions>
-                  </Card>
+        {/* 目標帳號選擇區 */}
+        <Card size="small" style={{ marginBottom: 16 }}>
+          <Descriptions column={{ xs: 1, sm: 3 }} size="small">
+            <Descriptions.Item label={t('fields.targetAccount')}>
+              <Select
+                style={{ width: 320 }}
+                placeholder={t('fields.targetAccount')}
+                allowClear
+                showSearch
+                optionFilterProp="label"
+                value={targetAccountId}
+                onChange={(val) => setTargetAccountId(val)}
+                options={masterAccounts.map((acc) => ({
+                  label: `${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
+                  value: acc.id,
+                }))}
+              />
+            </Descriptions.Item>
+            <Descriptions.Item label={t('fields.currentBalance')}>
+              <Typography.Text strong>
+                {targetAccount
+                  ? numeral(targetAccount.onchain_usdt_balance).format('0,0.00')
+                  : '-'}
+              </Typography.Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={t('fields.afterBalance')}>
+              <Typography.Text strong type="success">
+                {targetAccount ? numeral(afterBalance).format('0,0.00') : '-'}
+              </Typography.Text>
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
 
-                  {/* USDT 帳號表格 */}
-                  <Table
-                    dataSource={accounts}
-                    columns={accountColumns}
-                    rowKey="id"
-                    loading={isLoading}
-                    scroll={{ x: 1100 }}
-                    pagination={false}
-                    rowSelection={{
-                      selectedRowKeys,
-                      onChange: (keys) => setSelectedRowKeys(keys),
-                      getCheckboxProps: (record: AccountRecord) => ({
-                        disabled: record.id === targetAccountId,
-                      }),
-                    }}
-                  />
-
-                  {/* 底部摘要 + 確認按鈕 */}
-                  <Card size="small" style={{ marginTop: 16 }}>
-                    <Space
-                      size="large"
-                      style={{ width: '100%', justifyContent: 'space-between' }}
-                    >
-                      <Space size="large">
-                        <Typography.Text>
-                          {t('fields.selectedCount')}:{' '}
-                          <Typography.Text strong>
-                            {selectedRowKeys.length}
-                          </Typography.Text>
-                        </Typography.Text>
-                        <Typography.Text>
-                          {t('fields.selectedTotal')}:{' '}
-                          <Typography.Text strong>
-                            {numeral(selectedTotal).format('0,0.00')} USDT
-                          </Typography.Text>
-                        </Typography.Text>
-                      </Space>
-                      <Button
-                        type="primary"
-                        loading={isTransferring}
-                        disabled={
-                          selectedRowKeys.length === 0 || !targetAccountId
-                        }
-                        onClick={handleBatchTransfer}
-                      >
-                        {t('actions.batchTransfer')}
-                      </Button>
-                    </Space>
-                  </Card>
-                </>
-              ),
-            },
-            {
-              key: 'logs',
-              label: t('tabs.logs'),
-              children: (
-                <Table
-                  dataSource={logs}
-                  columns={logColumns}
-                  rowKey="id"
-                  loading={logsQuery.isLoading}
-                  scroll={{ x: 1400 }}
-                  pagination={{
-                    current: logPage,
-                    total: logsMeta.total,
-                    pageSize: 15,
-                    onChange: (page) => setLogPage(page),
-                    showTotal: (total: number) =>
-                      t('logs.total', { total }),
-                  }}
-                />
-              ),
-            },
-          ]}
+        {/* USDT 帳號表格 */}
+        <Table
+          dataSource={accounts}
+          columns={columns}
+          rowKey="id"
+          loading={isLoading}
+          scroll={{ x: 1100 }}
+          pagination={false}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys) => setSelectedRowKeys(keys),
+            getCheckboxProps: (record: AccountRecord) => ({
+              disabled: record.id === targetAccountId,
+            }),
+          }}
         />
+
+        {/* 底部摘要 + 確認按鈕 */}
+        <Card size="small" style={{ marginTop: 16 }}>
+          <Space
+            size="large"
+            style={{ width: '100%', justifyContent: 'space-between' }}
+          >
+            <Space size="large">
+              <Typography.Text>
+                {t('fields.selectedCount')}:{' '}
+                <Typography.Text strong>{selectedRowKeys.length}</Typography.Text>
+              </Typography.Text>
+              <Typography.Text>
+                {t('fields.selectedTotal')}:{' '}
+                <Typography.Text strong>
+                  {numeral(selectedTotal).format('0,0.00')} USDT
+                </Typography.Text>
+              </Typography.Text>
+            </Space>
+            <Button
+              type="primary"
+              loading={isTransferring}
+              disabled={selectedRowKeys.length === 0 || !targetAccountId}
+              onClick={handleBatchTransfer}
+            >
+              {t('actions.batchTransfer')}
+            </Button>
+          </Space>
+        </Card>
       </List>
     </>
   );
 };
 
-export default FundManagementList;
+export default FundManagementBatchTransfer;

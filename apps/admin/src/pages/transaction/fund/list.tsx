@@ -1,6 +1,6 @@
 import { CreateButton, List, useTable } from '@refinedev/antd';
 import { useCan, useGetIdentity } from '@refinedev/core';
-import { Col, DatePicker, Divider, Input, Modal as AntdModal, Radio } from 'antd';
+import { Button, Col, DatePicker, Divider, Input, Modal as AntdModal, Radio, Space } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -13,10 +13,13 @@ import { InternalTransfer } from 'interfaces/internalTransfer';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+import { SwapOutlined } from '@ant-design/icons';
 import { useColumns, type ColumnDependencies } from './columns';
 
 const FundList: FC = () => {
   const { t } = useTranslation('transaction');
+  const navigate = useNavigate();
   const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
   const { data: profile } = useGetIdentity<Profile>();
   const { Select: TranStatusSelect } = useTransactionStatus();
@@ -61,7 +64,17 @@ const FundList: FC = () => {
   const columns = useColumns(columnDeps);
 
   return (
-    <List headerButtons={() => <CreateButton>{t('fund.create')}</CreateButton>}>
+    <List headerButtons={() => (
+        <Space>
+          <Button
+            icon={<SwapOutlined />}
+            onClick={() => navigate('/internal-transfers/batch-transfer')}
+          >
+            {t('fund.batchTransfer')}
+          </Button>
+          <CreateButton>{t('fund.create')}</CreateButton>
+        </Space>
+      )}>
       <Helmet>
         <title>{t('fund.title')}</title>
       </Helmet>

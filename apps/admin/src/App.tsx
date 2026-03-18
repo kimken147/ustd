@@ -79,7 +79,7 @@ import ProviderShow from 'pages/providers/show';
 import ProviderWalletList from 'pages/providers/wallet-history/list';
 import ProviderUserWalletHistoryList from 'pages/providers/user-wallet-history/list';
 import ProviderWhiteList from 'pages/providers/whiteList/list';
-import FundManagementList from 'pages/fundManagement';
+import FundManagementBatchTransfer from 'pages/fundManagement';
 
 import { useTranslation } from 'react-i18next';
 import './i18n';
@@ -207,12 +207,9 @@ function AppContent() {
       meta: { label: t('navigation.chainTransactions'), icon: <SwapOutlined /> },
     },
     {
-      name: 'fund-management',
-      list: '/fund-management',
-      meta: {
-        label: t('navigation.fundManagementUsdt', { defaultValue: '资金管理' }),
-        icon: <WalletOutlined />,
-      },
+      name: 'internal-transfers/batch-transfer',
+      list: '/internal-transfers/batch-transfer',
+      meta: { parent: 'internal-transfers', hide: true },
     },
     {
       name: 'transaction',
@@ -454,9 +451,6 @@ function AppContent() {
                 {/* Chain Transactions */}
                 <Route path="/chain-transactions" element={<ChainTransactionList />} />
 
-                {/* Fund Management (USDT) */}
-                <Route path="/fund-management" element={<FundManagementList />} />
-
                 {/* Transactions */}
                 <Route path="/transactions" element={<CollectionList />} />
                 <Route path="/transactions/create" element={<TransitionDemoCreate />} />
@@ -470,6 +464,7 @@ function AppContent() {
                 {/* Internal Transfers (Fund Management) */}
                 <Route path="/internal-transfers" element={<FundList />} />
                 <Route path="/internal-transfers/create" element={<FundCreate />} />
+                <Route path="/internal-transfers/batch-transfer" element={<FundManagementBatchTransfer />} />
 
                 {/* User Bank Cards */}
                 <Route path="/user-bank-cards" element={<UserBankCardList />} />

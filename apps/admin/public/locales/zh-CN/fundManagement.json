@@ -1,10 +1,7 @@
 {
   "titles": {
-    "list": "USDT 资金管理"
-  },
-  "tabs": {
-    "transfer": "批量转帐",
-    "logs": "转帐纪录"
+    "list": "USDT 资金管理",
+    "batchTransfer": "USDT 批量转帐"
   },
   "fields": {
     "address": "链上地址",
@@ -26,7 +23,7 @@
   "actions": {
     "batchTransfer": "确认转帐",
     "refreshBalances": "刷新余额",
-    "refreshLogs": "刷新纪录"
+    "back": "返回"
   },
   "messages": {
     "transferSubmitted": "已提交 {{count}} 笔转帐任务",
@@ -38,25 +35,5 @@
     "none": "-",
     "unused": "待收款",
     "used": "已收款"
-  },
-  "logs": {
-    "fields": {
-      "createdAt": "时间",
-      "sourceAddress": "来源地址",
-      "targetAddress": "目标地址",
-      "amount": "金额",
-      "chain": "链",
-      "status": "状态",
-      "txHash": "交易哈希",
-      "operator": "操作人",
-      "errorMessage": "错误信息"
-    },
-    "status": {
-      "pending": "等待中",
-      "processing": "处理中",
-      "success": "成功",
-      "failed": "失败"
-    },
-    "total": "共 {{total}} 笔"
   }
 }
