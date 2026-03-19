@@ -46,18 +46,33 @@ class UsdtWithdrawHandler
         $fromAddress = $account->account;
 
         // Pre-flight: check native token balance for gas fees
-        $minNativeBalance = match ($chainNetwork) {
-            'trc20' => config('services.trongrid.min_trx_balance', '30'),
-            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
-            'bep20' => config('services.bsc.min_native_balance', '0.005'),
-            default => '0',
-        };
         $gasTokenName = match ($chainNetwork) {
             'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
         };
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
-        if (bccomp($nativeBalance, $minNativeBalance, 6) < 0) {
+        // 動態預估所需 Gas（TRC-20 用 Energy 預估，其他用固定最低值）
+        $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
+        $txAmount = $transaction->floating_amount ?? $transaction->amount;
+        $requiredGas = match ($chainNetwork) {
+            'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
+                ? $adapter->estimateTransferFee($fromAddress, $toAddress ?: $fromAddress, $txAmount)
+                : config('services.trongrid.min_trx_balance', '30'),
+            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
+            'bep20' => config('services.bsc.min_native_balance', '0.005'),
+            default => '0',
+        };
+        // 加 buffer：TRC-20 多 5 TRX，其他多 10%
+        $buffer = match ($chainNetwork) {
+            'trc20' => '5',
+            default => bcmul($requiredGas, '0.1', 6),
+        };
+        $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
+
+        if (bccomp($nativeBalance, $requiredWithBuffer, 6) < 0) {
+            // 計算差額
+            $deficit = bcsub($requiredWithBuffer, $nativeBalance, 6);
+
             // 嘗試從母地址補充 Gas
             if ($account->address_type === UserChannelAccount::ADDRESS_TYPE_CHILD && $account->parent_account_id) {
                 $parentAccount = UserChannelAccount::find($account->parent_account_id);
@@ -65,23 +80,20 @@ class UsdtWithdrawHandler
 
                 if ($parentAccount && $parentKey) {
                     try {
-                        $extra = match ($chainNetwork) {
-                            'trc20' => '5',
-                            default => '0.001',
-                        };
-                        $sendAmount = bcadd($minNativeBalance, $extra, 6);
                         $decryptedParentKey = decrypt($parentKey);
                         $gasTxHash = $adapter->sendNativeToken(
                             $parentAccount->account,
                             $fromAddress,
-                            $sendAmount,
+                            $deficit,
                             $decryptedParentKey
                         );
                         $decryptedParentKey = null;
 
-                        $this->log($transaction, "已從母地址補充 {$sendAmount} {$gasTokenName} (tx: {$gasTxHash})", [
+                        $this->log($transaction, "已從母地址補充 {$deficit} {$gasTokenName} (預估需要: {$requiredGas}, 現有: {$nativeBalance}, tx: {$gasTxHash})", [
                             'gas_tx_hash' => $gasTxHash,
                             'parent_account_id' => $parentAccount->id,
+                            'estimated_fee' => $requiredGas,
+                            'deficit' => $deficit,
                         ]);
 
                         // 等待 Gas 到帳後再繼續出款
@@ -92,32 +104,29 @@ class UsdtWithdrawHandler
                             'error' => $e->getMessage(),
                         ], 'error');
                         throw new InsufficientBalanceException(
-                            "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance}, and gas top-up from parent failed"
+                            "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer}, gas top-up from parent failed"
                         );
                     }
                 } else {
-                    $this->log($transaction, "{$gasTokenName} 餘額不足且無法從母地址補充 (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
+                    $this->log($transaction, "{$gasTokenName} 餘額不足且無法從母地址補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
                         'native_balance' => $nativeBalance,
-                        'min_required'   => $minNativeBalance,
+                        'required'       => $requiredWithBuffer,
                     ], 'error');
                     throw new InsufficientBalanceException(
-                        "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance}, no parent account available"
+                        "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer}, no parent account available"
                     );
                 }
             } else {
-                $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
+                $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
                     'native_balance' => $nativeBalance,
-                    'min_required'   => $minNativeBalance,
+                    'required'       => $requiredWithBuffer,
                     'gas_token'      => $gasTokenName,
                 ], 'error');
                 throw new InsufficientBalanceException(
-                    "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance} for gas fees"
+                    "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer} for gas fees"
                 );
             }
         }
-
-        $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
-        $amount = $transaction->floating_amount ?? $transaction->amount;
 
         if (empty($toAddress)) {
             $this->log($transaction, '目標地址為空', level: 'error');
@@ -127,7 +136,7 @@ class UsdtWithdrawHandler
         $privateKey = null;
         try {
             $privateKey = decrypt($encryptedKey);
-            $chainTx = $adapter->sendTransaction($fromAddress, $toAddress, $amount, $privateKey);
+            $chainTx = $adapter->sendTransaction($fromAddress, $toAddress, $txAmount, $privateKey);
 
             $transaction->update([
                 'tx_hash' => $chainTx->txHash,
@@ -139,7 +148,7 @@ class UsdtWithdrawHandler
 
             // 主動建立鏈上交易記錄並標記匹配，避免 sync→match 非同步流程誤匹配
             $this->createMatchedChainTransactions(
-                $transaction, $chainTx->txHash, $account, $fromAddress, $toAddress, $amount
+                $transaction, $chainTx->txHash, $account, $fromAddress, $toAddress, $txAmount
             );
 
             $this->log($transaction, "出款交易已廣播 (tx_hash: {$chainTx->txHash})", [

@@ -324,6 +324,69 @@ class Trc20Adapter implements ChainAdapterInterface
         return $this->broadcastTransaction($signedTx);
     }
 
+    /**
+     * 預估 USDT 轉帳所需的 TRX（基於 Energy 消耗和當前 Energy 價格）
+     *
+     * @return string 預估所需 TRX（6 位小數）
+     */
+    public function estimateTransferFee(string $fromAddress, string $toAddress, string $amount): string
+    {
+        $rawAmount = bcmul($amount, bcpow('10', '6'), 0);
+        $fromHex = $this->base58ToHex($fromAddress);
+        $toHex = $this->base58ToHex($toAddress);
+
+        $addressParam = str_pad(substr($toHex, 2), 64, '0', STR_PAD_LEFT);
+        $amountParam = str_pad(gmp_strval(gmp_init($rawAmount), 16), 64, '0', STR_PAD_LEFT);
+
+        // 1. 模擬交易取得 Energy 消耗
+        $response = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/wallet/triggerconstantcontract', [
+                'owner_address' => $fromHex,
+                'contract_address' => $this->base58ToHex($this->getUsdtContract()),
+                'function_selector' => 'transfer(address,uint256)',
+                'parameter' => $addressParam . $amountParam,
+                'visible' => false,
+            ]);
+
+        $energyUsed = (int) ($response->json('energy_used', 0) ?: 32000); // fallback ~32k
+
+        // 2. 取得帳號現有的 Energy
+        $accountResponse = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/wallet/getaccountresource', [
+                'address' => $fromHex,
+                'visible' => false,
+            ]);
+
+        $accountData = $accountResponse->json();
+        $energyAvailable = (int) ($accountData['EnergyLimit'] ?? 0) - (int) ($accountData['EnergyUsed'] ?? 0);
+        $energyAvailable = max(0, $energyAvailable);
+
+        // 需要用 TRX 補的 Energy
+        $energyToBurn = max(0, $energyUsed - $energyAvailable);
+
+        if ($energyToBurn <= 0) {
+            return '0';
+        }
+
+        // 3. 取得當前 Energy 價格（sun per Energy）
+        $priceResponse = $this->buildHttpClient()
+            ->get($this->getBaseUrl() . '/wallet/getenergyprices');
+
+        $pricesStr = $priceResponse->json('prices', '');
+        $energyPrice = 420; // 預設 420 sun
+        if ($pricesStr) {
+            $parts = explode(',', $pricesStr);
+            $lastPart = end($parts);
+            $priceParts = explode(':', $lastPart);
+            $energyPrice = (int) (end($priceParts) ?: 420);
+        }
+
+        // TRX = energyToBurn × energyPrice / 1_000_000
+        $trxNeeded = bcdiv(bcmul((string) $energyToBurn, (string) $energyPrice, 0), '1000000', 6);
+
+        return $trxNeeded;
+    }
+
     private function getUsdtContract(): string
     {
         return config('services.trongrid.usdt_contract', self::MAINNET_USDT_CONTRACT);
