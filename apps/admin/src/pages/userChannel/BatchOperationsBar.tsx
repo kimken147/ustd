@@ -187,9 +187,14 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
         <Button
           danger
           onClick={() => {
-            const selectedAccounts = data?.filter(acc => selectedKeys.includes(acc.id)) ?? [];
-            const accountList = selectedAccounts
-              .map(acc => `${acc.account}(${numeral(acc.id).format('0000000')})`)
+            const dataMap = new Map((data ?? []).map(acc => [acc.id, acc]));
+            const accountList = selectedKeys
+              .map(key => {
+                const acc = dataMap.get(key as number);
+                return acc
+                  ? `${acc.account}(${numeral(acc.id).format('0000000')})`
+                  : `ID: ${numeral(key).format('0000000')}`;
+              })
               .join('\n');
             Modal.confirm({
               title: t('confirmation.batchDelete'),
@@ -225,7 +230,7 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
           {t('actions.batchDelete')}
         </Button>
         <Button onClick={() => setSelectedKeys([])}>
-          {t('actions.clearAll')}
+          {t('actions.clearAll')}({selectedKeys.length})
         </Button>
       </Space>
     </div>
