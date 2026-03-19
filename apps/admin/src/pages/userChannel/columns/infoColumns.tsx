@@ -39,7 +39,7 @@ export function createAccountNumberColumn(deps: ColumnDependencies): UserChannel
     dataIndex: 'id',
     title: t('fields.accountNumber'),
     render(value) {
-      return numeral(value).format('000000');
+      return numeral(value).format('0000000');
     },
   };
 }

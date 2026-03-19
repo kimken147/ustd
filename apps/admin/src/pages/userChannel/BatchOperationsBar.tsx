@@ -189,7 +189,7 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
           onClick={() => {
             const selectedAccounts = data?.filter(acc => selectedKeys.includes(acc.id)) ?? [];
             const accountList = selectedAccounts
-              .map(acc => `${acc.account}(${numeral(acc.id).format('000000')})`)
+              .map(acc => `${acc.account}(${numeral(acc.id).format('0000000')})`)
               .join('\n');
             Modal.confirm({
               title: t('confirmation.batchDelete'),
