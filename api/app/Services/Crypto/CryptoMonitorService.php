@@ -133,7 +133,7 @@ class CryptoMonitorService
                     'chain_network' => $monitor->chain_network,
                 ]);
 
-                $this->transactionStatusService->markAsSuccess($transaction);
+                $this->transactionStatusService->markAsSuccess($transaction, operator: null, autoSuccess: true);
 
                 Log::info('CryptoMonitorService: 收款確認成功', [
                     'transaction_id' => $transaction->id,
