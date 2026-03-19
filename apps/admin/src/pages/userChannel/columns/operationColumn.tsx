@@ -11,7 +11,7 @@ export function createOperationColumn(deps: ColumnDependencies): UserChannelColu
     render(_, record) {
       return (
         <Space>
-          <Link to={`/user-channel-accounts/show/${record.id}`}>
+          <Link to={`/user-channel-accounts/${record.id}`}>
             <Button type="link" size="small">
               {t('actions.show')}
             </Button>

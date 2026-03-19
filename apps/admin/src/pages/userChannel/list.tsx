@@ -349,6 +349,7 @@ const UserChannelAccountList: FC = () => {
           showUpdateModal={showUpdateModal}
           refetch={refetch}
           t={t}
+          data={data}
         />
         <ListPageLayout.Table
           {...tableProps}

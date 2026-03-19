@@ -22,10 +22,12 @@ export function createStatusColumn(deps: ColumnDependencies): UserChannelColumn 
         color = '#ff4d4f';
       }
 
+      const isOneTimeChild = record.is_one_time && record.address_type === 'child';
+
       return (
         <Space>
           <Badge color={color} text={getChannelStatusText(value)} />
-          {canEdit ? (
+          {canEdit && !isOneTimeChild ? (
             <Popover
               trigger="click"
               content={

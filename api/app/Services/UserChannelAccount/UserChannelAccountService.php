@@ -191,7 +191,7 @@ class UserChannelAccountService
                 'parent_account_id'         => $data['parent_account_id'] ?? null,
             ]);
 
-            $userChannelAccount->name = $data['name'] ?? Str::padLeft($userChannelAccount->id, 5, '0');
+            $userChannelAccount->name = $data['name'] ?? Str::padLeft($userChannelAccount->id, 6, '0');
             $userChannelAccount->save();
 
             $this->syncTransactionGroups($userChannelAccount, $provider);
@@ -249,7 +249,7 @@ class UserChannelAccountService
             'withdraw_monthly_limit'    => $data['withdraw_monthly_limit'] ?? null,
         ]);
 
-        $userChannelAccount->name = $data['name'] ?? Str::padLeft($userChannelAccount->id, 5, '0');
+        $userChannelAccount->name = $data['name'] ?? Str::padLeft($userChannelAccount->id, 6, '0');
         $userChannelAccount->save();
 
         $this->syncTransactionGroups($userChannelAccount, $provider);
@@ -326,7 +326,7 @@ class UserChannelAccountService
             'is_auto' => true,
         ], $extraAttributes));
 
-        $childAccount->name = Str::padLeft($childAccount->id, 5, '0');
+        $childAccount->name = Str::padLeft($childAccount->id, 6, '0');
         $childAccount->save();
 
         $this->syncTransactionGroups($childAccount, $provider);
