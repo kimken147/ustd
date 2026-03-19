@@ -2,11 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Jobs\NotifyTransaction;
 use App\Models\Transaction;
 use App\Models\TransactionNote;
+use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
+use App\Services\Transaction\TransactionStatusService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,10 +26,15 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         public readonly int $transactionId
     ) {}
 
-    public function handle(): void
+    public function handle(TransactionStatusService $statusService): void
     {
         $transaction = Transaction::find($this->transactionId);
         if (!$transaction || empty($transaction->tx_hash)) {
+            return;
+        }
+
+        // 已經成功的不再處理
+        if ($transaction->isSuccessful()) {
             return;
         }
 
@@ -50,10 +56,13 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         }
 
         if ($info['confirmed'] && $info['success']) {
-            $transaction->update([
-                'status' => Transaction::STATUS_SUCCESS,
-                'chain_fee' => $info['fee'],
-            ]);
+            $transaction->update(['chain_fee' => $info['fee']]);
+
+            // 透過 markAsSuccess 走完整流程：帳號餘額扣減 + 帳變記錄 + 回調通知
+            $statusService->markAsSuccess($transaction, operator: null, autoSuccess: true, shouldLock: false);
+
+            // 同步出款帳號的鏈上餘額
+            $this->syncAccountBalance($transaction, $adapter);
 
             $this->log($transaction, "鏈上交易已確認成功 (tx_hash: {$transaction->tx_hash})", [
                 'tx_hash' => $transaction->tx_hash,
@@ -68,10 +77,10 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                 'tx_hash' => $transaction->tx_hash,
                 'info' => $info,
             ], 'error');
-        }
 
-        // Notify merchant of the final withdrawal result
-        NotifyTransaction::dispatch($transaction);
+            // 失敗時也通知商戶
+            NotifyTransaction::dispatch($transaction);
+        }
     }
 
     private function log(Transaction $transaction, string $message, array $context = [], string $level = 'info'): void
@@ -84,6 +93,27 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             'user_id' => 0,
             'note' => "[USDT確認] {$message}",
         ]);
+    }
+
+    private function syncAccountBalance(Transaction $transaction, ChainAdapterInterface $adapter): void
+    {
+        try {
+            $account = UserChannelAccount::find($transaction->to_channel_account_id);
+            if (!$account) {
+                return;
+            }
+
+            $account->update([
+                'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
+                'onchain_native_balance' => $adapter->getNativeBalance($account->account),
+                'onchain_synced_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('ConfirmUsdtWithdraw: 同步帳號餘額失敗', [
+                'transaction_id' => $transaction->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function resolveAdapter(string $chainNetwork): ?ChainAdapterInterface

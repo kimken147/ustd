@@ -142,13 +142,33 @@ class CryptoMonitorService
                 ]);
             }
 
-            // 標記一次性子地址為已收款，並設為上線以參與出款匹配
+            // 標記一次性子地址為已收款，並設為上線以參與出款匹配，同步鏈上餘額
             $account = UserChannelAccount::find($monitor->user_channel_account_id);
-            if ($account && $account->is_one_time && $account->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
-                $account->update([
-                    'receive_status' => UserChannelAccount::RECEIVE_STATUS_USED,
-                    'status' => UserChannelAccount::STATUS_ONLINE, // 允許參與出款匹配
-                ]);
+            if ($account) {
+                $updateData = [];
+
+                if ($account->is_one_time && $account->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
+                    $updateData['receive_status'] = UserChannelAccount::RECEIVE_STATUS_USED;
+                    $updateData['status'] = UserChannelAccount::STATUS_ONLINE;
+                }
+
+                try {
+                    $adapter = $this->resolveAdapter($monitor->chain_network);
+                    if ($adapter) {
+                        $updateData['onchain_usdt_balance'] = $adapter->getTokenBalance($account->account);
+                        $updateData['onchain_native_balance'] = $adapter->getNativeBalance($account->account);
+                        $updateData['onchain_synced_at'] = now();
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('CryptoMonitorService: 同步帳號餘額失敗', [
+                        'account_id' => $account->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                if (!empty($updateData)) {
+                    $account->update($updateData);
+                }
             }
         });
     }
