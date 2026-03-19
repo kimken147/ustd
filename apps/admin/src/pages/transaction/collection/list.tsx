@@ -19,8 +19,8 @@ import {
   CreateButton,
   List,
   useModal,
-  useTable,
 } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import {
   useApiUrl,
   useCan,

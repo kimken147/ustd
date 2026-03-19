@@ -148,11 +148,10 @@ const dataProvider = (apiUrl: string, httpClient = axiosInstance): DataProvider 
         }
         const url = meta?.url ? meta?.url : `${apiUrl}/${resource}`;
         const hasPagination = pagination?.mode !== "off";
-        const paginationConfig = pagination as { current?: number; pageSize?: number } | undefined;
         const query = hasPagination
             ? {
-                  page: paginationConfig?.current,
-                  per_page: paginationConfig?.pageSize ?? 20,
+                  page: pagination?.currentPage ?? 1,
+                  per_page: pagination?.pageSize ?? 20,
               }
             : {
                   no_paginate: 1,
