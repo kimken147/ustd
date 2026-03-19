@@ -308,6 +308,28 @@ const UserChannelAccountList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('fields.addressType')} name="address_type">
+                <Select
+                  allowClear
+                  options={[
+                    { value: 'master', label: t('fields.masterAddress') },
+                    { value: 'child', label: t('fields.childAddress') },
+                  ]}
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('fields.receiveStatus')} name="receive_status">
+                <Select
+                  allowClear
+                  options={[
+                    { value: 'unused', label: t('status.unused') },
+                    { value: 'used', label: t('status.used') },
+                  ]}
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
               <ListPageLayout.Filter.Item label={t('fields.note')} name="note">
                 <Input allowClear />
               </ListPageLayout.Filter.Item>

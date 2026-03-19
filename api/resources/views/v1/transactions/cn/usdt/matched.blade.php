@@ -306,7 +306,10 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">转账金额</span>
-                    <span class="info-value" style="color: #38bdf8; font-weight: 600;">{{ $transaction->floating_amount }} USDT</span>
+                    <span class="info-value" style="color: #38bdf8; font-weight: 600;">
+                        {{ $transaction->floating_amount }} USDT
+                        <button class="copy-btn" style="margin-left: 8px; font-size: 11px; padding: 4px 10px;" onclick="copyText('{{ $transaction->floating_amount }}', this)">复制</button>
+                    </span>
                 </div>
             </div>
         </div>

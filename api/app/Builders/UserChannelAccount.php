@@ -110,6 +110,14 @@ class UserChannelAccount
             $builder->whereIn('auto_sync', $request->auto_sync);
         });
 
+        $userChannelAccounts->when($request->filled('address_type'), function ($builder) use ($request) {
+            $builder->where('address_type', $request->address_type);
+        });
+
+        $userChannelAccounts->when($request->filled('receive_status'), function ($builder) use ($request) {
+            $builder->where('receive_status', $request->receive_status);
+        });
+
         $userChannelAccounts->orderByDesc('id');
 
         return $userChannelAccounts;

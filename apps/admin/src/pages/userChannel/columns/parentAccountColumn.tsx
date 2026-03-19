@@ -13,7 +13,7 @@ export function createParentAccountColumn(deps: ColumnDependencies): UserChannel
     render(value: any, record) {
       if (!value || record.address_type !== 'child') return '-';
       return (
-        <Link to={`/user-channel-accounts/show/${value.id}`}>
+        <Link to={`/user-channel-accounts/${value.id}`}>
           {value.account?.slice(0, 8)}...
         </Link>
       );

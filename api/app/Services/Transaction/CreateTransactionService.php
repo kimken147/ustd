@@ -453,7 +453,7 @@ class CreateTransactionService
                         'is_one_time' => true,
                         'receive_status' => UserChannelAccount::RECEIVE_STATUS_UNUSED,
                         'linked_transaction_id' => $transaction->id,
-                        'status' => UserChannelAccount::STATUS_ENABLE,
+                        'status' => UserChannelAccount::STATUS_ONLINE,
                     ]
                 );
                 $depositAccount = $childAccount;
