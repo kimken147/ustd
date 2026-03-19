@@ -13,7 +13,7 @@ interface BatchOperationsBarProps {
   showUpdateModal: (options: any) => void;
   refetch: () => void;
   t: (key: string, options?: Record<string, any>) => string;
-  data?: UserChannel[];
+  accountCache?: Map<number, UserChannel>;
 }
 
 export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
@@ -24,7 +24,7 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
   showUpdateModal,
   refetch,
   t,
-  data,
+  accountCache,
 }) => {
   const { mutateAsync: mutateDeleting } = useDelete();
   const { mutate: batchSyncMutate, mutation: batchSyncMutation } = useCustomMutation();
@@ -187,10 +187,9 @@ export const BatchOperationsBar: FC<BatchOperationsBarProps> = ({
         <Button
           danger
           onClick={() => {
-            const dataMap = new Map((data ?? []).map(acc => [acc.id, acc]));
             const accountList = selectedKeys
               .map(key => {
-                const acc = dataMap.get(key as number);
+                const acc = accountCache?.get(key as number);
                 return acc
                   ? `${acc.account}(${numeral(acc.id).format('0000000')})`
                   : `ID: ${numeral(key).format('0000000')}`;

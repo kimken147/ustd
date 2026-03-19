@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useRef, useState } from 'react';
 import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { CreateButton, List } from '@refinedev/antd';
 import { useTable } from 'hooks/useTable';
@@ -75,6 +75,14 @@ const UserChannelAccountList: FC = () => {
 
   const meta = (tableData as any)?.meta as Meta | undefined;
   const data = tableData?.data;
+
+  // 快取所有曾載入的帳號，跨頁刪除時能顯示帳號資訊
+  const accountCacheRef = useRef<Map<number, UserChannel>>(new Map());
+  if (data) {
+    for (const acc of data) {
+      accountCacheRef.current.set(acc.id, acc);
+    }
+  }
 
   const { show: showUpdateModal, modalProps } = useUpdateModal({
     formItems: [
@@ -349,7 +357,7 @@ const UserChannelAccountList: FC = () => {
           showUpdateModal={showUpdateModal}
           refetch={refetch}
           t={t}
-          data={data}
+          accountCache={accountCacheRef.current}
         />
         <ListPageLayout.Table
           {...tableProps}
