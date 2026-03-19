@@ -24,29 +24,28 @@ class DaiFuService
 
     public function execute(string $channelCode)
     {
-        // USDT：優先找鏈上餘額足夠的地址直接出款，含子地址
-        if ($channelCode === Channel::CODE_USDT) {
+        $isUsdt = $channelCode === Channel::CODE_USDT;
+
+        // 1. 取得所有可用出款帳號
+        if ($isUsdt) {
             $accounts = UserChannelAccount::with('user')
                 ->where('channel_code', Channel::CODE_USDT)
                 ->where('status', UserChannelAccount::STATUS_ONLINE)
                 ->where('is_auto', true)
                 ->whereDoesntHave('payingDaifu')
                 ->where(function ($q) {
-                    // 母地址（非收款專用）
                     $q->where(function ($q2) {
                         $q2->where('address_type', UserChannelAccount::ADDRESS_TYPE_MASTER)
                            ->where('type', '!=', UserChannelAccount::TYPE_DEPOSIT);
                     })
-                    // 或已收款的一次性子地址
                     ->orWhere(function ($q2) {
                         $q2->where('address_type', UserChannelAccount::ADDRESS_TYPE_CHILD)
                            ->where('receive_status', UserChannelAccount::RECEIVE_STATUS_USED);
                     });
                 })
-                ->orderByDesc('onchain_usdt_balance')
+                ->where('onchain_usdt_balance', '>', 0)
                 ->get();
         } else {
-            // 非 USDT：保持原有邏輯
             $accounts = UserChannelAccount::with('user')
                 ->where('channel_code', $channelCode)
                 ->where('status', UserChannelAccount::STATUS_ONLINE)
@@ -58,8 +57,86 @@ class DaiFuService
                 ->get();
         }
 
-        $isUsdt = $channelCode === Channel::CODE_USDT;
+        // 非 USDT：保持原有邏輯（以帳號為主迴圈）
+        if (!$isUsdt) {
+            $this->matchByAccount($accounts, false);
+            return;
+        }
 
+        // 2. USDT：以待付單為主，找餘額最接近的帳號（減少出款次數）
+        $this->matchByTransaction($accounts);
+    }
+
+    /**
+     * USDT 配單：以待付單為主，找鏈上餘額最接近（>=）出款金額的帳號
+     * 優先讓餘額剛好夠的帳號出款，減少鏈上交易次數
+     */
+    private function matchByTransaction($accounts): void
+    {
+        // 過濾出可用帳號及其用戶權限
+        $validAccounts = $accounts->filter(function ($account) {
+            $user = $account->user;
+            return $user && $user->deposit_enable && $user->paufen_deposit_enable;
+        });
+
+        if ($validAccounts->isEmpty()) {
+            return;
+        }
+
+        // 取得所有待配對的代付單
+        $pendingWithdraws = $this->getPendingWithdraws($validAccounts);
+
+        // 已配對的帳號 ID（避免重複配對）
+        $matchedAccountIds = [];
+
+        foreach ($pendingWithdraws as $withdraw) {
+            $amount = (float) $withdraw->amount;
+
+            // 在可用帳號中找餘額最接近且足夠的（排除已配對的）
+            $bestAccount = null;
+            $bestDiff = PHP_FLOAT_MAX;
+
+            foreach ($validAccounts as $account) {
+                if (in_array($account->id, $matchedAccountIds)) {
+                    continue;
+                }
+
+                $balance = (float) $account->onchain_usdt_balance;
+                if ($balance < $amount) {
+                    continue;
+                }
+
+                // 檢查用戶的代付金額限制
+                $user = $account->user;
+                $minAmount = (float) ($user->wallet->agency_withdraw_min_amount ?? 0);
+                $maxAmount = (float) ($user->wallet->agency_withdraw_max_amount ?? 0);
+                if ($minAmount > 0 && $amount < $minAmount) continue;
+                if ($maxAmount > 0 && $amount > $maxAmount) continue;
+
+                // 檢查交易組權限
+                if (!$this->canMatchWithdraw($account, $withdraw)) {
+                    continue;
+                }
+
+                $diff = $balance - $amount;
+                if ($diff < $bestDiff) {
+                    $bestDiff = $diff;
+                    $bestAccount = $account;
+                }
+            }
+
+            if ($bestAccount) {
+                $this->transactionMutator->paufenDepositToAccount($bestAccount, $withdraw);
+                $matchedAccountIds[] = $bestAccount->id;
+            }
+        }
+    }
+
+    /**
+     * 非 USDT：保持原有以帳號為主的配單邏輯
+     */
+    private function matchByAccount($accounts, bool $isUsdt): void
+    {
         foreach ($accounts as $account) {
             $user = $account->user;
 
@@ -67,20 +144,14 @@ class DaiFuService
                 continue;
             }
 
+            $availableBalance = $account->getRestBalance('withdraw') ?? 0;
+
             $transactionGroups = TransactionGroup::where('transaction_type', Transaction::TYPE_PAUFEN_WITHDRAW)
                 ->where(function ($query) use ($user) {
                     $query->where('worker_id', $user->id)->where('personal_enable', false);
                     $query->orWhereIn('worker_id', User::whereAncestorOrSelf($user)->select(['id']))->where('personal_enable', true);
                 });
 
-            $transactionGroupExists = $transactionGroups->exists();
-
-            // USDT 用鏈上餘額，非 USDT 用系統餘額
-            $availableBalance = $isUsdt
-                ? (float) $account->onchain_usdt_balance
-                : ($account->getRestBalance('withdraw') ?? 0);
-
-            // 查出該出款帳號，目前可以代付的代付單
             $matchingDeposit = Transaction::where(function ($builder) use ($transactionGroups) {
                 $builder->where(function ($query) use ($transactionGroups) {
                     $query->where('type', Transaction::TYPE_PAUFEN_WITHDRAW)
@@ -111,9 +182,68 @@ class DaiFuService
             if (!$matchingDeposit) {
                 continue;
             }
-            // 分配出款帳號給代付單
             $this->transactionMutator->paufenDepositToAccount($account, $matchingDeposit);
         }
+    }
+
+    /**
+     * 取得所有待配對的代付單（按金額降序，大單優先配對）
+     */
+    private function getPendingWithdraws($accounts): \Illuminate\Database\Eloquent\Collection
+    {
+        // 收集所有帳號對應的 transaction group owner IDs
+        $allOwnerIds = collect();
+        foreach ($accounts as $account) {
+            $user = $account->user;
+            $transactionGroups = TransactionGroup::where('transaction_type', Transaction::TYPE_PAUFEN_WITHDRAW)
+                ->where(function ($query) use ($user) {
+                    $query->where('worker_id', $user->id)->where('personal_enable', false);
+                    $query->orWhereIn('worker_id', User::whereAncestorOrSelf($user)->select(['id']))->where('personal_enable', true);
+                });
+
+            if ($transactionGroups->exists()) {
+                $allOwnerIds = $allOwnerIds->merge($transactionGroups->pluck('owner_id'));
+            }
+        }
+
+        return Transaction::where(function ($builder) use ($allOwnerIds) {
+            $builder->where(function ($query) use ($allOwnerIds) {
+                $query->where('type', Transaction::TYPE_PAUFEN_WITHDRAW);
+                if ($allOwnerIds->isNotEmpty()) {
+                    $query->whereIn('from_id', $allOwnerIds->unique());
+                } else {
+                    $query->whereDoesntHave('from.matchingDepositGroups');
+                }
+            })->orWhere(function ($query) {
+                $query->where('type', Transaction::TYPE_INTERNAL_TRANSFER);
+            });
+        })
+            ->where('status', Transaction::STATUS_MATCHING)
+            ->whereNull('locked_at')
+            ->whereNull('to_id')
+            ->where('created_at', '>=', now()->subDay())
+            ->orderByDesc('amount') // 大單優先配對
+            ->get();
+    }
+
+    /**
+     * 檢查帳號是否有權限配對此代付單
+     */
+    private function canMatchWithdraw(UserChannelAccount $account, Transaction $withdraw): bool
+    {
+        $user = $account->user;
+        $transactionGroups = TransactionGroup::where('transaction_type', Transaction::TYPE_PAUFEN_WITHDRAW)
+            ->where(function ($query) use ($user) {
+                $query->where('worker_id', $user->id)->where('personal_enable', false);
+                $query->orWhereIn('worker_id', User::whereAncestorOrSelf($user)->select(['id']))->where('personal_enable', true);
+            });
+
+        if ($transactionGroups->exists()) {
+            return $transactionGroups->pluck('owner_id')->contains($withdraw->from_id);
+        }
+
+        // 無交易組限制時，只要商戶也無交易組就可配
+        return !$withdraw->from?->matchingDepositGroups()?->exists();
     }
 
     public function checkAutoIsValid(string $region)
