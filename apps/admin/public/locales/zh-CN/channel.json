@@ -27,7 +27,7 @@
     "editFloatingRange": "修改金额浮动范围"
   },
   "messages": {
-    "confirmDeleteAmount": "确定要刪除此金額？",
+    "confirmDeleteAmount": "确定要删除此金额？",
     "confirmModifyStatus": "是否确定修改状态？",
     "confirmMatchExpirySwitch": "是否匹配过期开关？",
     "confirmPaymentExpirySwitch": "是否修改支付过期开关？",

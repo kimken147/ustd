@@ -38,9 +38,9 @@
     "amountRange": "输入单笔金额或是区间 例：100~1000",
     "fee": "手续费",
     "profit": "利润",
-    "systemProfit": "系統利潤",
+    "systemProfit": "系统利润",
     "thirdPartyFee": "三方手续费",
-    "actualAmount": "實付金額",
+    "actualAmount": "实付金额",
     "floatingAmount": "浮动金额",
     "transferAmount": "转出金额",
     "status": "订单状态",
@@ -137,8 +137,8 @@
     "rewardCommission": "奖励佣金",
     "agentLine": "代理线",
     "holderName": "持卡人姓名",
-    "chainNetwork": "鏈網路",
-    "chainFee": "鏈上手續費"
+    "chainNetwork": "链网络",
+    "chainFee": "链上手续费"
   },
   "types": {
     "withdraw": "下发",

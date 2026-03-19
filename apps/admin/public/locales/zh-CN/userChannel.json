@@ -51,8 +51,8 @@
     "newPassword": "新密码",
     "newEmail": "新Email",
     "operation": "操作",
-    "chainNetwork": "鏈網路",
-    "privateKey": "私鑰（出款用）",
+    "chainNetwork": "链网络",
+    "privateKey": "私钥（出款用）",
     "noPrivateKey": "无密钥",
     "dailyReceiveCountLimit": "每日收款笔数限制 / 已收笔数",
     "dailyPayoutCountLimit": "每日出款笔数限制 / 已出笔数",
@@ -202,14 +202,14 @@
   "placeholders": {
     "qrcode": "二维码",
     "viewQrcode": "查看二维码",
-    "walletAddress": "輸入 USDT 錢包地址",
-    "privateKey": "僅出款時需要，留空則不設定",
+    "walletAddress": "输入 USDT 钱包地址",
+    "privateKey": "仅出款时需要，留空则不设定",
     "selectParentAccount": "选择母地址（可选）"
   },
   "validation": {
     "required": "必填",
-    "invalidTronAddress": "無效的 TRON 地址格式（T 開頭，34 字元）",
-    "invalidEvmAddress": "無效的 Ethereum/BSC 地址格式（需以 0x 開頭，40 位十六進位）"
+    "invalidTronAddress": "无效的 TRON 地址格式（T 开头，34 字符）",
+    "invalidEvmAddress": "无效的 Ethereum/BSC 地址格式（需以 0x 开头，40 位十六进位）"
   },
   "syncStatus": {
     "handshake_fail": "初始失败请重试",
