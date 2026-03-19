@@ -459,6 +459,18 @@
         updateTimer();
         const countdown = setInterval(updateTimer, 1000);
         @endif
+
+        // Poll payment status — redirect when paid or timed out
+        const pollStatus = setInterval(async () => {
+            try {
+                const res = await fetch('/api/v1/cashier/{{ $transaction->system_order_number }}/status');
+                const data = await res.json();
+                if (data.status !== 'paying') {
+                    clearInterval(pollStatus);
+                    window.location.reload();
+                }
+            } catch (e) {}
+        }, 5000);
     </script>
 </body>
 </html>
