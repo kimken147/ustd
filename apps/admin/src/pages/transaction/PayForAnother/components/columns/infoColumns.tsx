@@ -5,7 +5,7 @@
  * - Payer info
  * - User name
  */
-import { Typography, Space, Button, Popover } from 'antd';
+import { Tag, Typography, Space, Button, Popover } from 'antd';
 import { List as AntdList } from 'antd';
 import { ShowButton, TextField } from '@refinedev/antd';
 import {
@@ -170,9 +170,12 @@ export function createPayerInfoColumn(ctx: ColumnContext): WithdrawColumn {
     render(_, record) {
       if (record.to_channel_account) {
         const payer = `${record.to_channel_account.channel_code} - ${record.to_channel_account.account}`;
+        const addrType = record.to_channel_account.address_type;
         return (
           <Space>
             <TextField value={payer} />
+            {addrType === 'master' && <Tag color="blue">主地址</Tag>}
+            {addrType === 'child' && <Tag color="green">子地址</Tag>}
             <Popover
               trigger={'click'}
               content={

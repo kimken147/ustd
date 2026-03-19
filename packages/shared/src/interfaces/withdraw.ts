@@ -328,6 +328,7 @@ export interface ToChannelAccount {
     withdraw_monthly_limit?: string;
     withdraw_monthly_total: string;
     account: string;
+    address_type?: 'master' | 'child';
     detail: Detail;
     note: string;
     created_at: string;

@@ -58,14 +58,62 @@ class UsdtWithdrawHandler
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
         if (bccomp($nativeBalance, $minNativeBalance, 6) < 0) {
-            $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
-                'native_balance' => $nativeBalance,
-                'min_required'   => $minNativeBalance,
-                'gas_token'      => $gasTokenName,
-            ], 'error');
-            throw new InsufficientBalanceException(
-                "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance} for gas fees"
-            );
+            // 嘗試從母地址補充 Gas
+            if ($account->address_type === UserChannelAccount::ADDRESS_TYPE_CHILD && $account->parent_account_id) {
+                $parentAccount = UserChannelAccount::find($account->parent_account_id);
+                $parentKey = $parentAccount ? data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY) : null;
+
+                if ($parentAccount && $parentKey) {
+                    try {
+                        $extra = match ($chainNetwork) {
+                            'trc20' => '5',
+                            default => '0.001',
+                        };
+                        $sendAmount = bcadd($minNativeBalance, $extra, 6);
+                        $decryptedParentKey = decrypt($parentKey);
+                        $gasTxHash = $adapter->sendNativeToken(
+                            $parentAccount->account,
+                            $fromAddress,
+                            $sendAmount,
+                            $decryptedParentKey
+                        );
+                        $decryptedParentKey = null;
+
+                        $this->log($transaction, "已從母地址補充 {$sendAmount} {$gasTokenName} (tx: {$gasTxHash})", [
+                            'gas_tx_hash' => $gasTxHash,
+                            'parent_account_id' => $parentAccount->id,
+                        ]);
+
+                        // 等待 Gas 到帳後再繼續出款
+                        sleep(5);
+                    } catch (\Throwable $e) {
+                        $this->log($transaction, "從母地址補充 {$gasTokenName} 失敗: {$e->getMessage()}", [
+                            'parent_account_id' => $parentAccount->id,
+                            'error' => $e->getMessage(),
+                        ], 'error');
+                        throw new InsufficientBalanceException(
+                            "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance}, and gas top-up from parent failed"
+                        );
+                    }
+                } else {
+                    $this->log($transaction, "{$gasTokenName} 餘額不足且無法從母地址補充 (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
+                        'native_balance' => $nativeBalance,
+                        'min_required'   => $minNativeBalance,
+                    ], 'error');
+                    throw new InsufficientBalanceException(
+                        "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance}, no parent account available"
+                    );
+                }
+            } else {
+                $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 最低: {$minNativeBalance})", [
+                    'native_balance' => $nativeBalance,
+                    'min_required'   => $minNativeBalance,
+                    'gas_token'      => $gasTokenName,
+                ], 'error');
+                throw new InsufficientBalanceException(
+                    "{$gasTokenName} balance {$nativeBalance} below minimum {$minNativeBalance} for gas fees"
+                );
+            }
         }
 
         $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
