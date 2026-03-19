@@ -1,4 +1,5 @@
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Checkbox, Col, Divider, Input, Modal } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import ContentHeader from 'components/contentHeader';

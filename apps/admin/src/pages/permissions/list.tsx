@@ -1,4 +1,5 @@
-import { CreateButton, List, ListButton, useModal, useTable } from '@refinedev/antd';
+import { CreateButton, List, ListButton, useModal } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, Input, Modal, Typography } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import PermissionCheckGroup from 'components/permissionCheckGroup';

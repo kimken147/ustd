@@ -1,5 +1,6 @@
 import { EditOutlined } from '@ant-design/icons';
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import {
   Card,
   Checkbox,

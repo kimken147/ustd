@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { List, ShowButton, TextField, useTable } from '@refinedev/antd';
+import { List, ShowButton, TextField } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, DatePicker, Divider, Input, Space } from 'antd';
 import { useGetIdentity, useOne } from '@refinedev/core';
 import { useSearchParams } from 'react-router';

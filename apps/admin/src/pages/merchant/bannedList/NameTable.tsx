@@ -1,5 +1,5 @@
 import { Col, Divider, Input } from 'antd';
-import { useTable } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import type { Banned } from 'interfaces/banned';

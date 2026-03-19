@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

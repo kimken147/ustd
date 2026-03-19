@@ -1,4 +1,5 @@
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, DatePicker, Divider, Input } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';

@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { List, ShowButton, TextField, useTable } from '@refinedev/antd';
+import { List, ShowButton, TextField } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import {
   Card,
   Col,

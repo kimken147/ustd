@@ -1,4 +1,5 @@
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Divider, Form, Table } from 'antd';
 import dayjs from 'dayjs';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';

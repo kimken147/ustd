@@ -1,4 +1,5 @@
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, Input } from 'antd';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';

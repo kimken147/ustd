@@ -1,4 +1,5 @@
-import { CreateButton, List, useTable } from '@refinedev/antd';
+import { CreateButton, List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { ListPageLayout, Tag } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { Helmet } from 'react-helmet';

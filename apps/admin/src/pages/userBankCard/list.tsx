@@ -1,5 +1,6 @@
 import { Col, Divider, Input, Select } from 'antd';
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { useCan } from '@refinedev/core';
 import ContentHeader from 'components/contentHeader';
 import useUpdateModal from 'hooks/useUpdateModal';

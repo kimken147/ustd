@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Input, InputNumber } from 'antd';
-import { List, TextField, useTable } from '@refinedev/antd';
+import { List, TextField } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { useApiUrl, useCan } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

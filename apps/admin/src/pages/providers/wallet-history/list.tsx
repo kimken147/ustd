@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { List, useTable } from '@refinedev/antd';
+import { List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, DatePicker, Divider, Input } from 'antd';
 import { useGetIdentity } from '@refinedev/core';
 import dayjs, { Dayjs } from 'dayjs';

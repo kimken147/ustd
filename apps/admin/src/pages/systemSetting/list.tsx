@@ -1,4 +1,5 @@
-import { List, ListButton, useTable } from '@refinedev/antd';
+import { List, ListButton } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Divider, Input, Table, Typography } from 'antd';
 import useUpdateModal from 'hooks/useUpdateModal';
 import { SystemSetting } from 'interfaces/systemSetting';

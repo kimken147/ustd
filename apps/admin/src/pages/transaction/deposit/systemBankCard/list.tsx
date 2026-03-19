@@ -1,5 +1,6 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { CreateButton, List, useForm, useModal, useTable } from '@refinedev/antd';
+import { CreateButton, List, useForm, useModal } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { useUpdate } from '@refinedev/core';
 import {
   Button,

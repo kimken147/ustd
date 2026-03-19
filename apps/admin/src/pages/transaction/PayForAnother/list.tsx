@@ -5,7 +5,7 @@
  */
 import { FC, useState } from 'react';
 import { List, ListButton, TextField } from '@refinedev/antd';
-import { useTable } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import {
   Button,
   Divider,

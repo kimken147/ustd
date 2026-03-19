@@ -1,5 +1,6 @@
 import { ExportOutlined } from '@ant-design/icons';
-import { CreateButton, List, useForm, useModal, useTable } from '@refinedev/antd';
+import { CreateButton, List, useForm, useModal } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Button, Col, Divider, Form as AntdForm, Input, Modal, Typography } from 'antd';
 import { useApiUrl, useCreate, useUpdate } from '@refinedev/core';
 import { getToken } from 'authProvider';

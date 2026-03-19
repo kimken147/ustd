@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { Col, Divider, Input, InputNumber, Modal, Select } from 'antd';
-import { CreateButton, List, useTable } from '@refinedev/antd';
+import { CreateButton, List } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import {
   useApiUrl,
   useCan,

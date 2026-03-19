@@ -4,7 +4,8 @@ import {
   StopOutlined,
   WalletOutlined,
 } from '@ant-design/icons';
-import { CreateButton, List, ListButton, useTable } from '@refinedev/antd';
+import { CreateButton, List, ListButton } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, FormItemProps, Input, InputNumber, Select } from 'antd';
 import { useApiUrl, useCan } from '@refinedev/core';
 import { Helmet } from 'react-helmet';

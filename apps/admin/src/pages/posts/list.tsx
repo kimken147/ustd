@@ -1,5 +1,6 @@
 import { useMany } from '@refinedev/core';
-import { List, useTable, useSelect } from '@refinedev/antd';
+import { List, useSelect } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { ListPageLayout } from '@morgan-ustd/shared';
 import { FC } from 'react';
 import { useColumns, type ColumnDependencies } from './columns';

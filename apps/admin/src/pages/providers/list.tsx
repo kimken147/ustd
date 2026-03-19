@@ -4,7 +4,8 @@ import {
   PlusSquareOutlined,
   WalletOutlined,
 } from '@ant-design/icons';
-import { CreateButton, List, ListButton, useTable } from '@refinedev/antd';
+import { CreateButton, List, ListButton } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, FormItemProps, Input, InputNumber, Modal, Select } from 'antd';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

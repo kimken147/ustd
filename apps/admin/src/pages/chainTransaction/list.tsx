@@ -1,6 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { Button, Col, Input, InputNumber, Modal, Select, Space, Tag, Tooltip, Typography } from 'antd';
-import { List, TextField, useTable } from '@refinedev/antd';
+import { List, TextField } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { useApiUrl, useCan, useCustomMutation } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,5 @@
-import { CreateButton, List, ListButton, useTable } from '@refinedev/antd';
+import { CreateButton, List, ListButton } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { Col, Divider, Input, InputNumber, Select } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import useProvider from 'hooks/useProvider';

@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { Col, DatePicker, Divider, Input, Modal, Select } from 'antd';
-import { List, ListButton, useTable } from '@refinedev/antd';
+import { List, ListButton } from '@refinedev/antd';
+import { useTable } from 'hooks/useTable';
 import { useApiUrl, useGetIdentity, useList } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';

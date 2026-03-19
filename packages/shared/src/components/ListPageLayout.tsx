@@ -145,13 +145,24 @@ Filter.Item = FilterItem;
  */
 function ListTable<T extends object = any>({
   children,
+  pagination,
   ...tableProps
 }: ListTableProps<T>) {
+  const paginationConfig = pagination === false
+    ? false
+    : {
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        defaultPageSize: 20,
+        ...(typeof pagination === 'object' ? pagination : {}),
+      };
+
   return (
     <Table<T>
       size="small"
       rowKey="id"
       scroll={{ x: 'max-content' }}
+      pagination={paginationConfig}
       {...tableProps}
     >
       {children}
