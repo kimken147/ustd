@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\ChainTransaction;
 use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
@@ -64,6 +65,9 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             // 同步出款帳號的鏈上餘額
             $this->syncAccountBalance($transaction, $adapter);
 
+            // 更新鏈上交易記錄的確認狀態
+            $this->updateChainTransactionStatus($transaction, true);
+
             $this->log($transaction, "鏈上交易已確認成功 (tx_hash: {$transaction->tx_hash})", [
                 'tx_hash' => $transaction->tx_hash,
                 'fee' => $info['fee'],
@@ -72,6 +76,9 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             $transaction->update([
                 'status' => Transaction::STATUS_FAILED,
             ]);
+
+            // 更新鏈上交易記錄為失敗
+            $this->updateChainTransactionStatus($transaction, false);
 
             $this->log($transaction, "鏈上交易失敗 (tx_hash: {$transaction->tx_hash})", [
                 'tx_hash' => $transaction->tx_hash,
@@ -93,6 +100,22 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             'user_id' => 0,
             'note' => "[USDT確認] {$message}",
         ]);
+    }
+
+    private function updateChainTransactionStatus(Transaction $transaction, bool $success): void
+    {
+        try {
+            ChainTransaction::where('matched_transaction_id', $transaction->id)
+                ->update([
+                    'confirmations' => 1,
+                    'note' => $success ? null : 'FAILED ON-CHAIN (TRANSACTION REVERT)',
+                ]);
+        } catch (\Throwable $e) {
+            Log::warning('ConfirmUsdtWithdraw: 更新鏈上交易狀態失敗', [
+                'transaction_id' => $transaction->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function syncAccountBalance(Transaction $transaction, ChainAdapterInterface $adapter): void

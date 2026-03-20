@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Jobs\ConfirmUsdtWithdraw;
+use App\Models\ChainTransaction;
+use App\Models\Channel;
 use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
@@ -88,6 +90,9 @@ class BatchTransferUsdt implements ShouldQueue
                 'chain_network' => $chainNetwork,
             ]);
 
+            // 建立鏈上交易記錄並標記已匹配，防止同步服務重複匹配
+            $this->createMatchedChainTransactions($transaction, $chainTx->txHash, $source, $targetAddress);
+
             // 延遲確認鏈上交易結果，由 ConfirmUsdtWithdraw 走 markAsSuccess 流程
             ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
@@ -107,6 +112,62 @@ class BatchTransferUsdt implements ShouldQueue
         ]);
 
         $this->log($transaction, "轉帳失敗: {$message}", 'error');
+    }
+
+    private function createMatchedChainTransactions(
+        Transaction $transaction,
+        string $txHash,
+        UserChannelAccount $senderAccount,
+        string $targetAddress,
+    ): void {
+        try {
+            // OUT record for sender
+            ChainTransaction::updateOrCreate(
+                ['tx_hash' => $txHash, 'user_channel_account_id' => $senderAccount->id],
+                [
+                    'direction' => ChainTransaction::DIRECTION_OUT,
+                    'from_address' => $senderAccount->account,
+                    'to_address' => $targetAddress,
+                    'amount' => $transaction->amount,
+                    'block_timestamp' => now(),
+                    'confirmations' => 0,
+                    'source' => ChainTransaction::SOURCE_INTERNAL,
+                    'match_status' => ChainTransaction::STATUS_MATCHED,
+                    'matched_transaction_id' => $transaction->id,
+                    'matched_at' => now(),
+                ]
+            );
+
+            // IN record for receiver (if address belongs to a platform account)
+            $receiverAccount = UserChannelAccount::where('channel_code', Channel::CODE_USDT)
+                ->where('account', $targetAddress)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if ($receiverAccount) {
+                ChainTransaction::updateOrCreate(
+                    ['tx_hash' => $txHash, 'user_channel_account_id' => $receiverAccount->id],
+                    [
+                        'direction' => ChainTransaction::DIRECTION_IN,
+                        'from_address' => $senderAccount->account,
+                        'to_address' => $targetAddress,
+                        'amount' => $transaction->amount,
+                        'block_timestamp' => now(),
+                        'confirmations' => 0,
+                        'source' => ChainTransaction::SOURCE_INTERNAL,
+                        'match_status' => ChainTransaction::STATUS_MATCHED,
+                        'matched_transaction_id' => $transaction->id,
+                        'matched_at' => now(),
+                    ]
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::warning('BatchTransfer: 建立鏈上交易記錄失敗', [
+                'transaction_id' => $transaction->id,
+                'tx_hash' => $txHash,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function log(Transaction $transaction, string $message, string $level = 'info'): void
