@@ -32,6 +32,7 @@
     },
     "values": {
       "download": "Download",
+      "link": "Link",
       "displaySecretKey": "View Secret Key",
       "changePassword": "Change Password",
       "resetVerificationKey": "Reset Google Authenticator"

@@ -1,4 +1,4 @@
-import { DownloadOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, LinkOutlined } from "@ant-design/icons";
 import {
     Badge,
     Button,
@@ -161,7 +161,7 @@ const HomePage: FC = () => {
                             </Descriptions.Item>
                             <Descriptions.Item label={t("home.fields.apiDocument")}>
                                 <a href={process.env.REACT_APP_API_FILE} target="_blank" rel="noreferrer">
-                                    <Button icon={<DownloadOutlined />}>{t("home.values.download")}</Button>
+                                    <Button icon={<LinkOutlined />}>{t("home.values.link")}</Button>
                                 </a>
                             </Descriptions.Item>
                         </>

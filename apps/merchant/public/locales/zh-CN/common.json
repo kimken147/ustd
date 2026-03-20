@@ -32,6 +32,7 @@
     },
     "values": {
       "download": "下载",
+      "link": "連結",
       "displaySecretKey": "显示密钥",
       "changePassword": "更改密码",
       "resetVerificationKey": "重置验证码密钥"
