@@ -31,7 +31,7 @@ class TransactionListCollection extends ResourceCollection
                 'out_trade_no'        => $item->order_number,
                 'status'              => Transaction::toMerchantStatus($item->status),
                 'amount'              => $item->amount,
-                'fee'                 => $item->from ? $item->transactionFees->filter($this->filteredByUser($item->from))->first()->fee : "0.00",
+                'fee'                 => $item->from ? ($item->transactionFees->filter($this->filteredByUser($item->from))->first()?->fee ?? "0.00") : "0.00",
                 'merchant_id'         => $item->to->username ?? '',
                 'note'                => $item->channel->note_enable ?? '',
                 'callback_url'        => $item->notify_url,
@@ -48,10 +48,10 @@ class TransactionListCollection extends ResourceCollection
             'per_page' => $this->resource->perPage(),
             'total' => $this->resource->total(),
         ];
-        $user = $this->resource->first()->to;
+        $user = $this->resource->first()?->to;
 
         // 生成簽名
-        $data['sign'] = $this->generateSign($user, $data);
+        $data['sign'] = $user ? $this->generateSign($user, $data) : '';
 
         // 自定義返回結構
         return [
