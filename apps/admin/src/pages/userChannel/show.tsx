@@ -26,6 +26,7 @@ import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { apiUrl } from 'index';
+import { isUsdtChannel } from 'utils/channel';
 import { ChannelStatusChanger } from './component';
 
 const UserChannelShow: FC<IResourceComponentsProps> = props => {
@@ -63,7 +64,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
   };
 
   // 判斷是否為 USDT 主地址
-  const isUsdtMaster = record?.channel_code === 'USDT' && record?.address_type === 'master';
+  const isUsdtMaster = isUsdtChannel(record?.channel_code) && record?.address_type === 'master';
 
   return (
     <>
@@ -162,7 +163,7 @@ const UserChannelShow: FC<IResourceComponentsProps> = props => {
               value={`${record?.monthly_limit}/${record?.withdraw_monthly_limit} ${record?.monthly_total}/${record?.withdraw_monthly_total}`}
             />
           </Descriptions.Item>
-          {record?.channel_code === 'USDT' && (
+          {isUsdtChannel(record?.channel_code) && (
             <>
               <Descriptions.Item label={t('fields.account')}>
                 <Typography.Text copyable>{record?.account}</Typography.Text>

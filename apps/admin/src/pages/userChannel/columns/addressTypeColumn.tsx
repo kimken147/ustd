@@ -1,4 +1,5 @@
 import { Tag } from 'antd';
+import { isUsdtChannel } from 'utils/channel';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 /**
@@ -13,7 +14,7 @@ export function createAddressTypeColumn(deps: ColumnDependencies): UserChannelCo
     dataIndex: 'address_type',
     width: 80,
     render(value: string, record) {
-      if (record.channel_code !== 'USDT') return '-';
+      if (!isUsdtChannel(record.channel_code)) return '-';
       return (
         <Tag color={value === 'master' ? 'blue' : 'green'}>
           {value === 'master' ? t('fields.masterAddress') : t('fields.childAddress')}

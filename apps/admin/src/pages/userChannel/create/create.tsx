@@ -17,6 +17,7 @@ import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import useSelector from 'hooks/useSelector';
 import { useTerminology } from 'contexts/AppModeContext';
+import { isUsdtChannel } from 'utils/channel';
 import { useUserChannelForm } from './hooks/useUserChannelForm';
 import { FormColumn } from './components/FormColumn';
 
@@ -87,7 +88,7 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
               </Form.Item>
             </FormColumn>
 
-            {curChannelCode === 'USDT' && (
+            {isUsdtChannel(curChannelCode) && (
               <FormColumn>
                 <Form.Item
                   label={t('fields.chainNetwork')}
@@ -107,7 +108,7 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
             )}
 
             {/* USDT 地址類型選擇：主地址或子地址 */}
-            {curChannelCode === 'USDT' && (
+            {isUsdtChannel(curChannelCode) && (
               <FormColumn>
                 <Form.Item
                   label={t('fields.addressType')}
@@ -132,20 +133,20 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
                   dependencies={['chain_network']}
                   rules={[
                     { required: true },
-                    ...(curChannelCode === 'USDT'
+                    ...(isUsdtChannel(curChannelCode)
                       ? (curChainNetwork === 'erc20' || curChainNetwork === 'bep20')
                         ? [{ pattern: /^0x[0-9a-fA-F]{40}$/, message: t('validation.invalidEvmAddress') }]
                         : [{ pattern: /^T[1-9A-HJ-NP-Za-km-z]{33}$/, message: t('validation.invalidTronAddress') }]
                       : []),
                   ]}
                 >
-                  <Input placeholder={curChannelCode === 'USDT' ? t('placeholders.walletAddress') : ''} />
+                  <Input placeholder={isUsdtChannel(curChannelCode) ? t('placeholders.walletAddress') : ''} />
                 </Form.Item>
               </FormColumn>
             )}
 
             {/* 子地址時顯示母地址選擇器 */}
-            {curChannelCode === 'USDT' && curAddressType === 'child' && (
+            {isUsdtChannel(curChannelCode) && curAddressType === 'child' && (
               <FormColumn>
                 <Form.Item
                   label={t('fields.parentAccount')}
@@ -164,7 +165,7 @@ export const UserChannelCreate: React.FC<IResourceComponentsProps> = () => {
               </FormColumn>
             )}
 
-            {curChannelCode === 'USDT' && (
+            {isUsdtChannel(curChannelCode) && (
               <FormColumn>
                 <Form.Item
                   label={t('fields.privateKey')}

@@ -1,4 +1,5 @@
 import { Tag } from 'antd';
+import { isUsdtChannel } from 'utils/channel';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 /**
@@ -11,7 +12,7 @@ export function createReceiveStatusColumn(deps: ColumnDependencies): UserChannel
     dataIndex: 'receive_status',
     width: 90,
     render(value: string, record) {
-      if (record.channel_code !== 'USDT' || value === 'none') return '-';
+      if (!isUsdtChannel(record.channel_code) || value === 'none') return '-';
       const color = value === 'unused' ? 'orange' : 'default';
       const text = value === 'unused' ? t('status.unused') : t('status.used');
       return <Tag color={color}>{text}</Tag>;

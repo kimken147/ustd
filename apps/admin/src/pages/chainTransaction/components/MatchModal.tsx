@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from 'react';
+import { USDT_CODES } from 'utils/channel';
 import { Input, Modal, Table } from 'antd';
 import { useApiUrl, useCustom } from '@refinedev/core';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +33,7 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
       query: {
         order_number: search || undefined,
         per_page: 10,
-        'channel_code[]': 'USDT',
+        'channel_code[]': USDT_CODES,
         ...dateRange,
       },
     },

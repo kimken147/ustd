@@ -1,6 +1,7 @@
 import { SyncOutlined } from '@ant-design/icons';
 import { Button, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
+import { isUsdtChannel } from 'utils/channel';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
 const chainNetworkLabel: Record<string, string> = {
@@ -16,7 +17,7 @@ export function createOnchainUsdtColumn(deps: ColumnDependencies): UserChannelCo
     title: 'USDT (鏈上)',
     dataIndex: 'onchain_usdt_balance',
     render(value: string, record) {
-      if (record.channel_code !== 'USDT') return '-';
+      if (!isUsdtChannel(record.channel_code)) return '-';
       const isSyncing = syncingIds?.has(record.id) ?? false;
       const network = record.chain_network || 'trc20';
       return (
@@ -43,7 +44,7 @@ export function createOnchainSyncedAtColumn(_deps: ColumnDependencies): UserChan
     title: '同步時間',
     dataIndex: 'onchain_synced_at',
     render(value: string, record) {
-      if (record.channel_code !== 'USDT') return '-';
+      if (!isUsdtChannel(record.channel_code)) return '-';
       return value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : '-';
     },
   };
@@ -56,7 +57,7 @@ export function createOnchainTrxColumn(deps: ColumnDependencies): UserChannelCol
     title: 'Gas',
     dataIndex: 'onchain_native_balance',
     render(value: string, record) {
-      if (record.channel_code !== 'USDT') return '-';
+      if (!isUsdtChannel(record.channel_code)) return '-';
       const isSyncing = syncingIds?.has(record.id) ?? false;
       return (
         <Space size={4}>
