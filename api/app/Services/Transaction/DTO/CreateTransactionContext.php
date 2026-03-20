@@ -47,7 +47,7 @@ class CreateTransactionContext
             channelCode: $request->channel,
             username: $request->merchant_id,
             amount: $request->input('amount'),
-            orderNumber: $request->input('out_trade_no', ''),
+            orderNumber: $request->input('out_trade_no'),
             notifyUrl: $request->input('callback_url'),
             sign: $request->input('sign'),
             clientIp: $request->input('client_ip'),

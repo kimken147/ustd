@@ -239,7 +239,7 @@ class ThirdPartyErrorResponse
     {
         return self::badRequest(
             ThirdPartyResponseUtil::ERROR_CODE_BAD_REQUEST,
-            __('common.Missing parameter: :attribute', ['attribute' => 'real_name'])
+            __('common.Missing parameter: :attribute', ['attribute' => 'payer_name'])
         );
     }
 }

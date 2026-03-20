@@ -23,7 +23,7 @@ class CreateTransactionController extends Controller
 
     public function __invoke(Request $request): JsonResponse
     {
-        foreach (['channel', 'merchant_id', 'amount', 'callback_url', 'client_ip', 'sign'] as $requiredAttribute) {
+        foreach (['channel', 'merchant_id', 'amount', 'out_trade_no', 'callback_url', 'client_ip', 'sign'] as $requiredAttribute) {
             if (!$request->filled($requiredAttribute)) {
                 return response()->json([
                     'http_status_code' => Response::HTTP_BAD_REQUEST,
