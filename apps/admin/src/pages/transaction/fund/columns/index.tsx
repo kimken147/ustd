@@ -16,7 +16,7 @@ import Badge from 'components/badge';
 import dayjs from 'dayjs';
 import { TransactionNote, Purple, Format } from '@morgan-ustd/shared';
 import numeral from 'numeral';
-import { getReceiptUrl } from '../../utils';
+import { getReceiptUrl, getExplorerTxUrl } from '../../utils';
 import type { ColumnDependencies, FundColumn } from './types';
 
 export type { ColumnDependencies } from './types';
@@ -316,12 +316,14 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
     {
       title: 'Tx Hash',
       dataIndex: 'tx_hash',
-      render(value) {
-        return value ? (
+      render(value, record) {
+        if (!value) return '-';
+        const url = getExplorerTxUrl(value, record.bank_name);
+        return (
           <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
-            {value}
+            {url ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a> : value}
           </Typography.Text>
-        ) : '-';
+        );
       },
     },
   ];

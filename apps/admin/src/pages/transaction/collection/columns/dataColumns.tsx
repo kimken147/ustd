@@ -4,6 +4,7 @@ import { RedoOutlined, StopOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { Format } from '@morgan-ustd/shared';
 import Badge from 'components/badge';
+import { getExplorerTxUrl } from '../../utils';
 import type { CollectionColumn, ColumnDependencies } from './types';
 
 export function createChannelColumn(deps: ColumnDependencies): CollectionColumn {
@@ -33,12 +34,14 @@ export function createTxHashColumn(deps: ColumnDependencies): CollectionColumn {
     title: 'Tx Hash',
     dataIndex: 'tx_hash',
     width: 140,
-    render(value: string) {
-      return value ? (
+    render(value: string, record) {
+      if (!value) return '-';
+      const url = getExplorerTxUrl(value, record.chain_network);
+      return (
         <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
-          {value}
+          {url ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a> : value}
         </Typography.Text>
-      ) : '-';
+      );
     },
   };
 }

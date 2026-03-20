@@ -9,6 +9,7 @@
 import { Typography } from 'antd';
 import { DateField } from '@refinedev/antd';
 import { CopyOutlined } from '@ant-design/icons';
+import { getExplorerTxUrl } from '../../../utils';
 import type { ColumnContext, WithdrawColumn } from './types';
 
 export function createAmountColumn(ctx: ColumnContext): WithdrawColumn {
@@ -111,12 +112,14 @@ export function createTxHashColumn(ctx: ColumnContext): WithdrawColumn {
     title: 'Tx Hash',
     dataIndex: 'tx_hash',
     width: 140,
-    render(value: string) {
-      return value ? (
+    render(value: string, record) {
+      if (!value) return '-';
+      const url = getExplorerTxUrl(value, record.chain_network);
+      return (
         <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
-          {value}
+          {url ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a> : value}
         </Typography.Text>
-      ) : '-';
+      );
     },
   };
 }
