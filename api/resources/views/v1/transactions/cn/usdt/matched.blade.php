@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDT 付款</title>
+    <title>USDT Payment</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -264,7 +264,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>USDT 转账付款</h2>
+            <h2>USDT Payment</h2>
             <span class="chain-badge">
                 {{ strtoupper(data_get($transaction->from_channel_account, 'chain_network', 'TRC-20')) }}
             </span>
@@ -280,7 +280,7 @@
             @if($payingLimitEnabled)
             <div class="timer-section">
                 <div class="timer" id="timer">--:--</div>
-                <div class="timer-label">剩余支付时间</div>
+                <div class="timer-label">Time Remaining</div>
             </div>
             @endif
         </div>
@@ -292,23 +292,23 @@
             </div>
 
             <div class="address-section">
-                <div class="address-label">收款地址</div>
+                <div class="address-label">Payment Address</div>
                 <div class="address-box">
                     <span class="address-text" id="wallet-address">{{ $transaction->fromChannelAccount->account ?? '' }}</span>
-                    <button class="copy-btn" onclick="copyText('{{ $transaction->fromChannelAccount->account ?? '' }}', this)">复制</button>
+                    <button class="copy-btn" onclick="copyText('{{ $transaction->fromChannelAccount->account ?? '' }}', this)">Copy</button>
                 </div>
             </div>
 
             <div style="margin-top: 16px;">
                 <div class="info-row">
-                    <span class="info-label">订单号</span>
+                    <span class="info-label">Order No.</span>
                     <span class="info-value">{{ $transaction->system_order_number }}</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">转账金额</span>
+                    <span class="info-label">Amount</span>
                     <span class="info-value" style="color: #38bdf8; font-weight: 600;">
                         {{ $transaction->floating_amount }} USDT
-                        <button class="copy-btn" style="margin-left: 8px; font-size: 11px; padding: 4px 10px;" onclick="copyText('{{ $transaction->floating_amount }}', this)">复制</button>
+                        <button class="copy-btn" style="margin-left: 8px; font-size: 11px; padding: 4px 10px;" onclick="copyText('{{ $transaction->floating_amount }}', this)">Copy</button>
                     </span>
                 </div>
             </div>
@@ -316,10 +316,10 @@
 
         <!-- tx_hash input -->
         <div class="card txhash-section">
-            <div class="txhash-label">已完成转账？填写交易哈希加速确认：</div>
+            <div class="txhash-label">Completed transfer? Enter tx hash to speed up confirmation:</div>
             <div class="txhash-input-group">
-                <input type="text" class="txhash-input" id="txHashInput" placeholder="输入链上交易哈希 (tx_hash)" maxlength="100">
-                <button class="txhash-submit" id="txHashSubmit" onclick="submitTxHash()">提交</button>
+                <input type="text" class="txhash-input" id="txHashInput" placeholder="Enter transaction hash (tx_hash)" maxlength="100">
+                <button class="txhash-submit" id="txHashSubmit" onclick="submitTxHash()">Submit</button>
             </div>
             <div class="txhash-msg" id="txHashMsg"></div>
         </div>
@@ -327,7 +327,7 @@
         <!-- Note -->
         @if($noteEnabled && $note)
         <div class="card">
-            <div class="order-note">备注：{{ $note }}</div>
+            <div class="order-note">Note: {{ $note }}</div>
         </div>
         @endif
 
@@ -335,20 +335,20 @@
         <div class="card">
             <div class="notice">
                 <div class="notice-title">
-                    <span>&#9888;</span> 注意事项
+                    <span>&#9888;</span> Important Notes
                 </div>
                 <ul>
-                    <li>请务必转账精确金额，否则系统无法自动确认</li>
-                    <li>请确认使用正确的链网络转账</li>
-                    <li>转账完成后可填写 tx_hash 加速到账确认</li>
-                    <li>如遇问题请联系客服并提供订单号</li>
+                    <li>Please transfer the exact amount, otherwise the system cannot auto-confirm</li>
+                    <li>Please confirm you are using the correct chain network</li>
+                    <li>After transfer, enter tx_hash to speed up confirmation</li>
+                    <li>If you have any issues, contact support with your order number</li>
                 </ul>
             </div>
         </div>
 
         <!-- Blockchain providers -->
         <div class="providers-section">
-            <div class="providers-label">常用区块链浏览器</div>
+            <div class="providers-label">Blockchain Explorers</div>
             <div class="providers">
                 <a href="https://tronscan.org/" target="_blank" rel="noopener" class="provider-link">TRONSCAN</a>
                 <a href="https://www.oklink.com/trx" target="_blank" rel="noopener" class="provider-link">OKLink</a>
@@ -379,10 +379,10 @@
         // Copy function
         function copyText(text, btn) {
             navigator.clipboard.writeText(text).then(() => {
-                btn.textContent = '已复制';
+                btn.textContent = 'Copied';
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.textContent = '复制';
+                    btn.textContent = 'Copy';
                     btn.classList.remove('copied');
                 }, 2000);
             }).catch(() => {
@@ -392,10 +392,10 @@
                 ta.select();
                 document.execCommand('copy');
                 document.body.removeChild(ta);
-                btn.textContent = '已复制';
+                btn.textContent = 'Copied';
                 btn.classList.add('copied');
                 setTimeout(() => {
-                    btn.textContent = '复制';
+                    btn.textContent = 'Copy';
                     btn.classList.remove('copied');
                 }, 2000);
             });
@@ -409,13 +409,13 @@
             const txHash = input.value.trim();
 
             if (!txHash) {
-                msg.textContent = '请输入交易哈希';
+                msg.textContent = 'Please enter transaction hash';
                 msg.className = 'txhash-msg error';
                 return;
             }
 
             btn.disabled = true;
-            btn.textContent = '提交中...';
+            btn.textContent = 'Submitting...';
             msg.textContent = '';
 
             fetch('/api/v1/cashier/{{ $transaction->system_order_number }}/tx-hash', {
@@ -424,20 +424,20 @@
                 body: JSON.stringify({ tx_hash: txHash })
             })
             .then(res => {
-                if (!res.ok) throw new Error('提交失败');
+                if (!res.ok) throw new Error('Submission failed');
                 return res.json();
             })
             .then(() => {
-                msg.textContent = '提交成功，系统将加速确认';
+                msg.textContent = 'Submitted, confirmation will be accelerated';
                 msg.className = 'txhash-msg success';
                 input.disabled = true;
-                btn.textContent = '已提交';
+                btn.textContent = 'Submitted';
             })
             .catch(() => {
-                msg.textContent = '提交失败，请重试';
+                msg.textContent = 'Submission failed, please retry';
                 msg.className = 'txhash-msg error';
                 btn.disabled = false;
-                btn.textContent = '提交';
+                btn.textContent = 'Submit';
             });
         }
 
@@ -451,7 +451,7 @@
             timerEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
             if (--seconds < 0) {
                 clearInterval(countdown);
-                timerEl.textContent = '已超时';
+                timerEl.textContent = 'Expired';
                 timerEl.style.opacity = '0.5';
                 setTimeout(() => window.location.reload(), 2000);
             }

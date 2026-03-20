@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>匹配中</title>
+    <title>Matching</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -41,10 +41,10 @@
 <body>
     <div class="card">
         <div class="spinner"></div>
-        <h2>正在匹配收款帐号</h2>
+        <h2>Matching payment account</h2>
         <div class="amount">{{ number_format($transaction->floating_amount, 2) }} USDT</div>
-        <p>订单号：{{ $transaction->system_order_number }}</p>
-        <p style="margin-top: 10px;">请稍候...</p>
+        <p>Order No.: {{ $transaction->system_order_number }}</p>
+        <p style="margin-top: 10px;">Please wait...</p>
     </div>
     <script>
         const orderId = '{{ $transaction->system_order_number }}';
