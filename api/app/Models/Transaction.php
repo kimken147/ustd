@@ -306,6 +306,19 @@ class Transaction extends Model
         return $this->belongsTo(ThirdChannel::class, 'thirdchannel_id');
     }
 
+    /**
+     * Map internal status to simplified merchant API status.
+     * 0 = pending, 1 = success, 2 = failed
+     */
+    public static function toMerchantStatus(int $status): int
+    {
+        return match ($status) {
+            self::STATUS_SUCCESS, self::STATUS_MANUAL_SUCCESS => 1,
+            self::STATUS_MATCHING_TIMED_OUT, self::STATUS_FAILED => 2,
+            default => 0, // pending: matching, paying, paying_timed_out, received, etc.
+        };
+    }
+
     public function isChild()
     {
         return !empty($this->parent_id);

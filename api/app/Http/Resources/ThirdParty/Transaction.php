@@ -32,11 +32,11 @@ class Transaction extends JsonResource
     public function toArray($request)
     {
         $data = [
-            'system_order_number' => $this->system_order_number,
-            'order_number'        => $this->order_number,
-            'status'              => $this->status,
+            'trade_no'            => $this->system_order_number,
+            'out_trade_no'        => $this->order_number,
+            'status'              => \App\Models\Transaction::toMerchantStatus($this->status),
             'amount'              => $this->amount,
-            'username'            => $this->to->username,
+            'merchant_id'         => $this->to->username,
             'notify_url'          => $this->notify_url,
             'return_url'          => data_get($this->to_channel_account, 'return_url', ''),
             'created_at'          => $this->created_at->toIso8601String(),

@@ -49,18 +49,17 @@ class CreateTransactionController extends Controller
         $noteEnable = $transaction->channel->note_enable;
 
         $matchedInfo = [
-            'casher_url' => $result->cashierUrl ?? urldecode(route('api.v1.cashier', $transaction->system_order_number)),
-            'receiver_account' => $result->matchedInfo?->receiverAccount ?? '',
-            'receiver_name' => $result->matchedInfo?->receiverName ?? '',
-            'receiver_bank_name' => $result->matchedInfo?->receiverBankName ?? '',
-            'receiver_bank_branch' => $result->matchedInfo?->receiverBankBranch ?? '',
+            'cashier_url' => $result->cashierUrl ?? urldecode(route('api.v1.cashier', $transaction->system_order_number)),
+            'pay_address' => $result->matchedInfo?->receiverAccount ?? '',
+            'payee_name' => $result->matchedInfo?->receiverName ?? '',
+            'bank_name' => $result->matchedInfo?->receiverBankName ?? '',
+            'bank_branch' => $result->matchedInfo?->receiverBankBranch ?? '',
             'note' => $noteEnable ? ($result->matchedInfo?->note ?? $transaction->note ?? '') : '',
         ];
 
         return Transaction::make($transaction)
             ->withMatchedInformation($matchedInfo)
             ->additional([
-                'http_status_code' => Response::HTTP_CREATED,
                 'message' => __('common.Match successful'),
             ])
             ->response()
