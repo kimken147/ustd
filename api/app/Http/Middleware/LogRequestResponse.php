@@ -23,7 +23,7 @@ class LogRequestResponse
     ];
 
     protected $excludedPostRoutes = [
-        "api/v1/third-party/profile-queries",
+        "api/v1/merchant-api/balance",
         "api/v1/transactions/*/note"
     ];
 

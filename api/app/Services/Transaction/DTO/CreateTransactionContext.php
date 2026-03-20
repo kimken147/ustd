@@ -25,16 +25,16 @@ class CreateTransactionContext
     public static function fromViewRequest(Request $request): self
     {
         return new self(
-            channelCode: $request->channel,
-            username: $request->merchant_id,
+            channelCode: $request->channel_code,
+            username: $request->username,
             amount: $request->amount,
-            orderNumber: $request->out_trade_no,
-            notifyUrl: urldecode($request->callback_url),
+            orderNumber: $request->order_number,
+            notifyUrl: urldecode($request->notify_url),
             sign: $request->sign,
             clientIp: $request->input('client_ip'),
-            realName: $request->payer_name ? urldecode($request->payer_name) : null,
-            returnUrl: $request->redirect_url,
-            bankName: $request->network,
+            realName: $request->real_name ? urldecode($request->real_name) : null,
+            returnUrl: $request->return_url,
+            bankName: $request->bank_name,
             usdtRate: $request->usdt_rate,
             matchLastAccount: $request->match_last_account,
             isThirdParty: false,

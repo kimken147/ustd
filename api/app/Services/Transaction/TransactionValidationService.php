@@ -120,25 +120,43 @@ class TransactionValidationService
      */
     public function validateSignature(CreateTransactionContext $context, User $merchant): void
     {
-        $params = [
-            'channel' => $context->channelCode,
-            'merchant_id' => $context->username,
-            'amount' => $context->amount,
-            'out_trade_no' => $context->orderNumber,
-            'callback_url' => $context->notifyUrl,
-        ];
+        if ($context->isThirdParty) {
+            // Merchant API uses new parameter names
+            $params = [
+                'channel' => $context->channelCode,
+                'merchant_id' => $context->username,
+                'amount' => $context->amount,
+                'out_trade_no' => $context->orderNumber,
+                'callback_url' => $context->notifyUrl,
+            ];
+            $realNameKey = 'payer_name';
+            $returnUrlKey = 'redirect_url';
+            $bankNameKey = 'network';
+        } else {
+            // Cashier/view uses original parameter names
+            $params = [
+                'channel_code' => $context->channelCode,
+                'username' => $context->username,
+                'amount' => $context->amount,
+                'order_number' => $context->orderNumber,
+                'notify_url' => $context->notifyUrl,
+            ];
+            $realNameKey = 'real_name';
+            $returnUrlKey = 'return_url';
+            $bankNameKey = 'bank_name';
+        }
 
         if ($context->clientIp) {
             $params['client_ip'] = $context->clientIp;
         }
         if ($context->realName) {
-            $params['payer_name'] = $context->realName;
+            $params[$realNameKey] = $context->realName;
         }
         if ($context->returnUrl) {
-            $params['redirect_url'] = $context->returnUrl;
+            $params[$returnUrlKey] = $context->returnUrl;
         }
         if ($context->bankName) {
-            $params['network'] = $context->bankName;
+            $params[$bankNameKey] = $context->bankName;
         }
         if ($context->usdtRate) {
             $params['usdt_rate'] = $context->usdtRate;
@@ -149,8 +167,8 @@ class TransactionValidationService
 
         $sign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
-        // 也嘗試不含 payer_name 的簽名（向後兼容）
-        unset($params["payer_name"]);
+        // Also try signature without real_name/payer_name (backward compatible)
+        unset($params[$realNameKey]);
         $noRealNameSign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
         if (!in_array(strtolower($context->sign), [$sign, $noRealNameSign])) {

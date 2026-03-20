@@ -17,12 +17,12 @@ class Wmh extends ThirdChannel
 
     //回调地址
     public $notify    = '';
-    public $depositUrl   = 'https://api.wmh168.com/api/v1/third-party/create-transactions';
-    public $xiafaUrl   = 'https://api.wmh168.com/api/v1/third-party/withdraws';
-    public $daifuUrl   = 'https://api.wmh168.com/api/v1/third-party/agency-withdraws';
+    public $depositUrl   = 'https://api.wmh168.com/api/v1/merchant-api/deposits';
+    public $xiafaUrl   = 'https://api.wmh168.com/api/v1/merchant-api/payouts';
+    public $daifuUrl   = 'https://api.wmh168.com/api/v1/merchant-api/agency-payouts';
     public $queryDepositUrl = '';
-    public $queryDaifuUrl  = 'https://api.wmh168.com/api/v1/third-party/withdraw-queries';
-    public $queryBalanceUrl = 'https://api.wmh168.com/api/v1/third-party/profile-queries';
+    public $queryDaifuUrl  = 'https://api.wmh168.com/api/v1/merchant-api/payouts/query';
+    public $queryBalanceUrl = 'https://api.wmh168.com/api/v1/merchant-api/balance';
 
     //预设商户号
     public $merchant    = 'sgameboydf';
@@ -41,16 +41,16 @@ class Wmh extends ThirdChannel
     {
         $this->key = $data['key'];
         $post = [
-            'username' => $data['merchant'] ?? $this->merchant,
-            'channel_code' => $data["key2"] ?? $this->channelCode,
+            'merchant_id' => $data['merchant'] ?? $this->merchant,
+            'channel' => $data["key2"] ?? $this->channelCode,
             'amount' => $data['request']->amount,
-            'notify_url' => $data['callback_url'],
-            'order_number' => $data['request']->order_number,
+            'callback_url' => $data['callback_url'],
+            'out_trade_no' => $data['request']->order_number,
             'client_ip'  => $data['request']->client_ip ?? $data['client_ip'],
         ];
 
         if (isset($data['request']->real_name) && $data['request']->real_name != '') {
-            $post['real_name'] = $data['request']->real_name;
+            $post['payer_name'] = $data['request']->real_name;
         }
 
         $post['sign'] = $this->makesign($post);
@@ -64,13 +64,13 @@ class Wmh extends ThirdChannel
             $resBody = json_decode($response->getBody()->getContents(), true);
             Log::debug(self::class, compact('post', 'resBody'));
 
-            if (isset($resBody['data']['status']) && in_array($resBody['data']['status'], [1, 2, 3, 11])) {
+            if (isset($resBody['data']['status']) && in_array($resBody['data']['status'], [0, 1])) {
                 $ret = [
-                    'receiver_name' => $resBody['data']['receiver_name'] ?? '',
-                    'receiver_bank_name' => $resBody['data']['receiver_bank_name'] ?? '',
-                    'receiver_account' => $resBody['data']['receiver_account'] ?? '',
-                    'receiver_bank_branch' => $resBody['data']['receiver_bank_branch'] ?? '',
-                    'pay_url' => $resBody['data']['casher_url'],
+                    'receiver_name' => $resBody['data']['payee_name'] ?? '',
+                    'receiver_bank_name' => $resBody['data']['bank_name'] ?? '',
+                    'receiver_account' => $resBody['data']['pay_address'] ?? '',
+                    'receiver_bank_branch' => $resBody['data']['bank_branch'] ?? '',
+                    'pay_url' => $resBody['data']['cashier_url'],
                 ];
                 return ['success' => true, 'data' => $ret];
             } else {
@@ -92,13 +92,13 @@ class Wmh extends ThirdChannel
     {
         $this->key = $data['key'];
         $post_data = [
-            'username'    => $data['merchant'] ?? $this->merchant,
+            'merchant_id'    => $data['merchant'] ?? $this->merchant,
             'amount'    => $data['request']->amount,
-            'order_number'   => $data['request']->order_number,
-            'notify_url'   => $data['callback_url'],
-            'bank_card_holder_name' => $data['request']->bank_card_holder_name,
-            'bank_card_number'  => $data['request']->bank_card_number,
-            'bank_name'    => $data['request']->bank_name,
+            'out_trade_no'   => $data['request']->order_number,
+            'callback_url'   => $data['callback_url'],
+            'payee_name' => $data['request']->bank_card_holder_name,
+            'pay_address'  => $data['request']->bank_card_number,
+            'network'    => $data['request']->bank_name,
         ];
 
         $post_data['sign'] = $this->makesign($post_data);
@@ -106,7 +106,7 @@ class Wmh extends ThirdChannel
 
         Log::debug(self::class, compact('post_data', 'return_data'));
 
-        if (isset($return_data['data']) && in_array($return_data['data']['status'], [1, 2, 3, 11])) {
+        if (isset($return_data['data']) && in_array($return_data['data']['status'], [0, 1])) {
             return ['success' => true];
         } else {
             return ['success' => false, 'msg' => $return_data['message'] ?? ''];
@@ -117,8 +117,8 @@ class Wmh extends ThirdChannel
     {
         $this->key = $data['key'];
         $post_data = [
-            'order_number'   => $data['request']->order_number,
-            'username'   => $data['merchant'] ?? $this->merchant,
+            'out_trade_no'   => $data['request']->order_number,
+            'merchant_id'   => $data['merchant'] ?? $this->merchant,
         ];
         $post_data['sign'] = $this->makesign($post_data);
 
@@ -128,15 +128,15 @@ class Wmh extends ThirdChannel
 
         Log::debug(self::class, compact('return_data'));
 
-        if (isset($return_data['data']) && in_array($return_data['data']['status'], [1, 2, 3, 11])) {
+        if (isset($return_data['data']) && $return_data['data']['status'] === 0) {
             return ['success' => true, 'status' => Transaction::STATUS_PAYING];
         }
 
-        if (isset($return_data['data']) && in_array($return_data['data']['status'], [4, 5])) {
+        if (isset($return_data['data']) && $return_data['data']['status'] === 1) {
             return ['success' => true, 'status' => Transaction::STATUS_SUCCESS];
         }
 
-        if (isset($return_data['data']) && in_array($return_data['data']['status'], [6, 7, 8])) {
+        if (isset($return_data['data']) && $return_data['data']['status'] === 2) {
             return ['success' => true, 'status' => Transaction::STATUS_FAILED, 'msg' => $return_data['message']];
         }
 
@@ -148,7 +148,7 @@ class Wmh extends ThirdChannel
     {
         $data = $request->all()['data'];
 
-        if ($data['order_number'] != $transaction->order_number) {
+        if ($data['out_trade_no'] != $transaction->order_number) {
             return ['error' => '订单编号不正确'];
         }
 
@@ -156,16 +156,11 @@ class Wmh extends ThirdChannel
             return ['error' => '金额不正确'];
         }
 
-        if (in_array($data['status'], [6, 7, 8])) {
-            $map = [
-                6 => '匹配超时',
-                7 => '支付超時',
-                8 => '失败'
-            ];
-            return ['fail' => $map[$data['status']]];
+        if ($data['status'] === 2) {
+            return ['fail' => '失败'];
         }
 
-        if (in_array($data['status'], [4, 5])) {
+        if ($data['status'] === 1) {
             return ['success' => true];
         }
 
@@ -176,7 +171,7 @@ class Wmh extends ThirdChannel
     {
         $this->key = $data['key'];
         $post_data = [
-            'username' => $data['merchant']
+            'merchant_id' => $data['merchant']
         ];
 
         $post_data['sign'] = $this->makesign($post_data);
