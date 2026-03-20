@@ -35,19 +35,22 @@ class Withdraw extends JsonResource
      */
     public function toArray($request)
     {
+        $fromChannelAccount = $this->from_channel_account ?? [];
+
         $data = [
-            'system_order_number'   => $this->system_order_number,
-            'order_number'          => $this->order_number,
-            'status'                => $this->status,
+            'trade_no'              => $this->system_order_number,
+            'out_trade_no'          => $this->order_number,
+            'status'                => \App\Models\Transaction::toMerchantStatus($this->status),
             'amount'                => $this->amount,
             'fee'                   => $this->transactionFees->filter($this->filteredByUser($this->from))->first()->fee,
-            'username'              => $this->from->username,
-            'notify_url'            => $this->notify_url,
+            'merchant_id'           => $this->from->username,
+            'callback_url'          => $this->notify_url,
+            'pay_address'           => $fromChannelAccount['bank_card_number'] ?? '',
+            'network'               => $fromChannelAccount['bank_name'] ?? '',
+            'payee_name'            => $fromChannelAccount['bank_card_holder_name'] ?? '',
             'created_at'            => $this->created_at->toIso8601String(),
             'confirmed_at'          => optional($this->confirmed_at)->toIso8601String() ?? '',
         ];
-
-        $data = array_merge($data, $this->from_channel_account);
 
         return $this->withSign($this->from, $data);
     }

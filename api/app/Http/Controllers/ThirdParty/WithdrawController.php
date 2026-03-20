@@ -19,7 +19,6 @@ class WithdrawController extends Controller
 
             return Withdraw::make($result->getTransaction())
                 ->additional([
-                    'http_status_code' => 201,
                     'message' => __('common.Submit successful'),
                 ])
                 ->response()

@@ -72,14 +72,14 @@ abstract class BaseWithdrawService
             wallet: $merchant->wallet,
             amount: $request->input('amount'),
             bankCard: $this->bankCardTransferObject->plain(
-                $request->input('bank_name'),
-                $request->input('bank_card_number'),
-                $request->input('bank_card_holder_name') ?? '',
-                $request->input('bank_province') ?? '',
-                $request->input('bank_city') ?? ''
+                $request->input('network'),
+                $request->input('pay_address'),
+                $request->input('payee_name') ?? '',
+                $request->input('province') ?? '',
+                $request->input('city') ?? ''
             ),
-            orderNumber: $request->input('order_number'),
-            notifyUrl: $request->input('notify_url'),
+            orderNumber: $request->input('out_trade_no'),
+            notifyUrl: $request->input('callback_url'),
             source: WithdrawContext::SOURCE_THIRD_PARTY,
         );
     }
@@ -161,11 +161,11 @@ abstract class BaseWithdrawService
     protected function validateRequiredAttributes(Request $request): void
     {
         $requiredAttributes = [
-            'username',
+            'merchant_id',
             'amount',
-            'bank_card_number',
-            'bank_name',
-            'order_number',
+            'pay_address',
+            'network',
+            'out_trade_no',
             'sign',
         ];
 
@@ -181,7 +181,7 @@ abstract class BaseWithdrawService
     protected function validateSignatureAndGetMerchant(Request $request): User
     {
         $merchant = User::where([
-            ['username', $request->input('username')],
+            ['username', $request->input('merchant_id')],
             ['role', User::ROLE_MERCHANT],
         ])->first();
 
