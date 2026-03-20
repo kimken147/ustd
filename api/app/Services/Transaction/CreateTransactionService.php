@@ -443,7 +443,7 @@ class CreateTransactionService
         // USDT 母地址匹配時，自動衍生一次性子地址作為實際收款地址
         $depositAccount = $providerUserChannelAccount;
         if (
-            $providerUserChannelAccount->channel_code === Channel::CODE_USDT
+            Channel::isUsdt($providerUserChannelAccount->channel_code)
             && $providerUserChannelAccount->address_type === UserChannelAccount::ADDRESS_TYPE_MASTER
         ) {
             try {
@@ -486,7 +486,7 @@ class CreateTransactionService
 
             // 如果是 USDT 通道，建立鏈上監控記錄
             $transaction->refresh();
-            if ($transaction->channel_code === Channel::CODE_USDT && $transaction->from_channel_account_id) {
+            if (Channel::isUsdt($transaction->channel_code) && $transaction->from_channel_account_id) {
                 $account = UserChannelAccount::find($transaction->from_channel_account_id);
                 if ($account) {
                     UsdtDepositMonitor::create([

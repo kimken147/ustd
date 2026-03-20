@@ -187,9 +187,9 @@ class AccountMatchingQueryBuilder
     {
         // USDT 收款只匹配母地址，子地址由系統自動衍生
         $query->where(function ($q) {
-            $q->where('user_channel_accounts.channel_code', '!=', 'USDT')
+            $q->whereNotIn('user_channel_accounts.channel_code', Channel::USDT_CODES)
               ->orWhere(function ($q2) {
-                  $q2->where('user_channel_accounts.channel_code', 'USDT')
+                  $q2->whereIn('user_channel_accounts.channel_code', Channel::USDT_CODES)
                      ->where('user_channel_accounts.address_type', UserChannelAccount::ADDRESS_TYPE_MASTER);
               });
         });

@@ -3,6 +3,7 @@
 namespace App\Services\Crypto;
 
 use App\Models\ChainTransaction;
+use App\Models\Channel;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Log;
 
@@ -26,7 +27,7 @@ class ChainTransactionMatchService
 
         // 策略 2: 金額 + 時間窗口匹配（僅收款）
         if ($chainTx->direction === ChainTransaction::DIRECTION_IN && $chainTx->user_channel_account_id) {
-            $candidates = Transaction::where('channel_code', 'USDT')
+            $candidates = Transaction::whereIn('channel_code', Channel::USDT_CODES)
                 ->where(function ($q) use ($chainTx) {
                     $q->where('from_channel_account_id', $chainTx->user_channel_account_id)
                         ->orWhere('to_channel_account_id', $chainTx->user_channel_account_id);

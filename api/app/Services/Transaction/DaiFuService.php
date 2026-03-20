@@ -24,12 +24,12 @@ class DaiFuService
 
     public function execute(string $channelCode)
     {
-        $isUsdt = $channelCode === Channel::CODE_USDT;
+        $isUsdt = Channel::isUsdt($channelCode);
 
         // 1. 取得所有可用出款帳號
         if ($isUsdt) {
             $accounts = UserChannelAccount::with('user')
-                ->where('channel_code', Channel::CODE_USDT)
+                ->where('channel_code', $channelCode)
                 ->where('status', UserChannelAccount::STATUS_ONLINE)
                 ->where('is_auto', true)
                 ->whereDoesntHave('payingDaifu')

@@ -67,7 +67,7 @@ class ChainTransactionSyncService
      */
     public function syncAllAccounts(): array
     {
-        $accounts = UserChannelAccount::where('channel_code', Channel::CODE_USDT)
+        $accounts = UserChannelAccount::whereIn('channel_code', Channel::USDT_CODES)
             ->whereNull('deleted_at')
             ->get();
 

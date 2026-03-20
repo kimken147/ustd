@@ -40,7 +40,7 @@ class WithdrawContext
 
     public function isUsdt(): bool
     {
-        return $this->bankCard->bankName === Channel::CODE_USDT;
+        return Channel::isUsdt($this->bankCard->bankName);
     }
 
 }
