@@ -700,21 +700,18 @@ Route::prefix("merchant")
         });
     });
 
-Route::prefix("third-party")
+Route::prefix("merchant-api")
     ->namespace("ThirdParty")
     ->group(function () {
-        Route::post("create-transactions", "CreateTransactionController")->name(
-            "api.v1.third-party.create-transactions"
+        Route::post("deposits", "CreateTransactionController")->name(
+            "api.v1.merchant-api.deposits"
         );
-        Route::post("profile-queries", "ProfileQueriesController");
-        Route::post("withdraw-queries", "WithdrawQueriesController");
-        Route::post("transaction-queries", "TransactionQueriesController");
-        Route::post("batch-transaction-queries", "GetTransactionsController");
-        Route::apiResource("withdraws", "WithdrawController")->only(["store"]);
-        Route::apiResource(
-            "agency-withdraws",
-            "AgencyWithdrawController"
-        )->only(["store"]);
+        Route::post("balance", "ProfileQueriesController");
+        Route::post("payouts/query", "WithdrawQueriesController");
+        Route::post("deposits/query", "TransactionQueriesController");
+        Route::post("transactions", "GetTransactionsController");
+        Route::post("payouts", "WithdrawController@store");
+        Route::post("agency-payouts", "AgencyWithdrawController@store");
     });
 
 
