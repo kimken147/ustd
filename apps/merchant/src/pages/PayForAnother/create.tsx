@@ -45,12 +45,12 @@ const PayForAnotherCreate: FC = () => {
     const selectOptions: SelectOptions = [
         {
             label: translate("channels.USDT"),
-            value: "USDT",
+            value: "USDT_TRC20",
         },
     ];
     const getCardLabel = (index: number) => {
         const type = lists?.[index]?.type;
-        if (type === "USDT") {
+        if (type === "USDT_TRC20") {
             return translate("withdraw.fields.walletAddress");
         }
         return translate("withdraw.fields.account");
@@ -125,7 +125,7 @@ const PayForAnotherCreate: FC = () => {
                         name={"lists"}
                         initialValue={[
                             {
-                                type: "USDT",
+                                type: "USDT_TRC20",
                             },
                         ]}
                     >
@@ -201,7 +201,7 @@ const PayForAnotherCreate: FC = () => {
                                                 type="dashed"
                                                 onClick={() =>
                                                     add({
-                                                        type: "USDT",
+                                                        type: "USDT_TRC20",
                                                     })
                                                 }
                                             >
