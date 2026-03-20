@@ -121,24 +121,24 @@ class TransactionValidationService
     public function validateSignature(CreateTransactionContext $context, User $merchant): void
     {
         $params = [
-            'channel_code' => $context->channelCode,
-            'username' => $context->username,
+            'channel' => $context->channelCode,
+            'merchant_id' => $context->username,
             'amount' => $context->amount,
-            'order_number' => $context->orderNumber,
-            'notify_url' => $context->notifyUrl,
+            'out_trade_no' => $context->orderNumber,
+            'callback_url' => $context->notifyUrl,
         ];
 
         if ($context->clientIp) {
             $params['client_ip'] = $context->clientIp;
         }
         if ($context->realName) {
-            $params['real_name'] = $context->realName;
+            $params['payer_name'] = $context->realName;
         }
         if ($context->returnUrl) {
-            $params['return_url'] = $context->returnUrl;
+            $params['redirect_url'] = $context->returnUrl;
         }
         if ($context->bankName) {
-            $params['bank_name'] = $context->bankName;
+            $params['network'] = $context->bankName;
         }
         if ($context->usdtRate) {
             $params['usdt_rate'] = $context->usdtRate;
@@ -149,8 +149,8 @@ class TransactionValidationService
 
         $sign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
-        // 也嘗試不含 real_name 的簽名（向後兼容）
-        unset($params["real_name"]);
+        // 也嘗試不含 payer_name 的簽名（向後兼容）
+        unset($params["payer_name"]);
         $noRealNameSign = SignatureCalculator::calculate($params, $merchant->secret_key);
 
         if (!in_array(strtolower($context->sign), [$sign, $noRealNameSign])) {
