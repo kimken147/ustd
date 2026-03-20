@@ -10,7 +10,6 @@ use GuzzleHttp\RequestOptions;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Http\Response;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -47,9 +46,9 @@ class NotifyTransaction implements ShouldQueue
     {
         if (!$this->transaction->notify_url) {
             Log::debug(__CLASS__, [
-                'order_number'        => $this->transaction->order_number,
-                'system_order_number' => $this->transaction->system_order_number,
-                'message'             => 'Empty notify_url',
+                'out_trade_no' => $this->transaction->order_number,
+                'trade_no'     => $this->transaction->system_order_number,
+                'message'      => 'Empty notify_url',
             ]);
 
             return;
@@ -88,11 +87,11 @@ class NotifyTransaction implements ShouldQueue
         }
 
         $mainData = [
-            'order_number'        => $this->transaction->order_number,
-            'system_order_number' => $this->transaction->system_order_number,
-            'username'            => $targetUser->username,
-            'amount'              => $this->transaction->amount,
-            'status'              => $this->transaction->status,
+            'out_trade_no'  => $this->transaction->order_number,
+            'trade_no'      => $this->transaction->system_order_number,
+            'merchant_id'   => $targetUser->username,
+            'amount'        => $this->transaction->amount,
+            'status'        => Transaction::toMerchantStatus($this->transaction->status),
         ];
 
         if ($this->transaction->chain_network) {
@@ -103,10 +102,9 @@ class NotifyTransaction implements ShouldQueue
         }
 
         $data = [
-            'data'             => $mainData,
-            'http_status_code' => Response::HTTP_OK,
-            'error_code'       => 0,
-            'message'          => '异步回调',
+            'data'       => $mainData,
+            'error_code' => 0,
+            'message'    => '异步回调',
         ];
 
         $parameters = $data['data'];
@@ -137,10 +135,10 @@ class NotifyTransaction implements ShouldQueue
             $responseContents = $response->getBody()->getContents();
         } catch (Exception $e) {
             Log::debug(__CLASS__, [
-                'order_number'        => $this->transaction->order_number,
-                'system_order_number' => $this->transaction->system_order_number,
-                'message'             => 'Notify failed with exception',
-                'exception'           => $e,
+                'out_trade_no' => $this->transaction->order_number,
+                'trade_no'     => $this->transaction->system_order_number,
+                'message'      => 'Notify failed with exception',
+                'exception'    => $e,
             ]);
         }
 
@@ -150,9 +148,9 @@ class NotifyTransaction implements ShouldQueue
             ]);
 
             Log::debug(__CLASS__, [
-                'order_number'        => $this->transaction->order_number,
-                'system_order_number' => $this->transaction->system_order_number,
-                'message'             => $responseContents,
+                'out_trade_no' => $this->transaction->order_number,
+                'trade_no'     => $this->transaction->system_order_number,
+                'message'      => $responseContents,
             ]);
 
             $this->release(30);
@@ -162,9 +160,9 @@ class NotifyTransaction implements ShouldQueue
 
         if (!in_array(strtolower($responseContents), ['success', 'ok']) && $this->attempts() > 2) {
             Log::debug(__CLASS__, [
-                'order_number'        => $this->transaction->order_number,
-                'system_order_number' => $this->transaction->system_order_number,
-                'message'             => $responseContents,
+                'out_trade_no' => $this->transaction->order_number,
+                'trade_no'     => $this->transaction->system_order_number,
+                'message'      => $responseContents,
             ]);
             $this->transaction->update([
                 'notify_status' => Transaction::NOTIFY_STATUS_FAILED,
