@@ -24,7 +24,7 @@ class ProfileQueriesController extends Controller
     public function __invoke(Request $request)
     {
         $requiredAttributes = [
-            'username', 'sign'
+            'merchant_id', 'sign'
         ];
 
         foreach ($requiredAttributes as $requiredAttribute) {
@@ -39,7 +39,7 @@ class ProfileQueriesController extends Controller
 
         /** @var User|null $merchant */
         $merchant = User::where([
-            ['username', $request->input('username')],
+            ['username', $request->input('merchant_id')],
             ['role', User::ROLE_MERCHANT]
         ])->first();
 
@@ -63,7 +63,6 @@ class ProfileQueriesController extends Controller
 
         return Profile::make($merchant)
             ->additional([
-                'http_status_code' => 201,
                 'message'          => __('common.Query successful'),
             ])
             ->response()

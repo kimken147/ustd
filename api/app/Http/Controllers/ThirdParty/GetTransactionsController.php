@@ -20,7 +20,7 @@ class GetTransactionsController extends Controller
     public function __invoke(Request $request, WhitelistedIpManager $whitelistedIpManager)
     {
         $requiredAttributes = [
-            'username',
+            'merchant_id',
             'page',
             'started_at',
             'ended_at',
@@ -65,7 +65,7 @@ class GetTransactionsController extends Controller
 
         /** @var User|null $merchant */
         $merchant = User::where([
-            ['username', $request->username],
+            ['username', $request->merchant_id],
             ['role', User::ROLE_MERCHANT]
         ])->first();
 

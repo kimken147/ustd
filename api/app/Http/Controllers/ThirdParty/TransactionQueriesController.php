@@ -17,7 +17,7 @@ class TransactionQueriesController extends Controller
     public function __invoke(Request $request, WhitelistedIpManager $whitelistedIpManager)
     {
         $requiredAttributes = [
-            'username', 'order_number', 'sign'
+            'merchant_id', 'out_trade_no', 'sign'
         ];
 
         foreach ($requiredAttributes as $requiredAttribute) {
@@ -32,7 +32,7 @@ class TransactionQueriesController extends Controller
 
         /** @var User|null $merchant */
         $merchant = User::where([
-            ['username', $request->username],
+            ['username', $request->merchant_id],
             ['role', User::ROLE_MERCHANT]
         ])->first();
 
@@ -65,7 +65,7 @@ class TransactionQueriesController extends Controller
         $transaction = Transaction::where([
             'type'         => Transaction::TYPE_PAUFEN_TRANSACTION,
             'to_id'        => $merchant->getKey(),
-            'order_number' => $request->input('order_number'),
+            'order_number' => $request->input('out_trade_no'),
         ])->first();
 
         if (!$transaction) {
@@ -78,7 +78,6 @@ class TransactionQueriesController extends Controller
 
         return \App\Http\Resources\ThirdParty\Transaction::make($transaction)
             ->additional([
-                'http_status_code' => 201,
                 'message'          => __('common.Query successful'),
             ])
             ->response()

@@ -27,14 +27,14 @@ class TransactionListCollection extends ResourceCollection
         foreach ($collectionList as $key => $item) {
             $tmp = [];
             $tmp = [
-                'system_order_number' => $item->system_order_number,
-                'order_number'        => $item->order_number,
-                'status'              => $item->status,
+                'trade_no'            => $item->system_order_number,
+                'out_trade_no'        => $item->order_number,
+                'status'              => Transaction::toMerchantStatus($item->status),
                 'amount'              => $item->amount,
                 'fee'                 => $item->from ? $item->transactionFees->filter($this->filteredByUser($item->from))->first()->fee : "0.00",
-                'username'            => $item->to->username ?? '',
+                'merchant_id'         => $item->to->username ?? '',
                 'note'                => $item->channel->note_enable ?? '',
-                'notify_url'          => $item->notify_url,
+                'callback_url'        => $item->notify_url,
                 'created_at'          => $item->created_at->toIso8601String(),
                 'confirmed_at'        => optional($item->confirmed_at)->toIso8601String() ?? '',
             ];
@@ -43,10 +43,10 @@ class TransactionListCollection extends ResourceCollection
 
         $data = [
             'list' => $list,
-            'now_page' => $this->resource->currentPage(),
-            'total_page' => $this->resource->lastPage(),
-            'count' => $this->resource->perPage(),
-            'total_count' => $this->resource->total(),
+            'current_page' => $this->resource->currentPage(),
+            'total_pages' => $this->resource->lastPage(),
+            'per_page' => $this->resource->perPage(),
+            'total' => $this->resource->total(),
         ];
         $user = $this->resource->first()->to;
 
@@ -56,7 +56,6 @@ class TransactionListCollection extends ResourceCollection
         // 自定義返回結構
         return [
             'data' => $data,
-            'http_status_code' => 201,
             'message' => __("transaction.success"),
         ];
     }

@@ -18,7 +18,7 @@ class WithdrawQueriesController extends Controller
     public function __invoke(Request $request, WhitelistedIpManager $whitelistedIpManager)
     {
         $requiredAttributes = [
-            'username', 'order_number', 'sign'
+            'merchant_id', 'out_trade_no', 'sign'
         ];
 
         foreach ($requiredAttributes as $requiredAttribute) {
@@ -33,7 +33,7 @@ class WithdrawQueriesController extends Controller
 
         /** @var User|null $merchant */
         $merchant = User::where([
-            ['username', $request->username],
+            ['username', $request->merchant_id],
             ['role', User::ROLE_MERCHANT]
         ])->first();
 
@@ -68,7 +68,7 @@ class WithdrawQueriesController extends Controller
         ])
             ->where([
                 'from_id'      => $merchant->getKey(),
-                'order_number' => $request->input('order_number'),
+                'order_number' => $request->input('out_trade_no'),
             ])->first();
 
         if (!$withdraw) {
@@ -81,7 +81,6 @@ class WithdrawQueriesController extends Controller
 
         return Withdraw::make($withdraw)
             ->additional([
-                'http_status_code' => 201,
                 'message'          => __('common.Query successful'),
             ])
             ->response()

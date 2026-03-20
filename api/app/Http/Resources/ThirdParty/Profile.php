@@ -22,8 +22,8 @@ class Profile extends JsonResource
     public function toArray($request)
     {
         return $this->withSign($this, [
-            'username'          => $this->username,
-            'name'              => $this->name,
+            'merchant_id'       => $this->username,
+            'merchant_name'     => $this->name,
             'balance'           => $this->wallet->balance,
             'frozen_balance'    => $this->wallet->frozen_balance,
             'available_balance' => $this->wallet->available_balance,
