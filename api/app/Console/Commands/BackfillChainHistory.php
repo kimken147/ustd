@@ -19,10 +19,10 @@ class BackfillChainHistory extends Command
 
         if ($accountId) {
             $accounts = UserChannelAccount::where('id', $accountId)
-                ->where('channel_code', Channel::CODE_USDT)
+                ->whereIn('channel_code', Channel::USDT_CODES)
                 ->get();
         } else {
-            $accounts = UserChannelAccount::where('channel_code', Channel::CODE_USDT)
+            $accounts = UserChannelAccount::whereIn('channel_code', Channel::USDT_CODES)
                 ->whereNull('deleted_at')
                 ->get();
         }

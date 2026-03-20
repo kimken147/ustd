@@ -148,7 +148,7 @@ class Transaction extends JsonResource
 
     private function getProviderAccountVendorName()
     {
-        if ($this->channel_code === Channel::CODE_USDT) {
+        if (Channel::isUsdt($this->channel_code)) {
             return 'USDT';
         }
         return data_get($this->from_channel_account, UserChannelAccount::DETAIL_KEY_BANK_NAME);

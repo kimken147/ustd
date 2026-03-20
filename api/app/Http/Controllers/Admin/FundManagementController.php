@@ -9,6 +9,7 @@ use App\Jobs\BatchTransferUsdt;
 use App\Models\Transaction;
 use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
+use App\Models\Channel;
 use App\Utils\TransactionFactory;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class FundManagementController extends Controller
     public function index(Request $request)
     {
         $accounts = UserChannelAccount::with('user', 'parentAccount')
-            ->where('channel_code', 'USDT')
+            ->whereIn('channel_code', Channel::USDT_CODES)
             ->where('onchain_usdt_balance', '>', 0)
             ->whereNull('deleted_at')
             ->orderByDesc('onchain_usdt_balance')
@@ -44,12 +45,12 @@ class FundManagementController extends Controller
 
         $targetAccount = UserChannelAccount::findOrFail($validated['target_account_id']);
 
-        if ($targetAccount->channel_code !== 'USDT') {
+        if (!Channel::isUsdt($targetAccount->channel_code)) {
             abort(400, '目標帳號必須是 USDT 通道');
         }
 
         $sourceAccounts = UserChannelAccount::whereIn('id', $validated['source_account_ids'])
-            ->where('channel_code', 'USDT')
+            ->whereIn('channel_code', Channel::USDT_CODES)
             ->get();
 
         foreach ($sourceAccounts as $source) {

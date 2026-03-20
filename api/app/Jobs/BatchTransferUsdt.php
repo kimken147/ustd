@@ -137,7 +137,7 @@ class BatchTransferUsdt implements ShouldQueue
             );
 
             // IN record for receiver (if address belongs to a platform account)
-            $receiverAccount = UserChannelAccount::where('channel_code', Channel::CODE_USDT)
+            $receiverAccount = UserChannelAccount::whereIn('channel_code', Channel::USDT_CODES)
                 ->where('account', $targetAddress)
                 ->whereNull('deleted_at')
                 ->first();
