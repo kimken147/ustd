@@ -97,22 +97,30 @@ class ConfirmUsdtWithdraw implements ShouldQueue
 
     private function syncAccountBalance(Transaction $transaction, ChainAdapterInterface $adapter): void
     {
-        try {
-            $account = UserChannelAccount::find($transaction->to_channel_account_id);
-            if (!$account) {
-                return;
-            }
+        $accountIds = array_filter([
+            $transaction->to_channel_account_id,
+            $transaction->from_channel_account_id,
+        ]);
 
-            $account->update([
-                'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-                'onchain_native_balance' => $adapter->getNativeBalance($account->account),
-                'onchain_synced_at' => now(),
-            ]);
-        } catch (\Throwable $e) {
-            Log::warning('ConfirmUsdtWithdraw: 同步帳號餘額失敗', [
-                'transaction_id' => $transaction->id,
-                'error' => $e->getMessage(),
-            ]);
+        foreach ($accountIds as $accountId) {
+            try {
+                $account = UserChannelAccount::find($accountId);
+                if (!$account) {
+                    continue;
+                }
+
+                $account->update([
+                    'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
+                    'onchain_native_balance' => $adapter->getNativeBalance($account->account),
+                    'onchain_synced_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('ConfirmUsdtWithdraw: 同步帳號餘額失敗', [
+                    'transaction_id' => $transaction->id,
+                    'account_id' => $accountId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
     }
 

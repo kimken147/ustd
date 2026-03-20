@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Jobs\ConfirmUsdtWithdraw;
 use App\Models\Transaction;
+use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use Illuminate\Bus\Queueable;
@@ -61,11 +63,8 @@ class BatchTransferUsdt implements ShouldQueue
                     $adapter->sendNativeToken($parent->account, $source->account, $sendAmount, $parentKey);
                     $parentKey = null;
 
-                    Log::info('BatchTransfer: 已從母地址補充 gas', [
-                        'parent' => $parent->account,
-                        'child'  => $source->account,
-                        'amount' => $sendAmount,
-                    ]);
+                    $this->log($transaction, "已從母地址補充 {$sendAmount} gas (parent: {$parent->account})");
+
                 } catch (\Throwable $e) {
                     $parentKey = null;
                     $this->markFailed($transaction, "補充 gas 失敗: {$e->getMessage()}");
@@ -85,18 +84,14 @@ class BatchTransferUsdt implements ShouldQueue
             $privateKey = null;
 
             $transaction->update([
-                'status'       => Transaction::STATUS_MANUAL_SUCCESS,
-                'tx_hash'      => $chainTx->txHash,
-                'confirmed_at' => now(),
+                'tx_hash'       => $chainTx->txHash,
+                'chain_network' => $chainNetwork,
             ]);
 
-            Log::info('BatchTransfer: 轉帳完成', [
-                'transaction_id' => $transaction->id,
-                'source'         => $source->account,
-                'target'         => $targetAddress,
-                'amount'         => $transaction->amount,
-                'tx_hash'        => $chainTx->txHash,
-            ]);
+            // 延遲確認鏈上交易結果，由 ConfirmUsdtWithdraw 走 markAsSuccess 流程
+            ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
+
+            $this->log($transaction, "交易已廣播，等待鏈上確認 (tx_hash: {$chainTx->txHash})");
         } catch (\Throwable $e) {
             $privateKey = null;
             $this->markFailed($transaction, $e->getMessage());
@@ -108,13 +103,20 @@ class BatchTransferUsdt implements ShouldQueue
     {
         $transaction->update([
             'status'       => Transaction::STATUS_FAILED,
-            'note'         => "batch-transfer failed: {$message}",
             'confirmed_at' => now(),
         ]);
 
-        Log::error('BatchTransfer: 轉帳失敗', [
+        $this->log($transaction, "轉帳失敗: {$message}", 'error');
+    }
+
+    private function log(Transaction $transaction, string $message, string $level = 'info'): void
+    {
+        Log::$level("BatchTransfer: {$message}", ['transaction_id' => $transaction->id]);
+
+        TransactionNote::create([
             'transaction_id' => $transaction->id,
-            'error'          => $message,
+            'user_id' => 0,
+            'note' => "[批量轉帳] {$message}",
         ]);
     }
 }
