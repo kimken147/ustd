@@ -23,6 +23,7 @@ use Illuminate\Support\Collection;
 class Channel extends Model
 {
 
+    /** @deprecated Use CODE_USDT_TRC20, CODE_USDT_ERC20, CODE_USDT_BEP20 or isUsdt() instead */
     const CODE_USDT = 'USDT';
     const CODE_USDT_TRC20 = 'USDT_TRC20';
     const CODE_USDT_ERC20 = 'USDT_ERC20';
