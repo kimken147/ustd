@@ -24,6 +24,21 @@ class Channel extends Model
 {
 
     const CODE_USDT = 'USDT';
+    const CODE_USDT_TRC20 = 'USDT_TRC20';
+    const CODE_USDT_ERC20 = 'USDT_ERC20';
+    const CODE_USDT_BEP20 = 'USDT_BEP20';
+
+    const USDT_CODES = [
+        self::CODE_USDT_TRC20,
+        self::CODE_USDT_ERC20,
+        self::CODE_USDT_BEP20,
+    ];
+
+    const USDT_CHAIN_MAP = [
+        self::CODE_USDT_TRC20 => 'trc20',
+        self::CODE_USDT_ERC20 => 'erc20',
+        self::CODE_USDT_BEP20 => 'bep20',
+    ];
 
     const STATUS_DISABLE = 0;
     const STATUS_ENABLE = 1;
@@ -87,6 +102,16 @@ class Channel extends Model
     protected $keyType = 'string';
     protected $primaryKey = 'code';
     protected $table = 'channels';
+
+    public static function isUsdt(string $code): bool
+    {
+        return in_array($code, self::USDT_CODES, true);
+    }
+
+    public static function chainNetwork(string $code): ?string
+    {
+        return self::USDT_CHAIN_MAP[$code] ?? null;
+    }
 
     public function channelAmounts()
     {
