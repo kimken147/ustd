@@ -247,7 +247,7 @@ class EnvInit extends Command
         $merchant->update(['wallet_id' => $wallet->id]);
 
         // 建立 USDT 通道的 UserChannel
-        $channelGroup = ChannelGroup::where('channel_code', 'USDT')->first();
+        $channelGroup = ChannelGroup::where('channel_code', Channel::CODE_USDT_TRC20)->first();
         if ($channelGroup) {
             DB::table('user_channels')->insert([
                 'user_id'          => $merchant->id,
@@ -326,26 +326,26 @@ class EnvInit extends Command
 
     private function seedChannelGroupAndAmount(): void
     {
-        $channel = Channel::where('code', 'USDT')->first();
+        $channel = Channel::where('code', Channel::CODE_USDT_TRC20)->first();
         if (!$channel) {
             $this->warn('[通道組] USDT 通道不存在，跳過。');
             return;
         }
 
-        $channelGroup = ChannelGroup::where('channel_code', 'USDT')->first();
+        $channelGroup = ChannelGroup::where('channel_code', Channel::CODE_USDT_TRC20)->first();
         if ($channelGroup) {
             $this->info('[通道組] USDT 通道組已存在，跳過。');
             return;
         }
 
         $channelGroup = ChannelGroup::create([
-            'channel_code' => 'USDT',
+            'channel_code' => Channel::CODE_USDT_TRC20,
             'fixed_amount' => false,
         ]);
 
         ChannelAmount::create([
             'channel_group_id' => $channelGroup->id,
-            'channel_code'     => 'USDT',
+            'channel_code'     => Channel::CODE_USDT_TRC20,
             'min_amount'       => '1.00',
             'max_amount'       => '50000.00',
         ]);

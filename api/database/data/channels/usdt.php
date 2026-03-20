@@ -2,7 +2,7 @@
 
 return [
     [
-        'code' => 'USDT', 'name' => 'USDT',
+        'code' => 'USDT_TRC20', 'name' => 'USDT (TRC-20)',
         'status' => 1, 'type' => 1,
         'order_timeout' => 30, 'order_timeout_enable' => true,
         'transaction_timeout' => 30, 'transaction_timeout_enable' => true,
