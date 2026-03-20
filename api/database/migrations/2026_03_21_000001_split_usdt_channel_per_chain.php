@@ -11,20 +11,14 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Copy the existing USDT channel row to USDT_TRC20
-        DB::statement("
-            INSERT INTO channels (code, name, status, order_timeout, order_timeout_enable,
-                transaction_timeout, transaction_timeout_enable, floating, floating_enable,
-                present_result, max_one_ignore_amount, type, geolocation_match,
-                deposit_account_fields, withdraw_account_fields, third_exclusive_enable,
-                layout_version, country, deleted_at, created_at, updated_at)
-            SELECT 'USDT_TRC20', 'USDT (TRC-20)', status, order_timeout, order_timeout_enable,
-                transaction_timeout, transaction_timeout_enable, floating, floating_enable,
-                present_result, max_one_ignore_amount, type, geolocation_match,
-                deposit_account_fields, withdraw_account_fields, third_exclusive_enable,
-                layout_version, country, deleted_at, created_at, NOW()
-            FROM channels
-            WHERE code = 'USDT'
-        ");
+        $usdt = DB::table('channels')->where('code', 'USDT')->first();
+        if ($usdt) {
+            $data = (array) $usdt;
+            $data['code'] = 'USDT_TRC20';
+            $data['name'] = 'USDT (TRC-20)';
+            $data['updated_at'] = now();
+            DB::table('channels')->insert($data);
+        }
 
         // 2. Update all channel_code references from USDT to USDT_TRC20
         DB::table('channel_groups')->where('channel_code', 'USDT')->update(['channel_code' => 'USDT_TRC20']);
@@ -44,20 +38,14 @@ return new class extends Migration
     public function down(): void
     {
         // 1. Copy USDT_TRC20 back to USDT
-        DB::statement("
-            INSERT INTO channels (code, name, status, order_timeout, order_timeout_enable,
-                transaction_timeout, transaction_timeout_enable, floating, floating_enable,
-                present_result, max_one_ignore_amount, type, geolocation_match,
-                deposit_account_fields, withdraw_account_fields, third_exclusive_enable,
-                layout_version, country, deleted_at, created_at, updated_at)
-            SELECT 'USDT', 'USDT', status, order_timeout, order_timeout_enable,
-                transaction_timeout, transaction_timeout_enable, floating, floating_enable,
-                present_result, max_one_ignore_amount, type, geolocation_match,
-                deposit_account_fields, withdraw_account_fields, third_exclusive_enable,
-                layout_version, country, deleted_at, created_at, NOW()
-            FROM channels
-            WHERE code = 'USDT_TRC20'
-        ");
+        $trc20 = DB::table('channels')->where('code', 'USDT_TRC20')->first();
+        if ($trc20) {
+            $data = (array) $trc20;
+            $data['code'] = 'USDT';
+            $data['name'] = 'USDT';
+            $data['updated_at'] = now();
+            DB::table('channels')->insert($data);
+        }
 
         // 2. Revert all channel_code references from USDT_TRC20 to USDT
         DB::table('channel_groups')->where('channel_code', 'USDT_TRC20')->update(['channel_code' => 'USDT']);
