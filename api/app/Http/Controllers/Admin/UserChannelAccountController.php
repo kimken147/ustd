@@ -303,7 +303,7 @@ class UserChannelAccountController extends Controller
             // Validate TRON address for USDT channels
             if ($request->has('account') || $request->has('bank_card_number')) {
                 $channelAmount = $userChannelAccount->channelAmount;
-                if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
+                if ($channelAmount && Channel::isUsdt($channelAmount->channel_code)) {
                     $chainNetwork = data_get($userChannelAccount->detail, \App\Models\UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
                     if ($request->filled('chain_network')) {
                         $chainNetwork = $request->input('chain_network');
@@ -515,7 +515,7 @@ class UserChannelAccountController extends Controller
 
         // Validate TRON address for USDT channels
         $channelAmount = ChannelAmount::find($request->input('channel_amount_id'));
-        if ($channelAmount && $channelAmount->channel_code === Channel::CODE_USDT) {
+        if ($channelAmount && Channel::isUsdt($channelAmount->channel_code)) {
             $chainNetwork = $request->input('chain_network', 'trc20');
             $this->validateCryptoAddress($request->input('bank_card_number'), $chainNetwork);
         }
@@ -544,7 +544,7 @@ class UserChannelAccountController extends Controller
         $parentAccount = UserChannelAccount::findOrFail($request->input('parent_account_id'));
 
         abort_if(
-            $parentAccount->channel_code !== Channel::CODE_USDT,
+            !Channel::isUsdt($parentAccount->channel_code),
             Response::HTTP_BAD_REQUEST,
             '僅支援 USDT 帳號'
         );
@@ -765,7 +765,7 @@ class UserChannelAccountController extends Controller
 
         $account = UserChannelAccount::findOrFail($request->input('id'));
 
-        if ($account->channel_code !== Channel::CODE_USDT) {
+        if (!Channel::isUsdt($account->channel_code)) {
             return response()->json(['message' => __('common.Only USDT accounts support sync')], Response::HTTP_BAD_REQUEST);
         }
 
@@ -797,7 +797,7 @@ class UserChannelAccountController extends Controller
         ]);
 
         $accounts = UserChannelAccount::whereIn('id', $request->input('ids'))
-            ->where('channel_code', Channel::CODE_USDT)
+            ->whereIn('channel_code', Channel::USDT_CODES)
             ->whereNotNull('account')
             ->where('account', '!=', '')
             ->get();
@@ -846,7 +846,7 @@ class UserChannelAccountController extends Controller
         $account = UserChannelAccount::findOrFail($request->input('id'));
 
         abort_if(
-            $account->channel_code !== Channel::CODE_USDT,
+            !Channel::isUsdt($account->channel_code),
             Response::HTTP_BAD_REQUEST,
             '僅支援 USDT 帳號'
         );

@@ -198,7 +198,7 @@ class UserChannelAccountService
 
             DB::commit();
 
-            if ($userChannelAccount->channel_code === Channel::CODE_USDT) {
+            if (Channel::isUsdt($userChannelAccount->channel_code)) {
                 BackfillChainTransactions::dispatch($userChannelAccount->id);
             }
         } catch (\Exception $e) {
@@ -254,7 +254,7 @@ class UserChannelAccountService
 
         $this->syncTransactionGroups($userChannelAccount, $provider);
 
-        if ($userChannelAccount->channel_code === Channel::CODE_USDT) {
+        if (Channel::isUsdt($userChannelAccount->channel_code)) {
             BackfillChainTransactions::dispatch($userChannelAccount->id)->afterCommit();
         }
 
@@ -288,7 +288,7 @@ class UserChannelAccountService
         };
         $masterKey = null;
 
-        $this->validateAccountUniqueness(Channel::CODE_USDT, $child['address']);
+        $this->validateAccountUniqueness($parentAccount->channel_code, $child['address']);
 
         $detail = [
             UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK => data_get(
@@ -312,7 +312,7 @@ class UserChannelAccountService
             'device_id' => $device->getKey(),
             'wallet_id' => $wallet->getKey(),
             'bank_id' => 0,
-            'channel_code' => Channel::CODE_USDT,
+            'channel_code' => $parentAccount->channel_code,
             'status' => UserChannelAccount::STATUS_DISABLE,
             'type' => $parentAccount->type,
             'fee_percent' => $userChannel->fee_percent,
@@ -332,7 +332,7 @@ class UserChannelAccountService
         $this->syncTransactionGroups($childAccount, $provider);
 
         // 一次性子地址為全新地址，無需回填鏈上交易歷史
-        if ($childAccount->channel_code === Channel::CODE_USDT && !($extraAttributes['is_one_time'] ?? false)) {
+        if (Channel::isUsdt($childAccount->channel_code) && !($extraAttributes['is_one_time'] ?? false)) {
             BackfillChainTransactions::dispatch($childAccount->id);
         }
 
