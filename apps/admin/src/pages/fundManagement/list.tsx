@@ -313,7 +313,7 @@ const FundManagementBatchTransfer: FC = () => {
             selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
             getCheckboxProps: (record: AccountRecord) => ({
-              disabled: record.id === targetAccountId || !record.has_private_key,
+              disabled: !targetAccountId || record.id === targetAccountId || !record.has_private_key,
             }),
           }}
         />
