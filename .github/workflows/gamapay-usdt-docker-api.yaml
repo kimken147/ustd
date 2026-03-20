@@ -1,7 +1,7 @@
 name: GAMAPAY-USDT - Docker - API
 on:
   push:
-    branches: [gamapay-usdt]
+    branches: [prod]
     paths:
       - "api/**"
   workflow_dispatch:
