@@ -64,11 +64,11 @@ class FundManagementController extends Controller
         foreach ($sourceAccounts as $source) {
             $chainNetwork = data_get($source->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
 
-            // 建立 BankCardTransferObject 作為 from_channel_account
+            // from_channel_account = 接收方資訊（跟代付語意一致：from = 目標地址）
             $bankCard = app(BankCardTransferObject::class)->plain(
-                $chainNetwork,             // bank_name → 鏈網路
-                $source->account,          // bank_card_number → 來源地址
-                $source->user?->name ?? '', // bank_card_holder_name → 商戶名
+                $chainNetwork,                    // bank_name → 鏈網路
+                $targetAccount->account,          // bank_card_number → 接收地址
+                $targetAccount->user?->name ?? '', // bank_card_holder_name
                 '',
                 '',
             );
@@ -82,16 +82,12 @@ class FundManagementController extends Controller
                 orderNumber: $orderNumber,
             );
 
-            $transaction = $factory->internalTransferFrom($params, $targetAccount);
+            // $account = 出款帳號（跟代付語意一致：to_channel_account_id = 出款帳號）
+            $transaction = $factory->internalTransferFrom($params, $source);
 
             if (!$transaction) {
                 continue;
             }
-
-            // 記錄來源帳號
-            $transaction->update([
-                'from_channel_account_id' => $source->id,
-            ]);
 
             BatchTransferUsdt::dispatch($transaction->id);
             $dispatched++;

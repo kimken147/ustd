@@ -30,12 +30,10 @@ class BatchTransferUsdt implements ShouldQueue
     public function handle(): void
     {
         $transaction = Transaction::findOrFail($this->transactionId);
-        $source = UserChannelAccount::findOrFail($transaction->from_channel_account_id);
-        $targetAddress = data_get($transaction->to_channel_account, 'account', '');
-
-        if (empty($targetAddress) && $transaction->to_channel_account_id) {
-            $targetAddress = UserChannelAccount::find($transaction->to_channel_account_id)?->account ?? '';
-        }
+        // to_channel_account_id = 出款帳號（跟代付語意一致）
+        $source = UserChannelAccount::findOrFail($transaction->to_channel_account_id);
+        // from_channel_account = 接收方資訊（目標地址）
+        $targetAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
 
         $chainNetwork = data_get($source->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $adapter = ChainAdapterFactory::makeOrFail($chainNetwork);
