@@ -11,9 +11,9 @@ class ApiDocumentController extends Controller
         if ($request->isMethod('post')) {
             if ($request->input('password') === '666888') {
                 session(['api_doc_verified' => true]);
-                return redirect()->route('api-document');
+                return redirect()->route('v1.api-document');
             }
-            return redirect()->route('api-document')->withErrors(['password' => '密码错误，请重新输入']);
+            return redirect()->route('v1.api-document')->withErrors(['password' => '密码错误，请重新输入']);
         }
 
         $verified = session('api_doc_verified', false);
