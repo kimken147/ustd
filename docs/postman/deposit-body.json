@@ -1,0 +1,8 @@
+{
+    "amount": "100",
+    "channel": "USDT",
+    "client_ip": "168.168.168.168",
+    "payer_name": "",
+    "merchant_id": "testmerchant",
+    "callback_url": "https://example.com/callback"
+}

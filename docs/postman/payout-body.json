@@ -1,0 +1,8 @@
+{
+    "merchant_id": "testmerchant",
+    "amount": "50",
+    "callback_url": "https://www.google.com",
+    "payee_name": "XXXXX",
+    "pay_address": "TMeA5NJBQ1VSoN869jNj8k1By8pF86gjDB",
+    "network": "TRC-20"
+}
