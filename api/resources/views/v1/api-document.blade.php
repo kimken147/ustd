@@ -368,7 +368,7 @@
 {{-- ══════════════ 1. 入金下单 ══════════════ --}}
 <h2 id="deposit-create" data-i18n="depositCreateTitle">1. 入金下单接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/create-transactions</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/deposits</span></p>
 
 <p data-i18n="depositCreateDesc">商户通过此接口发起入金（代收）订单。</p>
 
@@ -377,15 +377,15 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
-        <tr><td><code>channel_code</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descChannelCode">通道代码（由平台分配）</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>channel</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descChannelCode">通道代码（由平台分配）</td></tr>
         <tr><td><code>amount</code></td><td>numeric</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descDepositAmount">入金金额</td></tr>
-        <tr><td><code>notify_url</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descNotifyUrl">异步回调通知地址</td></tr>
-        <tr><td><code>order_number</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOrderNumber">商户订单号（唯一）</td></tr>
+        <tr><td><code>callback_url</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descCallbackUrl">异步回调通知地址</td></tr>
+        <tr><td><code>out_trade_no</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOutTradeNoUnique">商户订单号（唯一）</td></tr>
         <tr><td><code>client_ip</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descClientIp">客户端 IP 地址</td></tr>
         <tr><td><code>sign</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descSign">签名</td></tr>
-        <tr><td><code>real_name</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descRealName">付款人真实姓名（部分通道必填）</td></tr>
-        <tr><td><code>return_url</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descReturnUrl">支付完成后跳转地址</td></tr>
+        <tr><td><code>payer_name</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descPayerName">付款人真实姓名（部分通道必填）</td></tr>
+        <tr><td><code>redirect_url</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descRedirectUrl">支付完成后跳转地址</td></tr>
     </tbody>
 </table>
 
@@ -394,15 +394,14 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>http_status_code</code></td><td>int</td><td data-i18n-html="descHttpStatus">HTTP 状态码，<code>200</code> 表示成功</td></tr>
         <tr><td><code>message</code></td><td>string</td><td data-i18n="descMessage">返回消息</td></tr>
-        <tr><td><code>data.system_order_number</code></td><td>string</td><td data-i18n="descSysOrderNum">系统订单号</td></tr>
-        <tr><td><code>data.order_number</code></td><td>string</td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
+        <tr><td><code>data.trade_no</code></td><td>string</td><td data-i18n="descTradeNo">系统订单号</td></tr>
+        <tr><td><code>data.out_trade_no</code></td><td>string</td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
         <tr><td><code>data.status</code></td><td>int</td><td data-i18n-html="descOrderStatus">订单状态（见<a href="#status-codes">状态代码</a>）</td></tr>
         <tr><td><code>data.amount</code></td><td>numeric</td><td data-i18n="descOrderAmount">订单金额</td></tr>
-        <tr><td><code>data.casher_url</code></td><td>string</td><td data-i18n="descCasherUrl">收银台 URL（引导用户跳转支付）</td></tr>
-        <tr><td><code>data.receiver_account</code></td><td>string</td><td data-i18n="descReceiverAccount">收款账号（USDT 钱包地址）</td></tr>
-        <tr><td><code>data.receiver_name</code></td><td>string</td><td data-i18n="descReceiverName">收款人姓名</td></tr>
+        <tr><td><code>data.cashier_url</code></td><td>string</td><td data-i18n="descCashierUrl">收银台 URL（引导用户跳转支付）</td></tr>
+        <tr><td><code>data.pay_address</code></td><td>string</td><td data-i18n="descPayAddress">收款账号（USDT 钱包地址）</td></tr>
+        <tr><td><code>data.payee_name</code></td><td>string</td><td data-i18n="descPayeeName2">收款人姓名</td></tr>
         <tr><td><code>data.note</code></td><td>string</td><td data-i18n="descNote">备注信息</td></tr>
         <tr><td><code>data.created_at</code></td><td>string</td><td data-i18n="descCreatedAt">创建时间（ISO 8601）</td></tr>
         <tr><td><code>data.sign</code></td><td>string</td><td data-i18n="descReturnSign">返回签名</td></tr>
@@ -412,21 +411,20 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 200,
     "message": "Match successful",
     "data": {
-        "system_order_number": "P202601010001",
-        "order_number": "M20260101001",
-        "status": 11,
+        "trade_no": "P202601010001",
+        "out_trade_no": "M20260101001",
+        "status": 0,
         "amount": 500.00,
-        "username": "merchant001",
-        "notify_url": "https://example.com/notify",
-        "return_url": "https://example.com/return",
+        "merchant_id": "merchant001",
+        "callback_url": "https://example.com/notify",
+        "redirect_url": "https://example.com/return",
         "created_at": "2026-01-01T12:00:00.000000Z",
         "confirmed_at": null,
-        "casher_url": "https://pay.example.com/cashier/xxx",
-        "receiver_account": "TXxx...xxx",
-        "receiver_name": "",
+        "cashier_url": "https://pay.example.com/cashier/xxx",
+        "pay_address": "TXxx...xxx",
+        "payee_name": "",
         "note": "",
         "sign": "a1b2c3d4e5f6..."
     }
@@ -437,7 +435,7 @@
 {{-- ══════════════ 2. 入金查询 ══════════════ --}}
 <h2 id="deposit-query" data-i18n="depositQueryTitle">2. 入金查询接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/transaction-queries</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/deposits/query</span></p>
 
 <p data-i18n="depositQueryDesc">查询入金（代收）订单的当前状态。</p>
 
@@ -446,8 +444,8 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
-        <tr><td><code>order_number</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>out_trade_no</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
         <tr><td><code>sign</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descSign">签名</td></tr>
     </tbody>
 </table>
@@ -457,13 +455,12 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>http_status_code</code></td><td>int</td><td data-i18n="descHttpStatusShort">HTTP 状态码</td></tr>
         <tr><td><code>message</code></td><td>string</td><td data-i18n="descMessage">返回消息</td></tr>
-        <tr><td><code>data.system_order_number</code></td><td>string</td><td data-i18n="descSysOrderNum">系统订单号</td></tr>
-        <tr><td><code>data.order_number</code></td><td>string</td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
+        <tr><td><code>data.trade_no</code></td><td>string</td><td data-i18n="descTradeNo">系统订单号</td></tr>
+        <tr><td><code>data.out_trade_no</code></td><td>string</td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
         <tr><td><code>data.status</code></td><td>int</td><td data-i18n="descOrderStatusShort">订单状态</td></tr>
         <tr><td><code>data.amount</code></td><td>numeric</td><td data-i18n="descOrderAmount">订单金额</td></tr>
-        <tr><td><code>data.username</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>data.merchant_id</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>data.created_at</code></td><td>string</td><td data-i18n="descCreatedAtShort">创建时间</td></tr>
         <tr><td><code>data.confirmed_at</code></td><td>string</td><td data-i18n="descConfirmedAt">完成时间（未完成为 null）</td></tr>
         <tr><td><code>data.sign</code></td><td>string</td><td data-i18n="descReturnSign">返回签名</td></tr>
@@ -473,16 +470,15 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 200,
     "message": "Query successful",
     "data": {
-        "system_order_number": "P202601010001",
-        "order_number": "M20260101001",
-        "status": 4,
+        "trade_no": "P202601010001",
+        "out_trade_no": "M20260101001",
+        "status": 1,
         "amount": 500.00,
-        "username": "merchant001",
-        "notify_url": "https://example.com/notify",
-        "return_url": "https://example.com/return",
+        "merchant_id": "merchant001",
+        "callback_url": "https://example.com/notify",
+        "redirect_url": "https://example.com/return",
         "created_at": "2026-01-01T12:00:00.000000Z",
         "confirmed_at": "2026-01-01T12:05:00.000000Z",
         "sign": "a1b2c3d4e5f6..."
@@ -494,7 +490,7 @@
 {{-- ══════════════ 3. 代付下单 ══════════════ --}}
 <h2 id="withdraw-create" data-i18n="withdrawCreateTitle">3. 代付下单接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/withdraws</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/payouts</span></p>
 
 <p data-i18n="withdrawCreateDesc">商户通过此接口发起代付（提款）请求。</p>
 
@@ -507,14 +503,14 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>amount</code></td><td>numeric</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descWithdrawAmount">代付金额（≥ 1）</td></tr>
-        <tr><td><code>bank_card_number</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descBankCardNumber">收款钱包地址</td></tr>
-        <tr><td><code>bank_name</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n-html="descBankName">链网络名称（参照<a href="#bank-list">链网络列表</a>）</td></tr>
-        <tr><td><code>order_number</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOrderNumber">商户订单号（唯一）</td></tr>
+        <tr><td><code>pay_address</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descPayAddress">收款钱包地址</td></tr>
+        <tr><td><code>network</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n-html="descNetwork">链网络名称（参照<a href="#bank-list">链网络列表</a>）</td></tr>
+        <tr><td><code>out_trade_no</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOutTradeNoUnique">商户订单号（唯一）</td></tr>
         <tr><td><code>sign</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descSign">签名</td></tr>
-        <tr><td><code>bank_card_holder_name</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descCardHolder">持有人名称</td></tr>
-        <tr><td><code>notify_url</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descNotifyUrl">异步回调通知地址</td></tr>
+        <tr><td><code>payee_name</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descPayeeName">持有人名称</td></tr>
+        <tr><td><code>callback_url</code></td><td>string</td><td><span class="badge badge-optional" data-i18n="badgeOptional">选填</span></td><td data-i18n="descCallbackUrl">异步回调通知地址</td></tr>
     </tbody>
 </table>
 
@@ -523,16 +519,15 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>http_status_code</code></td><td>int</td><td data-i18n-html="descHttpStatus">HTTP 状态码，<code>200</code> 表示成功</td></tr>
         <tr><td><code>message</code></td><td>string</td><td data-i18n="descMessage">返回消息</td></tr>
-        <tr><td><code>data.system_order_number</code></td><td>string</td><td data-i18n="descSysOrderNum">系统订单号</td></tr>
-        <tr><td><code>data.order_number</code></td><td>string</td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
+        <tr><td><code>data.trade_no</code></td><td>string</td><td data-i18n="descTradeNo">系统订单号</td></tr>
+        <tr><td><code>data.out_trade_no</code></td><td>string</td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
         <tr><td><code>data.status</code></td><td>int</td><td data-i18n-html="descWithdrawStatus">代付状态（见<a href="#status-codes">状态代码</a>）</td></tr>
         <tr><td><code>data.amount</code></td><td>numeric</td><td data-i18n="descWithdrawAmountShort">代付金额</td></tr>
         <tr><td><code>data.fee</code></td><td>numeric</td><td data-i18n="descFee">手续费</td></tr>
-        <tr><td><code>data.bank_card_holder_name</code></td><td>string</td><td data-i18n="descCardHolder">持有人名称</td></tr>
-        <tr><td><code>data.bank_name</code></td><td>string</td><td data-i18n="descBankNameShort">链网络名称</td></tr>
-        <tr><td><code>data.bank_card_number</code></td><td>string</td><td data-i18n="descBankCardNumShort">钱包地址</td></tr>
+        <tr><td><code>data.payee_name</code></td><td>string</td><td data-i18n="descPayeeName">持有人名称</td></tr>
+        <tr><td><code>data.network</code></td><td>string</td><td data-i18n="descNetworkShort">链网络名称</td></tr>
+        <tr><td><code>data.pay_address</code></td><td>string</td><td data-i18n="descPayAddressShort">钱包地址</td></tr>
         <tr><td><code>data.created_at</code></td><td>string</td><td data-i18n="descCreatedAtShort">创建时间</td></tr>
         <tr><td><code>data.confirmed_at</code></td><td>string</td><td data-i18n="descConfirmedAtShort">完成时间</td></tr>
         <tr><td><code>data.sign</code></td><td>string</td><td data-i18n="descReturnSign">返回签名</td></tr>
@@ -542,21 +537,20 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 200,
     "message": "Submit successful",
     "data": {
-        "system_order_number": "W202601010001",
-        "order_number": "MW20260101001",
+        "trade_no": "W202601010001",
+        "out_trade_no": "MW20260101001",
         "status": 1,
         "amount": 1000.00,
         "fee": 5.00,
-        "username": "merchant001",
-        "notify_url": "https://example.com/notify",
+        "merchant_id": "merchant001",
+        "callback_url": "https://example.com/notify",
         "created_at": "2026-01-01T12:00:00.000000Z",
         "confirmed_at": null,
-        "bank_card_holder_name": "",
-        "bank_name": "TRC-20",
-        "bank_card_number": "TXxx...xxx",
+        "payee_name": "",
+        "network": "TRC-20",
+        "pay_address": "TXxx...xxx",
         "sign": "a1b2c3d4e5f6..."
     }
 }</code></pre>
@@ -566,7 +560,7 @@
 {{-- ══════════════ 4. 代付查询 ══════════════ --}}
 <h2 id="withdraw-query" data-i18n="withdrawQueryTitle">4. 代付查询接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/withdraw-queries</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/payouts/query</span></p>
 
 <p data-i18n="withdrawQueryDesc">查询代付（提款）订单的当前状态。</p>
 
@@ -575,8 +569,8 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
-        <tr><td><code>order_number</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>out_trade_no</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
         <tr><td><code>sign</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descSign">签名</td></tr>
     </tbody>
 </table>
@@ -588,21 +582,20 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 200,
     "message": "Query successful",
     "data": {
-        "system_order_number": "W202601010001",
-        "order_number": "MW20260101001",
-        "status": 4,
+        "trade_no": "W202601010001",
+        "out_trade_no": "MW20260101001",
+        "status": 1,
         "amount": 1000.00,
         "fee": 5.00,
-        "username": "merchant001",
-        "notify_url": "https://example.com/notify",
+        "merchant_id": "merchant001",
+        "callback_url": "https://example.com/notify",
         "created_at": "2026-01-01T12:00:00.000000Z",
         "confirmed_at": "2026-01-01T12:10:00.000000Z",
-        "bank_card_holder_name": "",
-        "bank_name": "TRC-20",
-        "bank_card_number": "TXxx...xxx",
+        "payee_name": "",
+        "network": "TRC-20",
+        "pay_address": "TXxx...xxx",
         "sign": "a1b2c3d4e5f6..."
     }
 }</code></pre>
@@ -612,7 +605,7 @@
 {{-- ══════════════ 5. 商户资料查询 ══════════════ --}}
 <h2 id="profile-query" data-i18n="profileQueryTitle">5. 商户资料查询接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/profile-queries</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/balance</span></p>
 
 <p data-i18n="profileQueryDesc">查询商户账户余额等基本信息。</p>
 
@@ -621,7 +614,7 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>sign</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descSign">签名</td></tr>
     </tbody>
 </table>
@@ -631,9 +624,8 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>http_status_code</code></td><td>int</td><td data-i18n="descHttpStatusShort">HTTP 状态码</td></tr>
         <tr><td><code>message</code></td><td>string</td><td data-i18n="descMessage">返回消息</td></tr>
-        <tr><td><code>data.username</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>data.merchant_id</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>data.name</code></td><td>string</td><td data-i18n="descMerchantName">商户名称</td></tr>
         <tr><td><code>data.balance</code></td><td>numeric</td><td data-i18n="descBalance">总余额</td></tr>
         <tr><td><code>data.frozen_balance</code></td><td>numeric</td><td data-i18n="descFrozenBalance">冻结余额</td></tr>
@@ -645,10 +637,9 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 201,
     "message": "Query successful",
     "data": {
-        "username": "merchant001",
+        "merchant_id": "merchant001",
         "name": "测试商户",
         "balance": 50000.00,
         "frozen_balance": 5000.00,
@@ -662,7 +653,7 @@
 {{-- ══════════════ 6. 批量查询 ══════════════ --}}
 <h2 id="batch-query" data-i18n="batchQueryTitle">6. 批量查询订单接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/third-party/batch-transaction-queries</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/transactions</span></p>
 
 <p data-i18n="batchQueryDesc">批量查询指定时间范围内的入金订单。</p>
 
@@ -675,7 +666,7 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thRequired">必填</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>username</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>merchant_id</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>page</code></td><td>int</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descPage">页码</td></tr>
         <tr><td><code>started_at</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descStartedAt">开始时间（ISO 8601）</td></tr>
         <tr><td><code>ended_at</code></td><td>string</td><td><span class="badge badge-required" data-i18n="badgeRequired">必填</span></td><td data-i18n="descEndedAt">结束时间（ISO 8601）</td></tr>
@@ -689,11 +680,11 @@
 <pre><code>{
     "data": [
         {
-            "system_order_number": "P202601010001",
-            "order_number": "M20260101001",
-            "status": 4,
+            "trade_no": "P202601010001",
+            "out_trade_no": "M20260101001",
+            "status": 1,
             "amount": 500.00,
-            "username": "merchant001",
+            "merchant_id": "merchant001",
             "created_at": "2026-01-01T12:00:00.000000Z"
         }
     ],
@@ -718,7 +709,7 @@
 {{-- ══════════════ 7. 异步回调 ══════════════ --}}
 <h2 id="callback" data-i18n="callbackTitle">7. 异步回调通知</h2>
 
-<p data-i18n-html="callbackDesc">当订单状态发生变更（成功或失败）时，系统会向商户的 <code>notify_url</code> 发送 <code>POST</code> 请求。</p>
+<p data-i18n-html="callbackDesc">当订单状态发生变更（成功或失败）时，系统会向商户的 <code>callback_url</code> 发送 <code>POST</code> 请求。</p>
 
 <blockquote class="warning">
     <span data-i18n-html="callbackRetry"><strong>重试机制：</strong>若商户未正确响应，系统会进行多次重试通知。商户应做好幂等处理，避免重复业务操作。</span>
@@ -729,12 +720,11 @@
 <table>
     <thead><tr><th data-i18n="thParamName">参数名</th><th data-i18n="thType">类型</th><th data-i18n="thDesc">说明</th></tr></thead>
     <tbody>
-        <tr><td><code>http_status_code</code></td><td>int</td><td data-i18n="descHttpStatusShort">HTTP 状态码</td></tr>
         <tr><td><code>message</code></td><td>string</td><td data-i18n="descMessage">返回消息</td></tr>
-        <tr><td><code>data.username</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
+        <tr><td><code>data.merchant_id</code></td><td>string</td><td data-i18n="descMerchantId">商户号</td></tr>
         <tr><td><code>data.amount</code></td><td>string</td><td data-i18n="descAmountDecimal">金额（小数点后取2位）</td></tr>
-        <tr><td><code>data.order_number</code></td><td>string</td><td data-i18n="descMerchantOrderNum">商户订单号</td></tr>
-        <tr><td><code>data.system_order_number</code></td><td>string</td><td data-i18n="descPlatformOrderNum">平台订单号</td></tr>
+        <tr><td><code>data.out_trade_no</code></td><td>string</td><td data-i18n="descOutTradeNo">商户订单号</td></tr>
+        <tr><td><code>data.trade_no</code></td><td>string</td><td data-i18n="descPlatformOrderNum">平台订单号</td></tr>
         <tr><td><code>data.status</code></td><td>int</td><td data-i18n-html="descOrderStatus">订单状态（见<a href="#status-codes">状态代码</a>）</td></tr>
         <tr><td><code>data.sign</code></td><td>string</td><td data-i18n="descSign">签名</td></tr>
     </tbody>
@@ -743,14 +733,13 @@
 <h4 data-i18n="resExample">返回示例</h4>
 
 <pre><code>{
-    "http_status_code": 200,
     "message": "Notify successful",
     "data": {
-        "username": "merchant001",
+        "merchant_id": "merchant001",
         "amount": "500.00",
-        "order_number": "NO20230101001",
-        "system_order_number": "A0000001",
-        "status": 4,
+        "out_trade_no": "NO20230101001",
+        "trade_no": "A0000001",
+        "status": 1,
         "sign": "c4ca4238a0b923820dcc509a6f758..."
     }
 }</code></pre>
@@ -790,46 +779,46 @@
 
 <p data-i18n="signExampleDesc">假设请求参数如下：</p>
 
-<pre><code>username:     merchant001
-order_number: T20260101001
-amount:       500
-notify_url:   https://example.com/notify
-channel_code: USDT
-client_ip:    127.0.0.1</code></pre>
+<pre><code>merchant_id:    merchant001
+out_trade_no:   T20260101001
+amount:         500
+callback_url:   https://example.com/notify
+channel:        USDT
+client_ip:      127.0.0.1</code></pre>
 
 <p data-i18n-html="signExampleSecret">商户密钥（secret_key）：<code>abc123</code></p>
 
 <p data-i18n-html="signExampleStep1"><strong>第一步：按参数名排序</strong></p>
 
 <pre><code>amount=500
-channel_code=USDT
+callback_url=https://example.com/notify
+channel=USDT
 client_ip=127.0.0.1
-notify_url=https://example.com/notify
-order_number=T20260101001
-username=merchant001</code></pre>
+merchant_id=merchant001
+out_trade_no=T20260101001</code></pre>
 
 <p data-i18n-html="signExampleStep2"><strong>第二步：拼接 query string 并追加 secret_key</strong></p>
 
-<pre><code>amount=500&amp;channel_code=USDT&amp;client_ip=127.0.0.1&amp;notify_url=https%3A%2F%2Fexample.com%2Fnotify&amp;order_number=T20260101001&amp;username=merchant001&amp;secret_key=abc123</code></pre>
+<pre><code>amount=500&amp;callback_url=https%3A%2F%2Fexample.com%2Fnotify&amp;channel=USDT&amp;client_ip=127.0.0.1&amp;merchant_id=merchant001&amp;out_trade_no=T20260101001&amp;secret_key=abc123</code></pre>
 
 <p data-i18n-html="signExampleStep3"><strong>第三步：URL decode</strong></p>
 
-<pre><code>amount=500&amp;channel_code=USDT&amp;client_ip=127.0.0.1&amp;notify_url=https://example.com/notify&amp;order_number=T20260101001&amp;username=merchant001&amp;secret_key=abc123</code></pre>
+<pre><code>amount=500&amp;callback_url=https://example.com/notify&amp;channel=USDT&amp;client_ip=127.0.0.1&amp;merchant_id=merchant001&amp;out_trade_no=T20260101001&amp;secret_key=abc123</code></pre>
 
 <p data-i18n-html="signExampleStep4"><strong>第四步：MD5 哈希</strong></p>
 
-<pre><code>sign = md5("amount=500&amp;channel_code=USDT&amp;client_ip=127.0.0.1&amp;notify_url=https://example.com/notify&amp;order_number=T20260101001&amp;username=merchant001&amp;secret_key=abc123")</code></pre>
+<pre><code>sign = md5("amount=500&amp;callback_url=https://example.com/notify&amp;channel=USDT&amp;client_ip=127.0.0.1&amp;merchant_id=merchant001&amp;out_trade_no=T20260101001&amp;secret_key=abc123")</code></pre>
 
 <h4 data-i18n="phpExample">PHP 示例代码</h4>
 
 <pre><code id="code-php-sign">&lt;?php
 // 1. 准备请求参数（不含 sign）
 $params = [
-    'username'     =&gt; 'merchant001',
-    'order_number' =&gt; 'T20260101001',
+    'merchant_id'     =&gt; 'merchant001',
+    'out_trade_no' =&gt; 'T20260101001',
     'amount'       =&gt; 500,
-    'notify_url'   =&gt; 'https://example.com/notify',
-    'channel_code' =&gt; 'USDT',
+    'callback_url'   =&gt; 'https://example.com/notify',
+    'channel' =&gt; 'USDT',
     'client_ip'    =&gt; '127.0.0.1',
 ];
 
@@ -852,11 +841,11 @@ $params['sign'] = $sign;</code></pre>
 
 <pre><code id="code-java-sign">// 1. 准备参数 Map（不含 sign）
 TreeMap&lt;String, String&gt; params = new TreeMap&lt;&gt;();
-params.put("username", "merchant001");
-params.put("order_number", "T20260101001");
+params.put("merchant_id", "merchant001");
+params.put("out_trade_no", "T20260101001");
 params.put("amount", "500");
-params.put("notify_url", "https://example.com/notify");
-params.put("channel_code", "USDT");
+params.put("callback_url", "https://example.com/notify");
+params.put("channel", "USDT");
 params.put("client_ip", "127.0.0.1");
 
 // 2. 拼接（TreeMap 已自动排序）
@@ -880,11 +869,11 @@ from urllib.parse import urlencode, unquote
 
 # 1. 准备参数（不含 sign）
 params = {
-    "username": "merchant001",
-    "order_number": "T20260101001",
+    "merchant_id": "merchant001",
+    "out_trade_no": "T20260101001",
     "amount": "500",
-    "notify_url": "https://example.com/notify",
-    "channel_code": "USDT",
+    "callback_url": "https://example.com/notify",
+    "channel": "USDT",
     "client_ip": "127.0.0.1",
 }
 
@@ -947,15 +936,9 @@ if ($expectedSign === $receivedSign) {
 <table>
     <thead><tr><th data-i18n="thCode">代码</th><th data-i18n="thDescription">描述</th></tr></thead>
     <tbody>
-        <tr><td><code>1</code></td><td data-i18n="statusProcessing">处理中</td></tr>
-        <tr><td><code>2</code></td><td data-i18n="statusProcessing">处理中</td></tr>
-        <tr><td><code>3</code></td><td data-i18n="statusProcessing">处理中</td></tr>
-        <tr><td><code>7</code></td><td data-i18n="statusProcessing">处理中</td></tr>
-        <tr><td><code>11</code></td><td data-i18n="statusProcessing">处理中</td></tr>
-        <tr><td><code>4</code></td><td data-i18n="statusSuccess">成功</td></tr>
-        <tr><td><code>5</code></td><td data-i18n="statusSuccess">成功</td></tr>
-        <tr><td><code>6</code></td><td data-i18n="statusFailed">失败</td></tr>
-        <tr><td><code>8</code></td><td data-i18n="statusFailed">失败</td></tr>
+        <tr><td><code>0</code></td><td data-i18n="statusPending">待处理（处理中）</td></tr>
+        <tr><td><code>1</code></td><td data-i18n="statusSuccess">成功</td></tr>
+        <tr><td><code>2</code></td><td data-i18n="statusFailed">失败</td></tr>
     </tbody>
 </table>
 
@@ -967,14 +950,14 @@ if ($expectedSign === $receivedSign) {
         <tr><td><code>1</code></td><td data-i18n="err1">余额不足</td><td data-i18n="err1s">代付时商户余额不足</td></tr>
         <tr><td><code>2</code></td><td data-i18n="err2">功能未启用</td><td data-i18n="err2s">代付未启用</td></tr>
         <tr><td><code>3</code></td><td data-i18n="err3">请求参数错误</td><td data-i18n="err3s">缺少必填参数或格式不正确</td></tr>
-        <tr><td><code>4</code></td><td data-i18n="err4">商户不存在</td><td data-i18n="err4s">username 错误</td></tr>
+        <tr><td><code>4</code></td><td data-i18n="err4">商户不存在</td><td data-i18n="err4s">merchant_id 错误</td></tr>
         <tr><td><code>5</code></td><td data-i18n="err5">签名错误</td><td data-i18n="err5s">sign 验证失败</td></tr>
         <tr><td><code>6</code></td><td data-i18n="err6">并发冲突</td><td data-i18n="err6s">代付重复提交</td></tr>
         <tr><td><code>7</code></td><td data-i18n="err7">订单不存在</td><td data-i18n="err7s">查询时订单号不存在</td></tr>
-        <tr><td><code>8</code></td><td data-i18n="err8">订单号重复</td><td data-i18n="err8s">下单时 order_number 已存在</td></tr>
+        <tr><td><code>8</code></td><td data-i18n="err8">订单号重复</td><td data-i18n="err8s">下单时 out_trade_no 已存在</td></tr>
         <tr><td><code>10</code></td><td data-i18n="err10">金额低于最小值</td><td data-i18n="err10s">代付金额不满足最低要求</td></tr>
         <tr><td><code>11</code></td><td data-i18n="err11">金额超过最大值</td><td data-i18n="err11s">代付金额超过上限</td></tr>
-        <tr><td><code>12</code></td><td data-i18n="err12">通道代码无效</td><td data-i18n="err12s">channel_code 不正确</td></tr>
+        <tr><td><code>12</code></td><td data-i18n="err12">通道代码无效</td><td data-i18n="err12s">channel 不正确</td></tr>
         <tr><td><code>13</code></td><td data-i18n="err13">通道暂时不可用</td><td data-i18n="err13s">通道维护或暂停</td></tr>
         <tr><td><code>14</code></td><td data-i18n="err14">交易功能已禁用</td><td data-i18n="err14s">商户入金功能被关闭</td></tr>
         <tr><td><code>15</code></td><td data-i18n="err15">金额无效</td><td data-i18n="err15s">金额不在通道允许范围内</td></tr>
@@ -987,7 +970,7 @@ if ($expectedSign === $receivedSign) {
 
 <h3 id="bank-list" data-i18n="bankListTitle">链网络列表</h3>
 
-<p data-i18n-html="bankListDesc">代付下单时 <code>bank_name</code> 参数请使用以下链网络名称：</p>
+<p data-i18n-html="bankListDesc">代付下单时 <code>network</code> 参数请使用以下链网络名称：</p>
 
 <table>
     <thead><tr><th data-i18n="thBankName">链网络名称</th></tr></thead>
@@ -1055,21 +1038,21 @@ zh: {
     descMerchantId: '商户号',
     descChannelCode: '通道代码（由平台分配）',
     descDepositAmount: '入金金额',
-    descNotifyUrl: '异步回调通知地址',
-    descOrderNumber: '商户订单号（唯一）',
+    descCallbackUrl: '异步回调通知地址',
+    descOutTradeNoUnique: '商户订单号（唯一）',
     descClientIp: '客户端 IP 地址',
     descSign: '签名',
-    descRealName: '付款人真实姓名（部分通道必填）',
-    descReturnUrl: '支付完成后跳转地址',
+    descPayerName: '付款人真实姓名（部分通道必填）',
+    descRedirectUrl: '支付完成后跳转地址',
     descHttpStatus: 'HTTP 状态码，<code>200</code> 表示成功',
     descMessage: '返回消息',
-    descSysOrderNum: '系统订单号',
-    descMerchantOrderNum: '商户订单号',
+    descTradeNo: '系统订单号',
+    descOutTradeNo: '商户订单号',
     descOrderStatus: '订单状态（见<a href="#status-codes">状态代码</a>）',
     descOrderAmount: '订单金额',
-    descCasherUrl: '收银台 URL（引导用户跳转支付）',
-    descReceiverAccount: '收款账号（USDT 钱包地址）',
-    descReceiverName: '收款人姓名',
+    descCashierUrl: '收银台 URL（引导用户跳转支付）',
+    descPayAddress: '收款地址（USDT 钱包地址）',
+    descPayeeName2: '收款人姓名',
     descNote: '备注信息',
     descCreatedAt: '创建时间（ISO 8601）',
     descReturnSign: '返回签名',
@@ -1084,14 +1067,14 @@ zh: {
     withdrawCreateDesc: '商户通过此接口发起代付（提款）请求。',
     withdrawDangerNote: '<strong>重要：</strong>代付请求提交后，如请求超时或返回异常，<strong>不代表订单失败</strong>。请务必通过查询接口或等待回调确认最终结果，切勿重复提交。',
     descWithdrawAmount: '代付金额（≥ 1）',
-    descBankCardNumber: '收款钱包地址',
-    descBankName: '链网络名称（参照<a href="#bank-list">链网络列表</a>）',
-    descCardHolder: '持有人名称',
+    descPayAddress: '收款钱包地址',
+    descNetwork: '链网络名称（参照<a href="#bank-list">链网络列表</a>）',
+    descPayeeName: '持有人名称',
     descWithdrawStatus: '代付状态（见<a href="#status-codes">状态代码</a>）',
     descWithdrawAmountShort: '代付金额',
     descFee: '手续费',
-    descBankNameShort: '链网络名称',
-    descBankCardNumShort: '钱包地址',
+    descNetworkShort: '链网络名称',
+    descPayAddressShort: '钱包地址',
     withdrawQueryTitle: '4. 代付查询接口',
     withdrawQueryDesc: '查询代付（提款）订单的当前状态。',
     withdrawQueryResNote: '返回格式与<a href="#withdraw-create">代付下单接口</a>相同。',
@@ -1109,7 +1092,7 @@ zh: {
     descEndedAt: '结束时间（ISO 8601）',
     descPerPage: '每页条数（默认 20）',
     callbackTitle: '7. 异步回调通知',
-    callbackDesc: '当订单状态发生变更（成功或失败）时，系统会向商户的 <code>notify_url</code> 发送 <code>POST</code> 请求。',
+    callbackDesc: '当订单状态发生变更（成功或失败）时，系统会向商户的 <code>callback_url</code> 发送 <code>POST</code> 请求。',
     callbackRetry: '<strong>重试机制：</strong>若商户未正确响应，系统会进行多次重试通知。商户应做好幂等处理，避免重复业务操作。',
     callbackParams: '回调参数',
     descAmountDecimal: '金额（小数点后取2位）',
@@ -1149,7 +1132,7 @@ zh: {
     statusCodesTitle: '订单状态代码',
     thCode: '代码',
     thDescription: '描述',
-    statusProcessing: '处理中',
+    statusPending: '待处理（处理中）',
     statusSuccess: '成功',
     statusFailed: '失败',
     errorCodesTitle: '错误代码',
@@ -1158,14 +1141,14 @@ zh: {
     err1: '余额不足', err1s: '代付时商户余额不足',
     err2: '功能未启用', err2s: '代付未启用',
     err3: '请求参数错误', err3s: '缺少必填参数或格式不正确',
-    err4: '商户不存在', err4s: 'username 错误',
+    err4: '商户不存在', err4s: 'merchant_id 错误',
     err5: '签名错误', err5s: 'sign 验证失败',
     err6: '并发冲突', err6s: '代付重复提交',
     err7: '订单不存在', err7s: '查询时订单号不存在',
-    err8: '订单号重复', err8s: '下单时 order_number 已存在',
+    err8: '订单号重复', err8s: '下单时 out_trade_no 已存在',
     err10: '金额低于最小值', err10s: '代付金额不满足最低要求',
     err11: '金额超过最大值', err11s: '代付金额超过上限',
-    err12: '通道代码无效', err12s: 'channel_code 不正确',
+    err12: '通道代码无效', err12s: 'channel 不正确',
     err13: '通道暂时不可用', err13s: '通道维护或暂停',
     err14: '交易功能已禁用', err14s: '商户入金功能被关闭',
     err15: '金额无效', err15s: '金额不在通道允许范围内',
@@ -1174,7 +1157,7 @@ zh: {
     err18: 'IP 未在白名单', err18s: '请求 IP 未配置白名单',
     err22: '链网络不支持', err22s: '代付链网络名称不在支持列表',
     bankListTitle: '链网络列表',
-    bankListDesc: '代付下单时 <code>bank_name</code> 参数请使用以下链网络名称：',
+    bankListDesc: '代付下单时 <code>network</code> 参数请使用以下链网络名称：',
     thBankName: '链网络名称',
     bankListNote: '实际支持的链网络列表可能因配置不同而有差异，具体请咨询平台客服。'
 },
@@ -1226,21 +1209,21 @@ en: {
     descMerchantId: 'Merchant ID',
     descChannelCode: 'Channel code (assigned by platform)',
     descDepositAmount: 'Deposit amount',
-    descNotifyUrl: 'Async callback URL',
-    descOrderNumber: 'Merchant order number (unique)',
+    descCallbackUrl: 'Async callback URL',
+    descOutTradeNoUnique: 'Merchant order number (unique)',
     descClientIp: 'Client IP address',
     descSign: 'Signature',
-    descRealName: 'Payer\'s real name (required by some channels)',
-    descReturnUrl: 'Redirect URL after payment',
+    descPayerName: 'Payer\'s real name (required by some channels)',
+    descRedirectUrl: 'Redirect URL after payment',
     descHttpStatus: 'HTTP status code, <code>200</code> means success',
     descMessage: 'Response message',
-    descSysOrderNum: 'System order number',
-    descMerchantOrderNum: 'Merchant order number',
+    descTradeNo: 'System order number',
+    descOutTradeNo: 'Merchant order number',
     descOrderStatus: 'Order status (see <a href="#status-codes">Status Codes</a>)',
     descOrderAmount: 'Order amount',
-    descCasherUrl: 'Cashier URL (redirect user to pay)',
-    descReceiverAccount: 'Receiver account (USDT wallet address)',
-    descReceiverName: 'Receiver name',
+    descCashierUrl: 'Cashier URL (redirect user to pay)',
+    descPayAddress: 'Receiver address (USDT wallet address)',
+    descPayeeName2: 'Receiver name',
     descNote: 'Note',
     descCreatedAt: 'Created time (ISO 8601)',
     descReturnSign: 'Response signature',
@@ -1255,14 +1238,14 @@ en: {
     withdrawCreateDesc: 'Merchants use this API to create a payout (withdrawal) request.',
     withdrawDangerNote: '<strong>Important:</strong> After submitting a payout request, a timeout or abnormal response <strong>does not mean the order failed</strong>. Always confirm the final result via the query API or callback. Do not resubmit.',
     descWithdrawAmount: 'Payout amount (\u2265 1)',
-    descBankCardNumber: 'Receiver wallet address',
-    descBankName: 'Chain network name (see <a href="#bank-list">Chain Network List</a>)',
-    descCardHolder: 'Holder name',
+    descPayAddress: 'Receiver wallet address',
+    descNetwork: 'Chain network name (see <a href="#bank-list">Chain Network List</a>)',
+    descPayeeName: 'Holder name',
     descWithdrawStatus: 'Payout status (see <a href="#status-codes">Status Codes</a>)',
     descWithdrawAmountShort: 'Payout amount',
     descFee: 'Fee',
-    descBankNameShort: 'Chain network name',
-    descBankCardNumShort: 'Wallet address',
+    descNetworkShort: 'Chain network name',
+    descPayAddressShort: 'Wallet address',
     withdrawQueryTitle: '4. Query Payout',
     withdrawQueryDesc: 'Query the current status of a payout order.',
     withdrawQueryResNote: 'Response format is the same as <a href="#withdraw-create">Create Payout</a>.',
@@ -1280,7 +1263,7 @@ en: {
     descEndedAt: 'End time (ISO 8601)',
     descPerPage: 'Items per page (default 20)',
     callbackTitle: '7. Async Callback Notification',
-    callbackDesc: 'When an order status changes (success or failure), the system sends a <code>POST</code> request to the merchant\'s <code>notify_url</code>.',
+    callbackDesc: 'When an order status changes (success or failure), the system sends a <code>POST</code> request to the merchant\'s <code>callback_url</code>.',
     callbackRetry: '<strong>Retry mechanism:</strong> If the merchant does not respond correctly, the system will retry multiple times. Merchants should implement idempotent processing to avoid duplicate operations.',
     callbackParams: 'Callback Parameters',
     descAmountDecimal: 'Amount (2 decimal places)',
@@ -1320,7 +1303,7 @@ en: {
     statusCodesTitle: 'Order Status Codes',
     thCode: 'Code',
     thDescription: 'Description',
-    statusProcessing: 'Processing',
+    statusPending: 'Pending (Processing)',
     statusSuccess: 'Success',
     statusFailed: 'Failed',
     errorCodesTitle: 'Error Codes',
@@ -1329,14 +1312,14 @@ en: {
     err1: 'Insufficient balance', err1s: 'Merchant balance insufficient for payout',
     err2: 'Feature not enabled', err2s: 'Payout not enabled',
     err3: 'Invalid parameters', err3s: 'Missing required params or incorrect format',
-    err4: 'Merchant not found', err4s: 'Incorrect username',
+    err4: 'Merchant not found', err4s: 'Incorrect merchant_id',
     err5: 'Signature error', err5s: 'Sign verification failed',
     err6: 'Concurrency conflict', err6s: 'Duplicate payout submission',
     err7: 'Order not found', err7s: 'Order number does not exist',
-    err8: 'Duplicate order number', err8s: 'order_number already exists',
+    err8: 'Duplicate order number', err8s: 'out_trade_no already exists',
     err10: 'Amount below minimum', err10s: 'Payout amount below minimum',
     err11: 'Amount exceeds maximum', err11s: 'Payout amount exceeds limit',
-    err12: 'Invalid channel code', err12s: 'Incorrect channel_code',
+    err12: 'Invalid channel code', err12s: 'Incorrect channel',
     err13: 'Channel temporarily unavailable', err13s: 'Channel maintenance or suspended',
     err14: 'Trading function disabled', err14s: 'Merchant deposit function disabled',
     err15: 'Invalid amount', err15s: 'Amount not within channel range',
@@ -1345,7 +1328,7 @@ en: {
     err18: 'IP not whitelisted', err18s: 'Request IP not in whitelist',
     err22: 'Chain network not supported', err22s: 'Payout chain network name not in supported list',
     bankListTitle: 'Chain Network List',
-    bankListDesc: 'Use the following chain network names for the <code>bank_name</code> parameter when creating payouts:',
+    bankListDesc: 'Use the following chain network names for the <code>network</code> parameter when creating payouts:',
     thBankName: 'Chain Network Name',
     bankListNote: 'The actual supported chain network list may vary depending on configuration. Please contact platform support for details.'
 }
@@ -1356,11 +1339,11 @@ var CODE = {
 zh: `&lt;?php
 // 1. 准备请求参数（不含 sign）
 $params = [
-    'username'     =&gt; 'merchant001',
-    'order_number' =&gt; 'T20260101001',
+    'merchant_id'     =&gt; 'merchant001',
+    'out_trade_no' =&gt; 'T20260101001',
     'amount'       =&gt; 500,
-    'notify_url'   =&gt; 'https://example.com/notify',
-    'channel_code' =&gt; 'USDT',
+    'callback_url'   =&gt; 'https://example.com/notify',
+    'channel' =&gt; 'USDT',
     'client_ip'    =&gt; '127.0.0.1',
 ];
 
@@ -1381,11 +1364,11 @@ $params['sign'] = $sign;`,
 en: `&lt;?php
 // 1. Prepare request parameters (excluding sign)
 $params = [
-    'username'     =&gt; 'merchant001',
-    'order_number' =&gt; 'T20260101001',
+    'merchant_id'     =&gt; 'merchant001',
+    'out_trade_no' =&gt; 'T20260101001',
     'amount'       =&gt; 500,
-    'notify_url'   =&gt; 'https://example.com/notify',
-    'channel_code' =&gt; 'USDT',
+    'callback_url'   =&gt; 'https://example.com/notify',
+    'channel' =&gt; 'USDT',
     'client_ip'    =&gt; '127.0.0.1',
 ];
 
@@ -1407,11 +1390,11 @@ $params['sign'] = $sign;`
 'code-java-sign': {
 zh: `// 1. 准备参数 Map（不含 sign）
 TreeMap&lt;String, String&gt; params = new TreeMap&lt;&gt;();
-params.put("username", "merchant001");
-params.put("order_number", "T20260101001");
+params.put("merchant_id", "merchant001");
+params.put("out_trade_no", "T20260101001");
 params.put("amount", "500");
-params.put("notify_url", "https://example.com/notify");
-params.put("channel_code", "USDT");
+params.put("callback_url", "https://example.com/notify");
+params.put("channel", "USDT");
 params.put("client_ip", "127.0.0.1");
 
 // 2. 拼接（TreeMap 已自动排序）
@@ -1429,11 +1412,11 @@ String decoded = URLDecoder.decode(sb.toString(), "UTF-8");
 String sign = DigestUtils.md5Hex(decoded);`,
 en: `// 1. Prepare parameter Map (excluding sign)
 TreeMap&lt;String, String&gt; params = new TreeMap&lt;&gt;();
-params.put("username", "merchant001");
-params.put("order_number", "T20260101001");
+params.put("merchant_id", "merchant001");
+params.put("out_trade_no", "T20260101001");
 params.put("amount", "500");
-params.put("notify_url", "https://example.com/notify");
-params.put("channel_code", "USDT");
+params.put("callback_url", "https://example.com/notify");
+params.put("channel", "USDT");
 params.put("client_ip", "127.0.0.1");
 
 // 2. Concatenate (TreeMap is auto-sorted)
@@ -1456,11 +1439,11 @@ from urllib.parse import urlencode, unquote
 
 # 1. 准备参数（不含 sign）
 params = {
-    "username": "merchant001",
-    "order_number": "T20260101001",
+    "merchant_id": "merchant001",
+    "out_trade_no": "T20260101001",
     "amount": "500",
-    "notify_url": "https://example.com/notify",
-    "channel_code": "USDT",
+    "callback_url": "https://example.com/notify",
+    "channel": "USDT",
     "client_ip": "127.0.0.1",
 }
 
@@ -1475,11 +1458,11 @@ from urllib.parse import urlencode, unquote
 
 # 1. Prepare parameters (excluding sign)
 params = {
-    "username": "merchant001",
-    "order_number": "T20260101001",
+    "merchant_id": "merchant001",
+    "out_trade_no": "T20260101001",
     "amount": "500",
-    "notify_url": "https://example.com/notify",
-    "channel_code": "USDT",
+    "callback_url": "https://example.com/notify",
+    "channel": "USDT",
     "client_ip": "127.0.0.1",
 }
 
