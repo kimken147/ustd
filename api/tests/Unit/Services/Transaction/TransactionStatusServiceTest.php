@@ -429,12 +429,12 @@ class TransactionStatusServiceTest extends TestCase
             'status' => Transaction::STATUS_PAYING,
             'locked_at' => now(),
             'locked_by_id' => $admin->id,
-            'channel_code' => Channel::CODE_USDT,
+            'channel_code' => Channel::CODE_USDT_TRC20,
             'thirdchannel_id' => null,
             'from_channel_account_id' => 999,
         ]);
 
-        // keepLock=false, channel=USDT, no thirdchannel, has from_channel_account_id
+        // keepLock=false, channel=USDT_TRC20, no thirdchannel, has from_channel_account_id
         $this->service->markAsNormalWithdraw($transaction, null, false, false);
 
         Bus::assertDispatched(ProcessUsdtWithdraw::class);

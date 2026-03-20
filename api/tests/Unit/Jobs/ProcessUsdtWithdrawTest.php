@@ -32,7 +32,7 @@ class ProcessUsdtWithdrawTest extends TestCase
             'notify_status' => Transaction::NOTIFY_STATUS_NONE,
             'amount' => '100.00',
             'floating_amount' => '100.00',
-            'channel_code' => 'USDT',
+            'channel_code' => 'USDT_TRC20',
             'order_number' => 'ORD_' . uniqid(),
             'system_order_number' => 'SYS_' . uniqid(),
             'created_at' => now(),

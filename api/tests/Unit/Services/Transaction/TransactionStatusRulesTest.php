@@ -415,14 +415,14 @@ class TransactionStatusRulesTest extends TestCase
     public function test_shouldDispatchUsdtWithdraw_all_conditions_met(): void
     {
         $this->assertTrue(TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            false, Channel::CODE_USDT, null, 1
+            false, Channel::CODE_USDT_TRC20, null, 1
         ));
     }
 
     public function test_shouldDispatchUsdtWithdraw_keep_lock(): void
     {
         $this->assertFalse(TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            true, Channel::CODE_USDT, null, 1
+            true, Channel::CODE_USDT_TRC20, null, 1
         ));
     }
 
@@ -436,14 +436,14 @@ class TransactionStatusRulesTest extends TestCase
     public function test_shouldDispatchUsdtWithdraw_has_thirdchannel(): void
     {
         $this->assertFalse(TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            false, Channel::CODE_USDT, 5, 1
+            false, Channel::CODE_USDT_TRC20, 5, 1
         ));
     }
 
     public function test_shouldDispatchUsdtWithdraw_no_from_channel_account(): void
     {
         $this->assertFalse(TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            false, Channel::CODE_USDT, null, null
+            false, Channel::CODE_USDT_TRC20, null, null
         ));
     }
 }

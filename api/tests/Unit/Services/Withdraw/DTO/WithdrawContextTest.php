@@ -79,7 +79,7 @@ class WithdrawContextTest extends TestCase
 
     public function test_is_usdt_returns_true(): void
     {
-        $context = $this->makeContext(WithdrawContext::SOURCE_MERCHANT, Channel::CODE_USDT);
+        $context = $this->makeContext(WithdrawContext::SOURCE_MERCHANT, Channel::CODE_USDT_TRC20);
 
         $this->assertTrue($context->isUsdt());
     }

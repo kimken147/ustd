@@ -184,7 +184,7 @@ class TransactionStatusRules
         ?int $toChannelAccountId
     ): bool {
         return !$keepLock
-            && $channelCode === Channel::CODE_USDT
+            && in_array($channelCode, Channel::USDT_CODES, true)
             && !$thirdchannelId
             && (bool) $toChannelAccountId;
     }
