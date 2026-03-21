@@ -176,6 +176,10 @@ class CreateTransactionController extends Controller
 
     private function getChannelCode(Channel $channel, Transaction $transaction): string
     {
+        if (Channel::isUsdt($channel->code)) {
+            return 'usdt';
+        }
+
         return strtolower($channel->code);
     }
 
