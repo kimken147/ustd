@@ -1,6 +1,6 @@
 import { Select as AntdSelect } from 'antd';
 import type { SelectProps } from 'antd';
-import { useTranslation } from 'react-i18next';
+import { useTranslate } from '@refinedev/core';
 
 type Options = NonNullable<SelectProps['options']>;
 type Option = Options[0];
@@ -21,7 +21,7 @@ export type TransactionStatusValue =
   (typeof TransactionStatus)[keyof typeof TransactionStatus];
 
 export function useTransactionStatus() {
-  const { t } = useTranslation('common');
+  const t = useTranslate();
 
   const getStatusText = (status: number) => {
     switch (status) {

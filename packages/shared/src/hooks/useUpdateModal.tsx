@@ -7,9 +7,9 @@ import {
   useCustomMutation,
   useDelete,
   useResourceParams,
+  useTranslate,
   useUpdate,
 } from '@refinedev/core';
-import { useTranslation } from 'react-i18next';
 import { PropsWithChildren, useState } from 'react';
 
 type NamePath = string | number | (string | number)[];
@@ -67,7 +67,7 @@ type Config = {
 export function useUpdateModal<TData extends BaseRecord>(
   props?: UseUpdateModalProps
 ) {
-  const { t } = useTranslation('common');
+  const t = useTranslate();
   const { resource } = useResourceParams();
   const resourceName = resource?.name;
   const { mutateAsync: customMutate } = useCustomMutation();

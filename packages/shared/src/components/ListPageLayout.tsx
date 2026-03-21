@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Form, Button, Table, Row, Col } from 'antd';
 import type { FormProps, TableProps, FormItemProps } from 'antd';
-import { useTranslation } from 'react-i18next';
+import { useTranslate } from '@refinedev/core';
 
 export interface ListPageLayoutProps {
   children: React.ReactNode;
@@ -67,7 +67,7 @@ function FilterItem(props: FormItemProps) {
  * Filter - 篩選表單區塊
  */
 function Filter({ formProps, children, loading, onSearch, defaultValues }: FilterProps) {
-  const { t } = useTranslation('common');
+  const t = useTranslate();
 
   // Use the form instance from formProps (provided by Refine's searchFormProps).
   // Only create a fallback form if formProps.form is not provided.
