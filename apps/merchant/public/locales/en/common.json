@@ -183,6 +183,9 @@
     "buttons": {
       "create": "Create Withdrawal Account"
     },
+    "messages": {
+      "success": "Created successfully"
+    },
     "review": {
       "wait": "Reviewing",
       "success": "Approved",

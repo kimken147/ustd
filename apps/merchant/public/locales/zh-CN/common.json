@@ -183,6 +183,9 @@
     "buttons": {
       "create": "建立银行卡"
     },
+    "messages": {
+      "success": "建立成功"
+    },
     "review": {
       "wait": "审核中",
       "success": "审核成功",
