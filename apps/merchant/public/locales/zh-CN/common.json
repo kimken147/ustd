@@ -28,7 +28,8 @@
       "newPassword": "新密码",
       "confirmPassword": "再次输入新密码",
       "oneTimePassword": "验证码",
-      "google2faQRCode": "谷歌验证码 QR Code"
+      "google2faQRCode": "谷歌验证码 QR Code",
+      "changePassword": "更改密码"
     },
     "values": {
       "download": "下载",
@@ -43,7 +44,8 @@
       "confirmChangeGoogleSecertKey": "确定要重置验证码密钥？"
     },
     "error": {
-      "passwordNotMatch": "两次密码输入不一致"
+      "passwordNotMatch": "两次密码输入不一致",
+      "confirmPassword": "两次密码输入不一致"
     }
   },
   "collection": {

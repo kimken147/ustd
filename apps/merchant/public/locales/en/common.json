@@ -28,7 +28,8 @@
       "newPassword": "New Password",
       "confirmPassword": "Confirm New Password",
       "oneTimePassword": "Google Authenticator Code",
-      "google2faQRCode": "Google Authenticator QR Code"
+      "google2faQRCode": "Google Authenticator QR Code",
+      "changePassword": "Change Password"
     },
     "values": {
       "download": "Download",
@@ -43,7 +44,8 @@
       "confirmChangeGoogleSecertKey": "Confirm Reset of Google Authenticator Secret Key?"
     },
     "error": {
-      "passwordNotMatch": "Passwords do not match"
+      "passwordNotMatch": "Passwords do not match",
+      "confirmPassword": "Passwords do not match"
     }
   },
   "collection": {

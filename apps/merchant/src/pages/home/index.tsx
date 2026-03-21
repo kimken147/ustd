@@ -237,7 +237,7 @@ const HomePage: FC = () => {
                                                     url: `${apiUrl}/google2fa_secret`,
                                                 },
                                                 onSuccess: (data) => {
-                                                    navigate(`/home`, {
+                                                    navigate(`/`, {
                                                         state: {
                                                             ...user,
                                                             ...data,
