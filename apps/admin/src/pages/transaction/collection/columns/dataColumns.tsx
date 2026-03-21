@@ -37,9 +37,15 @@ export function createTxHashColumn(deps: ColumnDependencies): CollectionColumn {
     render(value: string, record) {
       if (!value) return '-';
       const url = getExplorerTxUrl(value, record.chain_network);
-      return (
+      return url ? (
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
+            {value}
+          </Typography.Text>
+        </a>
+      ) : (
         <Typography.Text copyable ellipsis style={{ maxWidth: 120 }}>
-          {url ? <a href={url} target="_blank" rel="noopener noreferrer">{value}</a> : value}
+          {value}
         </Typography.Text>
       );
     },
