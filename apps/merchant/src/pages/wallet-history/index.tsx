@@ -43,6 +43,7 @@ const WalletHistoryList: FC = () => {
     filters,
     tableQuery: { data: queryData },
   } = useTable<WalletHistory>({
+    resource: 'wallet-histories',
     onSearch: formValuesToCrudFilters,
     syncWithLocation: true,
     filters: {
