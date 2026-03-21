@@ -259,7 +259,7 @@ const PayForAnotherList: FC = () => {
   ];
 
   // Export handler
-  const handleExport = () => {
+  const handleExport = async () => {
     const url = `${apiUrl}/withdraw-report?${queryString.stringify(
       generateFilter(filters as CrudFilter[])
     )}&token=${getToken()}`;
