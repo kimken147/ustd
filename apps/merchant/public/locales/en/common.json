@@ -248,7 +248,25 @@
     }
   },
   "member": {
-    "title": "Members"
+    "title": "Downline",
+    "fields": {
+      "merchantName": "Merchant Name",
+      "loginAccount": "Login Account",
+      "totalBalance": "Total Balance",
+      "frozenBalance": "Frozen Balance",
+      "availableBalance": "Available Balance",
+      "lastLoginTimeIp": "Last Login Time / IP",
+      "noRecord": "No Record",
+      "phone": "Phone",
+      "contact": "Other Contact",
+      "accountInfo": "Account Information"
+    },
+    "buttons": {
+      "create": "Create Downline Account"
+    },
+    "messages": {
+      "createSuccess": "Downline account created successfully"
+    }
   },
   "channels": {
     "USDT": "USDT",

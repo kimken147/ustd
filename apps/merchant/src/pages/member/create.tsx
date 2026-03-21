@@ -1,7 +1,7 @@
 import { SaveOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Form, Input, Row, Spin, Typography } from "antd";
 import { Create, useForm } from "@refinedev/antd";
-import { useCreate, useList } from "@refinedev/core";
+import { useCreate, useList, useTranslate } from "@refinedev/core";
 import { useNavigate } from "react-router";
 import { ChannelGroup } from "@morgan-ustd/shared";
 import { Member } from "interfaces/member";
@@ -9,6 +9,8 @@ import { FC } from "react";
 import { Helmet } from "react-helmet";
 
 const MemberCreate: FC = () => {
+    const t = useTranslate();
+    const title = t('member.buttons.create');
     const { form } = useForm();
     const { mutateAsync: create } = useCreate<Member>();
     const { query } = useList<ChannelGroup>({
@@ -21,14 +23,14 @@ const MemberCreate: FC = () => {
     return (
         <>
             <Helmet>
-                <title>建立下级帐号</title>
+                <title>{title}</title>
             </Helmet>
             <Create
-                title="建立下级帐号"
+                title={title}
                 footerButtons={() => (
                     <>
                         <Button type="primary" icon={<SaveOutlined />} onClick={form.submit}>
-                            提交
+                            {t('submit')}
                         </Button>
                     </>
                 )}
@@ -41,7 +43,7 @@ const MemberCreate: FC = () => {
                             resource: "members",
                             values,
                             successNotification: {
-                                message: "建立下级帐号成功",
+                                message: t('member.messages.createSuccess'),
                                 type: "success",
                             },
                         });
@@ -50,25 +52,25 @@ const MemberCreate: FC = () => {
                         });
                     }}
                 >
-                    <Typography.Title level={4}>帐号相关</Typography.Title>
+                    <Typography.Title level={4}>{t('member.fields.accountInfo')}</Typography.Title>
                     <Row gutter={16}>
                         <Col xs={24} md={12}>
-                            <Form.Item label="商户名称" name={"name"} rules={[{ required: true }]}>
+                            <Form.Item label={t('member.fields.merchantName')} name={"name"} rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={12}>
-                            <Form.Item label="电话" name={"phone"}>
+                            <Form.Item label={t('member.fields.phone')} name={"phone"}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={12}>
-                            <Form.Item label="登录帐号" name={"username"} rules={[{ required: true }]}>
+                            <Form.Item label={t('member.fields.loginAccount')} name={"username"} rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={12}>
-                            <Form.Item label="其他联络方式" name={"contact"}>
+                            <Form.Item label={t('member.fields.contact')} name={"contact"}>
                                 <Input.TextArea />
                             </Form.Item>
                         </Col>

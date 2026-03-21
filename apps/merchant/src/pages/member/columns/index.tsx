@@ -1,14 +1,16 @@
 import { Space } from 'antd';
 import { DateField, ShowButton, TextField } from '@refinedev/antd';
+import { useTranslate } from '@refinedev/core';
 import { Format } from '@morgan-ustd/shared';
 import type { MemberColumn } from './types';
 
 export type { ColumnDependencies } from './types';
 
 export function useColumns(): MemberColumn[] {
+  const t = useTranslate();
   return [
     {
-      title: '商户名称',
+      title: t('member.fields.merchantName'),
       dataIndex: 'name',
       render(value, record) {
         return (
@@ -19,25 +21,25 @@ export function useColumns(): MemberColumn[] {
       },
     },
     {
-      title: '登录帐号',
+      title: t('member.fields.loginAccount'),
       dataIndex: 'username',
     },
     {
-      title: '总余额',
+      title: t('member.fields.totalBalance'),
       dataIndex: ['wallet', 'balance'],
     },
     {
-      title: '冻结余额',
+      title: t('member.fields.frozenBalance'),
       dataIndex: ['wallet', 'frozen_balance'],
     },
     {
-      title: '可用余额',
+      title: t('member.fields.availableBalance'),
       dataIndex: ['wallet', 'available_balance'],
     },
     {
-      title: '最后登录时间 / IP',
+      title: t('member.fields.lastLoginTimeIp'),
       render(_, record) {
-        if (!record.last_login_at) return '尚无纪录';
+        if (!record.last_login_at) return t('member.fields.noRecord');
         return (
           <Space>
             <DateField value={record.last_login_at} format={Format} />

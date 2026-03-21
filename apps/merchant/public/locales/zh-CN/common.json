@@ -248,7 +248,25 @@
     }
   },
   "member": {
-    "title": "下级管理"
+    "title": "下级管理",
+    "fields": {
+      "merchantName": "商户名称",
+      "loginAccount": "登录帐号",
+      "totalBalance": "总余额",
+      "frozenBalance": "冻结余额",
+      "availableBalance": "可用余额",
+      "lastLoginTimeIp": "最后登录时间 / IP",
+      "noRecord": "尚无纪录",
+      "phone": "电话",
+      "contact": "其他联络方式",
+      "accountInfo": "帐号相关"
+    },
+    "buttons": {
+      "create": "建立下级帐号"
+    },
+    "messages": {
+      "createSuccess": "建立下级帐号成功"
+    }
   },
   "channels": {
     "USDT": "USDT",
