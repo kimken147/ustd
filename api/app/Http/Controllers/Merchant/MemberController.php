@@ -184,11 +184,12 @@ class MemberController extends Controller
             $allChannelGroups = ChannelGroup::all()->keyBy('id');
 
             foreach ($allChannelGroups as $channelGroupId => $channelGroup) {
+                $channelAmount = $channelGroup->channelAmounts()->first();
                 $member->userChannels()->create([
                     'channel_group_id' => $channelGroupId,
                     'fee_percent'      => $feePercent = data_get($userChannelFeePercents, $channelGroupId, null),
-                    'min_amount'       => null,
-                    'max_amount'       => null,
+                    'min_amount'       => $channelAmount->min_amount ?? 0,
+                    'max_amount'       => $channelAmount->max_amount ?? 0,
                     'status'           => is_null($feePercent) ? Channel::STATUS_DISABLE : Channel::STATUS_ENABLE,
                     'floating_enable'  => false,
                     'withdraw_min_amount' => $request->input('withdraw_min_amount', null),
