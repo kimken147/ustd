@@ -21,7 +21,7 @@ export type TransactionStatusValue =
   (typeof TransactionStatus)[keyof typeof TransactionStatus];
 
 export function useTransactionStatus() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const getStatusText = (status: number) => {
     switch (status) {

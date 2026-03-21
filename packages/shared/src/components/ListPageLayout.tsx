@@ -67,7 +67,7 @@ function FilterItem(props: FormItemProps) {
  * Filter - 篩選表單區塊
  */
 function Filter({ formProps, children, loading, onSearch, defaultValues }: FilterProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   // Use the form instance from formProps (provided by Refine's searchFormProps).
   // Only create a fallback form if formProps.form is not provided.

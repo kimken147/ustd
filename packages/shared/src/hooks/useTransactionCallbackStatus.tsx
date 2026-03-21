@@ -16,7 +16,7 @@ export type TransactionCallbackStatusValue =
   (typeof TransactionCallbackStatus)[keyof typeof TransactionCallbackStatus];
 
 export function useTransactionCallbackStatus() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const getStatusText = (status: number) => {
     switch (status) {

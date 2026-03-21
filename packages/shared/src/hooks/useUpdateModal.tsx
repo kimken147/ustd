@@ -67,7 +67,7 @@ type Config = {
 export function useUpdateModal<TData extends BaseRecord>(
   props?: UseUpdateModalProps
 ) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const { resource } = useResourceParams();
   const resourceName = resource?.name;
   const { mutateAsync: customMutate } = useCustomMutation();

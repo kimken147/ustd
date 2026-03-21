@@ -21,7 +21,7 @@ export type WithdrawStatusValue =
   (typeof WithdrawStatus)[keyof typeof WithdrawStatus];
 
 export function useWithdrawStatus() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const getStatusText = (status: number) => {
     switch (status) {
