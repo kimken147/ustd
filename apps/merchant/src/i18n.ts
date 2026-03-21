@@ -14,7 +14,10 @@ i18n.use(Backend)
         ns: ["common", "transaction"],
         defaultNS: "common",
         fallbackLng: "zh-CN",
-        lng: "zh-CN",
+        detection: {
+            order: ["localStorage"],
+            caches: ["localStorage"],
+        },
         interpolation: {
             escapeValue: false,
         },

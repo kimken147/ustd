@@ -30,7 +30,7 @@ class TransactionController extends Controller
         ]);
 
         $confirmed = $request->confirmed;
-        $lang = app()->getLocale();
+        $lang = str_replace('-', '_', $request->header('X-Locale', 'zh_CN'));
 
         DateRangeValidator::parse($request)
             ->validateMonths(2, __('transaction.noRecord',[],$lang))
@@ -146,7 +146,7 @@ class TransactionController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $lang = app()->getLocale();
+        $lang = str_replace('-', '_', $request->header('X-Locale', 'zh_CN'));
 
         DateRangeValidator::parse($request)
             ->validateDays(31, __('transaction.timeIntervalError',[],$lang));
