@@ -247,6 +247,9 @@
       "create": "Create Read-Only Account"
     }
   },
+  "member": {
+    "title": "Members"
+  },
   "channels": {
     "USDT": "USDT",
     "USDT_TRC20": "USDT (TRC-20)",
@@ -295,7 +298,19 @@
     "refresh": "Refresh"
   },
   "notifications": {
-    "success": "Success"
+    "success": "Success",
+    "createSuccess": "Created successfully",
+    "createError": "Creation failed",
+    "editSuccess": "Updated successfully",
+    "editError": "Update failed",
+    "deleteSuccess": "Deleted successfully",
+    "deleteError": "Deletion failed"
+  },
+  "actions": {
+    "list": "List",
+    "create": "Create",
+    "edit": "Edit",
+    "show": "Show"
   },
   "pages": {
     "error": {

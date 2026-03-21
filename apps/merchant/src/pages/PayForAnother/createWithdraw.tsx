@@ -55,7 +55,7 @@ const WithdrawCreate: FC = () => {
                         </Button>
                     </>
                 )}
-                title={<ContentHeader title={title} />}
+                title={title}
             >
                 <Descriptions column={{ xs: 1, md: 3 }} bordered title={t("home.fields.balance")}>
                     <Descriptions.Item label={t("home.fields.balance")}>{profile?.wallet?.balance}</Descriptions.Item>

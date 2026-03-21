@@ -45,7 +45,7 @@ const MemberCreate: FC = () => {
                                 type: "success",
                             },
                         });
-                        navigate(`/members/show/${res.data.id}`, {
+                        navigate(`/members/${res.data.id}`, {
                             state: res.data,
                         });
                     }}

@@ -112,13 +112,13 @@ function App() {
     {
       name: 'pay-for-another',
       list: '/pay-for-another',
-      meta: { label: '建立下发', parent: 'withdraws', hide: true },
+      meta: { label: t('withdraw.buttons.createWithdraw'), parent: 'withdraws', hide: true },
     },
     {
       name: 'bank-cards',
       list: '/bank-cards',
       create: '/bank-cards/create',
-      meta: { label: '下发银行卡', parent: 'withdraws', hide: true },
+      meta: { label: t('withdraw.buttons.banks'), parent: 'withdraws', hide: true },
     },
     {
       name: 'wallet-histories',
@@ -130,7 +130,7 @@ function App() {
       list: '/members',
       create: '/members/create',
       show: '/members/:id',
-      meta: { label: '下级管理', icon: <ForkOutlined className="rotate-180" /> },
+      meta: { label: t('member.title'), icon: <ForkOutlined className="rotate-180" /> },
     },
     {
       name: 'sub-accounts',

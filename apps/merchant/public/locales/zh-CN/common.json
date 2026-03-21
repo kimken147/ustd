@@ -247,6 +247,9 @@
       "create": "建立子帐号"
     }
   },
+  "member": {
+    "title": "下级管理"
+  },
   "channels": {
     "USDT": "USDT",
     "USDT_TRC20": "USDT (TRC-20)",
@@ -295,7 +298,19 @@
     "refresh": "刷新"
   },
   "notifications": {
-    "success": "成功"
+    "success": "成功",
+    "createSuccess": "建立成功",
+    "createError": "建立失败",
+    "editSuccess": "修改成功",
+    "editError": "修改失败",
+    "deleteSuccess": "删除成功",
+    "deleteError": "删除失败"
+  },
+  "actions": {
+    "list": "列表",
+    "create": "建立",
+    "edit": "修改",
+    "show": "详情"
   },
   "pages": {
     "error": {
