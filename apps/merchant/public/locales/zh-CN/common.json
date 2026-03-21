@@ -249,6 +249,9 @@
   },
   "member": {
     "title": "下级管理",
+    "show": {
+      "title": "下级帐号详细"
+    },
     "fields": {
       "merchantName": "商户名称",
       "loginAccount": "登录帐号",
@@ -256,13 +259,25 @@
       "frozenBalance": "冻结余额",
       "availableBalance": "可用余额",
       "lastLoginTimeIp": "最后登录时间 / IP",
+      "lastLoginTime": "最后登录时间",
       "noRecord": "尚无纪录",
+      "none": "无",
       "phone": "电话",
       "contact": "其他联络方式",
-      "accountInfo": "帐号相关"
+      "accountInfo": "帐号相关",
+      "google2faStatus": "谷歌验证码启用开关",
+      "ip": "IP",
+      "password": "密码",
+      "google2faSecret": "谷歌验证码密钥",
+      "google2faQRCode": "谷歌验证码 QR Code",
+      "featureToggle": "功能开关",
+      "accountStatus": "帐号启用开关",
+      "agentStatus": "代理功能启用开关",
+      "walletInfo": "钱包相关"
     },
     "buttons": {
-      "create": "建立下级帐号"
+      "create": "建立下级帐号",
+      "refresh": "刷新"
     },
     "messages": {
       "createSuccess": "建立下级帐号成功"
