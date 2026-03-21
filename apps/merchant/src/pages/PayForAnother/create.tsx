@@ -44,13 +44,13 @@ const PayForAnotherCreate: FC = () => {
     const lists = Form.useWatch("lists", form);
     const selectOptions: SelectOptions = [
         {
-            label: translate("channels.USDT"),
-            value: "USDT_TRC20",
+            label: "USDT (TRC-20)",
+            value: "TRC-20",
         },
     ];
     const getCardLabel = (index: number) => {
         const type = lists?.[index]?.type;
-        if (type === "USDT_TRC20") {
+        if (type === "TRC-20") {
             return translate("withdraw.fields.walletAddress");
         }
         return translate("withdraw.fields.account");

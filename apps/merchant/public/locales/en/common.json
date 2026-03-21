@@ -299,12 +299,15 @@
   },
   "notifications": {
     "success": "Success",
-    "createSuccess": "Created successfully",
-    "createError": "Creation failed",
-    "editSuccess": "Updated successfully",
-    "editError": "Update failed",
-    "deleteSuccess": "Deleted successfully",
-    "deleteError": "Deletion failed"
+    "error": "Error",
+    "undoable": "You have {{seconds}} seconds to undo",
+    "createSuccess": "{{resource}} created successfully",
+    "createError": "Error creating {{resource}} (Status Code: {{statusCode}})",
+    "deleteSuccess": "{{resource}} deleted successfully",
+    "deleteError": "Error deleting {{resource}} (Status Code: {{statusCode}})",
+    "editSuccess": "{{resource}} updated successfully",
+    "editError": "Error updating {{resource}} (Status Code: {{statusCode}})",
+    "importProgress": "Importing: {{processed}} / {{total}} processed"
   },
   "actions": {
     "list": "List",
