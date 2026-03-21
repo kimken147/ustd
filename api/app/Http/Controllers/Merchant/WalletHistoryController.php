@@ -15,7 +15,7 @@ class WalletHistoryController extends Controller
 
     public function index(ListWalletHistoryRequest $request)
     {
-        $lang = $request->input('lang', 'zh_CN');
+        $lang = app()->getLocale();
 
         $dateRange = DateRangeValidator::parse($request, today())
             ->validateDays(31, __('wallet.timeIntervalError',[],$lang));
@@ -58,7 +58,7 @@ class WalletHistoryController extends Controller
 
     public function exportCsv(ListWalletHistoryRequest $request)
     {
-        $lang = $request->input('lang', 'zh_CN');
+        $lang = app()->getLocale();
 
         $dateRange = DateRangeValidator::parse($request, today())
             ->validateDays(31, __('wallet.timeIntervalError',[],$lang));

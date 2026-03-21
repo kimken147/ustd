@@ -34,7 +34,7 @@ class WithdrawController extends Controller
             'notify_status' => ['nullable', 'array'],
         ]);
 
-        $lang = $request->input('lang', 'zh_CN');
+        $lang = app()->getLocale();
 
         DateRangeValidator::parse($request)
             ->validateDays(31, __('withdraw.timeIntervalError', [], $lang));

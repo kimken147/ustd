@@ -37,6 +37,7 @@ import {
 } from '@morgan-ustd/shared';
 import type { CrudFilter } from '@refinedev/core';
 import { useTranslate } from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import { Helmet } from 'react-helmet';
 import dayjs from 'dayjs';
 import { PlusSquareOutlined } from '@ant-design/icons';
@@ -262,7 +263,14 @@ const PayForAnotherList: FC = () => {
     const url = `${apiUrl}/withdraw-report?${queryString.stringify(
       generateFilter(filters as CrudFilter[])
     )}&token=${getToken()}`;
-    window.open(url);
+    const res = await axiosInstance.get(url, { responseType: 'blob' });
+    const disposition = res.headers['content-disposition'] || '';
+    const filename = disposition.match(/filename="?(.+?)"?$/)?.[1] || 'report.csv';
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(res.data);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   return (

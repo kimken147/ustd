@@ -8,6 +8,7 @@ import { useTransactionStatus, useTransactionCallbackStatus, ListPageLayout, for
 import type { Meta, Transaction } from 'interfaces/transaction';
 import numeral from 'numeral';
 import { useApiUrl, useTranslate } from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import queryString from 'query-string';
 import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';
@@ -68,7 +69,14 @@ const CollectionList: FC = () => {
               const url = `${apiUrl}/transaction-report?${queryString.stringify(
                 generateFilter(filters)
               )}&token=${getToken()}`;
-              window.open(url);
+              const res = await axiosInstance.get(url, { responseType: 'blob' });
+              const disposition = res.headers['content-disposition'] || '';
+              const filename = disposition.match(/filename="?(.+?)"?$/)?.[1] || 'report.csv';
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(res.data);
+              link.download = filename;
+              link.click();
+              URL.revokeObjectURL(link.href);
             }}
           >
             {t('export')}

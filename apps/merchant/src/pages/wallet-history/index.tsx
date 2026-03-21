@@ -1,6 +1,7 @@
 import { Card, Col, Descriptions, Divider, Form, Row, Statistic } from 'antd';
 import { ExportButton, List, useTable } from '@refinedev/antd';
 import { useApiUrl, useTranslate } from '@refinedev/core';
+import { axiosInstance } from '@refinedev/simple-rest';
 import { getToken } from 'authProvider';
 import { generateFilter } from 'dataProvider';
 import dayjs from 'dayjs';
@@ -66,7 +67,14 @@ const WalletHistoryList: FC = () => {
               const url = `${apiUrl}/wallet-histories-report?${queryString.stringify(
                 generateFilter(filters)
               )}&token=${getToken()}`;
-              window.open(url);
+              const res = await axiosInstance.get(url, { responseType: 'blob' });
+              const disposition = res.headers['content-disposition'] || '';
+              const filename = disposition.match(/filename="?(.+?)"?$/)?.[1] || 'report.csv';
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(res.data);
+              link.download = filename;
+              link.click();
+              URL.revokeObjectURL(link.href);
             }}
           >
             {t('export')}
