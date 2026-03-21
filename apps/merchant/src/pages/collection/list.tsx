@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Form, Row } from 'antd';
+import { Card, Col, Divider, Form, Row, Statistic } from 'antd';
 import type { ColProps } from 'antd';
 import { ExportButton, List, useTable } from '@refinedev/antd';
 import dayjs from 'dayjs';
@@ -102,17 +102,17 @@ const CollectionList: FC = () => {
         <Row gutter={16}>
           <Col {...colProps}>
             <Card>
-              <Card.Meta
-                title={meta?.total}
-                description={t('collection.fields.totalNumberOfTransation')}
+              <Statistic
+                value={meta?.total}
+                title={t('collection.fields.totalNumberOfTransation')}
               />
             </Card>
           </Col>
           <Col {...colProps}>
             <Card>
-              <Card.Meta
-                title={`${meta?.total_success ?? 0}/${meta?.total ?? 0}`}
-                description={`${t('collection.fields.successRate')} ${numeral(
+              <Statistic
+                value={`${meta?.total_success ?? 0}/${meta?.total ?? 0}`}
+                title={`${t('collection.fields.successRate')} ${numeral(
                   ((+(meta?.total_success ?? 0)) * 100) / (meta?.total ?? 1)
                 ).format('0.00')}%`}
               />
@@ -120,17 +120,17 @@ const CollectionList: FC = () => {
           </Col>
           <Col {...colProps}>
             <Card>
-              <Card.Meta
-                title={meta?.total_amount}
-                description={t('collection.fields.totalAmountOfTransaction')}
+              <Statistic
+                value={meta?.total_amount}
+                title={t('collection.fields.totalAmountOfTransaction')}
               />
             </Card>
           </Col>
           <Col {...colProps}>
             <Card>
-              <Card.Meta
-                title={meta?.total_fee}
-                description={t('collection.fields.totalFeeOfTranaction')}
+              <Statistic
+                value={meta?.total_fee}
+                title={t('collection.fields.totalFeeOfTranaction')}
               />
             </Card>
           </Col>
