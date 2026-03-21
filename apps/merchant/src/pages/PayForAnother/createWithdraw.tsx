@@ -58,12 +58,12 @@ const WithdrawCreate: FC = () => {
                 title={<ContentHeader title={title} />}
             >
                 <Descriptions column={{ xs: 1, md: 3 }} bordered title={t("home.fields.balance")}>
-                    <Descriptions.Item label={t("home.fields.balance")}>{profile?.wallet.balance}</Descriptions.Item>
+                    <Descriptions.Item label={t("home.fields.balance")}>{profile?.wallet?.balance}</Descriptions.Item>
                     <Descriptions.Item label={t("home.fields.availableBalance")}>
-                        {profile?.wallet.available_balance}
+                        {profile?.wallet?.available_balance}
                     </Descriptions.Item>
                     <Descriptions.Item label={t("home.fields.frozenBalance")}>
-                        {profile?.wallet.frozen_balance}
+                        {profile?.wallet?.frozen_balance}
                     </Descriptions.Item>
                 </Descriptions>
                 <Divider />
