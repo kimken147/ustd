@@ -475,7 +475,7 @@ const MerchantShow: FC<IResourceComponentsProps<Merchant>> = () => {
                       method: 'post',
                     },
                     onSuccess: data => {
-                      navigate(`/merchants/show/${data?.id}`, {
+                      navigate(`/merchants/${data?.id}`, {
                         state: {
                           ...(state as Merchant),
                           ...data,
@@ -509,7 +509,7 @@ const MerchantShow: FC<IResourceComponentsProps<Merchant>> = () => {
                       method: 'post',
                     },
                     onSuccess(data) {
-                      navigate(`/merchants/show/${data?.id}`, {
+                      navigate(`/merchants/${data?.id}`, {
                         state: {
                           ...(state as Merchant),
                           ...data,
@@ -616,7 +616,7 @@ const MerchantShow: FC<IResourceComponentsProps<Merchant>> = () => {
                       url: `${apiUrl}/merchants/${record.id}/google2fa-secret-resets`,
                     },
                     onSuccess: data => {
-                      navigate(`/merchants/show/${data?.id}`, {
+                      navigate(`/merchants/${data?.id}`, {
                         state: {
                           ...(state as Merchant),
                           ...record,
