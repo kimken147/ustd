@@ -69,7 +69,9 @@ const WalletHistoryList: FC = () => {
               )}&token=${getToken()}`;
               const res = await axiosInstance.get(url, { responseType: 'blob' });
               const disposition = res.headers['content-disposition'] || '';
-              const filename = disposition.match(/filename="?(.+?)"?$/)?.[1] || 'report.csv';
+              const utf8Match = disposition.match(/filename\*=UTF-8''(.+)/i);
+              const plainMatch = disposition.match(/filename="?([^";\n]+)"?/);
+              const filename = utf8Match ? decodeURIComponent(utf8Match[1]) : plainMatch?.[1] || 'report.csv';
               const link = document.createElement('a');
               link.href = URL.createObjectURL(res.data);
               link.download = filename;
