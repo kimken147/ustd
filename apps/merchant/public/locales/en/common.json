@@ -234,6 +234,7 @@
       "id": "Login ID",
       "info": "Account Details",
       "resetPassoword": "Reset Password",
+      "resetPassword": "Reset Password",
       "resetGoogle2faSecret": "Reset Google Authenticator"
     },
     "tips": {

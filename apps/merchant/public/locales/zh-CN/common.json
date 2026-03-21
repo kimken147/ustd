@@ -234,6 +234,7 @@
       "id": "登录帐号",
       "info": "子帐号资讯",
       "resetPassoword": "重置密码",
+      "resetPassword": "重置密码",
       "resetGoogle2faSecret": "重置谷歌验证码密钥"
     },
     "tips": {
