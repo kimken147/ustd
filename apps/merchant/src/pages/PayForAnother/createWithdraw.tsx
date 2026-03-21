@@ -79,7 +79,7 @@ const WithdrawCreate: FC = () => {
                             resource: "withdraws",
                             values,
                             successNotification: {
-                                message: t("withdraw.create.message.success"),
+                                message: t("withdraw.create.messages.success"),
                                 type: "success",
                             },
                         });
