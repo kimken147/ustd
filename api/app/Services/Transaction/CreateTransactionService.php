@@ -454,6 +454,7 @@ class CreateTransactionService
                         'receive_status' => UserChannelAccount::RECEIVE_STATUS_UNUSED,
                         'linked_transaction_id' => $transaction->id,
                         'status' => UserChannelAccount::STATUS_ONLINE,
+                        'type' => UserChannelAccount::TYPE_DEPOSIT_WITHDRAW,
                     ]
                 );
                 $depositAccount = $childAccount;
