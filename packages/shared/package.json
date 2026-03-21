@@ -20,8 +20,11 @@
   },
   "peerDependencies": {
     "@refinedev/core": "^5.0.8",
+    "antd": "^5.12.0",
+    "i18next": ">=20.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-i18next": ">=13.0.0"
   },
   "devDependencies": {
     "@refinedev/core": "^5.0.8",
