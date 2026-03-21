@@ -432,6 +432,7 @@ function AppContent() {
                 <Route path="/merchants" element={<MerchantList />} />
                 <Route path="/merchants/create" element={<MerchantCreate />} />
                 <Route path="/merchants/:id" element={<MerchantShow />} />
+                <Route path="/merchants/show/:id" element={<MerchantShow />} />
                 <Route path="/merchants/white-list" element={<MerchantWhiteList />} />
                 <Route path="/merchants/api-white-list" element={<MerchantApiWhiteList />} />
                 <Route path="/merchants/banned-list" element={<MerchantBannedList />} />
