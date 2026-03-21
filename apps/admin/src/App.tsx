@@ -391,7 +391,7 @@ function AppContent() {
                         <ThemedTitle
                           collapsed={collapsed}
                           text={
-                            <span style={{ fontFamily: "'Ubuntu', sans-serif", fontWeight: 700 }}>
+                            <span style={{ fontFamily: "'Ubuntu', sans-serif", fontWeight: 700, fontSize: '1.4rem' }}>
                               {process.env.REACT_APP_TITLE || 'Admin'}
                             </span>
                           }
