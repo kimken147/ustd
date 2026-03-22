@@ -226,8 +226,8 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
               </Button>
               {isCancelPaufen ? (
                 <Button
+                  type="primary"
                   disabled={isFinished}
-                  className={isFinished ? '' : '!bg-[#faad14] !text-white border-0'}
                   onClick={() =>
                     modalConfirm({
                       title: t('messages.confirmAutoPayout'),
