@@ -294,7 +294,7 @@ export function useUpdateModal<TData extends BaseRecord>(
                 ...values,
                 id,
               },
-              resource: resource || resourceName,
+              resource: resource || props?.resource || resourceName,
               successNotification: {
                 message: t('updateSuccess'),
                 type: 'success',
@@ -310,7 +310,7 @@ export function useUpdateModal<TData extends BaseRecord>(
           mutateDeleting(
             {
               id,
-              resource: resource || resourceName || '',
+              resource: resource || props?.resource || resourceName || '',
               successNotification: {
                 message: t('deleteSuccess'),
                 type: 'success',
