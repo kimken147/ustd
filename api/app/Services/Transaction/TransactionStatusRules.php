@@ -52,7 +52,7 @@ class TransactionStatusRules
 
     public static function allowedStatusesForPaufenWithdraw(): array
     {
-        return [Transaction::STATUS_PENDING_REVIEW, Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED];
+        return [Transaction::STATUS_PENDING_REVIEW, Transaction::STATUS_MATCHING, Transaction::STATUS_PAYING, Transaction::STATUS_RECEIVED];
     }
 
     public static function allowedStatusesForThirdChannelWithdraw(): array
