@@ -230,7 +230,7 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
                   className={isFinished ? '' : '!bg-[#faad14] !text-white border-0'}
                   onClick={() =>
                     modalConfirm({
-                      title: t('messages.confirmModifyStatus'),
+                      title: t('messages.confirmAutoPayout'),
                       id: record.id,
                       values: { to_id: null },
                     })
