@@ -444,11 +444,11 @@ class FeatureToggleSeeder extends Seeder
         ],
         FeatureToggle::AUTO_DAIFU => [
             'hidden'  => true,
-            'enabled' => false,
+            'enabled' => true,
             'input'   => [
                 'type'  => 'text',
                 'unit'  => '',
-                'value' => '0'
+                'value' => '2'
             ]
         ],
         FeatureToggle::MULTI_DEVICES_LOGIN => [
@@ -463,24 +463,6 @@ class FeatureToggleSeeder extends Seeder
         FeatureToggle::USDT_ADD_RATE => [
             'hidden'  => true,
             'enabled' => false,
-            'input'   => [
-                'type'  => 'boolean',
-                'unit'  => '',
-                'value' => '1'
-            ]
-        ],
-        FeatureToggle::PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY => [
-            'hidden' => false,
-            'enabled' => true,
-            'input'   => [
-                'type'  => 'boolean',
-                'unit'  => '',
-                'value' => '1'
-            ]
-        ],
-        FeatureToggle::ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT => [
-            'hidden' => false,
-            'enabled' => true,
             'input'   => [
                 'type'  => 'boolean',
                 'unit'  => '',

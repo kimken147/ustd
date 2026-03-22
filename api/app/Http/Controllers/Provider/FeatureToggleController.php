@@ -11,8 +11,6 @@ class FeatureToggleController extends Controller
 
     public function index()
     {
-        $display = [FeatureToggle::PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY];
-
-        return FeatureToggleCollection::make(FeatureToggle::where('hidden', false)->whereIn('id',$display)->get());
+        return FeatureToggleCollection::make(FeatureToggle::where('hidden', false)->whereIn('id', [])->get());
     }
 }

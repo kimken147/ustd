@@ -66,8 +66,6 @@ class FeatureToggle extends Model
     const NOTIFY_ADMIN_THIRD_CHANNEL_BALANCE = 52; //管端三方余额警示
     const AUTO_DAIFU = 53; // 自動代付
     const MULTI_DEVICES_LOGIN = 54; //管端帐号允许多设备登录
-    const PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY = 64; //码商端收款金额核对检查机制(3次)
-    const ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT = 65; //允许支付寶收款帐号相同金额并发
 
     const INPUT_TYPE_TEXT = 'text';
     const INPUT_TYPE_BOOLEAN = 'boolean';
