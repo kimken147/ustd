@@ -148,7 +148,7 @@ class WithdrawController extends Controller
         FeatureToggleRepository $featureToggleRepository
     ) {
         $this->validate($request, [
-            'status'              => ['int', Rule::in([Transaction::STATUS_MATCHING, Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED, Transaction::STATUS_REVIEW_PASSED])],
+            'status'              => ['int', Rule::in([Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED, Transaction::STATUS_REVIEW_PASSED])],
             'notify_status'       => ['int', Rule::in(Transaction::NOTIFY_STATUS_PENDING)],
             'note'                => ['nullable', 'string', 'max:50'],
             'locked'              => ['boolean'],
@@ -179,21 +179,6 @@ class WithdrawController extends Controller
             Response::HTTP_BAD_REQUEST,
             __('withdraw.No locking')
         );
-
-        // 自動出款：重設為匹配中，清除已配對的帳號讓 AutoDaifu 重新配對
-        if ($request->input('status') === Transaction::STATUS_MATCHING) {
-            $withdraw->update([
-                'status' => Transaction::STATUS_MATCHING,
-                'to_id' => null,
-                'to_wallet_id' => null,
-                'to_channel_account_id' => null,
-                'to_channel_account' => null,
-                'to_account_mode' => null,
-                'matched_at' => null,
-            ]);
-
-            return WithdrawResource::make($withdraw->refresh());
-        }
 
         if ($request->input('status') === Transaction::STATUS_FAILED) {
             $this->validate($request, [
@@ -261,6 +246,11 @@ class WithdrawController extends Controller
                     $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $statusService, false);
                 }
             }
+        }
+
+        // 轉為碼商出 / 自動出款（to_id=null 時重設為匹配中讓 AutoDaifu 重新配對）
+        if (!$request->has('status') && $request->has('to_id')) {
+            $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $statusService);
         }
 
         $lockService->supportLockingLogics(
