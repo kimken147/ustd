@@ -24,6 +24,7 @@ export interface ColumnContext {
   currentMerchantThirdChannelSelect: SelectProps['options'];
   setSelectMerchantId: (id: number) => void;
   axiosInstance: AxiosInstance;
+  isCancelPaufen: boolean;
 }
 
 export type WithdrawColumn = TableColumnProps<Withdraw>;

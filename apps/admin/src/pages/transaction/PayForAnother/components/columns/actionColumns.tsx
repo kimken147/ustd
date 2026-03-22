@@ -18,6 +18,7 @@ import {
   SelectOutlined,
   SettingOutlined,
   SwapRightOutlined,
+  ThunderboltOutlined,
   UnlockOutlined,
 } from '@ant-design/icons';
 import { TransactionType } from '@morgan-ustd/shared';
@@ -103,6 +104,7 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
     showUpdateModal,
     modalConfirm,
     WithdrawStatus,
+    isCancelPaufen,
   } = ctx;
 
   return {
@@ -220,21 +222,38 @@ export function createOperationColumn(ctx: ColumnContext): WithdrawColumn {
               >
                 {t('actions.splitOrder')}
               </Button>
-              <Button
-                type="primary"
-                disabled={isFinished}
-                onClick={() =>
-                  showUpdateModal({
-                    title: t('actions.convertToProviderPayout'),
-                    filterFormItems: ['to_id'],
-                    id: record.id,
-                    initialValues: { to_id: null },
-                  })
-                }
-                icon={<DoubleRightOutlined />}
-              >
-                {t('withdraw.providerPayout')}
-              </Button>
+              {isCancelPaufen ? (
+                <Button
+                  disabled={isFinished}
+                  className={isFinished ? '' : '!bg-[#faad14] !text-white border-0'}
+                  onClick={() =>
+                    modalConfirm({
+                      title: t('messages.confirmModifyStatus'),
+                      id: record.id,
+                      values: { status: WithdrawStatus.匹配中, to_id: null },
+                    })
+                  }
+                  icon={<ThunderboltOutlined />}
+                >
+                  {t('actions.autoPayout')}
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  disabled={isFinished}
+                  onClick={() =>
+                    showUpdateModal({
+                      title: t('actions.convertToProviderPayout'),
+                      filterFormItems: ['to_id'],
+                      id: record.id,
+                      initialValues: { to_id: null },
+                    })
+                  }
+                  icon={<DoubleRightOutlined />}
+                >
+                  {t('withdraw.providerPayout')}
+                </Button>
+              )}
             </Space>
           }
           trigger={'click'}

@@ -38,6 +38,7 @@ export interface UseColumnsProps {
   currentMerchantThirdChannelSelect: SelectProps['options'];
   setSelectMerchantId: (id: number) => void;
   axiosInstance: AxiosInstance;
+  isCancelPaufen: boolean;
 }
 
 /**
@@ -101,6 +102,7 @@ export function useColumns(props: UseColumnsProps): TableColumnProps<Withdraw>[]
       props.meta,
       props.setSelectMerchantId,
       props.axiosInstance,
+      props.isCancelPaufen,
     ]
   );
 }

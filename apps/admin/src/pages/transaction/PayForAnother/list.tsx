@@ -30,6 +30,7 @@ import {
   useCan,
   useCustomMutation,
   useGetIdentity,
+  useList,
 } from '@refinedev/core';
 import { axiosInstance } from '@refinedev/simple-rest';
 import { useNavigate } from 'react-router';
@@ -45,6 +46,7 @@ import useAutoRefetch from 'hooks/useAutoRefetch';
 import { generateFilter } from 'dataProvider';
 import { getToken } from 'authProvider';
 import { MerchantThirdChannel } from 'interfaces/merchantThirdChannel';
+import type { SystemSetting } from 'interfaces/systemSetting';
 import { ThirdChannel } from 'interfaces/thirdChannel';
 import { Provider } from 'interfaces/provider';
 import { useAppMode } from 'contexts/AppModeContext';
@@ -97,6 +99,13 @@ const PayForAnotherList: FC = () => {
       );
     }
   }
+
+  // Feature toggles
+  const { result: systemSettingsResult } = useList<SystemSetting>({
+    resource: 'feature-toggles',
+    pagination: { mode: 'off' },
+  });
+  const isCancelPaufen = systemSettingsResult?.data?.find(item => item.id === 25)?.enabled ?? false;
 
   // Status hooks
   const {
@@ -165,6 +174,7 @@ const PayForAnotherList: FC = () => {
     currentMerchantThirdChannelSelect,
     setSelectMerchantId,
     axiosInstance,
+    isCancelPaufen,
   });
 
   // Audio notification
