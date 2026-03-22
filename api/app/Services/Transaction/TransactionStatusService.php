@@ -94,19 +94,25 @@ class TransactionStatusService
                 $this->userChannelAccountUtil->rollbackPaymentCount($transaction->to_channel_account_id, 1, true);
             }
 
-            $transaction->update([
-                'locked_at'          => null,
-                'locked_by_id'       => null,
+            $updateData = [
                 'to_id'              => optional($provider)->getKey(),
                 'to_wallet_id'       => optional(optional($provider)->wallet)->getKey(),
-                'to_channel_account_id' => null, // 指定碼商出時出款帳號為 null
+                'to_channel_account_id' => null,
                 'type'               => Transaction::TYPE_PAUFEN_WITHDRAW,
                 'status'             => !empty($provider) ? Transaction::STATUS_PAYING : Transaction::STATUS_MATCHING,
                 'to_account_mode'    => optional($provider)->account_mode,
                 'to_channel_account' => [],
                 'matched_at'         => !empty($provider) ? now() : null,
                 'note'               => null,
-            ]);
+            ];
+
+            // 碼商出（指定供應商）時解鎖，自動出款（provider=null）時保持鎖定
+            if (!empty($provider)) {
+                $updateData['locked_at'] = null;
+                $updateData['locked_by_id'] = null;
+            }
+
+            $transaction->update($updateData);
 
             $transaction->transactionFees()->delete();
 
