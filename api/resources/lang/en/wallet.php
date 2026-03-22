@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 return [
     'timeIntervalError'                 => 'The time interval can be filtered at most one month at a time, please re-adjust the time',
