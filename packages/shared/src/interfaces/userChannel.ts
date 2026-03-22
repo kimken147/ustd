@@ -156,6 +156,8 @@ export interface Meta {
     user_channel_account_monthly_limit_value: string;
     record_user_channeL_account_balance: boolean;
     total_balance: string;
+    total_onchain_usdt_balance: string;
+    total_onchain_native_balance: string;
 }
 
 export interface IUserChannelRes {

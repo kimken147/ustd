@@ -132,11 +132,9 @@ class UserChannelAccountController extends Controller
                 "record_user_channeL_account_balance" => $featureToggleRepository->enabled(
                     FeatureToggle::RECORD_USER_CHANNEL_ACCOUNT_BALANCE
                 ),
-                "total_balance" => data_get(
-                    $totalBalance,
-                    "total_balance",
-                    "0.00"
-                ),
+                "total_balance" => data_get($totalBalance, "total_balance", "0.00"),
+                "total_onchain_usdt_balance" => data_get($totalBalance, "total_onchain_usdt_balance", "0.000000"),
+                "total_onchain_native_balance" => data_get($totalBalance, "total_onchain_native_balance", "0.000000"),
             ],
         ]);
     }

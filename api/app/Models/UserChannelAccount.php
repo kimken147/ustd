@@ -355,6 +355,10 @@ class UserChannelAccount extends Model
 
     public function scopeSelectTotalBalance($query)
     {
-        return $query->select([DB::raw('SUM(balance) AS total_balance')]);
+        return $query->select([
+            DB::raw('SUM(balance) AS total_balance'),
+            DB::raw('SUM(onchain_usdt_balance) AS total_onchain_usdt_balance'),
+            DB::raw('SUM(onchain_native_balance) AS total_onchain_native_balance'),
+        ]);
     }
 }
