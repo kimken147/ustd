@@ -78,11 +78,13 @@ export function createLockedColumn(ctx: ColumnContext): WithdrawColumn {
                   <TextField
                     value={t('info.lockedBy', { name: record.locked_by?.name })}
                   />
-                  <TextField
-                    value={t('info.lockedAt', {
-                      time: dayjs(record.locked_at).format('YYYY-MM-DD HH:mm:ss'),
-                    })}
-                  />
+                  {record.locked_at && (
+                    <TextField
+                      value={t('info.lockedAt', {
+                        time: dayjs(record.locked_at).format('YYYY-MM-DD HH:mm:ss'),
+                      })}
+                    />
+                  )}
                 </Space>
               }
             >

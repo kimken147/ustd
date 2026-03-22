@@ -45,20 +45,18 @@ class Transaction extends Model
     const NOTIFY_STATUS_FAILED = 4;
 
     protected $casts = [
-        'type'                 => 'integer',
-        'from_channel_account' => 'json',
-        'to_channel_account'   => 'json',
-        'to_wallet_settled'    => 'boolean',
-    ];
-    protected $dates = [
-        'matched_at',
-        'confirmed_at',
-        'notified_at',
-        'locked_at',
-        'operated_at',
-        'refunded_at',
-        'should_refund_at',
-        'to_wallet_should_settled_at',
+        'type'                        => 'integer',
+        'from_channel_account'        => 'json',
+        'to_channel_account'          => 'json',
+        'to_wallet_settled'           => 'boolean',
+        'matched_at'                  => 'datetime',
+        'confirmed_at'                => 'datetime',
+        'notified_at'                 => 'datetime',
+        'locked_at'                   => 'datetime',
+        'operated_at'                 => 'datetime',
+        'refunded_at'                 => 'datetime',
+        'should_refund_at'            => 'datetime',
+        'to_wallet_should_settled_at' => 'datetime',
     ];
     protected $fillable = [
         'parent_id',
