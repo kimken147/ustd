@@ -114,7 +114,7 @@ class TransactionLockService
 
                 throw_if(
                     !$transaction->locked,
-                    new TransactionUnlockFailed(__('Unlocked failed, already been unlocked'))
+                    new TransactionUnlockFailed(__('transaction.Unlocked failed, already been unlocked'))
                 );
 
                 throw_if(
