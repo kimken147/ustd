@@ -467,7 +467,7 @@ class TransactionStatusService
                 case Transaction::TYPE_INTERNAL_TRANSFER:
                     // 手續費退款
                     $fees = $transaction->transactionFees;
-                    $isMerchant = $transaction->from->role == User::ROLE_MERCHANT;
+                    $isMerchant = optional($transaction->from)->role == User::ROLE_MERCHANT;
                     $userWithdrawFee = $fees->firstWhere('user_id', $transaction->from_id);
 
                     if ($userWithdrawFee) {
