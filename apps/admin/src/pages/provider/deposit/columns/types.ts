@@ -19,6 +19,7 @@ export interface ColumnDependencies {
       title: string;
       id: number;
       mode?: 'delete';
+      resource?: string;
     }) => void;
   };
 }
