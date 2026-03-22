@@ -125,7 +125,7 @@ const PayForAnotherCreate: FC = () => {
                         name={"lists"}
                         initialValue={[
                             {
-                                type: "USDT_TRC20",
+                                type: "TRC-20",
                             },
                         ]}
                     >
@@ -201,7 +201,7 @@ const PayForAnotherCreate: FC = () => {
                                                 type="dashed"
                                                 onClick={() =>
                                                     add({
-                                                        type: "USDT_TRC20",
+                                                        type: "TRC-20",
                                                     })
                                                 }
                                             >
