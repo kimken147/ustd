@@ -210,7 +210,11 @@ class DaiFuService
             $builder->where(function ($query) use ($allOwnerIds) {
                 $query->where('type', Transaction::TYPE_PAUFEN_WITHDRAW);
                 if ($allOwnerIds->isNotEmpty()) {
-                    $query->whereIn('from_id', $allOwnerIds->unique());
+                    // 包含專線商戶和無專線商戶的訂單，由 canMatchWithdraw 精確過濾
+                    $query->where(function ($q) use ($allOwnerIds) {
+                        $q->whereIn('from_id', $allOwnerIds->unique())
+                          ->orWhereDoesntHave('from.matchingDepositGroups');
+                    });
                 } else {
                     $query->whereDoesntHave('from.matchingDepositGroups');
                 }
