@@ -59,7 +59,7 @@ class BankCardTransferObject
      * @param  string  $bankCardHolderName
      * @return BankCardTransferObject
      */
-    public function plain(string $bankName, string $bankCardNumber, string $bankCardHolderName, string $bankProvince, string $bankCity)
+    public function plain(string $bankName, string $bankCardNumber, ?string $bankCardHolderName, string $bankProvince, string $bankCity)
     {
         $bankCardTransferObject = new self;
 
@@ -67,7 +67,7 @@ class BankCardTransferObject
         $bankCardTransferObject->bankProvince = $bankProvince;
         $bankCardTransferObject->bankCity = $bankCity;
         $bankCardTransferObject->bankCardNumber = $bankCardNumber;
-        $bankCardTransferObject->bankCardHolderName = $bankCardHolderName;
+        $bankCardTransferObject->bankCardHolderName = $bankCardHolderName ?? '';
 
         return $bankCardTransferObject;
     }

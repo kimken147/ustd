@@ -148,7 +148,7 @@ class WithdrawController extends Controller
         FeatureToggleRepository $featureToggleRepository
     ) {
         $this->validate($request, [
-            'status'              => ['int', Rule::in([Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED, Transaction::STATUS_REVIEW_PASSED])],
+            'status'              => ['int', Rule::in([Transaction::STATUS_MATCHING, Transaction::STATUS_MANUAL_SUCCESS, Transaction::STATUS_FAILED, Transaction::STATUS_REVIEW_PASSED])],
             'notify_status'       => ['int', Rule::in(Transaction::NOTIFY_STATUS_PENDING)],
             'note'                => ['nullable', 'string', 'max:50'],
             'locked'              => ['boolean'],
