@@ -281,19 +281,11 @@ class TransactionStatusService
                 $account->updateBalanceByTransaction($transaction);
             }
         }
-        // 如果有收款帳號，成功話 收款帳號累加額度（子地址時同時更新母地址餘額）
+        // 如果有收款帳號，成功話 收款帳號累加額度
         if ($transaction->from_channel_account_id) {
             $account = $transaction->fromChannelAccount;
             if ($account) { // 防止突然被刪卡後出現 Error
                 $account->updateBalanceByTransaction($transaction);
-
-                // 子地址時也要更新母地址的餘額
-                if ($account->parent_account_id) {
-                    $parentAccount = UserChannelAccount::find($account->parent_account_id);
-                    if ($parentAccount) {
-                        $parentAccount->updateBalanceByTransaction($transaction);
-                    }
-                }
             }
         }
 
