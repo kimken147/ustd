@@ -57,8 +57,6 @@ return [
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => '商户端显示已启用三方余额',
     FeatureToggle::AUTO_DAIFU                                          => '自动代付',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '管端帐号允许多设备登入',
-    FeatureToggle::PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY => '码商端收款金额核对检查机制(3次)',
-    FeatureToggle::ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT => '允许支付宝收款帐号相同金额并发',
     '笔'                                                    => '笔',
     '天'                                                    => '天',
     '元'                                                    => '元',

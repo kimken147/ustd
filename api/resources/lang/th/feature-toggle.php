@@ -57,8 +57,6 @@ return [
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => 'แดชบอร์ดร้านค้าแสดงยอดเงินรวมของบุคคลที่สาม',
     FeatureToggle::AUTO_DAIFU                                          => 'ประมวลผลคำสั่งซื้อการจ่ายเงินอัตโนมัติ',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'บัญชีผู้ดูแลระบบอนุญาตการเข้าสู่ระบบจากหลายอุปกรณ์',
-    FeatureToggle::PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY         => 'การยืนยันแดชบอร์ดผู้ขายสำหรับจำนวนเงินคำสั่งซื้อรับเงิน (ยืนยันสามครั้ง)',
-    FeatureToggle::ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT => 'อนุญาตให้บัญชีรับเงิน Alipay จับคู่คำสั่งซื้อรับเงินพร้อมกันด้วยจำนวนเงินเดียวกัน',
     '笔'                                                               => 'รายการ',
     '天'                                                               => 'วัน',
     '元'                                                               => 'หน่วยเงิน',

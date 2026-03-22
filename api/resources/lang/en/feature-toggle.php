@@ -57,8 +57,6 @@ return [
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => 'Merchant Dashboard Displays the Total  Balance of the Third-Party',
     FeatureToggle::AUTO_DAIFU                                          => 'Automatic Processing of Money-Out Orders',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'Admin Account Allows Login From Multiple Devices',
-    FeatureToggle::PROVIDER_TRANSACTION_CHECK_AMOUNT_FREQUENCY         => 'Provider Dashboard Confirmation for Money-In Order Amount (Triple CONFIRM)',
-    FeatureToggle::ALLOW_QR_ALIPAY_USER_CHANNEL_CONCURRENT_FOR_SAME_AMOUNT => 'Allow Alipay Transaction Account to Concurrently Match Money-In Orders with the Same Amount',
     '笔'                                                               => 'transaction',
     '天'                                                               => 'day',
     '元'                                                               => 'currency unit',
