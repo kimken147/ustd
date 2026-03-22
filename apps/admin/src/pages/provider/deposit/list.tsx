@@ -26,6 +26,7 @@ const DepositGroupList: FC = () => {
   });
 
   const { modalProps, show, Modal: UpdateModal } = useUpdateModal({
+    resource: 'merchant-matching-deposit-groups',
     formItems: [
       {
         label: name,

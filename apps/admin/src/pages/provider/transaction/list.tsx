@@ -26,6 +26,7 @@ const TransactionGroupList: FC = () => {
   });
 
   const { modalProps, show, Modal: UpdateModal } = useUpdateModal({
+    resource: 'merchant-transaction-groups',
     formItems: [
       {
         label: name,
