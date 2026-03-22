@@ -38,6 +38,7 @@ export function useColumns(deps: ColumnDependencies): DepositGroupColumn[] {
                       title: t('transactionGroup.confirmDelete', { name }),
                       id: group.id,
                       mode: 'delete',
+                      resource: 'merchant-matching-deposit-groups',
                     })
                   }
                 />

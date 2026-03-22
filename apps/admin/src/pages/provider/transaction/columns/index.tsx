@@ -38,6 +38,7 @@ export function useColumns(deps: ColumnDependencies): TransactionGroupColumn[] {
                       title: t('transactionGroup.confirmDelete', { name }),
                       id: group.id,
                       mode: 'delete',
+                      resource: 'merchant-transaction-groups',
                     })
                   }
                 />
