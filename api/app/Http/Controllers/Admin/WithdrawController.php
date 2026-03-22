@@ -180,6 +180,21 @@ class WithdrawController extends Controller
             __('withdraw.No locking')
         );
 
+        // 自動出款：重設為匹配中，清除已配對的帳號讓 AutoDaifu 重新配對
+        if ($request->input('status') === Transaction::STATUS_MATCHING) {
+            $withdraw->update([
+                'status' => Transaction::STATUS_MATCHING,
+                'to_id' => null,
+                'to_wallet_id' => null,
+                'to_channel_account_id' => null,
+                'to_channel_account' => null,
+                'to_account_mode' => null,
+                'matched_at' => null,
+            ]);
+
+            return WithdrawResource::make($withdraw->refresh());
+        }
+
         if ($request->input('status') === Transaction::STATUS_FAILED) {
             $this->validate($request, [
                 'note' => ['string', 'max:50'],
