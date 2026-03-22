@@ -89,7 +89,11 @@ class UserChannelAccountController extends Controller
         $builder = new UserChannelAccountBuilder();
         $userChannelAccounts = $builder->query($request)->with("user");
 
-        $totalBalance = (clone $userChannelAccounts)->selectTotalBalance()->first();
+        // 排除子地址避免重複計算（母地址的 balance 已包含子地址的餘額）
+        $totalBalance = (clone $userChannelAccounts)
+            ->whereNull('parent_account_id')
+            ->selectTotalBalance()
+            ->first();
 
         $dailyLimitId = FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_LIMIT;
         $dailyLimitEnabled = $featureToggleRepository->enabled($dailyLimitId);
