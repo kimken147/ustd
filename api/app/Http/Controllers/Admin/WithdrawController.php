@@ -248,11 +248,6 @@ class WithdrawController extends Controller
             }
         }
 
-        // 轉為碼商出 / 自動出款（to_id=null 時重設為匹配中讓 AutoDaifu 重新配對）
-        if (!$request->has('status') && $request->has('to_id')) {
-            $withdraw = $this->markAsPaufenWithdraw($withdraw, $request, $statusService);
-        }
-
         $lockService->supportLockingLogics(
             $withdraw,
             $request,
