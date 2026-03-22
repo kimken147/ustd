@@ -54,7 +54,7 @@ class InternalTransferController extends Controller
             "account_id" => "required|numeric",
             "amount" => "required|numeric",
             "bank_name" => "required|string",
-            "bank_card_holder_name" => "required|string",
+            "bank_card_holder_name" => "nullable|string",
         ]);
 
         $transfer = $service->execute($request);

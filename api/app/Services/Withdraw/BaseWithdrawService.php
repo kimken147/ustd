@@ -388,14 +388,14 @@ abstract class BaseWithdrawService
             onThirdChannelSuccess: fn($channelId) => $this->transactionFactory->thirdchannelWithdrawFrom(
                 $params,
                 $context->merchant,
-                $context->isFromMerchant(),
+                $this->getSubType() === Transaction::SUB_TYPE_AGENCY_WITHDRAW,
                 null,
                 $channelId
             ),
             onLocalFallback: fn() => $this->transactionFactory->$withdrawMethod(
                 $params,
                 $context->merchant,
-                $context->isFromMerchant()
+                $this->getSubType() === Transaction::SUB_TYPE_AGENCY_WITHDRAW
             ),
         );
     }
