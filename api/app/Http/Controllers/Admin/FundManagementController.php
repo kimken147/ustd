@@ -105,13 +105,11 @@ class FundManagementController extends Controller
                 continue;
             }
 
-            // 更新帳號額度（出款方 + 收款方）
+            // 出款方額度（建立時更新）
             $util = app(UserChannelAccountUtil::class);
             $util->updateTotal($source->id, $transaction->amount, true);
             $util->updatePaymentCount($source->id, 1, true);
-            // 收款方（目標帳號）
-            $util->updateTotal($targetAccount->id, $transaction->amount);
-            $util->updatePaymentCount($targetAccount->id);
+            // 收款方額度在 ConfirmUsdtWithdraw 成功時更新
 
             BatchTransferUsdt::dispatch($transaction->id);
             $dispatched++;

@@ -92,20 +92,13 @@ class InternalTransferService
     /**
      * Update account totals after transfer creation.
      * - 出款帳號（to_channel_account）：增加已出額度
-     * - 接收帳號（from_channel_account 的 bank_card_number）：增加已收額度
+     * - 接收帳號的額度和餘額在 ConfirmUsdtWithdraw 成功時更新
      */
     private function updateAccountTotal(UserChannelAccount $account, Transaction $transaction): void
     {
         // 出款帳號：更新出款限額
         $this->userChannelAccountUtil->updateTotal($account->id, $transaction->amount, true);
         $this->userChannelAccountUtil->updatePaymentCount($account->id, 1, true);
-
-        // 接收帳號：更新收款限額
-        $companyAccount = $this->getCompanyAccount($transaction);
-        if ($companyAccount) {
-            $this->userChannelAccountUtil->updateTotal($companyAccount->id, $transaction->amount);
-            $this->userChannelAccountUtil->updatePaymentCount($companyAccount->id);
-        }
     }
 
     /**

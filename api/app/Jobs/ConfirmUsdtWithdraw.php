@@ -9,6 +9,7 @@ use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
 use App\Services\Transaction\TransactionStatusService;
+use App\Utils\UserChannelAccountUtil;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -172,6 +173,11 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         try {
             // 增加 balance（系統餘額）
             $receiverAccount->increment('balance', $transaction->amount);
+
+            // 更新收款額度和筆數
+            $util = app(UserChannelAccountUtil::class);
+            $util->updateTotal($receiverAccount->id, $transaction->amount);
+            $util->updatePaymentCount($receiverAccount->id);
 
             // 同步鏈上餘額
             $receiverAccount->update([
