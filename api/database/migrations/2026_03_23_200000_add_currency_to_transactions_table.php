@@ -8,9 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->string('currency', 10)->default('USDT')->after('chain_network');
-        });
+        if (!Schema::hasColumn('transactions', 'currency')) {
+            Schema::table('transactions', function (Blueprint $table) {
+                $table->string('currency', 10)->default('USDT')->after('chain_network');
+            });
+        }
     }
 
     public function down(): void
