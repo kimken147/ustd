@@ -80,15 +80,6 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                 });
               }}
             />
-            {record.status === WithdrawStatus.成功 ? (
-              <Button
-                icon={<FileSearchOutlined className="text-[#6eb9ff]" />}
-                onClick={() => {
-                  const url = getReceiptUrl(record);
-                  window.open(url, '_blank');
-                }}
-              />
-            ) : null}
           </Space>
         ) : null;
       },

@@ -30,15 +30,30 @@ const FundCreate: FC = () => {
         resource: "banks",
         valueField: "name",
     });
-    const { Select: UserChannelAccountSelect, data: userChannelAccounts } = useSelector<UserChannel>({
+    const { data: userChannelAccounts } = useSelector<UserChannel>({
         resource: "user-channel-accounts",
-        labelRender(record) {
-            const type = record.address_type === 'child' ? `[${t('fund.childPrefix')}]` : `[${t('fund.masterPrefix')}]`;
-            const name = record.user?.name ?? record.name ?? '';
-            const addr = record.account ? `${record.account.slice(0, 8)}...${record.account.slice(-6)}` : '';
-            return `${type} ${name} - ${addr}`;
-        },
     });
+    const userChannelAccountOptions = userChannelAccounts?.map((record) => {
+        const type = record.address_type === 'child' ? `[${t('fund.childPrefix')}]` : `[${t('fund.masterPrefix')}]`;
+        const name = record.user?.name ?? record.name ?? '';
+        const addr = record.account ? `${record.account.slice(0, 8)}...${record.account.slice(-6)}` : '';
+        return {
+            value: record.id,
+            label: `${type} ${name} - ${addr}`,
+            searchText: `${name} ${record.account ?? ''}`,
+        };
+    });
+    const UserChannelAccountSelect = (props: any) => (
+        <Select
+            showSearch
+            options={userChannelAccountOptions}
+            filterOption={(input, option) =>
+                (option?.label as string)?.toLowerCase().includes(input.toLowerCase()) ||
+                (option?.searchText as string)?.toLowerCase().includes(input.toLowerCase())
+            }
+            {...props}
+        />
+    );
     const { mutateAsync: create } = useCreate();
 
     const [loading, setLoading] = useState(false);
