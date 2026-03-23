@@ -87,6 +87,8 @@ export const generateFilter = (filters?: any[]) => {
     const queryFilters: Record<string, string | string[]> = {};
     if (filters) {
         filters.forEach((filter) => {
+            // Skip invalid/empty field names
+            if (!filter.field || filter.field === 'undefined') return;
             // Skip the cache-busting nonce injected by ListPageLayout.Filter
             if (filter.field === '_t') return;
             // Skip filters with empty values (cleared by user)

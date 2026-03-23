@@ -20,6 +20,9 @@ export function formValuesToCrudFilters(values: unknown): CrudFilter[] {
   if (!values || typeof values !== 'object') return filters;
 
   for (const [field, value] of Object.entries(values as Record<string, any>)) {
+    // Skip internal nonce field
+    if (field === '_t') continue;
+
     // Empty values: push with value undefined so Refine's merge
     // replaces any previous filter for this field (instead of keeping it).
     if (value === null || value === undefined || value === '') {
