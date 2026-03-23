@@ -35,6 +35,7 @@ class InternalTransfer extends JsonResource
             'bank_card_holder_name'  => data_get($this->from_channel_account, 'bank_card_holder_name'),
             'bank_name'              => data_get($this->from_channel_account, 'bank_name'),
             'bank_card_number'       => data_get($this->from_channel_account, 'bank_card_number'),
+            'currency'               => $this->currency ?? 'USDT',
             'tx_hash'                => $this->tx_hash,
             'note'                   => $this->note,
             '_search1'               => $this->_search1,

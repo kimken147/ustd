@@ -1,7 +1,7 @@
 import { CreateButton, List } from '@refinedev/antd';
 import { useTable } from 'hooks/useTable';
 import { useCan, useGetIdentity } from '@refinedev/core';
-import { Button, Col, DatePicker, Divider, Input, Modal as AntdModal, Radio, Space } from 'antd';
+import { Button, Col, DatePicker, Divider, Input, Modal as AntdModal, Radio, Select, Space } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -151,6 +151,19 @@ const FundList: FC = () => {
           <Col xs={24} md={4}>
             <ListPageLayout.Filter.Item label={t('fields.orderNumber')} name="system_order_number">
               <Input allowClear />
+            </ListPageLayout.Filter.Item>
+          </Col>
+          <Col xs={24} md={4}>
+            <ListPageLayout.Filter.Item label={t('fund.currency')} name="currency">
+              <Select
+                allowClear
+                options={[
+                  { label: 'USDT', value: 'USDT' },
+                  { label: 'TRX', value: 'TRX' },
+                  { label: 'ETH', value: 'ETH' },
+                  { label: 'BNB', value: 'BNB' },
+                ]}
+              />
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>

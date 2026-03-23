@@ -377,7 +377,7 @@
     "batchTransfer": "批量转帐",
     "masterPrefix": "主",
     "childPrefix": "子",
-    "currency": "幣種",
+    "currency": "币种",
     "currencyUsdt": "USDT",
     "currencyTrx": "TRX (TRON)",
     "currencyEth": "ETH (Ethereum)",

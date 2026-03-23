@@ -652,6 +652,10 @@ class Transaction
             });
         });
 
+        $transactions->when($request->currency, function ($builder, $currency) {
+            $builder->where("currency", $currency);
+        });
+
         $transactions->when($request->has("bank_card_number"), function (
             Builder $withdraws
         ) use ($request) {
