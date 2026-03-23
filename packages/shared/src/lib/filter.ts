@@ -54,8 +54,10 @@ export function formValuesToCrudFilters(values: unknown): CrudFilter[] {
   if (!values || typeof values !== 'object') return filters;
 
   for (const [field, value] of Object.entries(values as Record<string, any>)) {
-    // Skip internal nonce field
-    if (field === '_t') continue;
+    // NOTE: Do NOT skip _t here. The _t nonce must enter the CrudFilter
+    // array so React Query detects a change on every submit. The _t field
+    // is skipped later in generateFilter() (dataProvider.ts) to keep it
+    // out of the actual API request URL.
 
     // Empty values: push with value undefined so Refine's merge
     // replaces any previous filter for this field (instead of keeping it).
