@@ -19,6 +19,7 @@ class Transaction extends Model
     const TYPE_NORMAL_DEPOSIT = 3; // 一般充值
     const TYPE_NORMAL_WITHDRAW = 4; // 一般提現
     const TYPE_INTERNAL_TRANSFER = 5; // 内部轉帳
+    const TYPE_NATIVE_TRANSFER = 6; // 原生幣轉帳（TRX/ETH/BNB）
     const TYPE_VIRTUAL_PAUFEN_WITHDRAW_AVAILABLE_FOR_ADMIN = 201; // 管理用虛擬狀態：跑分提現（可鎖定）
 
     const SUB_TYPE_WITHDRAW = 1; // 下發
@@ -37,6 +38,17 @@ class Transaction extends Model
     const STATUS_PAYED = 9; // 已支付（付款方已確認支付）
     const STATUS_RECEIVED = 10; // 已收款（收款方已確認收款）
     const STATUS_THIRD_PAYING = 11; // 三方進行中
+
+    const CURRENCY_USDT = 'USDT';
+    const CURRENCY_TRX = 'TRX';
+    const CURRENCY_ETH = 'ETH';
+    const CURRENCY_BNB = 'BNB';
+
+    const NATIVE_CURRENCIES = [
+        'trc20' => self::CURRENCY_TRX,
+        'erc20' => self::CURRENCY_ETH,
+        'bep20' => self::CURRENCY_BNB,
+    ];
 
     const NOTIFY_STATUS_NONE = 0;
     const NOTIFY_STATUS_PENDING = 1;
@@ -84,6 +96,7 @@ class Transaction extends Model
         'chain_network',
         'tx_hash',
         'chain_fee',
+        'currency',
         'channel_code',
         'from_channel_account_hash_id',
         'note',

@@ -10,6 +10,7 @@ import {
   Input,
   InputNumber,
   Row,
+  Select,
   Space,
 } from 'antd';
 import { MinusCircleOutlined } from '@ant-design/icons';
@@ -118,6 +119,23 @@ const FundCreate: FC = () => {
                                                         <Input placeholder={t('placeholders.optional')} />
                                                     </Form.Item>
                                                 </Col>
+                                                <Col xs={24} md={12} lg={3}>
+                                                    <Form.Item
+                                                        label={t('fund.currency')}
+                                                        name={[name, "currency"]}
+                                                        initialValue="USDT"
+                                                        rules={[{ required: true }]}
+                                                    >
+                                                        <Select
+                                                            options={[
+                                                                { label: t('fund.currencyUsdt'), value: 'USDT' },
+                                                                { label: t('fund.currencyTrx'), value: 'TRX' },
+                                                                { label: t('fund.currencyEth'), value: 'ETH' },
+                                                                { label: t('fund.currencyBnb'), value: 'BNB' },
+                                                            ]}
+                                                        />
+                                                    </Form.Item>
+                                                </Col>
                                                 <Col xs={24} md={12} lg={4}>
                                                     <Form.Item
                                                         label={t('fields.transferAmount')}
@@ -155,17 +173,25 @@ const FundCreate: FC = () => {
                                                     </Form.Item>
                                                 </Col>
                                             </Row>
-                                            {selectedUserChannel && (
-                                                <Row>
-                                                    <Col offset={1}>
-                                                        <Space className="text-sm mb-4">
-                                                            <span>{t('fields.balance')}：{selectedUserChannel.balance ?? 0}</span>
-                                                            <span>USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}</span>
-                                                            <span>Gas：{selectedUserChannel.onchain_native_balance ?? '-'}</span>
-                                                        </Space>
-                                                    </Col>
-                                                </Row>
-                                            )}
+                                            {selectedUserChannel && (() => {
+                                                const selectedCurrency = listValues?.[index]?.currency || 'USDT';
+                                                const isNative = selectedCurrency !== 'USDT';
+                                                return (
+                                                    <Row>
+                                                        <Col offset={1}>
+                                                            <Space className="text-sm mb-4">
+                                                                <span>{t('fields.balance')}：{selectedUserChannel.balance ?? 0}</span>
+                                                                <span style={!isNative ? { fontWeight: 'bold' } : undefined}>
+                                                                    USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}
+                                                                </span>
+                                                                <span style={isNative ? { fontWeight: 'bold' } : undefined}>
+                                                                    Gas：{selectedUserChannel.onchain_native_balance ?? '-'}
+                                                                </span>
+                                                            </Space>
+                                                        </Col>
+                                                    </Row>
+                                                );
+                                            })()}
                                         </div>
                                     );
                                 })}

@@ -55,6 +55,7 @@ class InternalTransferController extends Controller
             "amount" => "required|numeric",
             "bank_name" => "required|string",
             "bank_card_holder_name" => "nullable|string",
+            "currency" => "nullable|in:USDT,TRX,ETH,BNB",
         ]);
 
         $transfer = $service->execute($request);

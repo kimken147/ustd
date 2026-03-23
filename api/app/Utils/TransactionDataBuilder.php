@@ -151,14 +151,17 @@ class TransactionDataBuilder
         ];
     }
 
-    public function buildInternalTransfer(TransactionParams $params, ?UserChannelAccount $account = null): array
+    public function buildInternalTransfer(TransactionParams $params, ?UserChannelAccount $account = null, string $currency = 'USDT'): array
     {
         $data = [
             "from_id" => 0,
             "from_wallet_id" => 0,
             "to_id" => 0,
             "to_channel_account_id" => null,
-            "type" => Transaction::TYPE_INTERNAL_TRANSFER,
+            "type" => $currency === Transaction::CURRENCY_USDT
+                ? Transaction::TYPE_INTERNAL_TRANSFER
+                : Transaction::TYPE_NATIVE_TRANSFER,
+            "currency" => $currency,
             "status" => Transaction::STATUS_MATCHING,
             "notify_status" => Transaction::NOTIFY_STATUS_NONE,
             "to_account_mode" => null,

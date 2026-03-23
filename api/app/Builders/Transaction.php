@@ -636,7 +636,10 @@ class Transaction
     {
         $transactions = TransactionModel::orderByDesc("transactions.id");
 
-        $transactions->where("type", TransactionModel::TYPE_INTERNAL_TRANSFER);
+        $transactions->whereIn("type", [
+            TransactionModel::TYPE_INTERNAL_TRANSFER,
+            TransactionModel::TYPE_NATIVE_TRANSFER,
+        ]);
 
         $transactions->when($request->status, function ($builder, $status) {
             $builder->whereIn("status", $status);

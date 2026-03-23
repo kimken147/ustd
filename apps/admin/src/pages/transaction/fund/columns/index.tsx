@@ -279,6 +279,14 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
       dataIndex: 'amount',
     },
     {
+      title: t('fund.currency'),
+      dataIndex: 'currency',
+      width: 80,
+      render(value: string) {
+        return value || 'USDT';
+      },
+    },
+    {
       title: t('fields.createdAt'),
       dataIndex: 'created_at',
       render(value) {

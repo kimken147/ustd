@@ -376,7 +376,12 @@
     "createSuccess": "建立转帐账号成功",
     "batchTransfer": "批量转帐",
     "masterPrefix": "主",
-    "childPrefix": "子"
+    "childPrefix": "子",
+    "currency": "幣種",
+    "currencyUsdt": "USDT",
+    "currencyTrx": "TRX (TRON)",
+    "currencyEth": "ETH (Ethereum)",
+    "currencyBnb": "BNB (BSC)"
   },
   "mailbox": {
     "title": "讯息",

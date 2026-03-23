@@ -186,14 +186,14 @@ class TransactionFactory
      * @param TransactionParams $params Transaction parameters
      * @param UserChannelAccount|null $account Target channel account
      */
-    public function internalTransferFrom(TransactionParams $params, ?UserChannelAccount $account = null): ?Transaction
+    public function internalTransferFrom(TransactionParams $params, ?UserChannelAccount $account = null, string $currency = 'USDT'): ?Transaction
     {
         $this->throwIfMissing($params, ["amount", "bankCard"]);
 
         try {
             DB::beginTransaction();
 
-            $data = $this->dataBuilder->buildInternalTransfer($params, $account);
+            $data = $this->dataBuilder->buildInternalTransfer($params, $account, $currency);
             $transaction = Transaction::create($data);
 
             DB::commit();

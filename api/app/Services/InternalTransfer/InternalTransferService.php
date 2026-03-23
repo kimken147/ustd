@@ -3,6 +3,7 @@
 namespace App\Services\InternalTransfer;
 
 use App\DTOs\TransactionParams;
+use App\Jobs\ProcessNativeTransfer;
 use App\Jobs\ProcessUsdtWithdraw;
 use App\Models\Transaction;
 use App\Models\UserChannelAccount;
@@ -28,16 +29,17 @@ class InternalTransferService
     public function execute(Request $request): Transaction
     {
         $account = UserChannelAccount::findOrFail($request->input('account_id'));
+        $currency = $request->input('currency', Transaction::CURRENCY_USDT);
 
         $this->validateAccountAvailability($account);
 
-        $transaction = $this->createTransaction($request, $account);
+        $transaction = $this->createTransaction($request, $account, $currency);
 
         abort_if(!$transaction, Response::HTTP_BAD_REQUEST, __('common.Create transfer failed'));
 
         $this->updateAccountTotal($account, $transaction);
 
-        $this->dispatchUsdtWithdrawIfNeeded($transaction, $account);
+        $this->dispatchTransferJob($transaction, $account, $currency);
 
         return $transaction;
     }
@@ -62,7 +64,7 @@ class InternalTransferService
     /**
      * Create the transaction using TransactionFactory.
      */
-    private function createTransaction(Request $request, UserChannelAccount $account): ?Transaction
+    private function createTransaction(Request $request, UserChannelAccount $account, string $currency = 'USDT'): ?Transaction
     {
         $bankCard = app(BankCardTransferObject::class)->plain(
             $request->input('bank_name'),
@@ -84,7 +86,7 @@ class InternalTransferService
             orderNumber: $orderNumber,
         );
 
-        return $this->transactionFactory->internalTransferFrom($params, $account);
+        return $this->transactionFactory->internalTransferFrom($params, $account, $currency);
     }
 
     /**
@@ -127,17 +129,25 @@ class InternalTransferService
     }
 
     /**
-     * Dispatch USDT on-chain withdrawal if the assigned account is a USDT channel.
+     * Dispatch the appropriate transfer job based on currency.
      */
-    private function dispatchUsdtWithdrawIfNeeded(Transaction $transaction, UserChannelAccount $account): void
+    private function dispatchTransferJob(Transaction $transaction, UserChannelAccount $account, string $currency): void
     {
-        if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
-            false,
-            $account->channel_code,
-            $transaction->thirdchannel_id,
-            $transaction->to_channel_account_id
-        )) {
-            ProcessUsdtWithdraw::dispatch($transaction->id);
+        if (!$transaction->to_channel_account_id) {
+            return;
+        }
+
+        if ($currency === Transaction::CURRENCY_USDT) {
+            if (TransactionStatusRules::shouldDispatchUsdtWithdraw(
+                false,
+                $account->channel_code,
+                $transaction->thirdchannel_id,
+                $transaction->to_channel_account_id
+            )) {
+                ProcessUsdtWithdraw::dispatch($transaction->id);
+            }
+        } else {
+            ProcessNativeTransfer::dispatch($transaction->id);
         }
     }
 }

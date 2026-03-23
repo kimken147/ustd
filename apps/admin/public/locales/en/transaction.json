@@ -376,7 +376,12 @@
     "createSuccess": "Account Creation Successful",
     "batchTransfer": "Batch Transfer",
     "masterPrefix": "Master",
-    "childPrefix": "Child"
+    "childPrefix": "Child",
+    "currency": "Currency",
+    "currencyUsdt": "USDT",
+    "currencyTrx": "TRX (TRON)",
+    "currencyEth": "ETH (Ethereum)",
+    "currencyBnb": "BNB (BSC)"
   },
   "mailbox": {
     "title": "Mailbox",
