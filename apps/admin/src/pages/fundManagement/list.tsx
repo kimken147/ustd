@@ -277,13 +277,17 @@ const FundManagementBatchTransfer: FC = () => {
                 placeholder={t('fields.targetAccount')}
                 allowClear
                 showSearch
-                optionFilterProp="label"
                 value={targetAccountId}
                 onChange={(val) => setTargetAccountId(val)}
                 options={receivableAccounts.map((acc) => ({
                   label: `[${acc.address_type === 'child' ? t('fields.childPrefix') : t('fields.masterPrefix')}] ${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
                   value: acc.id,
+                  searchText: acc.account ?? '',
                 }))}
+                filterOption={(input, option) =>
+                  (option?.label as string)?.toLowerCase().includes(input.toLowerCase()) ||
+                  (option?.searchText as string)?.toLowerCase().includes(input.toLowerCase())
+                }
               />
             </Descriptions.Item>
             <Descriptions.Item label={t('fields.currentBalance')}>
