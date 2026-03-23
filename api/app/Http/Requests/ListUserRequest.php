@@ -38,7 +38,7 @@ class ListUserRequest extends FormRequest
             'name_or_username'   => 'nullable|string',
             'ipv4'               => 'nullable|ipv4',
             'merchant_name_or_username' => 'nullable|array',
-            'provider_name_or_username' => 'nullable|string',
+            'provider_name_or_username' => 'nullable',
             'tag_ids' => 'sometimes|array',
         ];
     }

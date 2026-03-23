@@ -85,7 +85,16 @@ class UserChannelAccount
         });
 
         $userChannelAccounts->when(!empty($request->bank), function ($builder) use ($request) {
-            $builder->whereIn('bank_id', $request->bank);
+            // bank[] 可能是傳統 bank_id 或 USDT 鏈網路（bank_id=0，存在 detail->chain_network）
+            $bankNames = \App\Models\Bank::whereIn('id', $request->bank)->pluck('name');
+            $chainCodes = $bankNames->map(fn($name) => strtolower(str_replace('-', '', $name)))->filter()->values()->toArray();
+
+            $builder->where(function ($q) use ($request, $chainCodes) {
+                $q->whereIn('bank_id', $request->bank);
+                if (!empty($chainCodes)) {
+                    $q->orWhereIn('detail->' . UserChannelAccountModel::DETAIL_KEY_CHAIN_NETWORK, $chainCodes);
+                }
+            });
         });
 
         $userChannelAccounts->when(!is_null($request->bank_card_branch), function ($builder) use ($request) {

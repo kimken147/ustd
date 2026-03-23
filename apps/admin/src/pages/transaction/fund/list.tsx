@@ -149,7 +149,7 @@ const FundList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>
-            <ListPageLayout.Filter.Item label={t('fields.systemOrderNumber')} name="system_order_number">
+            <ListPageLayout.Filter.Item label={t('fields.orderNumber')} name="system_order_number">
               <Input allowClear />
             </ListPageLayout.Filter.Item>
           </Col>
