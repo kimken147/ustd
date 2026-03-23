@@ -89,15 +89,41 @@ class InternalTransferService
 
     /**
      * Update account totals after transfer creation.
+     * - 出款帳號（to_channel_account）：增加已出額度
+     * - 接收帳號（from_channel_account 的 bank_card_number）：增加已收額度
      */
     private function updateAccountTotal(UserChannelAccount $account, Transaction $transaction): void
     {
-        $this->userChannelAccountUtil->updateTotal(
-            $account->id,
-            $transaction->amount,
-            true
-        );
+        // 出款帳號：更新出款限額
+        $this->userChannelAccountUtil->updateTotal($account->id, $transaction->amount, true);
         $this->userChannelAccountUtil->updatePaymentCount($account->id, 1, true);
+
+        // 接收帳號：更新收款限額
+        $companyAccount = $this->getCompanyAccount($transaction);
+        if ($companyAccount) {
+            $this->userChannelAccountUtil->updateTotal($companyAccount->id, $transaction->amount);
+            $this->userChannelAccountUtil->updatePaymentCount($companyAccount->id);
+        }
+    }
+
+    /**
+     * 根據 from_channel_account 的 bank_card_number 找到接收帳號
+     */
+    private function getCompanyAccount(Transaction $transaction): ?UserChannelAccount
+    {
+        if ($transaction->type !== Transaction::TYPE_INTERNAL_TRANSFER) {
+            return null;
+        }
+        if (!$transaction->from_channel_account) {
+            return null;
+        }
+
+        $address = data_get($transaction->from_channel_account, 'bank_card_number');
+        if (!$address) {
+            return null;
+        }
+
+        return UserChannelAccount::where('account', $address)->first();
     }
 
     /**
