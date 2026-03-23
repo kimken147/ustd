@@ -73,6 +73,12 @@ class DaiFuService
      */
     private function matchByTransaction($accounts): void
     {
+        // 是否啟用帳號餘額記錄檢查（與 TransactionMutator 一致）
+        $checkAccountBalance = $this->featureToggleRepository->enabled(
+            \App\Models\FeatureToggle::RECORD_USER_CHANNEL_ACCOUNT_BALANCE,
+            false
+        );
+
         // 過濾出可用帳號及其用戶權限
         $validAccounts = $accounts->filter(function ($account) {
             $user = $account->user;
@@ -103,6 +109,11 @@ class DaiFuService
 
                 $balance = (float) $account->onchain_usdt_balance;
                 if ($balance < $amount) {
+                    continue;
+                }
+
+                // 帳號餘額檢查（與 TransactionMutator 的 throw_if 一致）
+                if ($checkAccountBalance && (float) $account->balance < $amount) {
                     continue;
                 }
 
