@@ -154,7 +154,7 @@ const FundList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={4}>
-            <ListPageLayout.Filter.Item label={t('filters.category')} name="confirmed">
+            <ListPageLayout.Filter.Item label={t('filters.category')} name="confirmed" initialValue="created">
               <Radio.Group>
                 <Radio value="created">{t('filters.byCreateTime')}</Radio>
                 <Radio value="confirmed">{t('filters.bySuccessTime')}</Radio>

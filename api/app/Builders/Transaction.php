@@ -134,11 +134,8 @@ class Transaction
         $transactions->when(
             $request->provider_channel_account_hash_id,
             function ($builder, $providerChannelAccountHashId) {
-                $accounts = UserChannelAccount::whereIn(
-                    "id",
-                    $providerChannelAccountHashId
-                )->pluck("account");
-                $builder->whereIn("_from_channel_account", $accounts);
+                // 收款(type=1) 的帳號在 from_channel_account_id
+                $builder->whereIn("from_channel_account_id", $providerChannelAccountHashId);
             }
         );
 
