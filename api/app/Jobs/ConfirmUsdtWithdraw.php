@@ -65,6 +65,9 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             // 同步出款帳號的鏈上餘額
             $this->syncAccountBalance($transaction, $adapter);
 
+            // 內轉/批量轉帳：更新接收帳號的餘額和額度
+            $this->updateReceiverAccount($transaction, $adapter);
+
             // 更新鏈上交易記錄的確認狀態
             $this->updateChainTransactionStatus($transaction, true);
 
@@ -144,6 +147,44 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                     'error' => $e->getMessage(),
                 ]);
             }
+        }
+    }
+
+    /**
+     * 內轉/批量轉帳成功後：更新接收帳號的 balance 和同步鏈上餘額
+     */
+    private function updateReceiverAccount(Transaction $transaction, ChainAdapterInterface $adapter): void
+    {
+        if (!in_array($transaction->type, [Transaction::TYPE_INTERNAL_TRANSFER, Transaction::TYPE_NATIVE_TRANSFER])) {
+            return;
+        }
+
+        $targetAddress = data_get($transaction->from_channel_account, 'bank_card_number');
+        if (!$targetAddress) {
+            return;
+        }
+
+        $receiverAccount = UserChannelAccount::where('account', $targetAddress)->first();
+        if (!$receiverAccount) {
+            return;
+        }
+
+        try {
+            // 增加 balance（系統餘額）
+            $receiverAccount->increment('balance', $transaction->amount);
+
+            // 同步鏈上餘額
+            $receiverAccount->update([
+                'onchain_usdt_balance' => $adapter->getTokenBalance($receiverAccount->account),
+                'onchain_native_balance' => $adapter->getNativeBalance($receiverAccount->account),
+                'onchain_synced_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('ConfirmUsdtWithdraw: 更新接收帳號餘額失敗', [
+                'transaction_id' => $transaction->id,
+                'receiver_account_id' => $receiverAccount->id,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 

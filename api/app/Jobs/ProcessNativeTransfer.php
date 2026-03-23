@@ -50,6 +50,9 @@ class ProcessNativeTransfer implements ShouldQueue
                 'confirmed_at'  => now(),
             ]);
 
+            // 更新接收帳號餘額（如果是平台帳號）
+            $this->updateReceiverBalance($targetAddress, $adapter);
+
             $this->log($transaction, "轉帳成功: {$transaction->amount} {$nativeCurrency} → {$targetAddress} (tx_hash: {$txHash})");
         } catch (\Throwable $e) {
             $privateKey = null;
@@ -83,6 +86,24 @@ class ProcessNativeTransfer implements ShouldQueue
         ]);
 
         $this->log($transaction, "轉帳失敗: {$message}", 'error');
+    }
+
+    /**
+     * 更新接收帳號的鏈上餘額（如果是平台帳號）
+     */
+    private function updateReceiverBalance(string $targetAddress, $adapter): void
+    {
+        try {
+            $receiver = UserChannelAccount::where('account', $targetAddress)->first();
+            if ($receiver) {
+                $receiver->update([
+                    'onchain_native_balance' => $adapter->getNativeBalance($receiver->account),
+                    'onchain_synced_at' => now(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning("ProcessNativeTransfer: 更新接收帳號餘額失敗", ['error' => $e->getMessage()]);
+        }
     }
 
     private function log(Transaction $transaction, string $message, string $level = 'info'): void
