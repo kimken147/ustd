@@ -20,6 +20,7 @@ import {
   UserChannelType,
   Resource,
   formValuesToCrudFilters,
+  numericFilterValueProps,
 } from '@morgan-ustd/shared';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import useBank from 'hooks/useBank';
@@ -270,7 +271,7 @@ const UserChannelAccountList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.status')} name="status[]">
+              <ListPageLayout.Filter.Item label={t('fields.status')} name="status[]" getValueProps={numericFilterValueProps}>
                 <Select
                   allowClear
                   mode="multiple"
@@ -283,12 +284,7 @@ const UserChannelAccountList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.accountName')} name="account_name">
-                <Input allowClear />
-              </ListPageLayout.Filter.Item>
-            </Col>
-            <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.bankName')} name="bank[]">
+              <ListPageLayout.Filter.Item label={t('fields.bankName')} name="bank[]" getValueProps={numericFilterValueProps}>
                 <Select
                   optionFilterProp="label"
                   mode="multiple"

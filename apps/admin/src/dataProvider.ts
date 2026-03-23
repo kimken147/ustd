@@ -95,13 +95,12 @@ export const generateFilter = (filters?: any[]) => {
             if (filter.value == null || filter.value === '') return;
             const mappedOperator = mapOperator("eq");
             if (Array.isArray(filter.value)) {
-                filter.value.forEach((filter: LogicalFilter) => {
-                    const field = `${filter.field}${mappedOperator}`;
-                    if (!field) return;
+                const field = `${filter.field}${mappedOperator}`;
+                filter.value.forEach((val: any) => {
                     if (!queryFilters[field]) {
                         queryFilters[field] = [];
                     }
-                    (queryFilters[field] as String[]).push(serializeValue(filter.value));
+                    (queryFilters[field] as string[]).push(serializeValue(val));
                 });
             } else {
                 queryFilters[`${filter.field}${mappedOperator}`] = serializeValue(filter.value);

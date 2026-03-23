@@ -10,7 +10,7 @@ import { Col, Divider, FormItemProps, Input, InputNumber, Select } from 'antd';
 import { useApiUrl, useCan } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, Merchant, Tag as TagModel, formValuesToCrudFilters } from '@morgan-ustd/shared';
+import { ListPageLayout, Merchant, Tag as TagModel, formValuesToCrudFilters, numericFilterValueProps } from '@morgan-ustd/shared';
 import useMerchant from 'hooks/useMerchant';
 import useSelector from 'hooks/useSelector';
 import { useTagEdit } from 'hooks/useTagEdit';
@@ -219,7 +219,7 @@ const MerchantList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={8}>
-              <ListPageLayout.Filter.Item label={t('fields.tag')} name="tag_ids[]">
+              <ListPageLayout.Filter.Item label={t('fields.tag')} name="tag_ids[]" getValueProps={numericFilterValueProps}>
                 <Select {...selectTagProps} mode="multiple" allowClear />
               </ListPageLayout.Filter.Item>
             </Col>

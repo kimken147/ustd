@@ -6,7 +6,7 @@ import { useApiUrl, useGetIdentity, useList } from '@refinedev/core';
 import { Helmet } from 'react-helmet';
 import { useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
-import { ListPageLayout, Merchant, formValuesToCrudFilters } from '@morgan-ustd/shared';
+import { ListPageLayout, Merchant, formValuesToCrudFilters, numericFilterValueProps } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 import useAutoRefetch from 'hooks/useAutoRefetch';
 import useSelector from 'hooks/useSelector';
@@ -182,7 +182,7 @@ const DepositList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.orderStatus')} name="status[]">
+              <ListPageLayout.Filter.Item label={t('fields.orderStatus')} name="status[]" getValueProps={numericFilterValueProps}>
                 <Select {...transactionStatusSelectProps} mode="multiple" allowClear />
               </ListPageLayout.Filter.Item>
             </Col>

@@ -90,6 +90,14 @@ const FundList: FC = () => {
               label={t('fields.startDate')}
               name="started_at"
               rules={[{ required: true }]}
+              getValueProps={(value: any) => {
+                if (!value) return { value: undefined };
+                if (dayjs.isDayjs(value)) return { value };
+                let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+                str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+                const d = dayjs(str);
+                return { value: d.isValid() ? d : undefined };
+              }}
             >
               <CustomDatePicker
                 showTime
@@ -101,14 +109,26 @@ const FundList: FC = () => {
             </ListPageLayout.Filter.Item>
           </Col>
           <Col xs={24} md={6}>
-            <ListPageLayout.Filter.Item label={t('fields.endDate')} name="ended_at">
+            <ListPageLayout.Filter.Item
+              label={t('fields.endDate')}
+              name="ended_at"
+              getValueProps={(value: any) => {
+                if (!value) return { value: undefined };
+                if (dayjs.isDayjs(value)) return { value };
+                let str = typeof value === 'string' ? decodeURIComponent(value) : String(value);
+                str = str.replace(/(T\d{2}:\d{2}:\d{2}) (\d{2}:\d{2})$/, '$1+$2');
+                const d = dayjs(str);
+                return { value: d.isValid() ? d : undefined };
+              }}
+            >
               <DatePicker
                 showTime
                 needConfirm={false}
                 className="w-full"
                 disabledDate={current => {
-                  const startAt = searchFormProps.form?.getFieldValue('started_at') as Dayjs;
-                  return current && startAt && (current > startAt.add(1, 'month') || current < startAt);
+                  const raw = searchFormProps.form?.getFieldValue('started_at');
+                  const startAt = raw ? (dayjs.isDayjs(raw) ? raw : dayjs(raw)) : null;
+                  return !!(current && startAt && (current > startAt.add(1, 'month') || current < startAt));
                 }}
               />
             </ListPageLayout.Filter.Item>

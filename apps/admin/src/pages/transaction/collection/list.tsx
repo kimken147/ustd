@@ -47,6 +47,7 @@ import {
   useUpdateModal,
   useSelector,
   formValuesToCrudFilters,
+  numericFilterValueProps,
 } from '@morgan-ustd/shared';
 import type {
   Transaction,
@@ -143,7 +144,7 @@ const CollectionList: FC = () => {
       filters: filters as CrudFilter[],
     },
     queryOptions: {
-      queryKey: ['transactions-statistics', enableAuto, freq],
+      queryKey: ['transactions-statistics', filters, enableAuto, freq],
       refetchInterval: enableAuto ? freq * 1000 : undefined,
     },
     method: 'get',
@@ -302,7 +303,7 @@ const CollectionList: FC = () => {
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
-              <ListPageLayout.Filter.Item label={t('fields.orderStatus')} name="status[]">
+              <ListPageLayout.Filter.Item label={t('fields.orderStatus')} name="status[]" getValueProps={numericFilterValueProps}>
                 <TransStatSelect mode="multiple" />
               </ListPageLayout.Filter.Item>
             </Col>
@@ -376,6 +377,7 @@ const CollectionList: FC = () => {
               <ListPageLayout.Filter.Item
                 label={t('fields.callbackStatus')}
                 name="notify_status[]"
+                getValueProps={numericFilterValueProps}
               >
                 <TranCallbackSelect mode="multiple" />
               </ListPageLayout.Filter.Item>

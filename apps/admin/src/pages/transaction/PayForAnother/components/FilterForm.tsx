@@ -2,7 +2,7 @@ import { Col, DatePicker, Input, Radio, Select } from 'antd';
 import type { FormProps, FormInstance } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { ListPageLayout, TransactionSubType } from '@morgan-ustd/shared';
+import { ListPageLayout, TransactionSubType, numericFilterValueProps } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
 
 export interface FilterFormProps {
@@ -97,6 +97,7 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('fields.orderStatus')}
           name="status[]"
+          getValueProps={numericFilterValueProps}
         >
           <WithdrawStatusSelect mode="multiple" />
         </ListPageLayout.Filter.Item>
@@ -153,6 +154,7 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('fields.callbackStatus')}
           name="notify_status[]"
+          getValueProps={numericFilterValueProps}
         >
           <TranCallbackSelect mode="multiple" />
         </ListPageLayout.Filter.Item>
@@ -161,6 +163,7 @@ export function FilterForm({
         <ListPageLayout.Filter.Item
           label={t('withdraw.agencyType')}
           name="sub_type[]"
+          getValueProps={numericFilterValueProps}
         >
           <Select
             mode="multiple"

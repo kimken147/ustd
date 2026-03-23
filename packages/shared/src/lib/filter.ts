@@ -2,6 +2,40 @@ import type { CrudFilter } from '@refinedev/core';
 import dayjs from 'dayjs';
 
 /**
+ * getValueProps for Select fields with numeric option values.
+ *
+ * syncWithLocation restores URL params as strings ("7"), but Select options
+ * may use numeric values (7). This helper coerces string→number so the
+ * Select can match and display the correct label after page refresh.
+ *
+ * Only use on fields whose Select options have numeric values.
+ * Do NOT use on fields with string values that look like numbers (e.g. account names).
+ *
+ * @example
+ * <ListPageLayout.Filter.Item name="status[]" getValueProps={numericFilterValueProps}>
+ *   <StatusSelect mode="multiple" />
+ * </ListPageLayout.Filter.Item>
+ */
+export function numericFilterValueProps(value: unknown) {
+  if (Array.isArray(value)) {
+    return {
+      value: value.map(v => {
+        if (typeof v === 'string' && v.trim() !== '') {
+          const n = Number(v);
+          if (!isNaN(n)) return n;
+        }
+        return v;
+      }),
+    };
+  }
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value);
+    if (!isNaN(n)) return { value: n };
+  }
+  return { value };
+}
+
+/**
  * 通用表單值轉 CrudFilter[] 函數
  *
  * 將表單的 key-value 自動轉為 Refine 的 CrudFilter 陣列。
