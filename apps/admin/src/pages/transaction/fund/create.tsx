@@ -32,7 +32,7 @@ const FundCreate: FC = () => {
     const { Select: UserChannelAccountSelect, data: userChannelAccounts } = useSelector<UserChannel>({
         resource: "user-channel-accounts",
         labelRender(record) {
-            const type = record.address_type === 'child' ? '[子]' : '[主]';
+            const type = record.address_type === 'child' ? `[${t('fund.childPrefix')}]` : `[${t('fund.masterPrefix')}]`;
             const name = record.user?.name ?? record.name ?? '';
             const addr = record.account ? `${record.account.slice(0, 8)}...${record.account.slice(-6)}` : '';
             return `${type} ${name} - ${addr}`;
@@ -159,7 +159,7 @@ const FundCreate: FC = () => {
                                                 <Row>
                                                     <Col offset={1}>
                                                         <Space className="text-sm mb-4">
-                                                            <span>后台余额：{selectedUserChannel.balance ?? 0}</span>
+                                                            <span>{t('fields.balance')}：{selectedUserChannel.balance ?? 0}</span>
                                                             <span>USDT：{selectedUserChannel.onchain_usdt_balance ?? '-'}</span>
                                                             <span>Gas：{selectedUserChannel.onchain_native_balance ?? '-'}</span>
                                                         </Space>

@@ -374,7 +374,9 @@
     "list": "转账列表",
     "create": "建立转账",
     "createSuccess": "建立转帐账号成功",
-    "batchTransfer": "批量转帐"
+    "batchTransfer": "批量转帐",
+    "masterPrefix": "主",
+    "childPrefix": "子"
   },
   "mailbox": {
     "title": "讯息",

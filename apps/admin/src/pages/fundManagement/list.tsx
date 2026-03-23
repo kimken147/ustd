@@ -281,7 +281,7 @@ const FundManagementBatchTransfer: FC = () => {
                 value={targetAccountId}
                 onChange={(val) => setTargetAccountId(val)}
                 options={receivableAccounts.map((acc) => ({
-                  label: `${acc.address_type === 'child' ? '[子]' : '[主]'} ${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
+                  label: `[${acc.address_type === 'child' ? t('fields.childPrefix') : t('fields.masterPrefix')}] ${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
                   value: acc.id,
                 }))}
               />

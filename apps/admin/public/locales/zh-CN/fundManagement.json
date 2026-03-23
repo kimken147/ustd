@@ -19,7 +19,9 @@
     "afterBalance": "转入后预估",
     "selectedCount": "已选",
     "selectedTotal": "合计",
-    "noPrivateKey": "无密钥"
+    "noPrivateKey": "无密钥",
+    "masterPrefix": "主",
+    "childPrefix": "子"
   },
   "actions": {
     "batchTransfer": "确认转帐",

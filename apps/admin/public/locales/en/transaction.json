@@ -374,7 +374,9 @@
     "list": "Internal Transfer List",
     "create": "Order Creation Successful",
     "createSuccess": "Account Creation Successful",
-    "batchTransfer": "Batch Transfer"
+    "batchTransfer": "Batch Transfer",
+    "masterPrefix": "Master",
+    "childPrefix": "Child"
   },
   "mailbox": {
     "title": "Mailbox",

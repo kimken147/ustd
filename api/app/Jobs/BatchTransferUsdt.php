@@ -65,6 +65,9 @@ class BatchTransferUsdt implements ShouldQueue
 
                     $this->log($transaction, "已從母地址補充 {$sendAmount} gas (parent: {$parent->account})");
 
+                    // 等待 gas 到帳（與代付邏輯一致）
+                    sleep(5);
+
                 } catch (\Throwable $e) {
                     $parentKey = null;
                     $this->markFailed($transaction, "補充 gas 失敗: {$e->getMessage()}");

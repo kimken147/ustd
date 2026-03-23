@@ -19,7 +19,9 @@
     "afterBalance": "Est. After Transfer",
     "selectedCount": "Selected",
     "selectedTotal": "Total",
-    "noPrivateKey": "No Key"
+    "noPrivateKey": "No Key",
+    "masterPrefix": "Master",
+    "childPrefix": "Child"
   },
   "actions": {
     "batchTransfer": "Confirm Transfer",
