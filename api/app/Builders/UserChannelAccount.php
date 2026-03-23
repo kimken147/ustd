@@ -84,8 +84,8 @@ class UserChannelAccount
             $builder->whereIn('id', $id);
         });
 
-        $userChannelAccounts->when(!empty($request->bank_id), function ($builder) use ($request) {
-            $builder->whereIn('bank_id', $request->bank_id);
+        $userChannelAccounts->when(!empty($request->bank), function ($builder) use ($request) {
+            $builder->whereIn('bank_id', $request->bank);
         });
 
         $userChannelAccounts->when(!is_null($request->bank_card_branch), function ($builder) use ($request) {

@@ -140,8 +140,7 @@ class BatchTransferUsdt implements ShouldQueue
     private function markFailed(Transaction $transaction, string $message): void
     {
         $transaction->update([
-            'status'       => Transaction::STATUS_FAILED,
-            'confirmed_at' => now(),
+            'status' => Transaction::STATUS_FAILED,
         ]);
 
         $this->log($transaction, "轉帳失敗: {$message}", 'error');

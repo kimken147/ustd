@@ -314,6 +314,13 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
     {
       title: t('fields.chainNetwork'),
       dataIndex: 'bank_name',
+      render(value: string) {
+        if (!value) return null;
+        const labelMap: Record<string, string> = {
+          trc20: 'TRC-20', erc20: 'ERC-20', bep20: 'BEP-20',
+        };
+        return labelMap[value] ?? value;
+      },
     },
     {
       title: 'Tx Hash',

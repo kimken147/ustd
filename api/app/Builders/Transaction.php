@@ -134,16 +134,11 @@ class Transaction
         $transactions->when(
             $request->provider_channel_account_hash_id,
             function ($builder, $providerChannelAccountHashId) {
-                $account = UserChannelAccount::whereIn(
-                    "name",
+                $accounts = UserChannelAccount::whereIn(
+                    "id",
                     $providerChannelAccountHashId
-                );
-                if ($account) {
-                    $builder->whereIn(
-                        "_from_channel_account",
-                        $account->pluck("account")
-                    );
-                }
+                )->pluck("account");
+                $builder->whereIn("_from_channel_account", $accounts);
             }
         );
 
@@ -424,7 +419,8 @@ class Transaction
         });
 
         $withdraws->when($request->account, function ($builder, $account) {
-            $builder->where("to_channel_account->account", $account);
+            $accountIds = UserChannelAccount::where('account', $account)->pluck('id');
+            $builder->whereIn('to_channel_account_id', $accountIds);
         });
 
         $withdraws->when($request->_search1, function ($builder, $search1) {
@@ -650,7 +646,10 @@ class Transaction
             $builder,
             $orderNumber
         ) {
-            $builder->where("system_order_number", $orderNumber);
+            $builder->where(function ($q) use ($orderNumber) {
+                $q->where("system_order_number", $orderNumber)
+                  ->orWhere("order_number", $orderNumber);
+            });
         });
 
         $transactions->when($request->has("bank_card_number"), function (
@@ -662,7 +661,8 @@ class Transaction
         });
 
         $transactions->when($request->account, function ($builder, $account) {
-            $builder->where("_from_channel_account", $account);
+            $accountIds = UserChannelAccount::where('account', $account)->pluck('id');
+            $builder->whereIn('to_channel_account_id', $accountIds);
         });
 
         $transactions->when($request->_search1, function ($builder, $search1) {

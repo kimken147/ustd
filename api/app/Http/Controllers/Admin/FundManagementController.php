@@ -59,6 +59,21 @@ class FundManagementController extends Controller
             }
         }
 
+        // 檢查來源帳號是否有正在進行的付款（代付、建立轉帳、批量轉帳）
+        $busyAccountIds = Transaction::whereIn('to_channel_account_id', $sourceAccounts->pluck('id'))
+            ->where('status', Transaction::STATUS_PAYING)
+            ->where('created_at', '>=', now()->subDay())
+            ->pluck('to_channel_account_id')
+            ->unique()
+            ->toArray();
+
+        if (!empty($busyAccountIds)) {
+            $busyNames = $sourceAccounts->whereIn('id', $busyAccountIds)
+                ->map(fn ($a) => "{$a->account}")
+                ->implode(', ');
+            abort(400, "以下帳號正在進行其他付款，請稍後再試: {$busyNames}");
+        }
+
         $dispatched = 0;
 
         foreach ($sourceAccounts as $source) {
