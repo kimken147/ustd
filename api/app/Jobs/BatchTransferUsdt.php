@@ -38,43 +38,56 @@ class BatchTransferUsdt implements ShouldQueue
         $chainNetwork = data_get($source->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
         $adapter = ChainAdapterFactory::makeOrFail($chainNetwork);
 
-        // 取得最低原生代幣餘額門檻
-        $minNative = match ($chainNetwork) {
-            'trc20' => config('services.trongrid.min_trx_balance', '30'),
+        $gasTokenName = match ($chainNetwork) {
+            'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
+        };
+
+        // 動態預估所需 Gas（與代付 UsdtWithdrawHandler 一致）
+        $requiredGas = match ($chainNetwork) {
+            'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
+                ? $adapter->estimateTransferFee($source->account, $targetAddress ?: $source->account, $transaction->amount)
+                : config('services.trongrid.min_trx_balance', '30'),
             'erc20' => config('services.ethereum.min_native_balance', '0.005'),
             'bep20' => config('services.bsc.min_native_balance', '0.005'),
             default => '0',
         };
 
+        // 加 buffer：TRC-20 多 5 TRX，其他多 10%
+        $buffer = match ($chainNetwork) {
+            'trc20' => '5',
+            default => bcmul($requiredGas, '0.1', 6),
+        };
+        $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
+
         // 檢查 gas 餘額
         $nativeBalance = $adapter->getNativeBalance($source->account);
 
-        if (bccomp($nativeBalance, $minNative, 6) < 0) {
+        if (bccomp($nativeBalance, $requiredWithBuffer, 6) < 0) {
+            // 計算差額（只補不足的部分）
+            $deficit = bcsub($requiredWithBuffer, $nativeBalance, 6);
+
             if ($source->parent_account_id) {
                 $parent = $source->parentAccount;
                 $parentKey = decrypt(data_get($parent->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
 
                 try {
-                    $extra = match ($chainNetwork) {
-                        'trc20' => '5',
-                        default => '0.001',
-                    };
-                    $sendAmount = bcadd($minNative, $extra, 6);
-                    $adapter->sendNativeToken($parent->account, $source->account, $sendAmount, $parentKey);
+                    $adapter->sendNativeToken($parent->account, $source->account, $deficit, $parentKey);
                     $parentKey = null;
 
-                    $this->log($transaction, "已從母地址補充 {$sendAmount} gas (parent: {$parent->account})");
+                    $this->log($transaction, "已從母地址補充 {$deficit} {$gasTokenName} (預估需要: {$requiredGas}, 現有: {$nativeBalance}, parent: {$parent->account})");
 
                     // 等待 gas 到帳（與代付邏輯一致）
                     sleep(5);
 
                 } catch (\Throwable $e) {
                     $parentKey = null;
-                    $this->markFailed($transaction, "補充 gas 失敗: {$e->getMessage()}");
+                    // 不呼叫 markFailed — 讓 retry 有機會重試
+                    $this->log($transaction, "補充 {$gasTokenName} 失敗: {$e->getMessage()}", 'error');
                     throw $e;
                 }
             } else {
-                $this->markFailed($transaction, "Gas 不足且無母地址可補充 (餘額: {$nativeBalance})");
+                // 無母地址可補充，直接失敗（不可重試解決）
+                $this->markFailed($transaction, "{$gasTokenName} 不足且無母地址可補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})");
                 throw new \RuntimeException("Gas 不足: {$source->account}");
             }
         }
@@ -100,8 +113,27 @@ class BatchTransferUsdt implements ShouldQueue
             $this->log($transaction, "交易已廣播，等待鏈上確認 (tx_hash: {$chainTx->txHash})");
         } catch (\Throwable $e) {
             $privateKey = null;
-            $this->markFailed($transaction, $e->getMessage());
+            // 不呼叫 markFailed — 讓 retry 有機會重試
+            $this->log($transaction, "USDT 轉帳失敗: {$e->getMessage()}", 'error');
             throw $e;
+        }
+    }
+
+    /**
+     * 所有重試都失敗後才標記訂單為失敗
+     */
+    public function failed(\Throwable $exception): void
+    {
+        try {
+            $transaction = Transaction::find($this->transactionId);
+            if ($transaction && $transaction->status !== Transaction::STATUS_FAILED) {
+                $this->markFailed($transaction, $exception->getMessage());
+            }
+        } catch (\Throwable $e) {
+            Log::error("BatchTransfer: failed() 處理異常", [
+                'transaction_id' => $this->transactionId,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
