@@ -11,6 +11,7 @@ use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
 use App\Models\Channel;
 use App\Utils\TransactionFactory;
+use App\Utils\UserChannelAccountUtil;
 use Illuminate\Http\Request;
 
 class FundManagementController extends Controller
@@ -103,6 +104,14 @@ class FundManagementController extends Controller
             if (!$transaction) {
                 continue;
             }
+
+            // 更新帳號額度（出款方 + 收款方）
+            $util = app(UserChannelAccountUtil::class);
+            $util->updateTotal($source->id, $transaction->amount, true);
+            $util->updatePaymentCount($source->id, 1, true);
+            // 收款方（目標帳號）
+            $util->updateTotal($targetAccount->id, $transaction->amount);
+            $util->updatePaymentCount($targetAccount->id);
 
             BatchTransferUsdt::dispatch($transaction->id);
             $dispatched++;

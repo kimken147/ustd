@@ -249,7 +249,7 @@ const CollectionList: FC = () => {
             formProps={searchFormProps}
             loading={tableProps.loading as boolean}
             onSearch={() => statisticsRefetch()}
-            defaultValues={{ started_at: dayjs().startOf('day') }}
+            defaultValues={{ started_at: dayjs().startOf('day'), confirmed: 'created' }}
           >
             <Col xs={24} md={6}>
               <ListPageLayout.Filter.Item

@@ -31,7 +31,7 @@ export function FilterForm({
   const colProps = { xs: 24, md: 6 };
 
   return (
-    <ListPageLayout.Filter formProps={formProps} loading={loading} defaultValues={{ started_at: dayjs().startOf('day') }}>
+    <ListPageLayout.Filter formProps={formProps} loading={loading} defaultValues={{ started_at: dayjs().startOf('day'), confirmed: 'created' }}>
       <Col {...colProps}>
         <ListPageLayout.Filter.Item
           label={t('fields.startDate')}

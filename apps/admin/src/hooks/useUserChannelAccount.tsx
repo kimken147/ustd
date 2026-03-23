@@ -19,14 +19,16 @@ function useUserChannelAccount(props?: Partial<Props>) {
     });
     const { isLoading, isError, isFetching, refetch } = query;
 
+    const options = result.data?.map((record: UserChannel) => ({
+        value: record.id,
+        label: `${record.account ?? ''}(${record.name})`,
+    }));
+
     const selectProps: SelectProps = {
         allowClear: true,
         showSearch: true,
         optionFilterProp: "label",
-        options: result.data?.map((record: UserChannel) => ({
-            value: record.id,
-            label: record.name,
-        })),
+        options,
     };
 
     const Select = (selectComponentProps: SelectProps) => {

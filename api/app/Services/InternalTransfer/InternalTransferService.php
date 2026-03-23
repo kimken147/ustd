@@ -113,7 +113,7 @@ class InternalTransferService
      */
     private function getCompanyAccount(Transaction $transaction): ?UserChannelAccount
     {
-        if ($transaction->type !== Transaction::TYPE_INTERNAL_TRANSFER) {
+        if (!in_array($transaction->type, [Transaction::TYPE_INTERNAL_TRANSFER, Transaction::TYPE_NATIVE_TRANSFER])) {
             return null;
         }
         if (!$transaction->from_channel_account) {
