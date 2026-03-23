@@ -76,15 +76,14 @@ class ProviderController extends Controller
             ->latest('id');
 
         $providers->when($request->provider_name_or_username, function ($query, $nameOrUsername) {
-            // 支援陣列（前端 mode="multiple"）和字串
+            // 前端 mode="multiple" 送 ID 陣列，單選送字串
             if (is_array($nameOrUsername)) {
-                $query->where(function ($q) use ($nameOrUsername) {
-                    foreach ($nameOrUsername as $value) {
-                        $q->orWhere('username', 'like', '%' . $value . '%');
-                    }
-                });
+                $query->whereIn('id', $nameOrUsername);
             } else {
-                $query->where('username', 'like', '%' . $nameOrUsername . '%');
+                $query->where(function ($q) use ($nameOrUsername) {
+                    $q->where('name', 'like', "%{$nameOrUsername}%")
+                      ->orWhere('username', 'like', "%{$nameOrUsername}%");
+                });
             }
         })
             ->when($request->agent_name_or_username, function ($query, $agentNameOrUsername) {
