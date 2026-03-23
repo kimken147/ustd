@@ -23,7 +23,6 @@ class FundManagementController extends Controller
     {
         $accounts = UserChannelAccount::with('user', 'parentAccount')
             ->whereIn('channel_code', Channel::USDT_CODES)
-            ->where('onchain_usdt_balance', '>', 0)
             ->whereNull('deleted_at')
             ->orderByDesc('onchain_usdt_balance')
             ->get();

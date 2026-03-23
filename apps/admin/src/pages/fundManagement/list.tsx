@@ -68,9 +68,9 @@ const FundManagementBatchTransfer: FC = () => {
   const { mutate: batchTransfer, mutation } = useCustomMutation();
   const isTransferring = mutation.isPending;
 
-  // 主地址清單（用於目標帳號下拉）
-  const masterAccounts = useMemo(
-    () => accounts.filter((acc) => acc.address_type === 'master'),
+  // 可接收的帳號清單（主地址 + 子地址）
+  const receivableAccounts = useMemo(
+    () => accounts,
     [accounts],
   );
 
@@ -280,8 +280,8 @@ const FundManagementBatchTransfer: FC = () => {
                 optionFilterProp="label"
                 value={targetAccountId}
                 onChange={(val) => setTargetAccountId(val)}
-                options={masterAccounts.map((acc) => ({
-                  label: `${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
+                options={receivableAccounts.map((acc) => ({
+                  label: `${acc.address_type === 'child' ? '[子]' : '[主]'} ${acc.user?.name ?? ''} - ${acc.account.slice(0, 8)}...${acc.account.slice(-6)}`,
                   value: acc.id,
                 }))}
               />
