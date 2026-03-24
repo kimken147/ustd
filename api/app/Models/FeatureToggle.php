@@ -66,6 +66,8 @@ class FeatureToggle extends Model
     const NOTIFY_ADMIN_THIRD_CHANNEL_BALANCE = 52; //管端三方余额警示
     const AUTO_DAIFU = 53; // 自動代付
     const MULTI_DEVICES_LOGIN = 54; //管端帐号允许多设备登录
+    const USER_CHANNEL_ACCOUNT_DAILY_COUNT = 55; //当日各收/出款号笔数
+    const USER_CHANNEL_ACCOUNT_MONTHLY_COUNT = 56; //当月各收/出款号笔数
 
     const INPUT_TYPE_TEXT = 'text';
     const INPUT_TYPE_BOOLEAN = 'boolean';

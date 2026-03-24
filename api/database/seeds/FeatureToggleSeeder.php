@@ -460,6 +460,22 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '1'
             ]
         ],
+        FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT => [
+            'hidden'  => false,
+            'enabled' => false,
+            'input'   => [
+                'type'  => 'boolean',
+                'value' => ''
+            ],
+        ],
+        FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT => [
+            'hidden'  => false,
+            'enabled' => false,
+            'input'   => [
+                'type'  => 'boolean',
+                'value' => ''
+            ],
+        ],
         FeatureToggle::USDT_ADD_RATE => [
             'hidden'  => true,
             'enabled' => false,

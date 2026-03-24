@@ -111,6 +111,9 @@ class BatchTransferUsdt implements ShouldQueue
             ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
             $this->log($transaction, "交易已廣播，等待鏈上確認 (tx_hash: {$chainTx->txHash})");
+
+            // 歸集剩餘原生代幣到目標地址
+            $this->transferRemainingGas($adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $transaction);
         } catch (\Throwable $e) {
             $privateKey = null;
             // 不呼叫 markFailed — 讓 retry 有機會重試
@@ -211,5 +214,69 @@ class BatchTransferUsdt implements ShouldQueue
             'user_id' => 0,
             'note' => "[批量轉帳] {$message}",
         ]);
+    }
+
+    private function transferRemainingGas(
+        $adapter,
+        UserChannelAccount $source,
+        string $targetAddress,
+        string $chainNetwork,
+        string $gasTokenName,
+        Transaction $transaction,
+    ): void {
+        try {
+            // 查詢剩餘原生代幣餘額
+            $remainingBalance = $adapter->getNativeBalance($source->account);
+
+            // 計算原生轉帳手續費
+            $transferFee = match ($chainNetwork) {
+                'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
+                    ? $adapter->estimateNativeTransferFee($source->account)
+                    : '1',
+                default => $this->estimateEvmNativeTransferFee($adapter, $chainNetwork),
+            };
+
+            // 可轉出金額 = 餘額 - 手續費
+            $transferable = bcsub($remainingBalance, $transferFee, 6);
+
+            // 取得最低轉帳門檻
+            $minAmount = match ($chainNetwork) {
+                'trc20' => config('services.trongrid.min_gas_transfer_amount', '1'),
+                'erc20' => config('services.ethereum.min_gas_transfer_amount', '0.001'),
+                'bep20' => config('services.bsc.min_gas_transfer_amount', '0.001'),
+                default => '0',
+            };
+
+            if (bccomp($transferable, $minAmount, 6) <= 0) {
+                $this->log($transaction, "剩餘 {$gasTokenName} 不足轉出門檻 (餘額: {$remainingBalance}, 手續費: {$transferFee}, 門檻: {$minAmount})");
+                return;
+            }
+
+            // 執行原生代幣轉帳
+            $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
+            $gasTxHash = $adapter->sendNativeToken($source->account, $targetAddress, $transferable, $privateKey);
+            $privateKey = null;
+
+            $this->log($transaction, "已歸集 {$transferable} {$gasTokenName} 到目標地址 (tx_hash: {$gasTxHash})");
+        } catch (\Throwable $e) {
+            // Gas 轉帳失敗不影響 USDT 轉帳結果
+            $this->log($transaction, "歸集 {$gasTokenName} 失敗: {$e->getMessage()}", 'warning');
+        }
+    }
+
+    private function estimateEvmNativeTransferFee($adapter, string $chainNetwork): string
+    {
+        $configKey = $chainNetwork === 'erc20' ? 'ethereum' : 'bsc';
+        $gasLimit = config("services.{$configKey}.gas_limit_native_transfer", 21000);
+
+        // 取得當前 gas price
+        $gasPrice = $adapter->getGasPrice();
+
+        // fee = gasLimit × gasPrice (in wei), convert to ETH/BNB
+        $feeWei = bcmul((string) $gasLimit, $gasPrice, 0);
+        $fee = bcdiv($feeWei, bcpow('10', '18'), 18);
+
+        // +10% buffer
+        return bcmul($fee, '1.1', 18);
     }
 }
