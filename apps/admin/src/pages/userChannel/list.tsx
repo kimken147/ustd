@@ -338,6 +338,11 @@ const UserChannelAccountList: FC = () => {
                 <Input allowClear />
               </ListPageLayout.Filter.Item>
             </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('fields.parentAccount')} name="parent_account">
+                <Input allowClear />
+              </ListPageLayout.Filter.Item>
+            </Col>
           </ListPageLayout.Filter>
         </ListPageLayout>
 

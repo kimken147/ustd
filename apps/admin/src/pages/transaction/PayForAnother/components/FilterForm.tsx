@@ -135,6 +135,11 @@ export function FilterForm({
         </ListPageLayout.Filter.Item>
       </Col>
       <Col {...colProps}>
+        <ListPageLayout.Filter.Item label={t('fields.parentAccount')} name="parent_account">
+          <Input allowClear />
+        </ListPageLayout.Filter.Item>
+      </Col>
+      <Col {...colProps}>
         <ListPageLayout.Filter.Item
           label={t('fields.thirdPartyName')}
           name="thirdchannel_id[]"

@@ -42,6 +42,7 @@ return [
         'fee_limit'       => (int) env('TRONGRID_FEE_LIMIT', 100000000),
         'min_trx_balance' => env('TRONGRID_MIN_TRX_BALANCE', '30'),
         'usdt_contract'   => env('TRONGRID_USDT_CONTRACT', 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'),
+        'min_gas_transfer_amount' => env('TRONGRID_MIN_GAS_TRANSFER', '1'),
     ],
 
     'ethereum' => [
@@ -56,6 +57,7 @@ return [
         'max_gas_price'   => env('ETHEREUM_MAX_GAS_PRICE', '50000000000'),
         'gas_limit_token_transfer' => (int) env('ETHEREUM_GAS_LIMIT_TOKEN', 80000),
         'gas_limit_native_transfer' => (int) env('ETHEREUM_GAS_LIMIT_NATIVE', 21000),
+        'min_gas_transfer_amount' => env('ETH_MIN_GAS_TRANSFER', '0.001'),
     ],
 
     'bsc' => [
@@ -70,6 +72,7 @@ return [
         'max_gas_price'   => env('BSC_MAX_GAS_PRICE', '10000000000'),
         'gas_limit_token_transfer' => (int) env('BSC_GAS_LIMIT_TOKEN', 80000),
         'gas_limit_native_transfer' => (int) env('BSC_GAS_LIMIT_NATIVE', 21000),
+        'min_gas_transfer_amount' => env('BSC_MIN_GAS_TRANSFER', '0.001'),
     ],
 
 ];

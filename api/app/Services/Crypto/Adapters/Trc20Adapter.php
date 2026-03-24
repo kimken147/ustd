@@ -387,6 +387,57 @@ class Trc20Adapter implements ChainAdapterInterface
         return $trxNeeded;
     }
 
+    /**
+     * 取得帳號可用的 Bandwidth
+     *
+     * @return int 可用 bandwidth 點數
+     */
+    public function getAvailableBandwidth(string $address): int
+    {
+        $response = $this->buildHttpClient()
+            ->post($this->getBaseUrl() . '/wallet/getaccountresource', [
+                'address' => $this->base58ToHex($address),
+                'visible' => false,
+            ]);
+
+        if (!$response->successful()) {
+            return 0;
+        }
+
+        $data = $response->json();
+
+        // 免費 bandwidth
+        $freeLimit = (int) ($data['freeNetLimit'] ?? 600);
+        $freeUsed = (int) ($data['freeNetUsed'] ?? 0);
+        $freeAvailable = max(0, $freeLimit - $freeUsed);
+
+        // 質押 bandwidth
+        $netLimit = (int) ($data['NetLimit'] ?? 0);
+        $netUsed = (int) ($data['NetUsed'] ?? 0);
+        $stakedAvailable = max(0, $netLimit - $netUsed);
+
+        return $freeAvailable + $stakedAvailable;
+    }
+
+    /**
+     * 預估原生 TRX 轉帳所需的手續費
+     *
+     * @return string 預估 TRX 費用（如有足夠 bandwidth 則為 0）
+     */
+    public function estimateNativeTransferFee(string $fromAddress): string
+    {
+        // TRX 轉帳約需 267 bandwidth
+        $requiredBandwidth = 267;
+        $available = $this->getAvailableBandwidth($fromAddress);
+
+        if ($available >= $requiredBandwidth) {
+            return '0';
+        }
+
+        // bandwidth 不足時，約 0.267 TRX + buffer
+        return '1';
+    }
+
     private function getUsdtContract(): string
     {
         return config('services.trongrid.usdt_contract', self::MAINNET_USDT_CONTRACT);

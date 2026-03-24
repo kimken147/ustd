@@ -58,6 +58,7 @@
     "payerInfo": "付款者资讯",
     "collectionAccount": "收款账号",
     "collectionAccountWithValue": "收款账号: {{account}}",
+    "parentAccount": "母地址",
     "collectionNumber": "收款号",
     "withdrawNumber": "出款号",
     "accountNumber": "账号编号",

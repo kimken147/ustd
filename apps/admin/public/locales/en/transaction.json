@@ -58,6 +58,7 @@
     "payerInfo": "Money-Out Details",
     "collectionAccount": "Money-In Account Number",
     "collectionAccountWithValue": "Money-In Account Number: {{account}}",
+    "parentAccount": "Parent Address",
     "collectionNumber": "Money-In Account",
     "withdrawNumber": "Money-Out Account",
     "accountNumber": "ID",
