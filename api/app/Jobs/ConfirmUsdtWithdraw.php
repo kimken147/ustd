@@ -171,12 +171,12 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         }
 
         try {
-            // 增加 balance（系統餘額）
+            // 增加 balance（系統餘額）+ 已收額度/筆數
             $receiverAccount->increment('balance', $transaction->amount);
 
-            // 不更新已收額度/筆數：內轉是平台帳號間的資金調度，
-            // 不是真正的「收款」。收款的已收額度在 markAsSuccess 時
-            // 已經加在母地址（子地址自動指向 parent）。
+            $util = app(UserChannelAccountUtil::class);
+            $util->updateTotal($receiverAccount->id, $transaction->amount);
+            $util->updatePaymentCount($receiverAccount->id);
 
             // 同步鏈上餘額
             $receiverAccount->update([

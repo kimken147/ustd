@@ -262,16 +262,10 @@ class TransactionStatusService
         }
 
         if ($transaction->type === Transaction::TYPE_PAUFEN_TRANSACTION) {
-            // 累積日/月限額
+            // 累積日/月限額：加在實際收款的帳號（子地址本身，不轉到母地址）
             if ($transaction->from_channel_account_id) {
-                // 解析實際的限額帳號（子地址時指向母地址）
-                $fromAccount = UserChannelAccount::find($transaction->from_channel_account_id);
-                $limitAccountId = ($fromAccount && $fromAccount->parent_account_id)
-                    ? $fromAccount->parent_account_id
-                    : $transaction->from_channel_account_id;
-
-                $this->userChannelAccountUtil->updateTotal($limitAccountId, $transaction->floating_amount);
-                $this->userChannelAccountUtil->updatePaymentCount($limitAccountId);
+                $this->userChannelAccountUtil->updateTotal($transaction->from_channel_account_id, $transaction->floating_amount);
+                $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
             }
         }
         // 如果有出款帳號，成功話 出款帳號扣除額度
