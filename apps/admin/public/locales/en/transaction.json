@@ -170,7 +170,9 @@
     "processingFeeAbnormal": "Third-Party Processing(Fee Error)",
     "onShelf": "On",
     "offShelf": "Off",
-    "none": "N/A"
+    "none": "N/A",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "transactionStatus": {
     "created": "Created",
@@ -368,7 +370,8 @@
     "city": "Bank Branch City",
     "locked": "Locked",
     "providerPayout": "Assign Provider",
-    "convertToProviderPayout": "Assign Provider for Deposit"
+    "convertToProviderPayout": "Assign Provider for Deposit",
+    "autoDaifu": "Auto Payout"
   },
   "fund": {
     "title": "Internal Transfer Management",

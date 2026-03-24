@@ -170,7 +170,9 @@
     "processingFeeAbnormal": "三方处理中(手续费异常)",
     "onShelf": "上架中",
     "offShelf": "下架中",
-    "none": "无"
+    "none": "无",
+    "enabled": "已开启",
+    "disabled": "已关闭"
   },
   "transactionStatus": {
     "created": "已建立",
@@ -368,7 +370,8 @@
     "city": "市",
     "locked": "已锁",
     "providerPayout": "码商出",
-    "convertToProviderPayout": "转为码商出"
+    "convertToProviderPayout": "转为码商出",
+    "autoDaifu": "自动代付"
   },
   "fund": {
     "title": "转账",

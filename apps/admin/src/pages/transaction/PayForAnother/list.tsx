@@ -13,6 +13,7 @@ import {
   Modal as AntdModal,
   SelectProps,
   Switch,
+  Tag,
 } from 'antd';
 import {
   ListPageLayout,
@@ -54,6 +55,7 @@ import AudioPermissionAlert from 'components/AudioPermissionAlert';
 // Page components and hooks
 import { FilterForm, useColumns, StatisticsCards } from './components';
 import { useNewDataNotification, useUpdateModalConfig } from './hooks';
+import useSystemSetting from 'hooks/useSystemSetting';
 
 const PayForAnotherList: FC = () => {
   const { t } = useTranslation('transaction');
@@ -118,6 +120,10 @@ const PayForAnotherList: FC = () => {
 
   // Auto refresh
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
+
+  // System settings
+  const { data: systemSetting } = useSystemSetting();
+  const autoDaifuEnabled = systemSetting?.find(x => x.id === 53)?.enabled ?? false;
 
   // Table hook
   const {
@@ -237,6 +243,9 @@ const PayForAnotherList: FC = () => {
               if (checked) requestPermission();
             }} />
           </Space>
+          <Tag color={autoDaifuEnabled ? 'green' : 'default'} className="mb-4">
+            {t('withdraw.autoDaifu')}: {autoDaifuEnabled ? t('status.enabled') : t('status.disabled')}
+          </Tag>
         </Space>
 
         <ListPageLayout.Table
