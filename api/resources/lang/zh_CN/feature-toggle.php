@@ -56,6 +56,8 @@ return [
     FeatureToggle::TRY_NEXT_IF_THIRDCHANNEL_DAIFU_FAIL                 => '三方代付失败则试下一个三方',
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => '商户端显示已启用三方余额',
     FeatureToggle::AUTO_DAIFU                                          => '自动代付',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '当日各收/出款号笔数',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '当月各收/出款号笔数',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '管端帐号允许多设备登入',
     '笔'                                                    => '笔',
     '天'                                                    => '天',

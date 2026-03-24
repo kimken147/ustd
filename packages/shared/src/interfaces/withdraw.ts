@@ -289,6 +289,7 @@ export interface Meta {
     total_profit: string;
     third_channel_fee: string;
     banned_realnames: string[];
+    auto_daifu_enabled?: boolean;
 }
 
 export interface TransactionNote {

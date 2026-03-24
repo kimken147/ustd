@@ -102,7 +102,8 @@ class WithdrawController extends Controller
                 'total_fee'      => AmountDisplayTransformer::transform($totalFee ?? '0.00'),
                 'total_profit'      => AmountDisplayTransformer::transform($totalProfit ?? '0.00'),
                 'third_channel_fee' => AmountDisplayTransformer::transform($thirdChannelFee ?? '0.00'),
-                'banned_realnames'  => BannedRealname::where('type', BannedRealname::TYPE_WITHDRAW)->get()->pluck('realname')
+                'banned_realnames'  => BannedRealname::where('type', BannedRealname::TYPE_WITHDRAW)->get()->pluck('realname'),
+                'auto_daifu_enabled' => $featureToggleRepository->enabled(FeatureToggle::AUTO_DAIFU),
             ]
         ]);
     }

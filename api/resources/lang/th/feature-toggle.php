@@ -56,6 +56,8 @@ return [
     FeatureToggle::TRY_NEXT_IF_THIRDCHANNEL_DAIFU_FAIL                 => 'การสร้างคำสั่งซื้อการจ่ายเงินของระบบบุคคลที่สามล้มเหลว: พยายามส่งคำสั่งซื้อการจ่ายเงินกับบุคคลที่สามถัดไป',
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => 'แดชบอร์ดร้านค้าแสดงยอดเงินรวมของบุคคลที่สาม',
     FeatureToggle::AUTO_DAIFU                                          => 'ประมวลผลคำสั่งซื้อการจ่ายเงินอัตโนมัติ',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => 'จำนวนธุรกรรมรับ/จ่ายรายวัน',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => 'จำนวนธุรกรรมรับ/จ่ายรายเดือน',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'บัญชีผู้ดูแลระบบอนุญาตการเข้าสู่ระบบจากหลายอุปกรณ์',
     '笔'                                                               => 'รายการ',
     '天'                                                               => 'วัน',

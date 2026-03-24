@@ -56,5 +56,7 @@ return [
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => '',
     FeatureToggle::NOTIFY_ADMIN_THIRD_CHANNEL_BALANCE                  => '',
     FeatureToggle::AUTO_DAIFU                                          => '0: 手动代付 1: APP 代付 2: 系統代付',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '',
 ];

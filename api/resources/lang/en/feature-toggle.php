@@ -56,6 +56,8 @@ return [
     FeatureToggle::TRY_NEXT_IF_THIRDCHANNEL_DAIFU_FAIL                 => 'Third-Party System Money-Out Order Creation Failure: Attempting to Send Money-Out Order with the Next Third Party',
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => 'Merchant Dashboard Displays the Total  Balance of the Third-Party',
     FeatureToggle::AUTO_DAIFU                                          => 'Automatic Processing of Money-Out Orders',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => 'Daily Money-In / Money-Out Transaction Count',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => 'Monthly Money-In / Money-Out Transaction Count',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'Admin Account Allows Login From Multiple Devices',
     '笔'                                                               => 'transaction',
     '天'                                                               => 'day',

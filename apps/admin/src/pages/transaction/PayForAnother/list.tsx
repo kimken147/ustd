@@ -55,7 +55,6 @@ import AudioPermissionAlert from 'components/AudioPermissionAlert';
 // Page components and hooks
 import { FilterForm, useColumns, StatisticsCards } from './components';
 import { useNewDataNotification, useUpdateModalConfig } from './hooks';
-import useSystemSetting from 'hooks/useSystemSetting';
 
 const PayForAnotherList: FC = () => {
   const { t } = useTranslation('transaction');
@@ -121,10 +120,6 @@ const PayForAnotherList: FC = () => {
   // Auto refresh
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
 
-  // System settings
-  const { data: systemSetting } = useSystemSetting();
-  const autoDaifuEnabled = systemSetting?.find(x => x.id === 53)?.enabled ?? false;
-
   // Table hook
   const {
     tableProps,
@@ -147,7 +142,8 @@ const PayForAnotherList: FC = () => {
     },
   });
 
-  const meta = ((data as any)?.meta as Meta) || { banned_realnames: [] };
+  const meta = ((data as any)?.meta as Meta | undefined) ?? ({} as Meta);
+  const autoDaifuEnabled = meta.auto_daifu_enabled ?? false;
   const withdrawData = data?.data;
   const pagination = tableProps.pagination as { current?: number };
   const { mutateAsync } = useCustomMutation();

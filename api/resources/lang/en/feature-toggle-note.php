@@ -56,5 +56,7 @@ return [
     FeatureToggle::SHOW_THIRDCHANNEL_BALANCE_FOR_MERCHANT              => '',
     FeatureToggle::NOTIFY_ADMIN_THIRD_CHANNEL_BALANCE                  => '',
     FeatureToggle::AUTO_DAIFU                                          => '0: Manual Money-Out 1: APP Money-Out 2: System Money-Out',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '',
+    FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '',
 ];
