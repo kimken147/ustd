@@ -268,6 +268,21 @@ class TransactionStatusService
                 $this->userChannelAccountUtil->updatePaymentCount($transaction->from_channel_account_id);
             }
         }
+
+        // 內轉/批量轉帳 手動成功：更新接收帳號的餘額和已收額度
+        // （autoSuccess 時由 ConfirmUsdtWithdraw::updateReceiverAccount 處理，避免重複）
+        if (!$autoSuccess && in_array($transaction->type, [Transaction::TYPE_INTERNAL_TRANSFER, Transaction::TYPE_NATIVE_TRANSFER])) {
+            $targetAddress = data_get($transaction->from_channel_account, 'bank_card_number');
+            if ($targetAddress) {
+                $receiverAccount = UserChannelAccount::where('account', $targetAddress)->first();
+                if ($receiverAccount) {
+                    $receiverAccount->increment('balance', $transaction->floating_amount);
+                    $this->userChannelAccountUtil->updateTotal($receiverAccount->id, $transaction->floating_amount);
+                    $this->userChannelAccountUtil->updatePaymentCount($receiverAccount->id);
+                }
+            }
+        }
+
         // 如果有出款帳號，成功話 出款帳號扣除額度
         if ($transaction->to_channel_account_id) {
             $account = $transaction->toChannelAccount;
