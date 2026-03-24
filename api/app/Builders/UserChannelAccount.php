@@ -127,6 +127,17 @@ class UserChannelAccount
             $builder->where('receive_status', $request->receive_status);
         });
 
+        $userChannelAccounts->when($request->filled('parent_account'), function ($builder) use ($request) {
+            $parentIds = UserChannelAccountModel::where('address_type', UserChannelAccountModel::ADDRESS_TYPE_MASTER)
+                ->where('account', 'like', "%{$request->parent_account}%")
+                ->pluck('id');
+
+            $builder->where(function ($q) use ($parentIds) {
+                $q->whereIn('parent_account_id', $parentIds)
+                  ->orWhereIn('id', $parentIds);
+            });
+        });
+
         $userChannelAccounts->orderByDesc('id');
 
         return $userChannelAccounts;

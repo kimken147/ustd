@@ -172,6 +172,18 @@ class Transaction
             $builder->where("from_channel_account->account", $account);
         });
 
+        $transactions->when($request->filled('parent_account'), function ($builder) use ($request) {
+            $parentIds = UserChannelAccount::where('address_type', UserChannelAccount::ADDRESS_TYPE_MASTER)
+                ->where('account', 'like', "%{$request->parent_account}%")
+                ->pluck('id');
+
+            $accountIds = UserChannelAccount::whereIn('parent_account_id', $parentIds)
+                ->orWhereIn('id', $parentIds)
+                ->pluck('id');
+
+            $builder->whereIn('from_channel_account_id', $accountIds);
+        });
+
         $transactions->when($request->_search1, function ($builder, $search1) {
             $builder->where("_search1", $search1);
         });
@@ -417,6 +429,18 @@ class Transaction
 
         $withdraws->when($request->account, function ($builder, $account) {
             $accountIds = UserChannelAccount::where('account', $account)->pluck('id');
+            $builder->whereIn('to_channel_account_id', $accountIds);
+        });
+
+        $withdraws->when($request->filled('parent_account'), function ($builder) use ($request) {
+            $parentIds = UserChannelAccount::where('address_type', UserChannelAccount::ADDRESS_TYPE_MASTER)
+                ->where('account', 'like', "%{$request->parent_account}%")
+                ->pluck('id');
+
+            $accountIds = UserChannelAccount::whereIn('parent_account_id', $parentIds)
+                ->orWhereIn('id', $parentIds)
+                ->pluck('id');
+
             $builder->whereIn('to_channel_account_id', $accountIds);
         });
 

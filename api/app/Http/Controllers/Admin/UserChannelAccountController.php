@@ -84,6 +84,7 @@ class UserChannelAccountController extends Controller
             "channel_group" => "nullable|numeric",
             "address_type" => "nullable|string|in:master,child",
             "receive_status" => "nullable|string|in:none,unused,used",
+            "parent_account" => "nullable|string",
         ]);
 
         $builder = new UserChannelAccountBuilder();
