@@ -40,7 +40,7 @@ const SystemSettingList: FC = () => {
 
   const agencyCollection = filterData([1, 4, 5, 7, 15, 22, 25, 28, 29, 31, 33, 34, 37, 38, 40, 65, 41, 44, 46, 52, 64]);
   const agencyPayment = filterData([3, 6, 13, 16, 19, 20, 23, 32, 36, 49, 53, 43]);
-  const accounts = filterData([35, 45, 39]);
+  const accounts = filterData([35, 45, 55, 56, 39]);
   const thirdChannel = filterData([48, 49, 50]);
   const admin = filterData([2, 8, 9, 10, 11, 14, 17, 26, 39, 42, 47, 54]);
   const channel = filterData([12, 18, 21, 24, 30, 51]);

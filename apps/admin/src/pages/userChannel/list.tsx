@@ -57,6 +57,8 @@ const UserChannelAccountList: FC = () => {
 
   const dayEnable = systemSetting?.find(x => x.id === 35)?.enabled ?? false;
   const monthEnable = systemSetting?.find(x => x.id === 45)?.enabled ?? false;
+  const dayCountEnable = systemSetting?.find(x => x.id === 55)?.enabled ?? false;
+  const monthCountEnable = systemSetting?.find(x => x.id === 56)?.enabled ?? false;
 
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -223,6 +225,8 @@ const UserChannelAccountList: FC = () => {
     isPaufen,
     dayEnable,
     monthEnable,
+    dayCountEnable,
+    monthCountEnable,
     getChannelStatusText,
     getChannelTypeText,
     showUpdateModal,

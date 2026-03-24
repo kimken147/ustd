@@ -4,7 +4,8 @@ import { Button, Space } from 'antd';
 import numeral from 'numeral';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
-export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.monthCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -47,7 +48,8 @@ export function createMonthlyReceiveAmountAndCountColumn(deps: ColumnDependencie
   };
 }
 
-export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.monthCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -90,7 +92,8 @@ export function createMonthlyPayoutAmountAndCountColumn(deps: ColumnDependencies
   };
 }
 
-export function createMonthlyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.monthCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -141,7 +144,8 @@ export function createMonthlyReceiveCountLimitColumn(deps: ColumnDependencies): 
   };
 }
 
-export function createMonthlyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createMonthlyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.monthCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {

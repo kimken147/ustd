@@ -4,7 +4,8 @@ import { Button, Space } from 'antd';
 import numeral from 'numeral';
 import type { ColumnDependencies, UserChannelColumn } from './types';
 
-export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.dayCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -47,7 +48,8 @@ export function createDailyReceiveAmountAndCountColumn(deps: ColumnDependencies)
   };
 }
 
-export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.dayCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -90,7 +92,8 @@ export function createDailyPayoutAmountAndCountColumn(deps: ColumnDependencies):
   };
 }
 
-export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.dayCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {
@@ -141,7 +144,8 @@ export function createDailyReceiveCountLimitColumn(deps: ColumnDependencies): Us
   };
 }
 
-export function createDailyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn {
+export function createDailyPayoutCountLimitColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  if (!deps.dayCountEnable) return null;
   const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
 
   return {

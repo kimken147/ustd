@@ -12,6 +12,8 @@ export interface ColumnDependencies {
   isPaufen: boolean;
   dayEnable: boolean;
   monthEnable: boolean;
+  dayCountEnable: boolean;
+  monthCountEnable: boolean;
   getChannelStatusText: (status: number) => string;
   getChannelTypeText: (type: number) => string;
   showUpdateModal: (options: any) => void;

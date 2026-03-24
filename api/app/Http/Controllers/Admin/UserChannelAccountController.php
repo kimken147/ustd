@@ -102,6 +102,12 @@ class UserChannelAccountController extends Controller
         );
         $monthlyLimitvalue = $featureToggleRepository->valueOf($monthlyLimitId);
 
+        $dailyCountId = FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT;
+        $dailyCountEnabled = $featureToggleRepository->enabled($dailyCountId);
+
+        $monthlyCountId = FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT;
+        $monthlyCountEnabled = $featureToggleRepository->enabled($monthlyCountId);
+
         $perPage = $request->input("per_page", 20);
         $data = !empty($request->no_paginate)
             ? $userChannelAccounts->get()
@@ -112,12 +118,16 @@ class UserChannelAccountController extends Controller
             $dailyLimitEnabled,
             $dailyLimitvalue,
             $monthlyLimitEnabled,
-            $monthlyLimitvalue
+            $monthlyLimitvalue,
+            $dailyCountEnabled,
+            $monthlyCountEnabled
         ) {
             $value->user_channel_account_daily_limit_enabled = $dailyLimitEnabled;
             $value->user_channel_account_daily_limit_value = $dailyLimitvalue;
             $value->user_channel_account_monthly_limit_enabled = $monthlyLimitEnabled;
             $value->user_channel_account_monthly_limit_value = $monthlyLimitvalue;
+            $value->user_channel_account_daily_count_enabled = $dailyCountEnabled;
+            $value->user_channel_account_monthly_count_enabled = $monthlyCountEnabled;
             return $value;
         });
 
@@ -130,6 +140,8 @@ class UserChannelAccountController extends Controller
                 "user_channel_account_daily_limit_value" => $dailyLimitvalue,
                 "user_channel_account_monthly_limit_enabled" => $monthlyLimitEnabled,
                 "user_channel_account_monthly_limit_value" => $monthlyLimitvalue,
+                "user_channel_account_daily_count_enabled" => $dailyCountEnabled,
+                "user_channel_account_monthly_count_enabled" => $monthlyCountEnabled,
                 "record_user_channeL_account_balance" => $featureToggleRepository->enabled(
                     FeatureToggle::RECORD_USER_CHANNEL_ACCOUNT_BALANCE
                 ),
