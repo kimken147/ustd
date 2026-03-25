@@ -19,6 +19,8 @@
     "afterBalance": "Est. After Transfer",
     "selectedCount": "Selected",
     "selectedTotal": "Total",
+    "energy": "Energy",
+    "bandwidth": "Bandwidth",
     "noPrivateKey": "No Key",
     "masterPrefix": "Master",
     "childPrefix": "Child"

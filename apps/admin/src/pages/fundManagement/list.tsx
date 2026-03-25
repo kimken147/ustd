@@ -30,6 +30,10 @@ interface AccountRecord {
   has_private_key?: boolean;
   onchain_usdt_balance?: string;
   onchain_native_balance?: string;
+  onchain_energy_available?: number | null;
+  onchain_energy_limit?: number | null;
+  onchain_bandwidth_available?: number | null;
+  onchain_bandwidth_limit?: number | null;
   detail?: {
     chain_network?: string;
     [key: string]: any;
@@ -214,6 +218,37 @@ const FundManagementBatchTransfer: FC = () => {
       dataIndex: 'onchain_native_balance',
       width: 130,
       render: (v: string) => numeral(v).format('0,0.000000'),
+    },
+    {
+      title: t('fields.energy'),
+      dataIndex: 'onchain_energy_available',
+      width: 150,
+      render: (v: number | null, record: AccountRecord) => {
+        const network = record.detail?.chain_network;
+        if (network !== 'trc20' || v == null) return '-';
+        const limit = record.onchain_energy_limit ?? 0;
+        const isLow = v < 65000;
+        return (
+          <span style={isLow ? { color: '#ff4d4f' } : undefined}>
+            {v.toLocaleString()} / {limit.toLocaleString()}
+          </span>
+        );
+      },
+    },
+    {
+      title: t('fields.bandwidth'),
+      dataIndex: 'onchain_bandwidth_available',
+      width: 150,
+      render: (v: number | null, record: AccountRecord) => {
+        const network = record.detail?.chain_network;
+        if (network !== 'trc20' || v == null) return '-';
+        const limit = record.onchain_bandwidth_limit ?? 0;
+        return (
+          <span>
+            {v.toLocaleString()} / {limit.toLocaleString()}
+          </span>
+        );
+      },
     },
     {
       title: t('fields.chainNetwork'),

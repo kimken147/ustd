@@ -202,6 +202,20 @@ const FundCreate: FC = () => {
                                                                 <span style={isNative ? { fontWeight: 'bold' } : undefined}>
                                                                     Gas：{selectedUserChannel.onchain_native_balance ?? '-'}
                                                                 </span>
+                                                                {selectedUserChannel.onchain_energy_available != null && (
+                                                                    <span style={
+                                                                        !isNative && (selectedUserChannel.onchain_energy_available ?? 0) < 65000
+                                                                            ? { color: '#ff4d4f' }
+                                                                            : undefined
+                                                                    }>
+                                                                        Energy：{(selectedUserChannel.onchain_energy_available ?? 0).toLocaleString()} / {(selectedUserChannel.onchain_energy_limit ?? 0).toLocaleString()}
+                                                                    </span>
+                                                                )}
+                                                                {selectedUserChannel.onchain_bandwidth_available != null && (
+                                                                    <span>
+                                                                        Bandwidth：{(selectedUserChannel.onchain_bandwidth_available ?? 0).toLocaleString()} / {(selectedUserChannel.onchain_bandwidth_limit ?? 0).toLocaleString()}
+                                                                    </span>
+                                                                )}
                                                             </Space>
                                                         </Col>
                                                     </Row>
