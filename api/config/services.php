@@ -45,6 +45,15 @@ return [
         'min_gas_transfer_amount' => env('TRONGRID_MIN_GAS_TRANSFER', '1'),
     ],
 
+    'energy_rental' => [
+        'provider'       => env('ENERGY_RENTAL_PROVIDER', ''),
+        'netts' => [
+            'api_key'        => env('NETTS_API_KEY', ''),
+            'whitelisted_ip' => env('NETTS_WHITELISTED_IP', ''),
+            'base_url'       => env('NETTS_BASE_URL', 'https://netts.io'),
+        ],
+    ],
+
     'ethereum' => [
         'rpc_url'         => env('ETHEREUM_RPC_URL', 'https://eth-mainnet.g.alchemy.com/v2'),
         'rpc_api_key'     => env('ETHEREUM_RPC_API_KEY', ''),

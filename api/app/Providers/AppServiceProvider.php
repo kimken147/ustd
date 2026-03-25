@@ -31,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('evm.adapter.erc20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('ethereum'));
         $this->app->singleton('evm.adapter.bep20', fn () => new \App\Services\Crypto\Adapters\EvmAdapter('bsc'));
+
+        $this->app->singleton(
+            \App\Services\Crypto\EnergyRental\EnergyRentalProviderInterface::class,
+            fn () => \App\Services\Crypto\EnergyRental\EnergyRentalFactory::make()
+        );
     }
 
     /**
