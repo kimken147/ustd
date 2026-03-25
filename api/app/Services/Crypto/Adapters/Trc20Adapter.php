@@ -388,11 +388,9 @@ class Trc20Adapter implements ChainAdapterInterface
     }
 
     /**
-     * 取得帳號可用的 Bandwidth
-     *
-     * @return int 可用 bandwidth 點數
+     * 取得帳號鏈上資源（Energy / Bandwidth）
      */
-    public function getAvailableBandwidth(string $address): int
+    public function getAccountResources(string $address): ?array
     {
         $response = $this->buildHttpClient()
             ->post($this->getBaseUrl() . '/wallet/getaccountresource', [
@@ -401,22 +399,41 @@ class Trc20Adapter implements ChainAdapterInterface
             ]);
 
         if (!$response->successful()) {
-            return 0;
+            return null;
         }
 
         $data = $response->json();
 
-        // 免費 bandwidth
+        // Bandwidth
         $freeLimit = (int) ($data['freeNetLimit'] ?? 600);
         $freeUsed = (int) ($data['freeNetUsed'] ?? 0);
-        $freeAvailable = max(0, $freeLimit - $freeUsed);
-
-        // 質押 bandwidth
         $netLimit = (int) ($data['NetLimit'] ?? 0);
         $netUsed = (int) ($data['NetUsed'] ?? 0);
-        $stakedAvailable = max(0, $netLimit - $netUsed);
+        $bandwidthAvailable = max(0, $freeLimit - $freeUsed) + max(0, $netLimit - $netUsed);
+        $bandwidthLimit = $freeLimit + $netLimit;
 
-        return $freeAvailable + $stakedAvailable;
+        // Energy
+        $energyLimit = (int) ($data['EnergyLimit'] ?? 0);
+        $energyUsed = (int) ($data['EnergyUsed'] ?? 0);
+        $energyAvailable = max(0, $energyLimit - $energyUsed);
+
+        return [
+            'energy_available' => $energyAvailable,
+            'energy_limit' => $energyLimit,
+            'bandwidth_available' => $bandwidthAvailable,
+            'bandwidth_limit' => $bandwidthLimit,
+        ];
+    }
+
+    /**
+     * 取得帳號可用的 Bandwidth（向後相容 wrapper）
+     *
+     * @return int 可用 bandwidth 點數
+     */
+    public function getAvailableBandwidth(string $address): int
+    {
+        $resources = $this->getAccountResources($address);
+        return $resources['bandwidth_available'] ?? 0;
     }
 
     /**

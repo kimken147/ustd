@@ -72,4 +72,12 @@ interface ChainAdapterInterface
         string $amount,
         string $privateKey
     ): string;
+
+    /**
+     * 取得帳號鏈上資源（Energy / Bandwidth）
+     * 僅 TRC-20 支援，其他鏈回傳 null
+     *
+     * @return array{energy_available: int, energy_limit: int, bandwidth_available: int, bandwidth_limit: int}|null
+     */
+    public function getAccountResources(string $address): ?array;
 }

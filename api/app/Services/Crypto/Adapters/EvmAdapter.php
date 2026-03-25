@@ -364,6 +364,11 @@ class EvmAdapter implements ChainAdapterInterface
         );
     }
 
+    public function getAccountResources(string $address): ?array
+    {
+        return null;
+    }
+
     // ─── RPC Helpers ────────────────────────────────────────────────────
 
     /**
