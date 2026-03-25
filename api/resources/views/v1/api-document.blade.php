@@ -490,7 +490,7 @@
 {{-- ══════════════ 3. 代付下单 ══════════════ --}}
 <h2 id="withdraw-create" data-i18n="withdrawCreateTitle">3. 代付下单接口</h2>
 
-<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/payouts</span></p>
+<p><span class="badge badge-post">POST</span> <span class="endpoint-path">/api/v1/merchant-api/agency-payouts</span></p>
 
 <p data-i18n="withdrawCreateDesc">商户通过此接口发起代付（提款）请求。</p>
 
