@@ -9,6 +9,8 @@ use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
+use App\Services\Crypto\Adapters\Trc20Adapter;
+use App\Services\Crypto\EnergyRental\EnergyRentalProviderInterface;
 use App\Jobs\ConfirmUsdtWithdraw;
 use App\Services\Crypto\Exceptions\InsufficientBalanceException;
 use App\Services\Crypto\Exceptions\TransactionBroadcastException;
@@ -16,6 +18,10 @@ use Illuminate\Support\Facades\Log;
 
 class UsdtWithdrawHandler
 {
+    public function __construct(
+        private readonly EnergyRentalProviderInterface $energyProvider,
+    ) {}
+
     public function handle(Transaction $transaction): void
     {
         // Idempotency: skip if already broadcast
@@ -49,11 +55,18 @@ class UsdtWithdrawHandler
         $gasTokenName = match ($chainNetwork) {
             'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
         };
+
+        $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
+        $txAmount = $transaction->floating_amount ?? $transaction->amount;
+
+        // 代付 + TRC-20 + 能量租賃可用 → 租賃能量（失敗則中斷代付）
+        if ($this->shouldRentEnergy($transaction, $chainNetwork)) {
+            $this->delegateEnergy($transaction, $adapter, $fromAddress, $toAddress, $txAmount);
+        }
+
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
         // 動態預估所需 Gas（TRC-20 用 Energy 預估，其他用固定最低值）
-        $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
-        $txAmount = $transaction->floating_amount ?? $transaction->amount;
         $requiredGas = match ($chainNetwork) {
             'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
                 ? $adapter->estimateTransferFee($fromAddress, $toAddress ?: $fromAddress, $txAmount)
@@ -70,62 +83,14 @@ class UsdtWithdrawHandler
         $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
 
         if (bccomp($nativeBalance, $requiredWithBuffer, 6) < 0) {
-            // 計算差額
-            $deficit = bcsub($requiredWithBuffer, $nativeBalance, 6);
-
-            // 嘗試從母地址補充 Gas
-            if ($account->address_type === UserChannelAccount::ADDRESS_TYPE_CHILD && $account->parent_account_id) {
-                $parentAccount = UserChannelAccount::find($account->parent_account_id);
-                $parentKey = $parentAccount ? data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY) : null;
-
-                if ($parentAccount && $parentKey) {
-                    try {
-                        $decryptedParentKey = decrypt($parentKey);
-                        $gasTxHash = $adapter->sendNativeToken(
-                            $parentAccount->account,
-                            $fromAddress,
-                            $deficit,
-                            $decryptedParentKey
-                        );
-                        $decryptedParentKey = null;
-
-                        $this->log($transaction, "已從母地址補充 {$deficit} {$gasTokenName} (預估需要: {$requiredGas}, 現有: {$nativeBalance}, tx: {$gasTxHash})", [
-                            'gas_tx_hash' => $gasTxHash,
-                            'parent_account_id' => $parentAccount->id,
-                            'estimated_fee' => $requiredGas,
-                            'deficit' => $deficit,
-                        ]);
-
-                        // 等待 Gas 到帳後再繼續出款
-                        sleep(5);
-                    } catch (\Throwable $e) {
-                        $this->log($transaction, "從母地址補充 {$gasTokenName} 失敗: {$e->getMessage()}", [
-                            'parent_account_id' => $parentAccount->id,
-                            'error' => $e->getMessage(),
-                        ], 'error');
-                        throw new InsufficientBalanceException(
-                            "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer}, gas top-up from parent failed"
-                        );
-                    }
-                } else {
-                    $this->log($transaction, "{$gasTokenName} 餘額不足且無法從母地址補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
-                        'native_balance' => $nativeBalance,
-                        'required'       => $requiredWithBuffer,
-                    ], 'error');
-                    throw new InsufficientBalanceException(
-                        "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer}, no parent account available"
-                    );
-                }
-            } else {
-                $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
-                    'native_balance' => $nativeBalance,
-                    'required'       => $requiredWithBuffer,
-                    'gas_token'      => $gasTokenName,
-                ], 'error');
-                throw new InsufficientBalanceException(
-                    "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer} for gas fees"
-                );
-            }
+            $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas，請手動補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
+                'native_balance' => $nativeBalance,
+                'required'       => $requiredWithBuffer,
+                'gas_token'      => $gasTokenName,
+            ], 'error');
+            throw new InsufficientBalanceException(
+                "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer} for gas fees"
+            );
         }
 
         if (empty($toAddress)) {
@@ -167,6 +132,44 @@ class UsdtWithdrawHandler
         } finally {
             $privateKey = null;
         }
+    }
+
+    /**
+     * 判斷是否應租賃能量
+     */
+    private function shouldRentEnergy(Transaction $transaction, string $chainNetwork): bool
+    {
+        return $chainNetwork === 'trc20'
+            && $transaction->sub_type === Transaction::SUB_TYPE_AGENCY_WITHDRAW
+            && $this->energyProvider->isAvailable();
+    }
+
+    /**
+     * 租賃能量（失敗則中斷代付流程）
+     */
+    private function delegateEnergy(
+        Transaction $transaction,
+        ChainAdapterInterface $adapter,
+        string $fromAddress,
+        string $toAddress,
+        string $txAmount,
+    ): void {
+        // 查詢收款地址的 USDT 餘額，決定所需能量
+        $receiverUsdtBalance = $adapter->getTokenBalance($toAddress);
+        $energyNeeded = bccomp($receiverUsdtBalance, '0', 6) > 0 ? 65000 : 131000;
+
+        $result = $this->energyProvider->delegateEnergy($fromAddress, $energyNeeded);
+
+        $this->log($transaction, "能量租賃成功 [{$this->energyProvider->name()}]: {$energyNeeded} energy, 花費 {$result['paid_trx']} TRX (order: {$result['order_id']})", [
+            'energy_provider' => $this->energyProvider->name(),
+            'energy_needed'   => $energyNeeded,
+            'paid_trx'        => $result['paid_trx'],
+            'order_id'        => $result['order_id'],
+            'receiver_usdt'   => $receiverUsdtBalance,
+        ]);
+
+        // 等待能量委託到帳（Netts 通常 0.5-2 秒）
+        sleep(3);
     }
 
     /**
