@@ -42,7 +42,7 @@ class BatchTransferUsdt implements ShouldQueue
             'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
         };
 
-        // 動態預估所需 Gas（與代付 UsdtWithdrawHandler 一致）
+        // 動態預估所需 Gas
         $requiredGas = match ($chainNetwork) {
             'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
                 ? $adapter->estimateTransferFee($source->account, $targetAddress ?: $source->account, $transaction->amount)
@@ -52,44 +52,12 @@ class BatchTransferUsdt implements ShouldQueue
             default => '0',
         };
 
-        // 加 buffer：TRC-20 多 5 TRX，其他多 10%
-        $buffer = match ($chainNetwork) {
-            'trc20' => '5',
-            default => bcmul($requiredGas, '0.1', 6),
-        };
-        $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
-
-        // 檢查 gas 餘額
+        // 檢查 gas 餘額，不足直接失敗
         $nativeBalance = $adapter->getNativeBalance($source->account);
 
-        if (bccomp($nativeBalance, $requiredWithBuffer, 6) < 0) {
-            // 計算差額（只補不足的部分）
-            $deficit = bcsub($requiredWithBuffer, $nativeBalance, 6);
-
-            if ($source->parent_account_id) {
-                $parent = $source->parentAccount;
-                $parentKey = decrypt(data_get($parent->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
-
-                try {
-                    $adapter->sendNativeToken($parent->account, $source->account, $deficit, $parentKey);
-                    $parentKey = null;
-
-                    $this->log($transaction, "已從母地址補充 {$deficit} {$gasTokenName} (預估需要: {$requiredGas}, 現有: {$nativeBalance}, parent: {$parent->account})");
-
-                    // 等待 gas 到帳（與代付邏輯一致）
-                    sleep(5);
-
-                } catch (\Throwable $e) {
-                    $parentKey = null;
-                    // 不呼叫 markFailed — 讓 retry 有機會重試
-                    $this->log($transaction, "補充 {$gasTokenName} 失敗: {$e->getMessage()}", 'error');
-                    throw $e;
-                }
-            } else {
-                // 無母地址可補充，直接失敗（不可重試解決）
-                $this->markFailed($transaction, "{$gasTokenName} 不足且無母地址可補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})");
-                throw new \RuntimeException("Gas 不足: {$source->account}");
-            }
+        if (bccomp($nativeBalance, $requiredGas, 6) < 0) {
+            $this->markFailed($transaction, "{$gasTokenName} / Energy 不足，請手動補充 (餘額: {$nativeBalance}, 需要: {$requiredGas})");
+            return;
         }
 
         // 執行 USDT 轉帳
@@ -111,12 +79,8 @@ class BatchTransferUsdt implements ShouldQueue
             ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
 
             $this->log($transaction, "交易已廣播，等待鏈上確認 (tx_hash: {$chainTx->txHash})");
-
-            // 歸集剩餘原生代幣到目標地址
-            $this->transferRemainingGas($adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $transaction);
         } catch (\Throwable $e) {
             $privateKey = null;
-            // 不呼叫 markFailed — 讓 retry 有機會重試
             $this->log($transaction, "USDT 轉帳失敗: {$e->getMessage()}", 'error');
             throw $e;
         }
@@ -214,69 +178,5 @@ class BatchTransferUsdt implements ShouldQueue
             'user_id' => 0,
             'note' => "[批量轉帳] {$message}",
         ]);
-    }
-
-    private function transferRemainingGas(
-        $adapter,
-        UserChannelAccount $source,
-        string $targetAddress,
-        string $chainNetwork,
-        string $gasTokenName,
-        Transaction $transaction,
-    ): void {
-        try {
-            // 查詢剩餘原生代幣餘額
-            $remainingBalance = $adapter->getNativeBalance($source->account);
-
-            // 計算原生轉帳手續費
-            $transferFee = match ($chainNetwork) {
-                'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
-                    ? $adapter->estimateNativeTransferFee($source->account)
-                    : '1',
-                default => $this->estimateEvmNativeTransferFee($adapter, $chainNetwork),
-            };
-
-            // 可轉出金額 = 餘額 - 手續費
-            $transferable = bcsub($remainingBalance, $transferFee, 6);
-
-            // 取得最低轉帳門檻
-            $minAmount = match ($chainNetwork) {
-                'trc20' => config('services.trongrid.min_gas_transfer_amount', '1'),
-                'erc20' => config('services.ethereum.min_gas_transfer_amount', '0.001'),
-                'bep20' => config('services.bsc.min_gas_transfer_amount', '0.001'),
-                default => '0',
-            };
-
-            if (bccomp($transferable, $minAmount, 6) <= 0) {
-                $this->log($transaction, "剩餘 {$gasTokenName} 不足轉出門檻 (餘額: {$remainingBalance}, 手續費: {$transferFee}, 門檻: {$minAmount})");
-                return;
-            }
-
-            // 執行原生代幣轉帳
-            $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
-            $gasTxHash = $adapter->sendNativeToken($source->account, $targetAddress, $transferable, $privateKey);
-            $privateKey = null;
-
-            $this->log($transaction, "已歸集 {$transferable} {$gasTokenName} 到目標地址 (tx_hash: {$gasTxHash})");
-        } catch (\Throwable $e) {
-            // Gas 轉帳失敗不影響 USDT 轉帳結果
-            $this->log($transaction, "歸集 {$gasTokenName} 失敗: {$e->getMessage()}", 'warning');
-        }
-    }
-
-    private function estimateEvmNativeTransferFee($adapter, string $chainNetwork): string
-    {
-        $configKey = $chainNetwork === 'erc20' ? 'ethereum' : 'bsc';
-        $gasLimit = config("services.{$configKey}.gas_limit_native_transfer", 21000);
-
-        // 取得當前 gas price
-        $gasPrice = $adapter->getGasPrice();
-
-        // fee = gasLimit × gasPrice (in wei), convert to ETH/BNB
-        $feeWei = bcmul((string) $gasLimit, $gasPrice, 0);
-        $fee = bcdiv($feeWei, bcpow('10', '18'), 18);
-
-        // +10% buffer
-        return bcmul($fee, '1.1', 18);
     }
 }
