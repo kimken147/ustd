@@ -136,11 +136,7 @@ class ConfirmUsdtWithdraw implements ShouldQueue
                     continue;
                 }
 
-                $account->update([
-                    'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-                    'onchain_native_balance' => $adapter->getNativeBalance($account->account),
-                    'onchain_synced_at' => now(),
-                ]);
+                $account->syncOnchainData($adapter);
             } catch (\Throwable $e) {
                 Log::warning('ConfirmUsdtWithdraw: 同步帳號餘額失敗', [
                     'transaction_id' => $transaction->id,
@@ -179,11 +175,7 @@ class ConfirmUsdtWithdraw implements ShouldQueue
             $util->updatePaymentCount($receiverAccount->id);
 
             // 同步鏈上餘額
-            $receiverAccount->update([
-                'onchain_usdt_balance' => $adapter->getTokenBalance($receiverAccount->account),
-                'onchain_native_balance' => $adapter->getNativeBalance($receiverAccount->account),
-                'onchain_synced_at' => now(),
-            ]);
+            $receiverAccount->syncOnchainData($adapter);
         } catch (\Throwable $e) {
             Log::warning('ConfirmUsdtWithdraw: 更新接收帳號餘額失敗', [
                 'transaction_id' => $transaction->id,

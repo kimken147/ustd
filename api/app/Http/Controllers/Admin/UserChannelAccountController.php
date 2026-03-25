@@ -791,11 +791,7 @@ class UserChannelAccountController extends Controller
             return response()->json(['message' => __('common.Unsupported chain network')], Response::HTTP_BAD_REQUEST);
         }
 
-        $account->update([
-            'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-            'onchain_native_balance' => $adapter->getNativeBalance($account->account),
-            'onchain_synced_at'    => now(),
-        ]);
+        $account->syncOnchainData($adapter);
 
         return \App\Http\Resources\UserChannelAccount::make($account->refresh());
     }
@@ -826,11 +822,7 @@ class UserChannelAccountController extends Controller
                     continue;
                 }
 
-                $account->update([
-                    'onchain_usdt_balance' => $adapter->getTokenBalance($account->account),
-                    'onchain_native_balance' => $adapter->getNativeBalance($account->account),
-                    'onchain_synced_at'    => now(),
-                ]);
+                $account->syncOnchainData($adapter);
 
                 $synced++;
             } catch (\Exception $e) {

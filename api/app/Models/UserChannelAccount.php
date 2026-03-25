@@ -8,6 +8,7 @@ use App\Models\FeatureToggle;
 use App\Utils\BCMathUtil;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Support\Facades\DB;
+use App\Services\Crypto\Adapters\ChainAdapterInterface;
 
 /**
  * @property int user_id
@@ -227,6 +228,25 @@ class UserChannelAccount extends Model
     public function audits()
     {
         return $this->hasMany(UserChannelAccountAudit::class);
+    }
+
+    /**
+     * 同步鏈上餘額和資源到帳號
+     */
+    public function syncOnchainData(ChainAdapterInterface $adapter): void
+    {
+        $this->onchain_usdt_balance = $adapter->getTokenBalance($this->account);
+        $this->onchain_native_balance = $adapter->getNativeBalance($this->account);
+
+        if ($resources = $adapter->getAccountResources($this->account)) {
+            $this->onchain_energy_available = $resources['energy_available'];
+            $this->onchain_energy_limit = $resources['energy_limit'];
+            $this->onchain_bandwidth_available = $resources['bandwidth_available'];
+            $this->onchain_bandwidth_limit = $resources['bandwidth_limit'];
+        }
+
+        $this->onchain_synced_at = now();
+        $this->save();
     }
 
     public function getRestBalance($type = 'deposit')
