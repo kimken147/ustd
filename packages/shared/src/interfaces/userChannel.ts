@@ -118,6 +118,10 @@ export interface UserChannel extends BaseRecord {
     onchain_usdt_balance?: string;
     onchain_native_balance?: string;
     onchain_synced_at?: string;
+    onchain_energy_available?: number | null;
+    onchain_energy_limit?: number | null;
+    onchain_bandwidth_available?: number | null;
+    onchain_bandwidth_limit?: number | null;
     // USDT 子地址相關欄位
     address_type?: 'master' | 'child';
     parent_account_id?: number | null;

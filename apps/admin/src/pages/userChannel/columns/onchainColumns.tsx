@@ -76,3 +76,42 @@ export function createOnchainTrxColumn(deps: ColumnDependencies): UserChannelCol
     },
   };
 }
+
+export function createOnchainEnergyColumn(_deps: ColumnDependencies): UserChannelColumn {
+  return {
+    title: 'Energy',
+    dataIndex: 'onchain_energy_available',
+    render(value: number | null, record) {
+      if (!isUsdtChannel(record.channel_code)) return '-';
+      const network = record.chain_network || record.detail?.chain_network;
+      if (network !== 'trc20') return '-';
+      if (value == null) return '-';
+      const limit = record.onchain_energy_limit ?? 0;
+      const isLow = value < 65000;
+      return (
+        <span style={isLow ? { color: '#ff4d4f' } : undefined}>
+          {value.toLocaleString()} / {limit.toLocaleString()}
+        </span>
+      );
+    },
+  };
+}
+
+export function createOnchainBandwidthColumn(_deps: ColumnDependencies): UserChannelColumn {
+  return {
+    title: 'Bandwidth',
+    dataIndex: 'onchain_bandwidth_available',
+    render(value: number | null, record) {
+      if (!isUsdtChannel(record.channel_code)) return '-';
+      const network = record.chain_network || record.detail?.chain_network;
+      if (network !== 'trc20') return '-';
+      if (value == null) return '-';
+      const limit = record.onchain_bandwidth_limit ?? 0;
+      return (
+        <span>
+          {value.toLocaleString()} / {limit.toLocaleString()}
+        </span>
+      );
+    },
+  };
+}

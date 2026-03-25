@@ -12,7 +12,7 @@ import { createParentAccountColumn } from './parentAccountColumn';
 import { createChannelColumn } from './bankColumns';
 import { createNoteColumn, createAccountNumberColumn } from './infoColumns';
 import { createBalanceColumn, createBalanceLimitColumn } from './balanceColumns';
-import { createOnchainUsdtColumn, createOnchainTrxColumn, createOnchainSyncedAtColumn } from './onchainColumns';
+import { createOnchainUsdtColumn, createOnchainTrxColumn, createOnchainSyncedAtColumn, createOnchainEnergyColumn, createOnchainBandwidthColumn } from './onchainColumns';
 import { createSingleLimitColumn } from './singleLimitColumn';
 import {
   createDailyStatusColumn,
@@ -54,6 +54,8 @@ export function useColumns(deps: ColumnDependencies): TableColumnProps<UserChann
     createOnchainUsdtColumn(deps),
     createOnchainTrxColumn(deps),
     createOnchainSyncedAtColumn(deps),
+    createOnchainEnergyColumn(deps),
+    createOnchainBandwidthColumn(deps),
     createSingleLimitColumn(deps),
     // 額度 group
     createDailyStatusColumn(deps),
