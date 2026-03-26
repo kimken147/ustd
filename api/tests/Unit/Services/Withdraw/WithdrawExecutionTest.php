@@ -19,6 +19,7 @@ use App\Services\Withdraw\WithdrawService;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
+use App\Utils\NotificationUtil;
 use App\Utils\SignatureCalculator;
 use App\Utils\TransactionFactory;
 use App\Utils\WalletUtil;
@@ -26,6 +27,7 @@ use App\Utils\WhitelistedIpManager;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Mockery;
 use ReflectionMethod;
 use Tests\TestCase;
@@ -42,6 +44,7 @@ class WithdrawExecutionTest extends TestCase
     private $walletUtil;
     private $whitelistedIpManager;
     private $thirdChannelDispatcher;
+    private $notificationUtil;
 
     protected function setUp(): void
     {
@@ -55,6 +58,7 @@ class WithdrawExecutionTest extends TestCase
         $this->walletUtil = Mockery::mock(WalletUtil::class);
         $this->whitelistedIpManager = Mockery::mock(WhitelistedIpManager::class);
         $this->thirdChannelDispatcher = Mockery::mock(ThirdChannelDispatcher::class);
+        $this->notificationUtil = Mockery::mock(NotificationUtil::class);
     }
 
     protected function tearDown(): void
@@ -81,6 +85,7 @@ class WithdrawExecutionTest extends TestCase
             $this->whitelistedIpManager,
             $this->bankCardTO,
             $this->thirdChannelDispatcher,
+            $this->notificationUtil,
         ) extends BaseWithdrawService {
             protected function getSubType(): string
             {
@@ -125,6 +130,7 @@ class WithdrawExecutionTest extends TestCase
             $this->whitelistedIpManager,
             $this->bankCardTO,
             $this->thirdChannelDispatcher,
+            $this->notificationUtil,
         );
     }
 
@@ -139,6 +145,7 @@ class WithdrawExecutionTest extends TestCase
             $this->whitelistedIpManager,
             $this->bankCardTO,
             $this->thirdChannelDispatcher,
+            $this->notificationUtil,
         );
     }
 
@@ -267,6 +274,9 @@ class WithdrawExecutionTest extends TestCase
 
     public function test_execute_happy_path_creates_transaction_and_withdraws(): void
     {
+        // 防止事件實際廣播
+        Event::fake();
+
         $merchant = $this->createMerchantInDb();
         $wallet = $this->createWalletInDb($merchant->id, ['balance' => '10000.00']);
 
@@ -275,10 +285,17 @@ class WithdrawExecutionTest extends TestCase
         // Feature toggle: no float restriction, no bank mapping
         $this->featureToggleRepo->shouldReceive('enabled')->andReturn(false);
 
-        // ThirdChannelDispatcher returns a real transaction
-        $transaction = new Transaction();
+        // ThirdChannelDispatcher 回傳模擬交易
+        $transaction = Mockery::mock(Transaction::class)->makePartial();
         $transaction->id = 999;
         $transaction->order_number = $context->orderNumber;
+        $transaction->system_order_number = 'SYS123';
+        $transaction->amount = '100.00';
+        $transaction->sub_type = 0;
+        $transaction->to_channel_account = ['bank_name' => '工商银行'];
+        $transaction->created_at = now();
+        $transaction->shouldReceive('load')->with('from')->once()->andReturnSelf();
+        $transaction->from = $merchant;
 
         $this->thirdChannelDispatcher
             ->shouldReceive('dispatch')
@@ -289,6 +306,12 @@ class WithdrawExecutionTest extends TestCase
             ->shouldReceive('withdraw')
             ->once()
             ->with($wallet, '100.00', $context->orderNumber, 'withdraw');
+
+        // 預期觸發 Telegram 通知
+        $this->notificationUtil
+            ->shouldReceive('notifyNewWithdraw')
+            ->once()
+            ->with('SYS123', $merchant->username, '100.00', '工商银行', 0);
 
         $service = $this->makeBaseService();
         $result = $service->execute($context);

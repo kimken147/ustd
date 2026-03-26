@@ -59,6 +59,7 @@ return [
     FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => 'Daily Money-In / Money-Out Transaction Count',
     FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => 'Monthly Money-In / Money-Out Transaction Count',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'Admin Account Allows Login From Multiple Devices',
+    FeatureToggle::NOTIFY_NEW_WITHDRAW                                => 'New Payout Order Notification (Telegram+Web)',
     '笔'                                                               => 'transaction',
     '天'                                                               => 'day',
     '元'                                                               => 'currency unit',

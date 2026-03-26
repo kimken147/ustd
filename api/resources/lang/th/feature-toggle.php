@@ -59,6 +59,7 @@ return [
     FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => 'จำนวนธุรกรรมรับ/จ่ายรายวัน',
     FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => 'จำนวนธุรกรรมรับ/จ่ายรายเดือน',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => 'บัญชีผู้ดูแลระบบอนุญาตการเข้าสู่ระบบจากหลายอุปกรณ์',
+    FeatureToggle::NOTIFY_NEW_WITHDRAW                                => 'แจ้งเตือนคำสั่งจ่ายเงินใหม่ (Telegram+Web)',
     '笔'                                                               => 'รายการ',
     '天'                                                               => 'วัน',
     '元'                                                               => 'หน่วยเงิน',

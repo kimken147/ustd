@@ -14,9 +14,11 @@ use App\Services\Withdraw\DTO\WithdrawContext;
 use App\Services\Withdraw\DTO\WithdrawResult;
 use App\Services\Withdraw\Exceptions\WithdrawValidationException;
 use App\DTOs\TransactionParams;
+use App\Events\NewWithdrawCreated;
 use App\Utils\BankCardTransferObject;
 use App\Utils\BCMathUtil;
 use App\Utils\FloatUtil;
+use App\Utils\NotificationUtil;
 use App\Utils\SignatureCalculator;
 use App\Utils\TransactionFactory;
 use App\Utils\WalletUtil;
@@ -38,6 +40,7 @@ abstract class BaseWithdrawService
         protected readonly WhitelistedIpManager $whitelistedIpManager,
         protected readonly BankCardTransferObject $bankCardTransferObject,
         protected readonly ThirdChannelDispatcher $thirdChannelDispatcher,
+        protected readonly NotificationUtil $notificationUtil,
     ) {}
 
     // ========== Abstract Methods (must be implemented by subclasses) ==========
@@ -144,6 +147,19 @@ abstract class BaseWithdrawService
 
         // 4. Post-processing
         Cache::put('admin_withdraws_added_at', now(), now()->addSeconds(60));
+
+        // 5. 即時通知（WebSocket + Telegram）
+        $transaction->load('from');
+        NewWithdrawCreated::dispatch($transaction);
+
+        $toAccount = $transaction->to_channel_account ?? [];
+        $this->notificationUtil->notifyNewWithdraw(
+            $transaction->system_order_number ?? '',
+            $transaction->from->username ?? '',
+            $transaction->amount,
+            $toAccount['bank_name'] ?? '',
+            $transaction->sub_type
+        );
 
         return new WithdrawResult($transaction);
     }

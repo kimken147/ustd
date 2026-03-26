@@ -59,4 +59,5 @@ return [
     FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '',
     FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '',
+    FeatureToggle::NOTIFY_NEW_WITHDRAW                                => '启用后，新代付单建立时发送 Telegram 群组通知',
 ];

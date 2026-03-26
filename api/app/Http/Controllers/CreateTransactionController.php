@@ -47,6 +47,18 @@ class CreateTransactionController extends Controller
         }
     }
 
+    /**
+     * 供 CashierController 直接渲染已存在的交易
+     */
+    public function renderForCashier(CreateTransactionResult $result): View|RedirectResponse
+    {
+        if (env("APP_ENV") != "local") {
+            URL::forceScheme("https");
+        }
+
+        return $this->renderView($result);
+    }
+
     private function renderView(CreateTransactionResult $result): View|RedirectResponse
     {
         $transaction = $result->transaction;

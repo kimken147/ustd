@@ -42,7 +42,7 @@ const SystemSettingList: FC = () => {
   const agencyPayment = filterData([3, 6, 13, 16, 19, 20, 23, 32, 36, 49, 53, 43]);
   const accounts = filterData([35, 45, 55, 56, 39]);
   const thirdChannel = filterData([48, 49, 50]);
-  const admin = filterData([2, 8, 9, 10, 11, 14, 17, 26, 39, 42, 47, 54]);
+  const admin = filterData([2, 8, 9, 10, 11, 14, 17, 26, 39, 42, 47, 54, 57]);
   const channel = filterData([12, 18, 21, 24, 30, 51]);
 
   return (
