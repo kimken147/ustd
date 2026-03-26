@@ -59,4 +59,5 @@ return [
     FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '',
     FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '',
+    FeatureToggle::NOTIFY_NEW_WITHDRAW                                => 'When enabled, sends Telegram group notification on new payout order creation',
 ];
