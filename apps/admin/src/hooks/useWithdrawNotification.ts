@@ -3,6 +3,8 @@ import { notification } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { createEcho } from 'providers/echo';
 import { useAudioPermission } from './useAudioPermission';
+import { cookie } from 'index';
+import { TOKEN_KEY } from 'authProvider';
 import type Echo from 'laravel-echo';
 import NoticeAudio from 'assets/notice.mp3';
 
@@ -46,20 +48,27 @@ export function useWithdrawNotification() {
   );
 
   useEffect(() => {
+    // 未登入時不建立 WebSocket 連線
+    const token = cookie.get(TOKEN_KEY);
+    if (!token) return;
+
+    let echo: Echo | null = null;
     try {
-      const echo = createEcho();
+      echo = createEcho();
       echoRef.current = echo;
 
       // 使用 dot prefix 因為 broadcastAs() 回傳自定義事件名稱
       echo.private('admin.withdraws').listen('.withdraw.created', handleNewWithdraw);
-
-      return () => {
-        echo.private('admin.withdraws').stopListening('.withdraw.created');
-        echo.disconnect();
-        echoRef.current = null;
-      };
     } catch (error) {
       console.error('WebSocket connection failed:', error);
+      echo?.disconnect();
+      return;
     }
+
+    return () => {
+      echo!.private('admin.withdraws').stopListening('.withdraw.created');
+      echo!.disconnect();
+      echoRef.current = null;
+    };
   }, [handleNewWithdraw]);
 }
