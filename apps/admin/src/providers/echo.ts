@@ -6,7 +6,7 @@ import { TOKEN_KEY } from 'authProvider';
 // Laravel Echo 需要 Pusher 在 window 上
 (window as any).Pusher = Pusher;
 
-export function createEcho(): Echo {
+export function createEcho(): Echo<'reverb'> {
   return new Echo({
     broadcaster: 'reverb',
     key: process.env.REACT_APP_REVERB_KEY,

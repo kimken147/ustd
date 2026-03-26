@@ -6,6 +6,8 @@ import { useAudioPermission } from './useAudioPermission';
 import { cookie } from 'index';
 import { TOKEN_KEY } from 'authProvider';
 import type Echo from 'laravel-echo';
+
+type EchoInstance = Echo<'reverb'>;
 import NoticeAudio from 'assets/notice.mp3';
 
 interface WithdrawEvent {
@@ -23,7 +25,7 @@ interface WithdrawEvent {
 
 export function useWithdrawNotification() {
   const { t } = useTranslation();
-  const echoRef = useRef<Echo | null>(null);
+  const echoRef = useRef<EchoInstance | null>(null);
   const { playAudio } = useAudioPermission(NoticeAudio);
 
   const handleNewWithdraw = useCallback(
@@ -52,7 +54,7 @@ export function useWithdrawNotification() {
     const token = cookie.get(TOKEN_KEY);
     if (!token) return;
 
-    let echo: Echo | null = null;
+    let echo: EchoInstance | null = null;
     try {
       echo = createEcho();
       echoRef.current = echo;
