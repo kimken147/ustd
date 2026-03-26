@@ -43,31 +43,33 @@ class BatchTransferUsdt implements ShouldQueue
             'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
         };
 
-        // 檢查鏈上 USDT 餘額
-        $onchainUsdtBalance = $adapter->getTokenBalance($source->account);
         $nativeBalance = $adapter->getNativeBalance($source->account);
 
-        // USDT > 0：執行 USDT 轉帳
-        if (bccomp($onchainUsdtBalance, '0', 6) > 0) {
+        if ($transaction->currency === Transaction::CURRENCY_USDT) {
+            // USDT 轉帳
+            $onchainUsdtBalance = $adapter->getTokenBalance($source->account);
+
+            if (bccomp($onchainUsdtBalance, '0', 6) <= 0) {
+                $this->markFailed($transaction, "鏈上 USDT 餘額為 0，無法轉帳");
+                return;
+            }
+
             $this->transferUsdt($transaction, $adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $nativeBalance);
-            return;
-        }
+        } else {
+            // 原生幣轉帳（TRX/ETH/BNB）
+            // 有 bandwidth → 手續費由 bandwidth 支付，全部轉出
+            // 沒 bandwidth → 需用原生幣支付手續費，預留 0.4
+            $resources = $adapter->getAccountResources($source->account);
+            $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
+            $trxBuffer = $bandwidthAvailable >= 300 ? '0' : '0.4';
 
-        // USDT = 0 且 TRX > 0：轉出 TRX
-        // 有 bandwidth → 手續費由 bandwidth 支付，全部轉出
-        // 沒 bandwidth → 需用 TRX 支付手續費，預留 0.4 TRX
-        $resources = $adapter->getAccountResources($source->account);
-        $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
-        $trxBuffer = $bandwidthAvailable >= 300 ? '0' : '0.4';
+            if (bccomp($nativeBalance, $trxBuffer, 6) <= 0) {
+                $this->markFailed($transaction, "{$gasTokenName} 不足，跳過轉帳 ({$gasTokenName}: {$nativeBalance})");
+                return;
+            }
 
-        if (bccomp($nativeBalance, $trxBuffer, 6) > 0) {
             $this->transferNativeToken($transaction, $adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $nativeBalance, $trxBuffer);
-            return;
         }
-
-        // USDT = 0 且 TRX 不足：跳過
-        $this->log($transaction, "USDT 餘額為 0 且 {$gasTokenName} 不足，跳過轉帳 (USDT: {$onchainUsdtBalance}, {$gasTokenName}: {$nativeBalance})");
-        $transaction->update(['status' => Transaction::STATUS_FAILED]);
     }
 
     /**
@@ -145,6 +147,12 @@ class BatchTransferUsdt implements ShouldQueue
         string $trxBuffer,
     ): void {
         $transferAmount = bcsub($nativeBalance, $trxBuffer, 6);
+
+        // 更新交易金額為實際轉帳金額（扣除 buffer 後）
+        $transaction->update([
+            'amount' => $transferAmount,
+            'floating_amount' => $transferAmount,
+        ]);
 
         $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
 
