@@ -12,6 +12,7 @@ use App\Notifications\AdminResetPassword;
 use App\Notifications\AdminResetSecret;
 use App\Notifications\AdminUpdateBalance;
 use App\Notifications\BusyPayingBlocked;
+use App\Notifications\NewWithdrawCreated as NewWithdrawCreatedNotification;
 use App\Notifications\UserChannelAccountTooManyPayingTimeout;
 use App\Repository\FeatureToggleRepository;
 use Illuminate\Support\Facades\Notification;
@@ -175,5 +176,18 @@ class NotificationUtil
 
         Notification::route('telegram', config('services.telegram-bot-api.system-admin-group-id'))
             ->notify(new \App\Notifications\LoginThrottle($tryingUsername, $ipv4));
+    }
+
+    public function notifyNewWithdraw(string $systemOrderNumber, string $merchantName, string $amount, string $bankName, int $subType)
+    {
+        if (
+            !$this->featureToggleRepository->enabled(FeatureToggle::NOTIFY_NEW_WITHDRAW)
+            || !$this->configSet()
+        ) {
+            return;
+        }
+
+        Notification::route('telegram', config('services.telegram-bot-api.system-admin-group-id'))
+            ->notify(new NewWithdrawCreatedNotification($systemOrderNumber, $merchantName, $amount, $bankName, $subType));
     }
 }

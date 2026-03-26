@@ -68,6 +68,7 @@ class FeatureToggle extends Model
     const MULTI_DEVICES_LOGIN = 54; //管端帐号允许多设备登录
     const USER_CHANNEL_ACCOUNT_DAILY_COUNT = 55; //当日各收/出款号笔数
     const USER_CHANNEL_ACCOUNT_MONTHLY_COUNT = 56; //当月各收/出款号笔数
+    const NOTIFY_NEW_WITHDRAW = 57; //新代付單通知(Telegram+Web)
 
     const INPUT_TYPE_TEXT = 'text';
     const INPUT_TYPE_BOOLEAN = 'boolean';

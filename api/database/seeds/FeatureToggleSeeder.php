@@ -485,6 +485,15 @@ class FeatureToggleSeeder extends Seeder
                 'value' => '1'
             ]
         ],
+        FeatureToggle::NOTIFY_NEW_WITHDRAW => [
+            'hidden'  => false,
+            'enabled' => false,
+            'input'   => [
+                'type'  => 'boolean',
+                'unit'  => '',
+                'value' => '0'
+            ]
+        ],
     ];
 
     /**
