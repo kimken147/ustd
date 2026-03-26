@@ -89,6 +89,7 @@ import zhCN from 'antd/locale/zh_CN';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { Header } from 'components/layout/header';
+import { WithdrawNotificationListener } from 'components/WithdrawNotificationListener';
 
 import 'dayjs/locale/th';
 import 'dayjs/locale/en';
@@ -378,6 +379,7 @@ function AppContent() {
             }}
             resources={resources}
           >
+            <WithdrawNotificationListener />
             <Routes>
               {/* Authenticated routes */}
               <Route
