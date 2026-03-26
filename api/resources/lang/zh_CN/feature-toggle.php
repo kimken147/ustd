@@ -59,6 +59,7 @@ return [
     FeatureToggle::USER_CHANNEL_ACCOUNT_DAILY_COUNT                     => '当日各收/出款号笔数',
     FeatureToggle::USER_CHANNEL_ACCOUNT_MONTHLY_COUNT                    => '当月各收/出款号笔数',
     FeatureToggle::MULTI_DEVICES_LOGIN                                 => '管端帐号允许多设备登入',
+    FeatureToggle::NOTIFY_NEW_WITHDRAW                                => '新代付单通知(Telegram+Web)',
     '笔'                                                    => '笔',
     '天'                                                    => '天',
     '元'                                                    => '元',
