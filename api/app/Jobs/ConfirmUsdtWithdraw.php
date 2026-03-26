@@ -167,14 +167,16 @@ class ConfirmUsdtWithdraw implements ShouldQueue
         }
 
         try {
-            // 增加 balance（系統餘額）+ 已收額度/筆數
-            $receiverAccount->increment('balance', $transaction->amount);
+            // 僅 USDT 交易更新系統餘額和額度
+            if ($transaction->currency === Transaction::CURRENCY_USDT) {
+                $receiverAccount->increment('balance', $transaction->amount);
 
-            $util = app(UserChannelAccountUtil::class);
-            $util->updateTotal($receiverAccount->id, $transaction->amount);
-            $util->updatePaymentCount($receiverAccount->id);
+                $util = app(UserChannelAccountUtil::class);
+                $util->updateTotal($receiverAccount->id, $transaction->amount);
+                $util->updatePaymentCount($receiverAccount->id);
+            }
 
-            // 同步鏈上餘額
+            // 所有幣種都同步鏈上餘額
             $receiverAccount->syncOnchainData($adapter);
         } catch (\Throwable $e) {
             Log::warning('ConfirmUsdtWithdraw: 更新接收帳號餘額失敗', [
