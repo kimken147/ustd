@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Services\Crypto\Adapters\ChainAdapterFactory;
+use App\Services\Crypto\Adapters\ChainAdapterInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -42,48 +43,31 @@ class BatchTransferUsdt implements ShouldQueue
             'trc20' => 'TRX', 'erc20' => 'ETH', 'bep20' => 'BNB', default => 'Native',
         };
 
-        // 動態預估所需 Gas
-        $requiredGas = match ($chainNetwork) {
-            'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
-                ? $adapter->estimateTransferFee($source->account, $targetAddress ?: $source->account, $transaction->amount)
-                : config('services.trongrid.min_trx_balance', '30'),
-            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
-            'bep20' => config('services.bsc.min_native_balance', '0.005'),
-            default => '0',
-        };
-
-        // 檢查 gas 餘額，不足直接失敗
+        // 檢查鏈上 USDT 餘額
+        $onchainUsdtBalance = $adapter->getTokenBalance($source->account);
         $nativeBalance = $adapter->getNativeBalance($source->account);
 
-        if (bccomp($nativeBalance, $requiredGas, 6) < 0) {
-            $this->markFailed($transaction, "{$gasTokenName} / Energy 不足，請手動補充 (餘額: {$nativeBalance}, 需要: {$requiredGas})");
+        // USDT > 0：執行 USDT 轉帳
+        if (bccomp($onchainUsdtBalance, '0', 6) > 0) {
+            $this->transferUsdt($transaction, $adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $nativeBalance);
             return;
         }
 
-        // 執行 USDT 轉帳
-        $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
+        // USDT = 0 且 TRX > 0：轉出 TRX
+        // 有 bandwidth → 手續費由 bandwidth 支付，全部轉出
+        // 沒 bandwidth → 需用 TRX 支付手續費，預留 0.4 TRX
+        $resources = $adapter->getAccountResources($source->account);
+        $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
+        $trxBuffer = $bandwidthAvailable >= 300 ? '0' : '0.4';
 
-        try {
-            $chainTx = $adapter->sendTransaction($source->account, $targetAddress, $transaction->amount, $privateKey);
-            $privateKey = null;
-
-            $transaction->update([
-                'tx_hash'       => $chainTx->txHash,
-                'chain_network' => $chainNetwork,
-            ]);
-
-            // 建立鏈上交易記錄並標記已匹配，防止同步服務重複匹配
-            $this->createMatchedChainTransactions($transaction, $chainTx->txHash, $source, $targetAddress);
-
-            // 延遲確認鏈上交易結果，由 ConfirmUsdtWithdraw 走 markAsSuccess 流程
-            ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
-
-            $this->log($transaction, "交易已廣播，等待鏈上確認 (tx_hash: {$chainTx->txHash})");
-        } catch (\Throwable $e) {
-            $privateKey = null;
-            $this->log($transaction, "USDT 轉帳失敗: {$e->getMessage()}", 'error');
-            throw $e;
+        if (bccomp($nativeBalance, $trxBuffer, 6) > 0) {
+            $this->transferNativeToken($transaction, $adapter, $source, $targetAddress, $chainNetwork, $gasTokenName, $nativeBalance, $trxBuffer);
+            return;
         }
+
+        // USDT = 0 且 TRX 不足：跳過
+        $this->log($transaction, "USDT 餘額為 0 且 {$gasTokenName} 不足，跳過轉帳 (USDT: {$onchainUsdtBalance}, {$gasTokenName}: {$nativeBalance})");
+        $transaction->update(['status' => Transaction::STATUS_FAILED]);
     }
 
     /**
@@ -104,6 +88,93 @@ class BatchTransferUsdt implements ShouldQueue
         }
     }
 
+    private function transferUsdt(
+        Transaction $transaction,
+        ChainAdapterInterface $adapter,
+        UserChannelAccount $source,
+        string $targetAddress,
+        string $chainNetwork,
+        string $gasTokenName,
+        string $nativeBalance,
+    ): void {
+        // 動態預估所需 Gas
+        $requiredGas = match ($chainNetwork) {
+            'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
+                ? $adapter->estimateTransferFee($source->account, $targetAddress ?: $source->account, $transaction->amount)
+                : config('services.trongrid.min_trx_balance', '30'),
+            'erc20' => config('services.ethereum.min_native_balance', '0.005'),
+            'bep20' => config('services.bsc.min_native_balance', '0.005'),
+            default => '0',
+        };
+
+        if (bccomp($nativeBalance, $requiredGas, 6) < 0) {
+            $this->markFailed($transaction, "{$gasTokenName} / Energy 不足，請手動補充 (餘額: {$nativeBalance}, 需要: {$requiredGas})");
+            return;
+        }
+
+        $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
+
+        try {
+            $chainTx = $adapter->sendTransaction($source->account, $targetAddress, $transaction->amount, $privateKey);
+            $privateKey = null;
+
+            $transaction->update([
+                'tx_hash'       => $chainTx->txHash,
+                'chain_network' => $chainNetwork,
+            ]);
+
+            $this->createMatchedChainTransactions($transaction, $chainTx->txHash, $source, $targetAddress, ChainTransaction::TOKEN_TYPE_USDT, $transaction->amount);
+            ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
+
+            $this->log($transaction, "USDT 交易已廣播 (tx_hash: {$chainTx->txHash})");
+        } catch (\Throwable $e) {
+            $privateKey = null;
+            $this->log($transaction, "USDT 轉帳失敗: {$e->getMessage()}", 'error');
+            throw $e;
+        }
+    }
+
+    private function transferNativeToken(
+        Transaction $transaction,
+        ChainAdapterInterface $adapter,
+        UserChannelAccount $source,
+        string $targetAddress,
+        string $chainNetwork,
+        string $gasTokenName,
+        string $nativeBalance,
+        string $trxBuffer,
+    ): void {
+        $transferAmount = bcsub($nativeBalance, $trxBuffer, 6);
+
+        $privateKey = decrypt(data_get($source->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY));
+
+        try {
+            $txHash = $adapter->sendNativeToken($source->account, $targetAddress, $transferAmount, $privateKey);
+            $privateKey = null;
+
+            $transaction->update([
+                'tx_hash'       => $txHash,
+                'chain_network' => $chainNetwork,
+            ]);
+
+            $tokenType = match ($chainNetwork) {
+                'trc20' => ChainTransaction::TOKEN_TYPE_TRX,
+                'erc20' => ChainTransaction::TOKEN_TYPE_ETH,
+                'bep20' => ChainTransaction::TOKEN_TYPE_BNB,
+                default => $gasTokenName,
+            };
+
+            $this->createMatchedChainTransactions($transaction, $txHash, $source, $targetAddress, $tokenType, $transferAmount);
+            ConfirmUsdtWithdraw::dispatch($transaction->id)->delay(now()->addSeconds(15));
+
+            $this->log($transaction, "{$gasTokenName} 轉帳已廣播: {$transferAmount} {$gasTokenName} (tx_hash: {$txHash})");
+        } catch (\Throwable $e) {
+            $privateKey = null;
+            $this->log($transaction, "{$gasTokenName} 轉帳失敗: {$e->getMessage()}", 'error');
+            throw $e;
+        }
+    }
+
     private function markFailed(Transaction $transaction, string $message): void
     {
         $transaction->update([
@@ -118,7 +189,11 @@ class BatchTransferUsdt implements ShouldQueue
         string $txHash,
         UserChannelAccount $senderAccount,
         string $targetAddress,
+        string $tokenType = 'USDT',
+        ?string $amount = null,
     ): void {
+        $txAmount = $amount ?? $transaction->amount;
+
         try {
             // OUT record for sender
             ChainTransaction::updateOrCreate(
@@ -127,7 +202,8 @@ class BatchTransferUsdt implements ShouldQueue
                     'direction' => ChainTransaction::DIRECTION_OUT,
                     'from_address' => $senderAccount->account,
                     'to_address' => $targetAddress,
-                    'amount' => $transaction->amount,
+                    'amount' => $txAmount,
+                    'token_type' => $tokenType,
                     'block_timestamp' => now(),
                     'confirmations' => 0,
                     'source' => ChainTransaction::SOURCE_INTERNAL,
@@ -150,7 +226,8 @@ class BatchTransferUsdt implements ShouldQueue
                         'direction' => ChainTransaction::DIRECTION_IN,
                         'from_address' => $senderAccount->account,
                         'to_address' => $targetAddress,
-                        'amount' => $transaction->amount,
+                        'amount' => $txAmount,
+                        'token_type' => $tokenType,
                         'block_timestamp' => now(),
                         'confirmations' => 0,
                         'source' => ChainTransaction::SOURCE_INTERNAL,

@@ -100,6 +100,16 @@ const FundManagementBatchTransfer: FC = () => {
     [selectedAccounts],
   );
 
+  // 合計 TRX (Gas)
+  const selectedTrxTotal = useMemo(
+    () =>
+      selectedAccounts.reduce(
+        (sum, acc) => sum + parseFloat(acc.onchain_native_balance ?? '0'),
+        0,
+      ),
+    [selectedAccounts],
+  );
+
   // 預估轉入後餘額
   const afterBalance = useMemo(() => {
     if (!targetAccount) return 0;
@@ -372,6 +382,12 @@ const FundManagementBatchTransfer: FC = () => {
                 {t('fields.selectedTotal')}:{' '}
                 <Typography.Text strong>
                   {numeral(selectedTotal).format('0,0.00')} USDT
+                </Typography.Text>
+              </Typography.Text>
+              <Typography.Text>
+                {t('fields.selectedTrxTotal')}:{' '}
+                <Typography.Text strong>
+                  {numeral(selectedTrxTotal).format('0,0.000000')} TRX
                 </Typography.Text>
               </Typography.Text>
             </Space>

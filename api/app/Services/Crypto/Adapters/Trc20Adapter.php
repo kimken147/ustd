@@ -132,6 +132,85 @@ class Trc20Adapter implements ChainAdapterInterface
         }
     }
 
+    /**
+     * 取得 TRX 原生轉帳歷史
+     */
+    public function fetchNativeTransferHistory(
+        string $address,
+        int $limit = 200,
+        ?string $fingerprint = null,
+        ?string $minTimestamp = null,
+    ): array {
+        try {
+            $params = [
+                'only_confirmed' => 'true',
+                'limit' => min($limit, 200),
+                'order_by' => 'block_timestamp,desc',
+                'search_internal' => 'false',
+            ];
+
+            if ($fingerprint) {
+                $params['fingerprint'] = $fingerprint;
+            }
+
+            if ($minTimestamp) {
+                $params['min_timestamp'] = $minTimestamp;
+            }
+
+            $response = $this->buildHttpClient()
+                ->get($this->getBaseUrl() . "/v1/accounts/{$address}/transactions", $params);
+
+            if (!$response->successful()) {
+                Log::warning('Trc20Adapter: fetchNativeTransferHistory API 請求失敗', [
+                    'address' => $address,
+                    'status' => $response->status(),
+                ]);
+                return ['data' => collect(), 'fingerprint' => null];
+            }
+
+            $json = $response->json();
+            $data = $json['data'] ?? [];
+            $nextFingerprint = $json['meta']['fingerprint'] ?? null;
+
+            $transactions = collect($data)
+                // 只取 TransferContract（TRX 原生轉帳）
+                ->filter(function ($tx) {
+                    $contractType = data_get($tx, 'raw_data.contract.0.type');
+                    return $contractType === 'TransferContract'
+                        && data_get($tx, 'ret.0.contractRet') === 'SUCCESS';
+                })
+                ->map(function ($tx) use ($address) {
+                    $contract = data_get($tx, 'raw_data.contract.0.parameter.value', []);
+                    $rawAmount = $contract['amount'] ?? 0;
+                    // TRX 用 sun（1 TRX = 1e6 sun）
+                    $amount = bcdiv((string) $rawAmount, '1000000', 6);
+
+                    // owner_address / to_address 為 hex 格式，需轉 base58
+                    $fromHex = $contract['owner_address'] ?? '';
+                    $toHex = $contract['to_address'] ?? '';
+
+                    return [
+                        'tx_hash' => $tx['txID'],
+                        'from' => $this->hexAddressToBase58($fromHex),
+                        'to' => $this->hexAddressToBase58($toHex),
+                        'amount' => $amount,
+                        'block_timestamp' => (int) ($tx['block_timestamp'] ?? 0),
+                        'block_number' => (int) ($tx['blockNumber'] ?? 0),
+                        'token_type' => 'TRX',
+                        'raw' => $tx,
+                    ];
+                });
+
+            return ['data' => $transactions, 'fingerprint' => $nextFingerprint];
+        } catch (\Exception $e) {
+            Log::error('Trc20Adapter: fetchNativeTransferHistory 發生例外', [
+                'address' => $address,
+                'exception' => $e->getMessage(),
+            ]);
+            return ['data' => collect(), 'fingerprint' => null];
+        }
+    }
+
     public function sendTransaction(
         string $fromAddress,
         string $toAddress,
@@ -506,5 +585,43 @@ class Trc20Adapter implements ChainAdapterInterface
 
         // Return first 42 chars (21 bytes: prefix + address, without checksum)
         return substr($hex, 0, 42);
+    }
+
+    /**
+     * 將 hex 格式地址轉為 Base58Check (TRON 地址格式)
+     */
+    private function hexAddressToBase58(string $hexAddress): string
+    {
+        if (empty($hexAddress)) {
+            return '';
+        }
+
+        $alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+        // 42 hex chars = 21 bytes (1 byte prefix 0x41 + 20 bytes address)
+        $hexAddress = str_pad($hexAddress, 42, '0', STR_PAD_LEFT);
+        $payload = hex2bin($hexAddress);
+
+        // Base58Check: payload + first 4 bytes of double SHA-256
+        $checksum = substr(hash('sha256', hash('sha256', $payload, true), true), 0, 4);
+        $data = $payload . $checksum;
+
+        // Convert bytes to base58
+        $num = gmp_import($data);
+        $base58 = '';
+        $base = gmp_init(58);
+
+        while (gmp_cmp($num, 0) > 0) {
+            [$num, $rem] = gmp_div_qr($num, $base);
+            $base58 = $alphabet[gmp_intval($rem)] . $base58;
+        }
+
+        // Add leading '1' for each leading zero byte
+        for ($i = 0; $i < strlen(bin2hex($data)) / 2; $i++) {
+            if ($data[$i] !== "\x00") break;
+            $base58 = '1' . $base58;
+        }
+
+        return $base58;
     }
 }

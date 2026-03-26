@@ -21,6 +21,7 @@ class ChainTransactionResource extends JsonResource
             'from_address' => $this->from_address,
             'to_address' => $this->to_address,
             'amount' => $this->amount,
+            'token_type' => $this->token_type ?? 'USDT',
             'block_number' => $this->block_number,
             'block_timestamp' => $this->block_timestamp?->toISOString(),
             'confirmations' => $this->confirmations,

@@ -27,6 +27,7 @@ export interface ChainTransaction {
   from_address: string;
   to_address: string;
   amount: string;
+  token_type: 'USDT' | 'TRX' | 'ETH' | 'BNB';
   block_number: number | null;
   block_timestamp: string;
   confirmations: number;

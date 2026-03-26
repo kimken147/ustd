@@ -149,8 +149,13 @@ const ChainTransactionList: FC = () => {
     {
       title: t('fields.amount'),
       dataIndex: 'amount',
-      width: 120,
-      render: (v: string) => <TextField value={numeral(v).format('0,0.000000')} />,
+      width: 140,
+      render: (_: string, record: ChainTransaction) => {
+        const tokenType = record.token_type ?? 'USDT';
+        return (
+          <TextField value={`${numeral(record.amount).format('0,0.000000')} ${tokenType}`} />
+        );
+      },
     },
     {
       title: t('fields.fromAddress'),
@@ -301,6 +306,17 @@ const ChainTransactionList: FC = () => {
                   options={[
                     { value: 'in', label: t('direction.in') },
                     { value: 'out', label: t('direction.out') },
+                  ]}
+                />
+              </ListPageLayout.Filter.Item>
+            </Col>
+            <Col xs={24} md={6}>
+              <ListPageLayout.Filter.Item label={t('filters.tokenType')} name="token_type">
+                <Select
+                  allowClear
+                  options={[
+                    { value: 'USDT', label: 'USDT' },
+                    { value: 'TRX', label: 'TRX' },
                   ]}
                 />
               </ListPageLayout.Filter.Item>

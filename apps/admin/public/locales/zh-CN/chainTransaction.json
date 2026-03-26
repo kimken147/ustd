@@ -61,6 +61,7 @@
     "txHash": "TX Hash",
     "address": "地址",
     "amountRange": "金额范围",
+    "tokenType": "币种",
     "dateRange": "时间范围"
   }
 }

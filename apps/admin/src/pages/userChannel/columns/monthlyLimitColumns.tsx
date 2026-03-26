@@ -31,8 +31,10 @@ export function createMonthlyStatusColumn(deps: ColumnDependencies): UserChannel
 
 export function createMonthlyLimitReceiveColumn(
   deps: ColumnDependencies
-): UserChannelColumn {
-  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
+): UserChannelColumn | null {
+  const { t, monthEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
+
+  if (!monthEnable) return null;
 
   return {
     title: t('fields.monthlyLimitReceiveUsed'),
@@ -84,8 +86,10 @@ export function createMonthlyLimitReceiveColumn(
 
 export function createMonthlyLimitPayoutColumn(
   deps: ColumnDependencies
-): UserChannelColumn {
-  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
+): UserChannelColumn | null {
+  const { t, monthEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
+
+  if (!monthEnable) return null;
 
   return {
     title: t('fields.monthlyLimitPayoutUsed'),

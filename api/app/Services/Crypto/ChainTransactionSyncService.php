@@ -40,7 +40,8 @@ class ChainTransactionSyncService
      */
     public function syncRecentTransactions(UserChannelAccount $account): int
     {
-        $adapter = $this->resolveAdapter($account->chain_network ?? 'trc20');
+        $chainNetwork = $account->chain_network ?? 'trc20';
+        $adapter = $this->resolveAdapter($chainNetwork);
         if (!$adapter) {
             return 0;
         }
@@ -50,12 +51,23 @@ class ChainTransactionSyncService
             return 0;
         }
 
-        $result = $adapter->fetchTransactionHistory($address, 200);
         $count = 0;
 
+        // 同步 USDT (TRC-20) 交易
+        $result = $adapter->fetchTransactionHistory($address, 200);
         foreach ($result['data'] as $txData) {
             if ($this->upsertTransaction($txData, $account)) {
                 $count++;
+            }
+        }
+
+        // 同步 TRX 原生轉帳（僅 TRC-20 鏈）
+        if ($chainNetwork === 'trc20' && $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter) {
+            $nativeResult = $adapter->fetchNativeTransferHistory($address, 200);
+            foreach ($nativeResult['data'] as $txData) {
+                if ($this->upsertTransaction($txData, $account)) {
+                    $count++;
+                }
             }
         }
 
@@ -154,6 +166,8 @@ class ChainTransactionSyncService
             $blockTimestamp = \Carbon\Carbon::createFromTimestamp($blockTimestamp);
         }
 
+        $tokenType = $txData['token_type'] ?? ChainTransaction::TOKEN_TYPE_USDT;
+
         $chainTx = ChainTransaction::updateOrCreate(
             [
                 'tx_hash' => $txData['tx_hash'],
@@ -164,6 +178,7 @@ class ChainTransactionSyncService
                 'from_address' => $fromAddress,
                 'to_address' => $toAddress,
                 'amount' => $txData['amount'],
+                'token_type' => $tokenType,
                 'block_number' => $txData['block_number'] ?? null,
                 'block_timestamp' => $blockTimestamp,
                 'confirmations' => 1,

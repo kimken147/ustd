@@ -39,6 +39,10 @@ class ChainTransactionController extends Controller
             $query->where('direction', $request->input('direction'));
         }
 
+        if ($request->filled('token_type')) {
+            $query->where('token_type', $request->input('token_type'));
+        }
+
         if ($request->filled('user_channel_account_id')) {
             $query->where('user_channel_account_id', $request->input('user_channel_account_id'));
         }

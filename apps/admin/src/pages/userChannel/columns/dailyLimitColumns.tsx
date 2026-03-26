@@ -29,8 +29,10 @@ export function createDailyStatusColumn(deps: ColumnDependencies): UserChannelCo
   };
 }
 
-export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
+export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  const { t, dayEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
+
+  if (!dayEnable) return null;
 
   return {
     title: t('fields.dailyLimitReceiveUsed'),
@@ -80,8 +82,10 @@ export function createDailyLimitReceiveColumn(deps: ColumnDependencies): UserCha
   };
 }
 
-export function createDailyLimitPayoutColumn(deps: ColumnDependencies): UserChannelColumn {
-  const { t, canEdit, showUpdateModal, mutateUserChannel } = deps;
+export function createDailyLimitPayoutColumn(deps: ColumnDependencies): UserChannelColumn | null {
+  const { t, dayEnable, canEdit, showUpdateModal, mutateUserChannel } = deps;
+
+  if (!dayEnable) return null;
 
   return {
     title: t('fields.dailyLimitPayoutUsed'),

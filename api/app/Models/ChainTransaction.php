@@ -17,6 +17,11 @@ class ChainTransaction extends Model
     const SOURCE_SYNC = 'sync';
     const SOURCE_INTERNAL = 'internal';
 
+    const TOKEN_TYPE_USDT = 'USDT';
+    const TOKEN_TYPE_TRX = 'TRX';
+    const TOKEN_TYPE_ETH = 'ETH';
+    const TOKEN_TYPE_BNB = 'BNB';
+
     protected $fillable = [
         'tx_hash',
         'user_channel_account_id',
@@ -24,6 +29,7 @@ class ChainTransaction extends Model
         'from_address',
         'to_address',
         'amount',
+        'token_type',
         'block_number',
         'block_timestamp',
         'confirmations',

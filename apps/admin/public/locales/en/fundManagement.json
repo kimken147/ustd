@@ -19,6 +19,7 @@
     "afterBalance": "Est. After Transfer",
     "selectedCount": "Selected",
     "selectedTotal": "Total",
+    "selectedTrxTotal": "TRX Total",
     "energy": "Energy",
     "bandwidth": "Bandwidth",
     "noPrivateKey": "No Key",

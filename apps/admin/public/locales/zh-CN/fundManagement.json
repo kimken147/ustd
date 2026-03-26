@@ -19,6 +19,7 @@
     "afterBalance": "转入后预估",
     "selectedCount": "已选",
     "selectedTotal": "合计",
+    "selectedTrxTotal": "TRX 合计",
     "energy": "Energy",
     "bandwidth": "Bandwidth",
     "noPrivateKey": "无密钥",

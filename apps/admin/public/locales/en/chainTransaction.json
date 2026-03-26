@@ -61,6 +61,7 @@
     "txHash": "TX Hash",
     "address": "Address",
     "amountRange": "Amount Range",
+    "tokenType": "Token",
     "dateRange": "Date Range"
   }
 }
