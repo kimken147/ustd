@@ -80,7 +80,7 @@ class FundManagementController extends Controller
         foreach ($sourceAccounts as $source) {
             $chainNetwork = data_get($source->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
 
-            // from_channel_account = 接收方資訊（跟代付語意一致：from = 目標地址）
+            // 接收方資訊（跟代付語意一致：from = 目標地址）
             $bankCard = app(BankCardTransferObject::class)->plain(
                 $chainNetwork,                    // bank_name → 鏈網路
                 $targetAccount->account,          // bank_card_number → 接收地址
@@ -89,30 +89,50 @@ class FundManagementController extends Controller
                 '',
             );
 
-            $orderNumber = 'BT' . date('YmdHis') . rand(100, 999);
+            $baseOrderNumber = 'BT' . date('YmdHis') . rand(100, 999);
 
-            $params = new TransactionParams(
-                amount: $source->onchain_usdt_balance,
-                bankCard: $bankCard,
-                note: 'batch-transfer',
-                orderNumber: $orderNumber,
-            );
+            // USDT 餘額 > 0 時建立 USDT 內轉交易（type=5, currency=USDT）
+            if ($source->onchain_usdt_balance > 0) {
+                $usdtParams = new TransactionParams(
+                    amount: $source->onchain_usdt_balance,
+                    bankCard: $bankCard,
+                    note: 'batch-transfer',
+                    orderNumber: $baseOrderNumber,
+                );
 
-            // $account = 出款帳號（跟代付語意一致：to_channel_account_id = 出款帳號）
-            $transaction = $factory->internalTransferFrom($params, $source);
+                $usdtTransaction = $factory->internalTransferFrom($usdtParams, $source);
 
-            if (!$transaction) {
-                continue;
+                if ($usdtTransaction) {
+                    // 出款方額度（僅 USDT 交易需更新）
+                    $util = app(UserChannelAccountUtil::class);
+                    $util->updateTotal($source->id, $usdtTransaction->amount, true);
+                    $util->updatePaymentCount($source->id, 1, true);
+
+                    BatchTransferUsdt::dispatch($usdtTransaction->id);
+                    $dispatched++;
+                }
             }
 
-            // 出款方額度（建立時更新）
-            $util = app(UserChannelAccountUtil::class);
-            $util->updateTotal($source->id, $transaction->amount, true);
-            $util->updatePaymentCount($source->id, 1, true);
-            // 收款方額度在 ConfirmUsdtWithdraw 成功時更新
+            // 原生代幣餘額 > 0 時建立原生代幣內轉交易（type=6, currency=TRX/ETH/BNB）
+            if ($source->onchain_native_balance > 0) {
+                $nativeCurrency = Transaction::NATIVE_CURRENCIES[$chainNetwork] ?? Transaction::CURRENCY_TRX;
 
-            BatchTransferUsdt::dispatch($transaction->id);
-            $dispatched++;
+                $nativeParams = new TransactionParams(
+                    amount: $source->onchain_native_balance,
+                    bankCard: $bankCard,
+                    note: 'batch-transfer',
+                    orderNumber: $baseOrderNumber . 'N',
+                );
+
+                $nativeTransaction = $factory->internalTransferFrom($nativeParams, $source, $nativeCurrency);
+
+                if ($nativeTransaction) {
+                    // 原生代幣交易不更新付款額度
+                    // 延遲 30 秒派發，讓 USDT 轉帳先完成（USDT 轉帳會消耗原生代幣作為 gas）
+                    BatchTransferUsdt::dispatch($nativeTransaction->id)->delay(now()->addSeconds(30));
+                    $dispatched++;
+                }
+            }
         }
 
         return response()->json([
