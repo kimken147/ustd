@@ -369,7 +369,7 @@ class Trc20Adapter implements ChainAdapterInterface
 
         return [
             'confirmed' => true,
-            'success'   => ($data['receipt']['result'] ?? '') === 'SUCCESS',
+            'success'   => !isset($data['receipt']['result']) || $data['receipt']['result'] === 'SUCCESS',
             'fee'       => bcdiv((string) ($data['fee'] ?? 0), '1000000', 6),
         ];
     }
