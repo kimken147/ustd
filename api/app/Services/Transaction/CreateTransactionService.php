@@ -674,6 +674,14 @@ class CreateTransactionService
 
     // ─── 結果建立方法 ───
 
+    /**
+     * 根據現有交易狀態建立結果（供 CashierController 使用）
+     */
+    public function buildResultForExistingTransaction(Transaction $transaction): CreateTransactionResult
+    {
+        return $this->buildResult($transaction);
+    }
+
     private function buildResult(Transaction $transaction): CreateTransactionResult
     {
         $channel = $transaction->channel;
