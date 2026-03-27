@@ -60,8 +60,10 @@ class UsdtWithdrawHandler
         $txAmount = $transaction->floating_amount ?? $transaction->amount;
 
         // 代付 + TRC-20 + 能量租賃可用 → 租賃能量（失敗則中斷代付）
+        $energyRented = false;
         if ($this->shouldRentEnergy($transaction, $chainNetwork)) {
             $this->delegateEnergy($transaction, $adapter, $fromAddress, $toAddress, $txAmount);
+            $energyRented = true;
         }
 
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
@@ -75,9 +77,10 @@ class UsdtWithdrawHandler
             'bep20' => config('services.bsc.min_native_balance', '0.005'),
             default => '0',
         };
-        // 加 buffer：TRC-20 多 5 TRX，其他多 10%
-        $buffer = match ($chainNetwork) {
-            'trc20' => '5',
+        // 加 buffer：已租賃能量且預估為 0 則不需 buffer，否則 TRC-20 多 5 TRX，其他多 10%
+        $buffer = match (true) {
+            $energyRented && bccomp($requiredGas, '0', 6) === 0 => '0',
+            $chainNetwork === 'trc20' => '5',
             default => bcmul($requiredGas, '0.1', 6),
         };
         $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
