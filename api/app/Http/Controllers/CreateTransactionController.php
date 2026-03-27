@@ -72,6 +72,7 @@ class CreateTransactionController extends Controller
             'matching_timed_out' => view("v1.transactions.{$country}.matching-timed-out", compact('transaction')),
             'paying_timed_out' => view("v1.transactions.{$country}.paying-timed-out", compact('transaction')),
             'success' => view("v1.transactions.{$country}.paying-success", compact('transaction')),
+            'failed' => view("v1.transactions.{$country}.failed", compact('transaction')),
             default => view("v1.transactions.{$country}.please-try-later", compact('transaction')),
         };
     }

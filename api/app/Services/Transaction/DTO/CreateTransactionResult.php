@@ -50,6 +50,11 @@ class CreateTransactionResult
         return new self($transaction, 'success');
     }
 
+    public static function failed(Transaction $transaction): self
+    {
+        return new self($transaction, 'failed');
+    }
+
     public function isMatched(): bool
     {
         return in_array($this->status, ['matched', 'third_paying']);

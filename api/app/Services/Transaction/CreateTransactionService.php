@@ -718,6 +718,10 @@ class CreateTransactionService
             return CreateTransactionResult::success($transaction);
         }
 
+        if ($transaction->failed()) {
+            return CreateTransactionResult::failed($transaction);
+        }
+
         return CreateTransactionResult::matching($transaction);
     }
 

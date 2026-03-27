@@ -23,6 +23,7 @@ class CashierStatusController extends Controller
             Transaction::STATUS_MANUAL_SUCCESS => 'success',
             Transaction::STATUS_MATCHING_TIMED_OUT => 'timed_out',
             Transaction::STATUS_PAYING_TIMED_OUT => 'timed_out',
+            Transaction::STATUS_FAILED => 'failed',
         ];
 
         return response()->json([
