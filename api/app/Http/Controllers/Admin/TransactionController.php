@@ -242,6 +242,14 @@ class TransactionController extends Controller
             if ($request->has('account') && $request->account) {
                 $userChannelAccount = UserChannelAccount::find($request->account);
                 $mutator->paufenTransactionFrom($userChannelAccount, $transaction);
+
+                // 建立空單時，將指定的一次性地址標記為已收款
+                if ($userChannelAccount->is_one_time && $userChannelAccount->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
+                    $userChannelAccount->update([
+                        'receive_status' => UserChannelAccount::RECEIVE_STATUS_USED,
+                        'status' => UserChannelAccount::STATUS_ONLINE,
+                    ]);
+                }
             }
 
             // 非免簽模式，才需要扣碼商錢包餘額
