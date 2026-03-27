@@ -294,6 +294,13 @@ class TransactionStatusService
         if ($transaction->from_channel_account_id) {
             $account = $transaction->fromChannelAccount;
             if ($account) { // 防止突然被刪卡後出現 Error
+                // 標記一次性子地址為已收款，並設為上線以參與出款匹配
+                if ($account->is_one_time && $account->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
+                    $account->update([
+                        'receive_status' => UserChannelAccount::RECEIVE_STATUS_USED,
+                        'status' => UserChannelAccount::STATUS_ONLINE,
+                    ]);
+                }
                 $account->updateBalanceByTransaction($transaction);
             }
         }
