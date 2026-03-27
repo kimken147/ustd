@@ -227,15 +227,15 @@ class Trc20AdapterTest extends TestCase
         $this->assertEquals('30.000000', $result);
     }
 
-    public function test_getNativeBalance_api_failure_returns_zero(): void
+    public function test_getNativeBalance_api_failure_throws_exception(): void
     {
         Http::fake([
             '*/wallet/getaccount' => Http::response(null, 500),
         ]);
 
-        $result = $this->adapter->getNativeBalance(self::VALID_ADDRESS);
+        $this->expectException(\RuntimeException::class);
 
-        $this->assertEquals('0', $result);
+        $this->adapter->getNativeBalance(self::VALID_ADDRESS);
     }
 
     // ---------------------------------------------------------------

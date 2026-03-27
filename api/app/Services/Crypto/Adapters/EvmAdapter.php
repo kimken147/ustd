@@ -165,7 +165,7 @@ class EvmAdapter implements ChainAdapterInterface
                 'exception' => $e->getMessage(),
             ]);
 
-            return '0';
+            throw $e;
         }
     }
 
@@ -195,7 +195,7 @@ class EvmAdapter implements ChainAdapterInterface
                 'exception' => $e->getMessage(),
             ]);
 
-            return '0';
+            throw $e;
         }
     }
 

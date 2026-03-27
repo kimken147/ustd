@@ -812,7 +812,11 @@ class UserChannelAccountController extends Controller
         $synced = 0;
         $errors = [];
 
-        foreach ($accounts as $account) {
+        foreach ($accounts as $index => $account) {
+            if ($index > 0) {
+                usleep(300000); // 300ms 節流，避免 TronGrid API rate limit
+            }
+
             try {
                 $chainNetwork = data_get($account->detail, UserChannelAccount::DETAIL_KEY_CHAIN_NETWORK, 'trc20');
                 $adapter = $this->resolveChainAdapter($chainNetwork);

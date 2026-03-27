@@ -315,7 +315,7 @@ class Trc20Adapter implements ChainAdapterInterface
             ]);
 
         if (!$response->successful()) {
-            return '0';
+            throw new \RuntimeException("TronGrid getaccount API 請求失敗 (HTTP {$response->status()})");
         }
 
         $balance = $response->json('balance', 0);
@@ -337,7 +337,7 @@ class Trc20Adapter implements ChainAdapterInterface
             ]);
 
         if (!$response->successful()) {
-            return '0';
+            throw new \RuntimeException("TronGrid triggerconstantcontract API 請求失敗 (HTTP {$response->status()})");
         }
 
         $result = $response->json('constant_result.0', '0');
@@ -478,7 +478,7 @@ class Trc20Adapter implements ChainAdapterInterface
             ]);
 
         if (!$response->successful()) {
-            return null;
+            throw new \RuntimeException("TronGrid getaccountresource API 請求失敗 (HTTP {$response->status()})");
         }
 
         $data = $response->json();
