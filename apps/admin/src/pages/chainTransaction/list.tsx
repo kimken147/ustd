@@ -160,22 +160,20 @@ const ChainTransactionList: FC = () => {
     {
       title: t('fields.fromAddress'),
       dataIndex: 'from_address',
-      width: 140,
-      ellipsis: true,
+      width: 280,
       render: (v: string) => v ? (
-        <Typography.Text copyable={{ text: v }}>
-          {v.slice(0, 6)}...{v.slice(-4)}
+        <Typography.Text copyable={{ text: v }} style={{ fontSize: 12, wordBreak: 'break-all' }}>
+          {v}
         </Typography.Text>
       ) : '-',
     },
     {
       title: t('fields.toAddress'),
       dataIndex: 'to_address',
-      width: 140,
-      ellipsis: true,
+      width: 280,
       render: (v: string) => v ? (
-        <Typography.Text copyable={{ text: v }}>
-          {v.slice(0, 6)}...{v.slice(-4)}
+        <Typography.Text copyable={{ text: v }} style={{ fontSize: 12, wordBreak: 'break-all' }}>
+          {v}
         </Typography.Text>
       ) : '-',
     },
