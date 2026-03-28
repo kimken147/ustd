@@ -387,6 +387,14 @@ class TransactionStatusService
 
                 $this->userChannelAccountUtil->updateTotal($partialLimitAccountId, $transaction->floating_amount);
                 $this->userChannelAccountUtil->updatePaymentCount($partialLimitAccountId);
+
+                // 標記一次性子地址為已收款
+                if ($partialFromAccount && $partialFromAccount->is_one_time && $partialFromAccount->receive_status === UserChannelAccount::RECEIVE_STATUS_UNUSED) {
+                    $partialFromAccount->update([
+                        'receive_status' => UserChannelAccount::RECEIVE_STATUS_USED,
+                        'status' => UserChannelAccount::STATUS_ONLINE,
+                    ]);
+                }
             }
 
             return $transaction->refresh();
