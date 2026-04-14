@@ -57,4 +57,11 @@ return [
 
     'System' => '系统设置',         // group_name
     'System-Setting' => '系统设置',    // id:16
+
+    'Fund Management' => '资金管理',         // group_name
+    'Fund Management-Management' => '资金管理',    // id:35
+
+    'Chain Transaction' => '鏈上交易管理',         // group_name
+    'Chain Transaction-View' => '查看鏈上交易',    // id:36
+    'Chain Transaction-Manage' => '管理鏈上交易',    // id:37
 ];

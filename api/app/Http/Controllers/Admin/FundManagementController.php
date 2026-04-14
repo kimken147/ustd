@@ -6,22 +6,29 @@ use App\DTOs\TransactionParams;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserChannelAccount as UserChannelAccountResource;
 use App\Jobs\BatchTransferUsdt;
+use App\Models\Permission;
 use App\Models\Transaction;
 use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
 use App\Models\Channel;
+use App\Utils\PermissionUtil;
 use App\Utils\TransactionFactory;
 use App\Utils\UserChannelAccountUtil;
 use Illuminate\Http\Request;
 
 class FundManagementController extends Controller
 {
+    public function __construct(private PermissionUtil $permissionUtil)
+    {
+    }
     /**
      * 列出所有 USDT 帳號及鏈上餘額
      * GET /fund-management/accounts
      */
     public function index(Request $request)
     {
+        $this->permissionUtil->abortForbiddenIfPermissionDenied($request->user(), Permission::ADMIN_INTERNAL_TRANSFER);
+
         $accounts = UserChannelAccount::with('user', 'parentAccount')
             ->whereIn('channel_code', Channel::USDT_CODES)
             ->whereNull('deleted_at')
@@ -37,6 +44,8 @@ class FundManagementController extends Controller
      */
     public function batchTransfer(Request $request, TransactionFactory $factory)
     {
+        $this->permissionUtil->abortForbiddenIfPermissionDenied($request->user(), Permission::ADMIN_INTERNAL_TRANSFER);
+
         $validated = $request->validate([
             'source_account_ids'   => 'required|array|min:1',
             'source_account_ids.*' => 'integer|exists:user_channel_accounts,id',

@@ -57,4 +57,11 @@ return [
 
     'System'                => 'System Settings',    // group_name
     'System-Setting'        => 'Manage System Settings',    // id:16
+
+    'Fund Management'               => 'Fund Management',        // group_name
+    'Fund Management-Management'    => 'Manage Funds',    // id:35
+
+    'Chain Transaction'             => 'On-chain Transaction Management',        // group_name
+    'Chain Transaction-View'        => 'View On-chain Transactions',    // id:36
+    'Chain Transaction-Manage'      => 'Manage On-chain Transactions',    // id:37
 ];

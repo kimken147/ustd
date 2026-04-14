@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
     const GROUP_NAME_THIRD_CHANNEL = '三方管理';
     const GROUP_NAME_AUTHORITY_MANAGE = '权限管理';
     const GROUP_NAME_CHAIN_TRANSACTION = '鏈上交易管理';
+    const GROUP_NAME_FUND_MANAGEMENT = '资金管理';
 
     private $permissions = [
         Permission::ADMIN_CREATE_PROVIDER                         => [
@@ -194,6 +195,11 @@ class PermissionSeeder extends Seeder
             'role'       => User::ROLE_ADMIN,
             'group_name' => self::GROUP_NAME_WITHDRAW,
             'name'       => '显示敏感资料',
+        ],
+        Permission::ADMIN_INTERNAL_TRANSFER => [
+            'role'       => User::ROLE_ADMIN,
+            'group_name' => self::GROUP_NAME_FUND_MANAGEMENT,
+            'name'       => '资金管理',
         ],
         Permission::ADMIN_VIEW_CHAIN_TRANSACTION => [
             'role'       => User::ROLE_ADMIN,

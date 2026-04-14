@@ -28,6 +28,8 @@ class Permission extends JsonResource
         '黑名单设置'               => 'Banned',
         '三方管理'                 => 'Third-Party',
         '系统设置'                 => 'System',
+        '资金管理'                 => 'Fund Management',
+        '鏈上交易管理'             => 'Chain Transaction',
         // Permission names (group-name combinations)
         'Providers-新增码商'                         => 'Providers-Add',
         'Providers-编辑码商基本资料'                  => 'Providers-Edit',
@@ -63,6 +65,9 @@ class Permission extends JsonResource
         'Third-Party-三方通道设置'                   => 'Third-Party-Setting',
         'Third-Party-三方通道设定'                   => 'Third-Party-Setting',
         'System-系统设置'                            => 'System-Setting',
+        'Fund Management-资金管理'                   => 'Fund Management-Management',
+        'Chain Transaction-查看鏈上交易'              => 'Chain Transaction-View',
+        'Chain Transaction-管理鏈上交易'              => 'Chain Transaction-Manage',
     ];
 
     /**
