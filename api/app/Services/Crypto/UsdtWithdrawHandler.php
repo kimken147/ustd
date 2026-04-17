@@ -67,20 +67,17 @@ class UsdtWithdrawHandler
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
         // TRC-20: 頻寬檢查（放在租能量之前，避免頻寬不夠時浪費能量租賃費）
+        // 頻寬不足時依差額從母地址補充 TRX 支付頻寬費
         if ($chainNetwork === 'trc20' && $adapter instanceof Trc20Adapter) {
             $resources = $adapter->getAccountResources($fromAddress);
             $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
             $minBandwidth = 350;
             if ($bandwidthAvailable < $minBandwidth && bccomp($nativeBalance, '1', 6) < 0) {
-                $this->log($transaction, "頻寬不足且無 TRX 支付頻寬費 (出款地址: {$fromAddress}, 可用頻寬: {$bandwidthAvailable}, 需要: {$minBandwidth}, TRX: {$nativeBalance})", [
-                    'from_address' => $fromAddress,
-                    'bandwidth_available' => $bandwidthAvailable,
-                    'min_bandwidth' => $minBandwidth,
-                    'native_balance' => $nativeBalance,
-                ], 'error');
-                throw new InsufficientBalanceException(
-                    "Bandwidth {$bandwidthAvailable} < {$minBandwidth} and TRX {$nativeBalance} insufficient (address: {$fromAddress})"
-                );
+                $bandwidthShortfall = $minBandwidth - $bandwidthAvailable;
+                // 每 bandwidth = 1000 sun, 1 TRX = 1,000,000 sun, 加 0.01 TRX buffer
+                $trxForBandwidth = bcadd(bcdiv(bcmul((string) $bandwidthShortfall, '1000', 0), '1000000', 6), '0.01', 6);
+                $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, $trxForBandwidth);
+                $nativeBalance = $adapter->getNativeBalance($fromAddress);
             }
         }
 
