@@ -107,8 +107,10 @@ app/Http/Controllers/
 **Crypto/blockchain** (`app/Services/Crypto/`):
 - `ChainAdapterInterface` → `Trc20Adapter` (TRON), `EvmAdapter` (ETH/BSC)
 - `ChainAdapterFactory` resolves adapter by chain network
-- `ChainTransactionSyncService`, `ChainTransactionMatchService`, `CryptoMonitorService`
-- Energy rental: `EnergyRentalProviderInterface` → `NettsProvider`, `NullProvider`
+- `ChainTransactionSyncService` (sync from chain, **must `setTimezone` after `createFromTimestampMs`**), `ChainTransactionMatchService`, `CryptoMonitorService`
+- Energy rental: `EnergyRentalProviderInterface` → `NettsProvider`, `TronZapProvider`, `NullProvider`
+  - `FallbackProvider` wraps primary + fallback providers; auto-switches on failure
+  - `EnergyRentalFactory` reads `ENERGY_RENTAL_PROVIDER` (primary) + `ENERGY_RENTAL_FALLBACK` (comma-separated fallbacks)
 
 **Key utility classes** (`app/Utils/`):
 - `TransactionFactory`, `TransactionMutator`, `TransactionDataBuilder` — transaction lifecycle
@@ -131,6 +133,22 @@ app/Http/Controllers/
 **Routes:** `routes/api-v1.php` — organized by role prefix (`admin/`, `merchant/`, `provider/`, `third-party/`) with middleware chains for auth, role, permission, IP validation.
 
 **Authentication:** JWT (`php-open-source-saver/jwt-auth`) + optional Google 2FA
+
+**Permission system:**
+- `Permission` model with class constants (ID 1-37), pivot table `permission_user`
+- `CheckRole` middleware: sub-accounts (role 4/5) → swaps `auth()->user()` to parent, sets `currentSubAccount`
+- `PermissionUtil::abortForbiddenIfPermissionDenied()` — checks sub-account permissions
+- `/me` endpoint returns `realUser()` (sub-account itself, role=4), NOT the parent's role
+- Frontend `accessControlProvider.ts`: `role === 1` bypasses all permission checks (super admin only)
+- Frontend permission checks use `useCan({ action: '<permission_id>', resource: '<resource>' })`
+
+**USDT withdraw flow** (`UsdtWithdrawHandler`):
+1. Bandwidth check → insufficient + no TRX → top up from parent address
+2. Energy rental (via `EnergyRentalProviderInterface`) → failure fallback: top up TRX from parent
+3. Gas (TRX) balance check
+4. Broadcast transaction → `ConfirmUsdtWithdraw` job for confirmation
+- `TransactionNote` records are written at every step for visibility
+- Child accounts have no TRX; rely on default bandwidth (600/day) or parent top-up
 
 ### Frontend Layer (React)
 
@@ -163,7 +181,9 @@ import { SomeComponent } from 'components/SomeComponent';  // → src/components
 
 Key env vars: `REACT_APP_API_HOST`, `REACT_APP_IS_PAUFEN`, `REACT_APP_TRON_NETWORK`, `REACT_APP_REVERB_*` (WebSocket)
 
-**API:** standard Laravel `api/.env`
+**API:** standard Laravel `api/.env`. Production env stored on S3: `s3://ustd-api-env/.env.gamapay-usdt` (requires `aws --profile cn`).
+
+Key API env vars for crypto: `ENERGY_RENTAL_PROVIDER`, `ENERGY_RENTAL_FALLBACK`, `NETTS_API_KEY`, `NETTS_WHITELISTED_IP`, `TRONZAP_API_TOKEN`, `TRONZAP_API_SECRET`
 
 ### Internationalization
 
