@@ -59,14 +59,18 @@ class UsdtWithdrawHandler
         $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
         $txAmount = $transaction->floating_amount ?? $transaction->amount;
 
+        if (empty($toAddress)) {
+            $this->log($transaction, '目標地址為空', level: 'error');
+            return;
+        }
+
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
-        // TRC-20: 檢查頻寬是否足夠（子帳號沒有 TRX，靠預設頻寬廣播）
-        // 放在租賃能量之前，避免頻寬不足時浪費能量租賃費
+        // TRC-20: 頻寬檢查（放在租能量之前，避免頻寬不夠時浪費能量租賃費）
         if ($chainNetwork === 'trc20' && $adapter instanceof Trc20Adapter) {
             $resources = $adapter->getAccountResources($fromAddress);
             $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
-            $minBandwidth = 350; // TRC-20 轉帳約需 345 bandwidth
+            $minBandwidth = 350;
             if ($bandwidthAvailable < $minBandwidth && bccomp($nativeBalance, '1', 6) < 0) {
                 $this->log($transaction, "頻寬不足且無 TRX 支付頻寬費 (出款地址: {$fromAddress}, 可用頻寬: {$bandwidthAvailable}, 需要: {$minBandwidth}, TRX: {$nativeBalance})", [
                     'from_address' => $fromAddress,
@@ -75,12 +79,13 @@ class UsdtWithdrawHandler
                     'native_balance' => $nativeBalance,
                 ], 'error');
                 throw new InsufficientBalanceException(
-                    "Bandwidth {$bandwidthAvailable} < {$minBandwidth} and TRX {$nativeBalance} insufficient for bandwidth fee (address: {$fromAddress})"
+                    "Bandwidth {$bandwidthAvailable} < {$minBandwidth} and TRX {$nativeBalance} insufficient (address: {$fromAddress})"
                 );
             }
         }
 
-        // 代付 + TRC-20 + 能量租賃可用 → 租賃能量（失敗則中斷代付）
+        // 代付 + TRC-20 + 能量租賃可用 → 租賃能量
+        // 失敗時 fallback：從母地址補充 TRX，用 TRX 燒能量出款
         $energyRented = false;
         if ($this->shouldRentEnergy($transaction, $chainNetwork)) {
             try {
@@ -90,14 +95,18 @@ class UsdtWithdrawHandler
                 $this->log($transaction, "能量租賃失敗 (出款地址: {$fromAddress}): {$e->getMessage()}", [
                     'from_address' => $fromAddress,
                     'error' => $e->getMessage(),
-                ], 'error');
-                throw $e;
+                ], 'warning');
+
+                // Fallback: 從母地址補充 TRX 給子地址，用 TRX 燒能量+頻寬
+                $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, $toAddress, $txAmount);
+                // 重新查詢餘額（已包含母地址補充的 TRX）
+                $nativeBalance = $adapter->getNativeBalance($fromAddress);
             }
         }
 
         // 動態預估所需 Gas（TRC-20 用 Energy 預估，其他用固定最低值）
         $requiredGas = match ($chainNetwork) {
-            'trc20' => $adapter instanceof \App\Services\Crypto\Adapters\Trc20Adapter
+            'trc20' => $adapter instanceof Trc20Adapter
                 ? $adapter->estimateTransferFee($fromAddress, $toAddress ?: $fromAddress, $txAmount)
                 : config('services.trongrid.min_trx_balance', '30'),
             'erc20' => config('services.ethereum.min_native_balance', '0.005'),
@@ -122,11 +131,6 @@ class UsdtWithdrawHandler
             throw new InsufficientBalanceException(
                 "{$gasTokenName} balance {$nativeBalance}, need {$requiredWithBuffer} for gas fees"
             );
-        }
-
-        if (empty($toAddress)) {
-            $this->log($transaction, '目標地址為空', level: 'error');
-            return;
         }
 
         $privateKey = null;
@@ -205,6 +209,71 @@ class UsdtWithdrawHandler
 
         // 等待能量委託到帳（Netts 通常 0.5-2 秒）
         sleep(3);
+    }
+
+    /**
+     * 能量租賃失敗時的 fallback：從母地址補充 TRX 給子地址
+     * 讓子地址用 TRX 燒能量+頻寬來完成出款
+     */
+    private function topUpTrxFromParent(
+        Transaction $transaction,
+        UserChannelAccount $account,
+        ChainAdapterInterface $adapter,
+        string $childAddress,
+        string $toAddress,
+        string $txAmount,
+    ): void {
+        $parentAccount = $account->parentAccount;
+        if (!$parentAccount) {
+            $this->log($transaction, "能量租賃失敗且無母地址可補充 TRX (出款地址: {$childAddress})", [
+                'from_address' => $childAddress,
+            ], 'error');
+            throw new InsufficientBalanceException(
+                "Energy rental failed and no parent account to top up TRX (address: {$childAddress})"
+            );
+        }
+
+        $parentAddress = $parentAccount->account;
+        $parentKey = data_get($parentAccount->detail, UserChannelAccount::DETAIL_KEY_ENCRYPTED_PRIVATE_KEY);
+        if (!$parentKey) {
+            $this->log($transaction, "母地址未設定私鑰，無法補充 TRX (母地址: {$parentAddress})", [
+                'parent_address' => $parentAddress,
+            ], 'error');
+            throw new InsufficientBalanceException(
+                "Parent account has no private key (parent: {$parentAddress})"
+            );
+        }
+
+        // 預估所需 TRX（能量費 + 頻寬費 + buffer）
+        $estimatedGas = ($adapter instanceof Trc20Adapter)
+            ? $adapter->estimateTransferFee($childAddress, $toAddress ?: $childAddress, $txAmount)
+            : '30';
+        $trxNeeded = bcadd($estimatedGas, '5', 6); // +5 TRX buffer
+
+        $parentBalance = $adapter->getNativeBalance($parentAddress);
+        if (bccomp($parentBalance, bcadd($trxNeeded, '1', 6), 6) < 0) {
+            $this->log($transaction, "母地址 TRX 不足，無法補充 (母地址: {$parentAddress}, 餘額: {$parentBalance}, 需要: {$trxNeeded})", [
+                'parent_address' => $parentAddress,
+                'parent_balance' => $parentBalance,
+                'trx_needed' => $trxNeeded,
+            ], 'error');
+            throw new InsufficientBalanceException(
+                "Parent TRX balance {$parentBalance} insufficient, need {$trxNeeded} (parent: {$parentAddress})"
+            );
+        }
+
+        // 從母地址轉 TRX 到子地址
+        $privateKey = decrypt($parentKey);
+        try {
+            $txHash = $adapter->sendNativeToken($parentAddress, $childAddress, $trxNeeded, $privateKey);
+        } finally {
+            $privateKey = null;
+        }
+
+        $this->log($transaction, "已從母地址補充 {$trxNeeded} TRX (母地址: {$parentAddress}, 出款地址: {$childAddress}, tx: {$txHash})");
+
+        // 等待 TRX 轉帳確認
+        sleep(5);
     }
 
     /**
