@@ -129,6 +129,24 @@ class UsdtWithdrawHandler
             return;
         }
 
+        // TRC-20: 檢查頻寬是否足夠（子帳號沒有 TRX，靠預設頻寬廣播）
+        if ($chainNetwork === 'trc20' && $adapter instanceof Trc20Adapter) {
+            $resources = $adapter->getAccountResources($fromAddress);
+            $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
+            $minBandwidth = 350; // TRC-20 轉帳約需 345 bandwidth
+            if ($bandwidthAvailable < $minBandwidth && bccomp($nativeBalance, '1', 6) < 0) {
+                $this->log($transaction, "頻寬不足且無 TRX 支付頻寬費 (出款地址: {$fromAddress}, 可用頻寬: {$bandwidthAvailable}, 需要: {$minBandwidth}, TRX: {$nativeBalance})", [
+                    'from_address' => $fromAddress,
+                    'bandwidth_available' => $bandwidthAvailable,
+                    'min_bandwidth' => $minBandwidth,
+                    'native_balance' => $nativeBalance,
+                ], 'error');
+                throw new InsufficientBalanceException(
+                    "Bandwidth {$bandwidthAvailable} < {$minBandwidth} and TRX {$nativeBalance} insufficient for bandwidth fee (address: {$fromAddress})"
+                );
+            }
+        }
+
         $privateKey = null;
         try {
             $privateKey = decrypt($encryptedKey);
