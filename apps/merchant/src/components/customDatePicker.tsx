@@ -29,6 +29,7 @@ const CustomDatePicker: FC<Props> = ({ onFastSelectorChange, value, ...rest }) =
 
     return (
         <DatePicker
+            needConfirm={false}
             value={safeValue}
             renderExtraFooter={
                 onFastSelectorChange
