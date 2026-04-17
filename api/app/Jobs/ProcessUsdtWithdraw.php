@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Transaction;
+use App\Models\TransactionNote;
 use App\Services\Crypto\UsdtWithdrawHandler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -44,6 +45,12 @@ class ProcessUsdtWithdraw implements ShouldQueue
             if (!$transaction) {
                 return;
             }
+
+            TransactionNote::create([
+                'transaction_id' => $this->transactionId,
+                'user_id' => 0,
+                'note' => "[USDT出款] 重試全部失敗: {$exception->getMessage()}",
+            ]);
 
             // 代付保持 paying 狀態，由人工介入處理
             if ($transaction->type !== Transaction::TYPE_INTERNAL_TRANSFER) {

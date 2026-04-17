@@ -62,8 +62,15 @@ class UsdtWithdrawHandler
         // 代付 + TRC-20 + 能量租賃可用 → 租賃能量（失敗則中斷代付）
         $energyRented = false;
         if ($this->shouldRentEnergy($transaction, $chainNetwork)) {
-            $this->delegateEnergy($transaction, $adapter, $fromAddress, $toAddress, $txAmount);
-            $energyRented = true;
+            try {
+                $this->delegateEnergy($transaction, $adapter, $fromAddress, $toAddress, $txAmount);
+                $energyRented = true;
+            } catch (\Throwable $e) {
+                $this->log($transaction, "能量租賃失敗: {$e->getMessage()}", [
+                    'error' => $e->getMessage(),
+                ], 'error');
+                throw $e;
+            }
         }
 
         $nativeBalance = $adapter->getNativeBalance($fromAddress);
