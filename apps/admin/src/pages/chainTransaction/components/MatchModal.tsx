@@ -42,7 +42,7 @@ export const MatchModal: FC<MatchModalProps> = ({ open, chainTransactionId, onMa
     },
   });
 
-  const transactions = (query.data?.data as any)?.data ?? [];
+  const transactions = query.data?.data ?? [];
   const isLoading = query.isLoading;
 
   return (
