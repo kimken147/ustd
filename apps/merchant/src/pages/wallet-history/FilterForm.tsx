@@ -17,7 +17,6 @@ const FilterForm: FC<FilterFormProps> = ({ form, t, Status }) => {
         <ListPageLayout.Filter.Item
           label={t('datePicker.startDate')}
           name="started_at"
-          trigger="onSelect"
           rules={[{ required: true }]}
         >
           <CustomDatePicker
@@ -30,8 +29,8 @@ const FilterForm: FC<FilterFormProps> = ({ form, t, Status }) => {
         </ListPageLayout.Filter.Item>
       </Col>
       <Col xs={24} md={6}>
-        <ListPageLayout.Filter.Item label={t('datePicker.endDate')} name="ended_at" trigger="onSelect">
-          <DatePicker showTime className="w-full" />
+        <ListPageLayout.Filter.Item label={t('datePicker.endDate')} name="ended_at">
+          <DatePicker showTime needConfirm={false} className="w-full" />
         </ListPageLayout.Filter.Item>
       </Col>
       <Col xs={24} md={6}>

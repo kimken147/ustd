@@ -56,10 +56,10 @@ const TransactionRewardCreate: FC = () => {
                         goBack();
                     }}
                 >
-                    <Form.Item label="开始时间" name={"started_at"} rules={[{ required: true }]} trigger="onSelect">
+                    <Form.Item label="开始时间" name={"started_at"} rules={[{ required: true }]}>
                         <TimePicker showSecond={false} format={"HH:mm"} />
                     </Form.Item>
-                    <Form.Item label="结束时间" name={"ended_at"} rules={[{ required: true }]} trigger="onSelect">
+                    <Form.Item label="结束时间" name={"ended_at"} rules={[{ required: true }]}>
                         <TimePicker showSecond={false} format={"HH:mm"} />
                     </Form.Item>
                     <Form.Item label="金额区间（格式 : 100~200)" name={"amount"} rules={[{ required: true }]}>

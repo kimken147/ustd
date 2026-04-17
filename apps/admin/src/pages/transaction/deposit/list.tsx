@@ -145,7 +145,6 @@ const DepositList: FC = () => {
               <ListPageLayout.Filter.Item
                 label={t('fields.startDate')}
                 name="started_at"
-                trigger="onSelect"
                 initialValue={dayjs().startOf('days')}
               >
                 <CustomDatePicker

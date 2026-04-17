@@ -328,7 +328,7 @@ const PayForAnotherList: FC = () => {
                 label={translate('datePicker.endDate')}
                 name="ended_at"
               >
-                <DatePicker showTime className="w-full" />
+                <DatePicker showTime needConfirm={false} className="w-full" />
               </ListPageLayout.Filter.Item>
             </Col>
             <Col xs={24} md={6}>
