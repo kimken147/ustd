@@ -95,7 +95,7 @@ class UsdtWithdrawHandler
                 ], 'warning');
 
                 // Fallback: 從母地址補充 TRX 給子地址，用 TRX 燒能量+頻寬
-                $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, $toAddress, $txAmount);
+                $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, null, $toAddress, $txAmount);
                 // 重新查詢餘額（已包含母地址補充的 TRX）
                 $nativeBalance = $adapter->getNativeBalance($fromAddress);
             }
@@ -209,24 +209,25 @@ class UsdtWithdrawHandler
     }
 
     /**
-     * 能量租賃失敗時的 fallback：從母地址補充 TRX 給子地址
-     * 讓子地址用 TRX 燒能量+頻寬來完成出款
+     * 從母地址補充 TRX 給子地址
+     * @param string|null $fixedAmount 指定金額（頻寬補充用），null 時自動預估能量所需 TRX
      */
     private function topUpTrxFromParent(
         Transaction $transaction,
         UserChannelAccount $account,
         ChainAdapterInterface $adapter,
         string $childAddress,
-        string $toAddress,
-        string $txAmount,
+        ?string $fixedAmount = null,
+        ?string $toAddress = null,
+        ?string $txAmount = null,
     ): void {
         $parentAccount = $account->parentAccount;
         if (!$parentAccount) {
-            $this->log($transaction, "能量租賃失敗且無母地址可補充 TRX (出款地址: {$childAddress})", [
+            $this->log($transaction, "無母地址可補充 TRX (出款地址: {$childAddress})", [
                 'from_address' => $childAddress,
             ], 'error');
             throw new InsufficientBalanceException(
-                "Energy rental failed and no parent account to top up TRX (address: {$childAddress})"
+                "No parent account to top up TRX (address: {$childAddress})"
             );
         }
 
@@ -241,11 +242,15 @@ class UsdtWithdrawHandler
             );
         }
 
-        // 預估所需 TRX（能量費 + 頻寬費 + buffer）
-        $estimatedGas = ($adapter instanceof Trc20Adapter)
-            ? $adapter->estimateTransferFee($childAddress, $toAddress ?: $childAddress, $txAmount)
-            : '30';
-        $trxNeeded = bcadd($estimatedGas, '5', 6); // +5 TRX buffer
+        if ($fixedAmount !== null) {
+            $trxNeeded = $fixedAmount;
+        } else {
+            // 預估所需 TRX（能量費 + 頻寬費 + buffer）
+            $estimatedGas = ($adapter instanceof Trc20Adapter && $toAddress)
+                ? $adapter->estimateTransferFee($childAddress, $toAddress, $txAmount ?? '0')
+                : '30';
+            $trxNeeded = bcadd($estimatedGas, '5', 6);
+        }
 
         $parentBalance = $adapter->getNativeBalance($parentAddress);
         if (bccomp($parentBalance, bcadd($trxNeeded, '1', 6), 6) < 0) {
