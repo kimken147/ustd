@@ -59,6 +59,27 @@ class UsdtWithdrawHandler
         $toAddress = data_get($transaction->from_channel_account, 'bank_card_number', '');
         $txAmount = $transaction->floating_amount ?? $transaction->amount;
 
+        $nativeBalance = $adapter->getNativeBalance($fromAddress);
+
+        // TRC-20: 檢查頻寬是否足夠（子帳號沒有 TRX，靠預設頻寬廣播）
+        // 放在租賃能量之前，避免頻寬不足時浪費能量租賃費
+        if ($chainNetwork === 'trc20' && $adapter instanceof Trc20Adapter) {
+            $resources = $adapter->getAccountResources($fromAddress);
+            $bandwidthAvailable = $resources['bandwidth_available'] ?? 0;
+            $minBandwidth = 350; // TRC-20 轉帳約需 345 bandwidth
+            if ($bandwidthAvailable < $minBandwidth && bccomp($nativeBalance, '1', 6) < 0) {
+                $this->log($transaction, "頻寬不足且無 TRX 支付頻寬費 (出款地址: {$fromAddress}, 可用頻寬: {$bandwidthAvailable}, 需要: {$minBandwidth}, TRX: {$nativeBalance})", [
+                    'from_address' => $fromAddress,
+                    'bandwidth_available' => $bandwidthAvailable,
+                    'min_bandwidth' => $minBandwidth,
+                    'native_balance' => $nativeBalance,
+                ], 'error');
+                throw new InsufficientBalanceException(
+                    "Bandwidth {$bandwidthAvailable} < {$minBandwidth} and TRX {$nativeBalance} insufficient for bandwidth fee (address: {$fromAddress})"
+                );
+            }
+        }
+
         // 代付 + TRC-20 + 能量租賃可用 → 租賃能量（失敗則中斷代付）
         $energyRented = false;
         if ($this->shouldRentEnergy($transaction, $chainNetwork)) {
@@ -66,14 +87,13 @@ class UsdtWithdrawHandler
                 $this->delegateEnergy($transaction, $adapter, $fromAddress, $toAddress, $txAmount);
                 $energyRented = true;
             } catch (\Throwable $e) {
-                $this->log($transaction, "能量租賃失敗: {$e->getMessage()}", [
+                $this->log($transaction, "能量租賃失敗 (出款地址: {$fromAddress}): {$e->getMessage()}", [
+                    'from_address' => $fromAddress,
                     'error' => $e->getMessage(),
                 ], 'error');
                 throw $e;
             }
         }
-
-        $nativeBalance = $adapter->getNativeBalance($fromAddress);
 
         // 動態預估所需 Gas（TRC-20 用 Energy 預估，其他用固定最低值）
         $requiredGas = match ($chainNetwork) {
@@ -93,7 +113,8 @@ class UsdtWithdrawHandler
         $requiredWithBuffer = bcadd($requiredGas, $buffer, 6);
 
         if (bccomp($nativeBalance, $requiredWithBuffer, 6) < 0) {
-            $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas，請手動補充 (餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
+            $this->log($transaction, "{$gasTokenName} 餘額不足支付 Gas，請手動補充 (出款地址: {$fromAddress}, 餘額: {$nativeBalance}, 需要: {$requiredWithBuffer})", [
+                'from_address'   => $fromAddress,
                 'native_balance' => $nativeBalance,
                 'required'       => $requiredWithBuffer,
                 'gas_token'      => $gasTokenName,
@@ -126,16 +147,19 @@ class UsdtWithdrawHandler
                 $transaction, $chainTx->txHash, $account, $fromAddress, $toAddress, $txAmount
             );
 
-            $this->log($transaction, "出款交易已廣播 (tx_hash: {$chainTx->txHash})", [
+            $this->log($transaction, "出款交易已廣播 (出款地址: {$fromAddress}, tx_hash: {$chainTx->txHash})", [
+                'from_address' => $fromAddress,
                 'tx_hash' => $chainTx->txHash,
             ]);
         } catch (InsufficientBalanceException|TransactionBroadcastException $e) {
-            $this->log($transaction, "鏈上出款失敗: {$e->getMessage()}", [
+            $this->log($transaction, "鏈上出款失敗 (出款地址: {$fromAddress}): {$e->getMessage()}", [
+                'from_address' => $fromAddress,
                 'error' => $e->getMessage(),
             ], 'error');
             throw $e;
         } catch (\Throwable $e) {
-            $this->log($transaction, "未預期錯誤: {$e->getMessage()}", [
+            $this->log($transaction, "未預期錯誤 (出款地址: {$fromAddress}): {$e->getMessage()}", [
+                'from_address' => $fromAddress,
                 'error' => $e->getMessage(),
             ], 'error');
             throw $e;
@@ -170,11 +194,12 @@ class UsdtWithdrawHandler
 
         $result = $this->energyProvider->delegateEnergy($fromAddress, $energyNeeded);
 
-        $this->log($transaction, "能量租賃成功 [{$this->energyProvider->name()}]: {$energyNeeded} energy, 花費 {$result['paid_trx']} TRX (order: {$result['order_id']})", [
+        $this->log($transaction, "能量租賃成功 [{$this->energyProvider->name()}]: {$energyNeeded} energy, 花費 {$result['paid_trx']} TRX (出款地址: {$fromAddress}, order: {$result['order_id']})", [
             'energy_provider' => $this->energyProvider->name(),
             'energy_needed'   => $energyNeeded,
             'paid_trx'        => $result['paid_trx'],
             'order_id'        => $result['order_id'],
+            'from_address'    => $fromAddress,
             'receiver_usdt'   => $receiverUsdtBalance,
         ]);
 
