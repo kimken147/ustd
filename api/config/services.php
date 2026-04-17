@@ -47,10 +47,16 @@ return [
 
     'energy_rental' => [
         'provider'       => env('ENERGY_RENTAL_PROVIDER', ''),
+        'fallback'       => env('ENERGY_RENTAL_FALLBACK', ''),
         'netts' => [
             'api_key'        => env('NETTS_API_KEY', ''),
             'whitelisted_ip' => env('NETTS_WHITELISTED_IP', ''),
             'base_url'       => env('NETTS_BASE_URL', 'https://netts.io'),
+        ],
+        'tronzap' => [
+            'api_token'  => env('TRONZAP_API_TOKEN', ''),
+            'api_secret' => env('TRONZAP_API_SECRET', ''),
+            'base_url'   => env('TRONZAP_BASE_URL', 'https://api.tronzap.com'),
         ],
     ],
 
