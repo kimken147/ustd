@@ -158,12 +158,13 @@ class ChainTransactionSyncService
             return false;
         }
 
-        // 轉換 block_timestamp（毫秒 → Carbon）
+        // 轉換 block_timestamp（毫秒 → Carbon，轉為 app 時區以正確存入 MySQL）
         $blockTimestamp = $txData['block_timestamp'];
+        $appTz = config('app.timezone');
         if (is_numeric($blockTimestamp) && $blockTimestamp > 1e12) {
-            $blockTimestamp = \Carbon\Carbon::createFromTimestampMs($blockTimestamp);
+            $blockTimestamp = \Carbon\Carbon::createFromTimestampMs($blockTimestamp)->setTimezone($appTz);
         } elseif (is_numeric($blockTimestamp)) {
-            $blockTimestamp = \Carbon\Carbon::createFromTimestamp($blockTimestamp);
+            $blockTimestamp = \Carbon\Carbon::createFromTimestamp($blockTimestamp)->setTimezone($appTz);
         }
 
         $tokenType = $txData['token_type'] ?? ChainTransaction::TOKEN_TYPE_USDT;
