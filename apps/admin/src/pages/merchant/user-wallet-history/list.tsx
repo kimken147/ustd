@@ -34,7 +34,7 @@ const colProps: ColProps = {
 const UserWalletHistoryList: FC = () => {
   const { t } = useTranslation('merchant');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
   const [searchParams] = useSearchParams();
   const userId = searchParams.get('user_id');
 

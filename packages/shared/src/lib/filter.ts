@@ -69,7 +69,7 @@ export function formValuesToCrudFilters(values: unknown): CrudFilter[] {
     let filterValue: any;
 
     if (dayjs.isDayjs(value)) {
-      filterValue = value.format('YYYY-MM-DDTHH:mm:ss');
+      filterValue = value.format();
     } else {
       filterValue = value;
     }

@@ -21,7 +21,7 @@ const CollectionList: FC = () => {
   const apiUrl = useApiUrl();
   const [form] = Form.useForm();
 
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
 
   const { Status: tranStatus, getStatusText: getTranStatusText } = useTransactionStatus();
   const { Status: tranCallbackStatus, getStatusText: getTranCallbackStatus } = useTransactionCallbackStatus();
@@ -36,8 +36,10 @@ const CollectionList: FC = () => {
     resource: 'transactions',
     syncWithLocation: true,
     filters: {
-      permanent: [
+      initial: [
         { field: 'started_at', value: defaultStartAt, operator: 'eq' },
+      ],
+      permanent: [
         { field: 'confirmed', value: 'created', operator: 'eq' },
       ],
     },

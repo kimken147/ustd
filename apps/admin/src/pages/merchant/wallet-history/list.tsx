@@ -28,7 +28,7 @@ const colProps: ColProps = {
 const MerchantWalletList: FC = () => {
   const { t } = useTranslation('merchant');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
 
   const { selectProps: merchantSelectProps } = useSelector<Merchant>({
     resource: 'merchants',

@@ -79,7 +79,7 @@ const CollectionList: FC = () => {
   const { isPaufen } = useAppMode();
   const { groupLabel } = useTerminology();
 
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
 
   // Permissions
   const { data: canEdit } = useCan({ action: '7', resource: 'transactions' });

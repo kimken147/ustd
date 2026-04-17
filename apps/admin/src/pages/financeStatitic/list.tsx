@@ -16,8 +16,8 @@ const FinanceStatisticPage: FC = () => {
   const { t } = useTranslation('financeReport');
   const [form] = Form.useForm();
 
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
-  const defaultEndAt = dayjs().endOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
+  const defaultEndAt = dayjs().endOf('day').format();
 
   const {
     tableProps,

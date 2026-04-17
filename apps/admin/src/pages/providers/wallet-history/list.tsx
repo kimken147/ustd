@@ -14,7 +14,7 @@ import { useColumns, type ColumnDependencies } from './columns';
 const ProviderWalletList: FC = () => {
   const { t } = useTranslation('providers');
   const { data: profile } = useGetIdentity<Profile>();
-  const defaultStartAt = dayjs().startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+  const defaultStartAt = dayjs().startOf('day').format();
 
   const {
     tableProps,
