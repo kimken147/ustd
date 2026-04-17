@@ -23,7 +23,7 @@ class ChainTransactionResource extends JsonResource
             'amount' => $this->amount,
             'token_type' => $this->token_type ?? 'USDT',
             'block_number' => $this->block_number,
-            'block_timestamp' => $this->block_timestamp?->toISOString(),
+            'block_timestamp' => $this->block_timestamp?->toIso8601String(),
             'confirmations' => $this->confirmations,
             'match_status' => $this->match_status,
             'matched_transaction_id' => $this->matched_transaction_id,
@@ -33,15 +33,15 @@ class ChainTransactionResource extends JsonResource
                 'amount' => $this->matchedTransaction->amount,
                 'status' => $this->matchedTransaction->status,
             ]),
-            'matched_at' => $this->matched_at?->toISOString(),
+            'matched_at' => $this->matched_at?->toIso8601String(),
             'matched_by' => $this->matched_by,
             'matched_by_user' => $this->whenLoaded('matchedByUser', fn () => [
                 'id' => $this->matchedByUser->id,
                 'name' => $this->matchedByUser->name,
             ]),
             'note' => $this->note,
-            'created_at' => $this->created_at?->toISOString(),
-            'updated_at' => $this->updated_at?->toISOString(),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }
