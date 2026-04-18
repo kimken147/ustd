@@ -138,7 +138,6 @@ const FundCreate: FC = () => {
                                                     <Form.Item
                                                         label={t('fund.currency')}
                                                         name={[name, "currency"]}
-                                                        initialValue="USDT"
                                                         rules={[{ required: true }]}
                                                     >
                                                         <Select
