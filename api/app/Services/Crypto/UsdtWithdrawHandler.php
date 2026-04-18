@@ -94,10 +94,13 @@ class UsdtWithdrawHandler
                     'error' => $e->getMessage(),
                 ], 'warning');
 
-                // Fallback: 從母地址補充 TRX 給子地址，用 TRX 燒能量+頻寬
-                $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, null, $toAddress, $txAmount);
-                // 重新查詢餘額（已包含母地址補充的 TRX）
-                $nativeBalance = $adapter->getNativeBalance($fromAddress);
+                // Fallback: 有母地址時補充 TRX，沒有母地址（代付主地址）則 re-throw 走正常重試
+                if ($account->parentAccount) {
+                    $this->topUpTrxFromParent($transaction, $account, $adapter, $fromAddress, null, $toAddress, $txAmount);
+                    $nativeBalance = $adapter->getNativeBalance($fromAddress);
+                } else {
+                    throw $e;
+                }
             }
         }
 

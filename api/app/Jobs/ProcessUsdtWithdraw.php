@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Transaction;
 use App\Models\TransactionNote;
+use App\Services\Crypto\Exceptions\InsufficientBalanceException;
 use App\Services\Crypto\UsdtWithdrawHandler;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,7 +31,12 @@ class ProcessUsdtWithdraw implements ShouldQueue
             return;
         }
 
-        $handler->handle($transaction);
+        try {
+            $handler->handle($transaction);
+        } catch (InsufficientBalanceException $e) {
+            // 餘額/能量/頻寬不足：重試沒意義，直接標記失敗，等手動重試
+            $this->fail($e);
+        }
     }
 
     /**
