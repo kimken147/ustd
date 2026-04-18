@@ -12,6 +12,7 @@ export interface InternalTransfer {
     bank_name: string;
     bank_card_number: string;
     note?: string;
+    tx_hash?: string;
     _search1?: string;
     created_at: string;
     confirmed_at?: string;
