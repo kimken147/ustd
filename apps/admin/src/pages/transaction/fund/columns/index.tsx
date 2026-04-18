@@ -6,12 +6,13 @@ import {
   FileSearchOutlined,
   InfoCircleOutlined,
   LockOutlined,
+  RedoOutlined,
   SettingOutlined,
   UnlockOutlined,
 } from '@ant-design/icons';
 import { DateField, TextField } from '@refinedev/antd';
 import { axiosInstance } from '@refinedev/simple-rest';
-import { Button, Popover, Space, Typography } from 'antd';
+import { Button, Modal as AntdModal, Popover, Space, Typography } from 'antd';
 import Badge from 'components/badge';
 import dayjs from 'dayjs';
 import { TransactionNote, Purple, Format } from '@morgan-ustd/shared';
@@ -31,6 +32,8 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
     Modal,
     apiUrl,
     canEdit,
+    mutateAsync,
+    refetch,
   } = deps;
 
   return [
@@ -193,6 +196,29 @@ export function useColumns(deps: ColumnDependencies): FundColumn[] {
                   }
                 >
                   {t('actions.changeToFail')}
+                </Button>
+                <Button
+                  icon={<RedoOutlined />}
+                  disabled={
+                    ![WithdrawStatus.失败, WithdrawStatus.等待付款].includes(record.status) ||
+                    !!record.tx_hash
+                  }
+                  onClick={() =>
+                    AntdModal.confirm({
+                      title: t('fund.confirmRetry'),
+                      onOk: async () => {
+                        await mutateAsync({
+                          url: `${apiUrl}/fund-management/retry/${record.id}`,
+                          method: 'post',
+                          values: {},
+                          successNotification: { message: t('fund.retrySuccess'), type: 'success' },
+                        });
+                        refetch();
+                      },
+                    })
+                  }
+                >
+                  {t('fund.retry')}
                 </Button>
               </Space>
             }

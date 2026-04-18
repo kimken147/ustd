@@ -6,8 +6,10 @@ use App\DTOs\TransactionParams;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserChannelAccount as UserChannelAccountResource;
 use App\Jobs\BatchTransferUsdt;
+use App\Jobs\ProcessUsdtWithdraw;
 use App\Models\Permission;
 use App\Models\Transaction;
+use App\Models\TransactionNote;
 use App\Models\UserChannelAccount;
 use App\Utils\BankCardTransferObject;
 use App\Models\Channel;
@@ -148,5 +150,48 @@ class FundManagementController extends Controller
             'message' => "已排入 {$dispatched} 筆轉帳任務",
             'count'   => $dispatched,
         ]);
+    }
+
+    /**
+     * 手動重試失敗的轉帳
+     * POST /fund-management/retry/{transaction}
+     */
+    public function retry(Request $request, Transaction $transaction)
+    {
+        $this->permissionUtil->abortForbiddenIfPermissionDenied($request->user(), Permission::ADMIN_INTERNAL_TRANSFER);
+
+        abort_if(
+            !in_array($transaction->type, [Transaction::TYPE_INTERNAL_TRANSFER, Transaction::TYPE_NATIVE_TRANSFER]),
+            400,
+            '僅支援內轉/原生代幣轉帳重試'
+        );
+
+        abort_if(
+            !in_array($transaction->status, [Transaction::STATUS_FAILED, Transaction::STATUS_PAYING]),
+            400,
+            '僅支援失敗或付款中的訂單重試'
+        );
+
+        abort_if(!empty($transaction->tx_hash), 400, '此筆交易已有 tx_hash，無法重試');
+
+        // 恢復為付款中狀態
+        if ($transaction->status === Transaction::STATUS_FAILED) {
+            $transaction->update(['status' => Transaction::STATUS_PAYING]);
+        }
+
+        TransactionNote::create([
+            'transaction_id' => $transaction->id,
+            'user_id' => $request->user()->realUser()->id,
+            'note' => '[手動重試] 由 ' . $request->user()->realUser()->name . ' 發起重試',
+        ]);
+
+        // 根據交易類型選擇 job
+        if ($transaction->type === Transaction::TYPE_INTERNAL_TRANSFER && Channel::isUsdt($transaction->channel_code ?? '')) {
+            ProcessUsdtWithdraw::dispatch($transaction->id);
+        } else {
+            BatchTransferUsdt::dispatch($transaction->id);
+        }
+
+        return response()->json(['message' => '已重新排入轉帳任務']);
     }
 }

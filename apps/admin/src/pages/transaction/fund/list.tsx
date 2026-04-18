@@ -1,6 +1,6 @@
 import { CreateButton, List } from '@refinedev/antd';
 import { useTable } from 'hooks/useTable';
-import { useCan, useGetIdentity } from '@refinedev/core';
+import { useCan, useCustomMutation, useGetIdentity } from '@refinedev/core';
 import { Button, Col, DatePicker, Divider, Input, Modal as AntdModal, Radio, Select, Space } from 'antd';
 import { ListPageLayout, formValuesToCrudFilters } from '@morgan-ustd/shared';
 import CustomDatePicker from 'components/customDatePicker';
@@ -26,6 +26,7 @@ const FundList: FC = () => {
   const { Select: TranStatusSelect } = useTransactionStatus();
   const { Status: WithdrawStatus, getStatusText: getWithdrawStatusText } = useWithdrawStatus();
   const { data: canEdit } = useCan({ action: '35', resource: 'internal-transfers' });
+  const { mutateAsync } = useCustomMutation();
   const { freq, enableAuto, AutoRefetch } = useAutoRefetch();
 
   const {
@@ -39,7 +40,7 @@ const FundList: FC = () => {
     ],
   });
 
-  const { tableProps, searchFormProps } = useTable<InternalTransfer>({
+  const { tableProps, searchFormProps, tableQuery: { refetch } } = useTable<InternalTransfer>({
     onSearch: formValuesToCrudFilters,
     resource: 'internal-transfers',
     syncWithLocation: true,
@@ -60,6 +61,8 @@ const FundList: FC = () => {
     Modal,
     apiUrl,
     canEdit: canEdit?.can ?? false,
+    mutateAsync,
+    refetch,
   };
 
   const columns = useColumns(columnDeps);

@@ -386,6 +386,7 @@ Route::prefix("admin")
             Route::prefix('fund-management')->group(function () {
                 Route::get('/accounts', 'FundManagementController@index');
                 Route::post('/batch-transfer', 'FundManagementController@batchTransfer');
+                Route::post('/retry/{transaction}', 'FundManagementController@retry');
             });
         });
 

@@ -37,4 +37,6 @@ export interface ColumnDependencies {
   };
   apiUrl: string;
   canEdit: boolean;
+  mutateAsync: (config: any) => Promise<any>;
+  refetch: () => void;
 }
