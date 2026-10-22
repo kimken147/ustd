@@ -1,5 +1,5 @@
 # Dockerfile
-FROM 243776527511.dkr.ecr.ap-southeast-1.amazonaws.com/php-fpm:8.3-fpm
+FROM 243776527511.dkr.ecr.ap-southeast-1.amazonaws.com/php-fpm:8.3.36-fpm
 
 # 設定環境變數
 ENV TZ=UTC \
